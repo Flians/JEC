@@ -1,0 +1,13 @@
+read_bench bar.bench
+strash
+dc2
+read_library rsfq.genlib
+map
+write_verilog bar.v
+
+read_bench bar.bench
+strash
+resyn2
+read_library rsfq.genlib
+map
+write_verilog bar.v
