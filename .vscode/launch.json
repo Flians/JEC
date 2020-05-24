@@ -5,6 +5,30 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(lldb) launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/JEC",
+            "args": [
+                "./test/golden/gf.v",
+                "./test/revise/rf.v",
+                "./output/output.txt"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build_mac"
+        },
+        {
             "name": "(gdb) launch",
             "type": "cppdbg",
             "request": "launch",
@@ -28,7 +52,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build"
+            "preLaunchTask": "build_win"
         }
     ]
 }
