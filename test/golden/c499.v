@@ -1,4 +1,4 @@
-// Benchmark "c499" written by ABC on Thu May 07 09:07:06 2020
+// Benchmark "c499" written by ABC on Sun May 24 21:28:11 2020
 
 module c499 ( 
     Gid0, Gid1, Gid2, Gid3, Gid4, Gid5, Gid6, Gid7, Gid8, Gid9, Gid10,
@@ -117,7 +117,7 @@ module c499 (
   jxor g083(.dina(n125), .dinb(n155), .dout(n156));
   jand g084(.dina(n156), .dinb(n153), .dout(n157));
   jand g085(.dina(n157), .dinb(n150), .dout(n158));
-  jcb  g086(.dina(n158), .dinb(n145), .dout(n159));
+  jor  g086(.dina(n158), .dinb(n145), .dout(n159));
   jxor g087(.dina(Gid28), .dinb(Gid24), .dout(n160));
   jxor g088(.dina(Gid20), .dinb(Gid16), .dout(n161));
   jxor g089(.dina(n161), .dinb(n160), .dout(n162));
@@ -189,7 +189,7 @@ module c499 (
   jxor g155(.dina(n202), .dinb(n166), .dout(n228));
   jand g156(.dina(n228), .dinb(n99), .dout(n229));
   jand g157(.dina(n229), .dinb(n188), .dout(n230));
-  jcb  g158(.dina(n230), .dinb(n227), .dout(n231));
+  jor  g158(.dina(n230), .dinb(n227), .dout(n231));
   jand g159(.dina(n231), .dinb(n224), .dout(n232));
   jand g160(.dina(n232), .dinb(n223), .dout(n233));
   jand g161(.dina(n233), .dinb(n166), .dout(n234));
