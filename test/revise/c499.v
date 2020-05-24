@@ -1,4 +1,4 @@
-// Benchmark "c499" written by ABC on Thu May 07 09:11:27 2020
+// Benchmark "c499" written by ABC on Sun May 24 21:38:00 2020
 
 module c499 ( 
     Gid0, Gid1, Gid2, Gid3, Gid4, Gid5, Gid6, Gid7, Gid8, Gid9, Gid10,
@@ -33,7 +33,7 @@ module c499 (
     n261, n263, n265, n267;
   jnot g000(.din(Gic0), .dout(n73));
   jnot g001(.din(Gr), .dout(n74));
-  jcb  g002(.dina(n74), .dinb(n73), .dout(n75));
+  jor  g002(.dina(n74), .dinb(n73), .dout(n75));
   jxor g003(.dina(Gid17), .dinb(Gid16), .dout(n76));
   jxor g004(.dina(Gid19), .dinb(Gid18), .dout(n77));
   jxor g005(.dina(n77), .dinb(n76), .dout(n78));
@@ -48,7 +48,7 @@ module c499 (
   jxor g014(.dina(n86), .dinb(n79), .dout(n87));
   jnot g015(.din(n87), .dout(n88));
   jnot g016(.din(Gic7), .dout(n89));
-  jcb  g017(.dina(n74), .dinb(n89), .dout(n90));
+  jor  g017(.dina(n74), .dinb(n89), .dout(n90));
   jxor g018(.dina(Gid5), .dinb(Gid4), .dout(n91));
   jxor g019(.dina(Gid7), .dinb(Gid6), .dout(n92));
   jxor g020(.dina(n92), .dinb(n91), .dout(n93));
@@ -62,7 +62,7 @@ module c499 (
   jxor g028(.dina(n100), .dinb(n97), .dout(n101));
   jxor g029(.dina(n101), .dinb(n94), .dout(n102));
   jnot g030(.din(Gic6), .dout(n103));
-  jcb  g031(.dina(n74), .dinb(n103), .dout(n104));
+  jor  g031(.dina(n74), .dinb(n103), .dout(n104));
   jxor g032(.dina(Gid1), .dinb(Gid0), .dout(n105));
   jxor g033(.dina(Gid3), .dinb(Gid2), .dout(n106));
   jxor g034(.dina(n106), .dinb(n105), .dout(n107));
@@ -78,7 +78,7 @@ module c499 (
   jnot g044(.din(n116), .dout(n117));
   jand g045(.dina(n117), .dinb(n102), .dout(n118));
   jnot g046(.din(Gic4), .dout(n119));
-  jcb  g047(.dina(n74), .dinb(n119), .dout(n120));
+  jor  g047(.dina(n74), .dinb(n119), .dout(n120));
   jxor g048(.dina(n120), .dinb(n93), .dout(n121));
   jxor g049(.dina(Gid20), .dinb(Gid16), .dout(n122));
   jxor g050(.dina(Gid28), .dinb(Gid24), .dout(n123));
@@ -87,7 +87,7 @@ module c499 (
   jxor g053(.dina(n125), .dinb(n121), .dout(n126));
   jnot g054(.din(n126), .dout(n127));
   jnot g055(.din(Gic5), .dout(n128));
-  jcb  g056(.dina(n74), .dinb(n128), .dout(n129));
+  jor  g056(.dina(n74), .dinb(n128), .dout(n129));
   jxor g057(.dina(n129), .dinb(n97), .dout(n130));
   jxor g058(.dina(Gid21), .dinb(Gid17), .dout(n131));
   jxor g059(.dina(Gid29), .dinb(Gid25), .dout(n132));
@@ -96,7 +96,7 @@ module c499 (
   jxor g062(.dina(n134), .dinb(n130), .dout(n135));
   jand g063(.dina(n135), .dinb(n127), .dout(n136));
   jnot g064(.din(Gic1), .dout(n137));
-  jcb  g065(.dina(n74), .dinb(n137), .dout(n138));
+  jor  g065(.dina(n74), .dinb(n137), .dout(n138));
   jxor g066(.dina(Gid29), .dinb(Gid28), .dout(n139));
   jxor g067(.dina(Gid31), .dinb(Gid30), .dout(n140));
   jxor g068(.dina(n140), .dinb(n139), .dout(n141));
@@ -111,7 +111,7 @@ module c499 (
   jxor g077(.dina(n149), .dinb(n142), .dout(n150));
   jxor g078(.dina(n150), .dinb(n87), .dout(n151));
   jnot g079(.din(Gic3), .dout(n152));
-  jcb  g080(.dina(n74), .dinb(n152), .dout(n153));
+  jor  g080(.dina(n74), .dinb(n152), .dout(n153));
   jxor g081(.dina(n153), .dinb(n85), .dout(n154));
   jxor g082(.dina(Gid7), .dinb(Gid3), .dout(n155));
   jxor g083(.dina(Gid15), .dinb(Gid11), .dout(n156));
@@ -119,7 +119,7 @@ module c499 (
   jxor g085(.dina(n157), .dinb(n141), .dout(n158));
   jxor g086(.dina(n158), .dinb(n154), .dout(n159));
   jnot g087(.din(Gic2), .dout(n160));
-  jcb  g088(.dina(n74), .dinb(n160), .dout(n161));
+  jor  g088(.dina(n74), .dinb(n160), .dout(n161));
   jxor g089(.dina(n161), .dinb(n78), .dout(n162));
   jxor g090(.dina(Gid6), .dinb(Gid2), .dout(n163));
   jxor g091(.dina(Gid14), .dinb(Gid10), .dout(n164));
@@ -131,7 +131,7 @@ module c499 (
   jxor g097(.dina(n167), .dinb(n159), .dout(n170));
   jand g098(.dina(n150), .dinb(n87), .dout(n171));
   jand g099(.dina(n171), .dinb(n170), .dout(n172));
-  jcb  g100(.dina(n172), .dinb(n169), .dout(n173));
+  jor  g100(.dina(n172), .dinb(n169), .dout(n173));
   jand g101(.dina(n173), .dinb(n136), .dout(n174));
   jand g102(.dina(n174), .dinb(n118), .dout(n175));
   jand g103(.dina(n175), .dinb(n88), .dout(n176));
@@ -186,7 +186,7 @@ module c499 (
   jxor g152(.dina(n135), .dinb(n126), .dout(n225));
   jand g153(.dina(n116), .dinb(n102), .dout(n226));
   jand g154(.dina(n226), .dinb(n225), .dout(n227));
-  jcb  g155(.dina(n227), .dinb(n224), .dout(n228));
+  jor  g155(.dina(n227), .dinb(n224), .dout(n228));
   jand g156(.dina(n228), .dinb(n221), .dout(n229));
   jand g157(.dina(n229), .dinb(n220), .dout(n230));
   jand g158(.dina(n230), .dinb(n127), .dout(n231));
