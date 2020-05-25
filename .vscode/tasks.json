@@ -3,8 +3,18 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "build",
-            "command": ".\\build.bat",
+            "label": "build_mac",
+            "command": "./build.sh",
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "build_win",
+            "command": "./build.bat",
             "args": [],
             "group": {
                 "kind": "build",
