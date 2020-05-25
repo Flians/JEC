@@ -1,6 +1,6 @@
 GATE jnot   1   dout=!din;                      PIN * NONINV 1 1 1 0 1 0
 GATE jand   1   dout=dina*dinb;                 PIN * NONINV 1 1 1 0 1 0
-GATE jcb    1   dout=dina+dinb;                 PIN * NONINV 1 1 1 0 1 0
+GATE jor    1   dout=dina+dinb;                 PIN * NONINV 1 1 1 0 1 0
 GATE jxor   1   dout=dina*!dinb+!dina*dinb;     PIN * NONINV 1 1 1 0 1 0
 GATE buf    1   dout=din;                       PIN * NONINV 1 1 1 0 1 0
 GATE zero   0   dout=CONST0;
