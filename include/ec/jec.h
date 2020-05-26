@@ -10,6 +10,7 @@ private:
     bool assign_PIs_value(vector<vector<node *> *> *layers, int i);
     // Calculate all nodes according to PIs
     bool evaluate(vector<node *> *nodes);
+    void sort_nodes(vector<vector<node *> *> *layers);
 
 public:
     jec();
