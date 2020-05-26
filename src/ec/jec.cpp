@@ -86,17 +86,31 @@ bool cmp(node *o1, node *o2)
     return o1->id < o2->id;
 }
 
-void jec::reduce_repeat_nodes(vector<vector<node *> *> *layers)
+void jec::sort_nodes(vector<vector<node *> *> *layers)
 {
-    int reduce = 0;
     for (int i = 0; i < layers->size() - 1; i++)
     {
         sort(layers->at(i)->begin(), layers->at(i)->end(), cmp);
         for (auto &item : (*layers->at(i)))
         {
+            if (item->ins && item->ins->size() > 0)
+                sort(item->ins->begin(), item->ins->end(), cmp);
+            if (item->outs && item->outs->size() > 0)
+                sort(item->outs->begin(), item->outs->end(), cmp);
+        }
+    }
+}
+
+void jec::reduce_repeat_nodes(vector<vector<node *> *> *layers)
+{
+    int reduce = 0;
+    this->sort_nodes(layers);
+    for (int i = 0; i < layers->size() - 1; i++)
+    {
+        for (auto &item : (*layers->at(i)))
+        {
             if (item->outs && item->outs->size() > 0)
             {
-                sort(item->outs->begin(), item->outs->end(), cmp);
                 if (item->cell == IN && item->name.find("clk") != string::npos)
                     continue;
                 map<Gtype, vector<node *>> record;
@@ -129,14 +143,45 @@ void jec::reduce_repeat_nodes(vector<vector<node *> *> *layers)
                                 delete it.second.at(d);
                                 reduce++;
                             }
-                        } else {
-                            
+                        }
+                        else
+                        {
+                            for (int si = 0; si < it.second.size(); si++)
+                            {
+                                for (int ri = si + 1; ri < it.second.size(); ri++)
+                                {
+                                    if (it.second.at(si)->ins->size() == it.second.at(ri)->ins->size())
+                                    {
+                                        bool flag = true;
+                                        for (int ii = 0; ii < it.second.at(si)->ins->size(); ii++)
+                                        {
+                                            if (it.second.at(si)->ins->at(ii)->id != it.second.at(ri)->ins->at(ii)->id)
+                                            {
+                                                flag = false;
+                                                break;
+                                            }
+                                        }
+                                        if (flag)
+                                        {
+                                            // grandson.ins.push(son)
+                                            it.second.at(ri)->outs->at(0)->ins->push_back(it.second.at(si));
+                                            // son.outs.push(grandson)
+                                            it.second.at(si)->outs->push_back(it.second.at(ri)->outs->at(0));
+                                            layers->at(i + 1)->erase(find(layers->at(i + 1)->begin(), layers->at(i + 1)->end(), it.second.at(ri)));
+                                            it.second.erase(it.second.begin() + ri);
+                                            delete it.second.at(ri--);
+                                            reduce++;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
+                    it.second.clear();
                 }
                 record.clear();
             }
         }
     }
-    cout << "The number of DFF reduction is " << reduce << endl;
+    cout << "The number of INV and DFF reduction is " << reduce << endl;
 }
