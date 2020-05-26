@@ -6,6 +6,8 @@ def benchmarks(exePath, root='./', output='../output/'):
     golden = os.path.join(root, 'golden')
     revise = os.path.join(root, 'revise')
     files = os.listdir(os.path.join(root, 'original'))
+    if not os.path.exists(os.path.join(root, 'log')):
+        os.mkdir(os.path.join(root, 'log'))
     for i, file in enumerate(files):
         names = file.split('.')
         if file.endswith('.bench'):
