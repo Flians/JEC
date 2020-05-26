@@ -257,17 +257,17 @@ void parser::parse_verilog(ifstream &in, vector<node *> *PIs, vector<node *> *PO
                         g->name = match[0];
                         iterStart = match[0].second;
                     }
-                    cout << "gate: " << g->name << endl;
+                    // cout << "gate: " << g->name << endl;
                     int index_port = 0;
                     // ports: index_port = 0 -> output, index_port > 0 -> input
                     while (regex_search(iterStart, iterEnd, match, pattern))
                     {
                         string item = match[0];
                         iterStart = match[0].second;
-                        cout << "port: ";
+                        // cout << "port: ";
                         if (item[0] == '.')
                         {
-                            cout << item << " ";
+                            // cout << item << " ";
                             bool flag = libstring::startsWith(item, ".dout");
                             regex_search(iterStart, iterEnd, match, pattern);
                             item = match[0];
@@ -304,6 +304,7 @@ void parser::parse_verilog(ifstream &in, vector<node *> *PIs, vector<node *> *PO
     }
 }
 
+// use PIs and POs of the golden file
 void parser::parse_revised(ifstream &in, vector<node *> *PIs, vector<node *> *POs, vector<node *> *wires, vector<node *> *gates)
 {
     string line;
@@ -403,17 +404,17 @@ void parser::parse_revised(ifstream &in, vector<node *> *PIs, vector<node *> *PO
                         g->name = match[0];
                         iterStart = match[0].second;
                     }
-                    cout << "gate: " << g->name << endl;
+                    // cout << "gate: " << g->name << endl;
                     int index_port = 0;
                     // ports: index_port = 0 -> output, index_port > 0 -> input
                     while (regex_search(iterStart, iterEnd, match, pattern))
                     {
                         string item = match[0];
                         iterStart = match[0].second;
-                        cout << "port: ";
+                        // cout << "port: ";
                         if (item[0] == '.')
                         {
-                            cout << item << " ";
+                            // cout << item << " ";
                             bool flag = libstring::startsWith(item, ".dout");
                             regex_search(iterStart, iterEnd, match, pattern);
                             item = match[0];

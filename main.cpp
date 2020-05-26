@@ -31,6 +31,8 @@ int main(int argc, char *argv[])
                 PIs->insert(PIs->end(), con);
             }
         }
+        sim.id_reassign(PIs);
+        sim.layer_assignment(PIs);
         // PIs->insert(PIs->end(),verilog_parser.get_constants()->begin(),verilog_parser.get_constants()->end());
         /*
         cout << ">>> after: " << endl;

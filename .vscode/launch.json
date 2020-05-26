@@ -10,9 +10,9 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/JEC",
             "args": [
-                "./test/golden/gf.v",
-                "./test/revise/rf.v",
-                "./output/output.txt"
+                "./test/golden/gf_1_bit_full_adder.v",
+                "./test/revise/rf_1_bit_full_adder.v",
+                "./output/output_1_bit_full_adder.txt"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
