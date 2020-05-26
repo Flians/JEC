@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
         // cec cec_(argv[3]);
         // cec_.evaluate_from_PIs_to_POs(PIs);
         jec jec_(argv[3]);
+        jec_.reduce_repeat_nodes(layers);
         jec_.evaluate_from_PIs_to_POs(layers);
     }
     else

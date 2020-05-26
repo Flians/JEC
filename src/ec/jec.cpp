@@ -69,7 +69,8 @@ void jec::evaluate_from_PIs_to_POs(vector<vector<node *> *> *layers)
         cerr << "The vector layers is empty!" << endl;
         exit(-1);
     }
-    if (assign_PIs_value(layers, 0))
+    // layers[0][0] is clk
+    if (assign_PIs_value(layers, 1))
     {
         this->fout << "EQ" << endl;
     }
@@ -80,34 +81,62 @@ void jec::evaluate_from_POs_to_PIs(vector<node *> *POs)
 {
 }
 
+bool cmp(node *o1, node *o2)
+{
+    return o1->id < o2->id;
+}
+
 void jec::reduce_repeat_nodes(vector<vector<node *> *> *layers)
 {
+    int reduce = 0;
     for (int i = 0; i < layers->size() - 1; i++)
     {
-        for (auto item : (*layers->at(i)))
+        sort(layers->at(i)->begin(), layers->at(i)->end(), cmp);
+        for (auto &item : (*layers->at(i)))
         {
-            map<Gtype, vector<node *>> record;
-            for (int j = 0; j < item->outs->size(); j++)
+            if (item->outs && item->outs->size() > 0)
             {
-                if (record.count(item->outs->at(j)->cell))
+                sort(item->outs->begin(), item->outs->end(), cmp);
+                if (item->cell == IN && item->name.find("clk") != string::npos)
+                    continue;
+                map<Gtype, vector<node *>> record;
+                for (int j = 0; j < item->outs->size(); j++)
                 {
-                    record[item->outs->at(j)->cell].push_back(item->outs->at(j));
+                    if (record.count(item->outs->at(j)->cell))
+                    {
+                        record[item->outs->at(j)->cell].push_back(item->outs->at(j));
+                    }
+                    else
+                    {
+                        vector<node *> nodes;
+                        nodes.push_back(item->outs->at(j));
+                        record.insert(make_pair(item->outs->at(j)->cell, nodes));
+                    }
                 }
-                else
+                for (auto &it : record)
                 {
-                    vector<node *> nodes;
-                    nodes.push_back(item->outs->at(j));
-                    record.insert(make_pair(item->outs->at(j)->cell, nodes));
+                    if (it.second.size() > 1)
+                    {
+                        if (it.first == DFF || it.first == INV)
+                        {
+                            for (int d = 1; d < it.second.size(); ++d)
+                            {
+                                // grandson.ins.push(son)
+                                it.second.at(d)->outs->at(0)->ins->push_back(it.second.at(0));
+                                // son.outs.push(grandson)
+                                it.second.at(0)->outs->push_back(it.second.at(d)->outs->at(0));
+                                layers->at(i + 1)->erase(find(layers->at(i + 1)->begin(), layers->at(i + 1)->end(), it.second.at(d)));
+                                delete it.second.at(d);
+                                reduce++;
+                            }
+                        } else {
+                            
+                        }
+                    }
                 }
+                record.clear();
             }
-            for (auto &it : record)
-            {
-                if (it.second.size() > 1)
-                {
-                    
-                }
-            }
-            record.clear();
         }
     }
+    cout << "The number of DFF reduction is " << reduce << endl;
 }

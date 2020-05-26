@@ -97,7 +97,7 @@ void simplify::id_reassign(vector<node *> *PIs)
         cout << "PIs is empty in simplify.id_reassign" << endl;
         return;
     }
-    map<node*, bool> visit;
+    map<node *, bool> visit;
     queue<node *> bfs_record;
     int i = 0;
     for (auto pi : (*PIs))
@@ -138,17 +138,20 @@ vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
     layers->push_back(PIs);
     int i = 0;
     node *clk;
-    for (i = 0; i<PIs->size(); i++) {
-        if (PIs->at(i)->name.find("clk") != string::npos) {
+    for (i = 0; i < PIs->size(); i++)
+    {
+        if (PIs->at(i)->name.find("clk") != string::npos)
+        {
             clk = PIs->at(i);
             swap(PIs->at(0), PIs->at(i));
             break;
         }
     }
-    if (clk && !clk->outs) {
+    if (clk && !clk->outs)
+    {
         clk->outs = new vector<node *>(init_id);
     }
-    i=0;
+    i = 0;
     vector<int> visit(init_id, 0);
     vector<int> logic_depth(init_id, 0);
     // layer assignment, and calculate the logic depth of each node
@@ -182,10 +185,10 @@ vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
     {
         for (int j = 0; j < layers->at(i)->size(); j++)
         {
+            if (layers->at(i)->at(j)->cell == IN && layers->at(i)->at(j)->name.find("clk") != string::npos)
+                continue;
             if (layers->at(i)->at(j)->outs && layers->at(i)->at(j)->outs->size() > 0)
             {
-                if (layers->at(i)->at(j)->cell == IN && layers->at(i)->at(j)->name.find("clk") != string::npos)
-                    continue;
                 vector<int> child_DFF;
                 vector<int> add_DFF;
                 // find all children which are DFF, and find all children which do not meet the path balancing
@@ -211,6 +214,7 @@ vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
                     layers->at(i)->at(j)->outs->at(child_DFF[d])->outs->at(0)->ins->push_back(layers->at(i)->at(j)->outs->at(child_DFF[child_DFF.size() - 1]));
                     // son.outs.push(grandson)
                     layers->at(i)->at(j)->outs->at(child_DFF[child_DFF.size() - 1])->outs->push_back(layers->at(i)->at(j)->outs->at(child_DFF[d])->outs->at(0));
+                    layers->at(i+1)->erase(find(layers->at(i+1)->begin(), layers->at(i+1)->end(), layers->at(i)->at(j)->outs->at(child_DFF[d])));
                     delete layers->at(i)->at(j)->outs->at(child_DFF[d]);
                     child_DFF[child_DFF.size() - 1]--;
                     reduceDFF++;
@@ -241,9 +245,7 @@ vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
                         // father.outs.push(grandson)
                         father->outs->push_back(layers->at(i)->at(j)->outs->at(add_DFF[d]));
                         // grandson.ins.erase(grandpa)
-                        layers->at(i)->at(j)->outs->at(add_DFF[d])->ins->erase(find(
-                            layers->at(i)->at(j)->outs->at(add_DFF[d])->ins->begin(), layers->at(i)->at(j)->outs->at(add_DFF[d])->ins->end(), 
-                            layers->at(i)->at(j)));
+                        layers->at(i)->at(j)->outs->at(add_DFF[d])->ins->erase(find(layers->at(i)->at(j)->outs->at(add_DFF[d])->ins->begin(), layers->at(i)->at(j)->outs->at(add_DFF[d])->ins->end(), layers->at(i)->at(j)));
                         // grandpa.ins.erase(grandson)
                         layers->at(i)->at(j)->outs->erase(layers->at(i)->at(j)->outs->begin() + add_DFF[d]);
                     }
@@ -251,7 +253,7 @@ vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
                 vector<int>().swap(child_DFF);
                 vector<int>().swap(add_DFF);
             }
-            else if (!layers->at(i)->at(j)->ins || layers->at(i)->at(j)->ins->empty())
+            else if (!layers->at(i)->at(j)->ins || layers->at(i)->at(j)->ins->size() == 0)
             {
                 layers->at(i)->erase(layers->at(i)->begin() + j);
                 j--;
