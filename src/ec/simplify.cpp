@@ -46,7 +46,7 @@ void simplify::clean_wire_buf(vector<node *> *miter)
                 cerr << pi->name << " WIRE have none or more one inputs in simplify.clean_wire_buf!" << endl;
                 exit(-1);
             }
-            cout << pi->name << " " << Str_Value[pi->cell] << endl;
+            // cout << pi->name << " " << Str_Value[pi->cell] << endl;
             node *tin = pi->ins->at(0);
             vector<node *>::iterator it = pi->outs->begin();
             vector<node *>::iterator it_end = pi->outs->end();
@@ -97,12 +97,12 @@ void simplify::id_reassign(vector<node *> *PIs)
         cout << "PIs is empty in simplify.id_reassign" << endl;
         return;
     }
-    vector<bool> visit(init_id, 0);
+    map<node*, bool> visit;
     queue<node *> bfs_record;
     int i = 0;
     for (auto pi : (*PIs))
     {
-        visit[pi->id] = true;
+        visit[pi] = true;
         pi->id = i++;
         bfs_record.push(pi);
     }
@@ -113,9 +113,9 @@ void simplify::id_reassign(vector<node *> *PIs)
         {
             for (auto out : (*item->outs))
             {
-                if (!visit[out->id])
+                if (visit.count(out) == 0)
                 {
-                    visit[out->id] = true;
+                    visit[out] = true;
                     out->id = i++;
                     bfs_record.push(out);
                 }
@@ -124,7 +124,7 @@ void simplify::id_reassign(vector<node *> *PIs)
         bfs_record.pop();
     }
     init_id = i;
-    vector<bool>().swap(visit);
+    visit.clear();
 }
 
 vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
@@ -229,6 +229,7 @@ vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
                         father->ins->push_back(layers->at(i)->at(j));
                         layers->at(i)->at(j)->outs->push_back(father);
                         layers->at(i + 1)->push_back(father);
+                        clk->outs->push_back(father);
                     }
                     for (int d = add_DFF.size() - 1; d >= 0; d--)
                     {

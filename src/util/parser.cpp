@@ -293,7 +293,7 @@ void parser::parse_verilog(ifstream &in, vector<node *> *PIs, vector<node *> *PO
                             }
                             ++index_port;
                         }
-                        cout << item << endl;
+                        // cout << item << endl;
                     }
                     gates->push_back(g);
                     break;
@@ -440,7 +440,7 @@ void parser::parse_revised(ifstream &in, vector<node *> *PIs, vector<node *> *PO
                             }
                             ++index_port;
                         }
-                        cout << item << endl;
+                        // cout << item << endl;
                     }
                     gates->push_back(g);
                     break;

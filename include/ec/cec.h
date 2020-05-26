@@ -9,7 +9,7 @@ private:
     // assign values to the i-th element in the PIs
     bool assign_PIs_value(vector<node *> *PIs, int i);
     // Calculate all nodes according to PIs
-    bool evaluate(vector<node *> nodes);
+    bool evaluate(vector<node *> *nodes);
 
 public:
     cec();

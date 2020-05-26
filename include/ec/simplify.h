@@ -24,6 +24,7 @@ public:
     vector<vector<node *> *> *layer_assignment(vector<node *> *PIs);
 
     // delete DFFs, use layers to ensure the order of execution
+    vector<vector<node *> *> *layer_assignment_without_DFFs(vector<node *> *PIs);
 };
 
 #endif

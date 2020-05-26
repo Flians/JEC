@@ -1,6 +1,7 @@
-#include "include/util/parser.h"
-#include "include/ec/simplify.h"
 #include "include/ec/cec.h"
+#include "include/ec/jec.h"
+#include "include/ec/simplify.h"
+#include "include/util/parser.h"
 
 using namespace std;
 // cd build && cmake -G"Unix Makefiles && make" ../
@@ -32,7 +33,8 @@ int main(int argc, char *argv[])
             }
         }
         sim.id_reassign(PIs);
-        sim.layer_assignment(PIs);
+        vector<vector<node *> *> *layers = sim.layer_assignment(PIs);
+        sim.id_reassign(PIs);
         // PIs->insert(PIs->end(),verilog_parser.get_constants()->begin(),verilog_parser.get_constants()->end());
         /*
         cout << ">>> after: " << endl;
@@ -40,8 +42,11 @@ int main(int argc, char *argv[])
         */
 
         /* evaluate the graph */
-        cec cec_(argv[3]);
-        cec_.evaluate_from_PIs_to_POs(PIs);
+        // cec cec_(argv[3]);
+        // cec_.evaluate_from_PIs_to_POs(PIs);
+        jec jec_(argv[3]);
+        jec_.evaluate_from_PIs_to_POs(layers);
+
     }
     else
     {

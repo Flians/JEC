@@ -7,9 +7,10 @@ class ec
 {
 protected:
     ofstream fout;
+
 public:
     // Calculate all nodes according to PIs
-    virtual bool evaluate(vector<node *> nodes) = 0;
+    virtual bool evaluate(vector<node *> *nodes) = 0;
     void print_PIs_value(vector<node *> *PIs, ofstream &output);
 };
 
