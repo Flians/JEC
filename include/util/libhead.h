@@ -1,17 +1,17 @@
 #ifndef _LIBHEAD_H_
 #define _LIBHEAD_H_
 
-#include <iostream>
+#include <algorithm>
+#include <ctime>
 #include <fstream>
-#include <string>
-#include <vector>
+#include <iostream>
 #include <map>
+#include <queue>
+#include <regex>
 #include <set>
 #include <stack>
-#include <queue>
-#include <ctime>
-#include <regex>
-#include <algorithm>
+#include <string>
+#include <vector>
 
 #include "./libstring.h"
 
@@ -81,23 +81,25 @@ struct node
         // cout << "~delete node: " << this->name << endl;
         if (this->ins)
         {
-            for (auto in : (*this->ins))
+            for (auto &in : (*this->ins))
             {
                 vector<node *>::iterator temp = find(in->outs->begin(), in->outs->end(), this);
                 if (temp != in->outs->end())
                     in->outs->erase(temp);
             }
             vector<node *>().swap(*this->ins);
+            this->ins = nullptr;
         }
         if (this->outs)
         {
-            for (auto out : (*this->outs))
+            for (auto &out : (*this->outs))
             {
                 vector<node *>::iterator temp = find(out->ins->begin(), out->ins->end(), this);
                 if (temp != out->ins->end())
                     out->ins->erase(temp);
             }
             vector<node *>().swap(*this->outs);
+            this->outs = nullptr;
         }
     }
 
@@ -199,12 +201,15 @@ Value EXOR(const Value &, const Value &);
 
 Value calculate(node *g);
 
-template <typename T> vector<T> *unique_element_in_vector(vector<T> *v){
+template <typename T>
+vector<T> *unique_element_in_vector(vector<T> *v)
+{
     typename vector<T>::iterator vector_iterator;
-    sort(v->begin(),v->end());
-    vector_iterator = unique(v->begin(),v->end());
-    if(vector_iterator != v->end()){
-        v->erase(vector_iterator,v->end());
+    sort(v->begin(), v->end());
+    vector_iterator = unique(v->begin(), v->end());
+    if (vector_iterator != v->end())
+    {
+        v->erase(vector_iterator, v->end());
     }
     return v;
 }

@@ -11,12 +11,11 @@ private:
     // Calculate all nodes according to PIs
     bool evaluate(vector<node *> *nodes);
 
-    void reduce_repeat_nodes(vector<vector<node *> *> *layers);
-
 public:
     jec();
     jec(const string &path_output);
     virtual ~jec();
+    void reduce_repeat_nodes(vector<vector<node *> *> *layers);
     // evaluate from PIs to POs
     void evaluate_from_PIs_to_POs(vector<vector<node *> *> *layers);
     // evaluate from POs to PIs
