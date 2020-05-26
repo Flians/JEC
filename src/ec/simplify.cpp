@@ -145,6 +145,9 @@ vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
             break;
         }
     }
+    if (clk && !clk->outs) {
+        clk->outs = new vector<node *>(init_id);
+    }
     i=0;
     vector<int> visit(init_id, 0);
     vector<int> logic_depth(init_id, 0);

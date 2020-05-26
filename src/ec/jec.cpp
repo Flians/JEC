@@ -19,8 +19,9 @@ bool jec::assign_PIs_value(vector<vector<node *> *> *layers, int i)
 {
     if (i == layers->at(0)->size())
     {
-        bool res=true;
-        for (int level = 1; level < layers->size(); level++) {
+        bool res = true;
+        for (int level = 1; level < layers->size(); level++)
+        {
             res = evaluate(layers->at(level));
         }
         if (!res)
@@ -53,7 +54,8 @@ bool jec::assign_PIs_value(vector<vector<node *> *> *layers, int i)
 bool jec::evaluate(vector<node *> *nodes)
 {
     bool res = false;
-    for (auto node:(*nodes)) {
+    for (auto node : (*nodes))
+    {
         res |= calculate(node);
     }
     return true;
@@ -76,4 +78,36 @@ void jec::evaluate_from_PIs_to_POs(vector<vector<node *> *> *layers)
 // evaluate from POs to PIs
 void jec::evaluate_from_POs_to_PIs(vector<node *> *POs)
 {
+}
+
+void jec::reduce_repeat_nodes(vector<vector<node *> *> *layers)
+{
+    for (int i = 0; i < layers->size() - 1; i++)
+    {
+        for (auto item : (*layers->at(i)))
+        {
+            map<Gtype, vector<node *>> record;
+            for (int j = 0; j < item->outs->size(); j++)
+            {
+                if (record.count(item->outs->at(j)->cell))
+                {
+                    record[item->outs->at(j)->cell].push_back(item->outs->at(j));
+                }
+                else
+                {
+                    vector<node *> nodes;
+                    nodes.push_back(item->outs->at(j));
+                    record.insert(make_pair(item->outs->at(j)->cell, nodes));
+                }
+            }
+            for (auto &it : record)
+            {
+                if (it.second.size() > 1)
+                {
+                    
+                }
+            }
+            record.clear();
+        }
+    }
 }
