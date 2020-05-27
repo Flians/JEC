@@ -81,107 +81,92 @@ void jec::evaluate_from_POs_to_PIs(vector<node *> *POs)
 {
 }
 
-bool cmp(node *o1, node *o2)
+// evaluate from PIs to POs
+void jec::evaluate_opensmt(vector<vector<node *> *> *layers)
 {
-    return o1->id < o2->id;
-}
-
-void jec::sort_nodes(vector<vector<node *> *> *layers)
-{
-    for (int i = 0; i < layers->size() - 1; i++)
+    if (!layers || layers->size() == 0)
     {
-        sort(layers->at(i)->begin(), layers->at(i)->end(), cmp);
-        for (auto &item : (*layers->at(i)))
-        {
-            if (item->ins && item->ins->size() > 0)
-                sort(item->ins->begin(), item->ins->end(), cmp);
-            if (item->outs && item->outs->size() > 0)
-                sort(item->outs->begin(), item->outs->end(), cmp);
-        }
+        cerr << "The vector layers is empty!" << endl;
+        exit(-1);
     }
-}
 
-void jec::reduce_repeat_nodes(vector<vector<node *> *> *layers)
-{
-    int reduce = 0;
-    this->sort_nodes(layers);
-    for (int i = 0; i < layers->size() - 1; i++)
+    SMTConfig c;
+    UFTheory *uftheory = new UFTheory(c);
+    THandler *thandler = new THandler(*uftheory);
+    SimpSMTSolver *solver = new SimpSMTSolver(c, *thandler);
+    MainSolver *mainSolver = new MainSolver(*thandler, c, solver, "test solver");
+
+    Logic &logic = thandler->getLogic();
+
+    vector<PTRef> nodes;
+    for (int i = 0; i < init_id; i++)
     {
-        for (auto &item : (*layers->at(i)))
+        PTRef v = logic.mkBoolVar(to_string(i).c_str());
+        nodes.push_back(v);
+    }
+
+    // layers[0][0] is clk
+    for (int i = 1; i < layers->size(); i++)
+    {
+        vector<node *> *layer = layers->at(i);
+        for (int j = 0; j < layer->size(); j++)
         {
-            if (item->outs && item->outs->size() > 0)
+            vec<PTRef> inputs;
+            // ayer->at(j)->ins->at(0) is clk
+            for (int k = 1; k < layer->at(j)->ins->size(); k++)
             {
-                if (item->cell == IN && item->name.find("clk") != string::npos)
-                    continue;
-                map<Gtype, vector<node *>> record;
-                for (int j = 0; j < item->outs->size(); j++)
+                inputs.push(nodes[layer->at(j)->ins->at(k)->id]);
+            }
+            PTRef res;
+            switch (layer->at(j)->cell)
+            {
+            case AND:
+                res = logic.mkAnd(inputs);
+                break;
+            case OR:
+                res = logic.mkOr(inputs);
+                break;
+            case XOR:
+                res = logic.mkXor(inputs);
+                break;
+            case INV:
+                res = logic.mkNot(inputs);
+                break;
+            default:
+                if (inputs.size() == 0)
                 {
-                    if (record.count(item->outs->at(j)->cell))
-                    {
-                        record[item->outs->at(j)->cell].push_back(item->outs->at(j));
-                    }
-                    else
-                    {
-                        vector<node *> nodes;
-                        nodes.push_back(item->outs->at(j));
-                        record.insert(make_pair(item->outs->at(j)->cell, nodes));
-                    }
+                    cerr << "The inputs is empty! in jec.evaluate_opensmt!" << endl;
+                    exit(-1);
                 }
-                for (auto &it : record)
+                res = inputs[0];
+                break;
+            }
+            if (layer->at(j)->outs)
+            {
+                for (auto &out : (*layer->at(j)->outs))
                 {
-                    if (it.second.size() > 1)
-                    {
-                        if (it.first == DFF || it.first == INV)
-                        {
-                            for (int d = 1; d < it.second.size(); ++d)
-                            {
-                                // grandson.ins.push(son)
-                                it.second.at(d)->outs->at(0)->ins->push_back(it.second.at(0));
-                                // son.outs.push(grandson)
-                                it.second.at(0)->outs->push_back(it.second.at(d)->outs->at(0));
-                                layers->at(i + 1)->erase(find(layers->at(i + 1)->begin(), layers->at(i + 1)->end(), it.second.at(d)));
-                                delete it.second.at(d);
-                                reduce++;
-                            }
-                        }
-                        else
-                        {
-                            for (int si = 0; si < it.second.size(); si++)
-                            {
-                                for (int ri = si + 1; ri < it.second.size(); ri++)
-                                {
-                                    if (it.second.at(si)->ins->size() == it.second.at(ri)->ins->size())
-                                    {
-                                        bool flag = true;
-                                        for (int ii = 0; ii < it.second.at(si)->ins->size(); ii++)
-                                        {
-                                            if (it.second.at(si)->ins->at(ii)->id != it.second.at(ri)->ins->at(ii)->id)
-                                            {
-                                                flag = false;
-                                                break;
-                                            }
-                                        }
-                                        if (flag)
-                                        {
-                                            // grandson.ins.push(son)
-                                            it.second.at(ri)->outs->at(0)->ins->push_back(it.second.at(si));
-                                            // son.outs.push(grandson)
-                                            it.second.at(si)->outs->push_back(it.second.at(ri)->outs->at(0));
-                                            layers->at(i + 1)->erase(find(layers->at(i + 1)->begin(), layers->at(i + 1)->end(), it.second.at(ri)));
-                                            it.second.erase(it.second.begin() + ri);
-                                            delete it.second.at(ri--);
-                                            reduce++;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    it.second.clear();
+                    nodes[out->id] = res;
                 }
-                record.clear();
             }
         }
     }
-    cout << "The number of INV and DFF reduction is " << reduce << endl;
+
+    vec<PTRef> outputs;
+    for (auto &output : (*layers->back()))
+    {
+        outputs.push(nodes[output->id]);
+    }
+    PTRef result = logic.mkAnd(outputs);
+    mainSolver->push(result);
+    cout << "Running check!" << endl;
+    sstat r = mainSolver->check();
+
+    if (r == s_True)
+        this->fout << "EQ" << endl;
+    else if (r == s_False)
+        this->fout << "NEQ" << endl;
+    else if (r == s_Undef)
+        this->fout << "unknown" << endl;
+    else
+        this->fout << "error" << endl;
 }

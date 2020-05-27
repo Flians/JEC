@@ -12,6 +12,7 @@
 #include <stack>
 #include <string>
 #include <vector>
+#include <opensmt/opensmt2.h>
 
 #include "./libstring.h"
 

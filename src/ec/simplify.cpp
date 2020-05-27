@@ -103,7 +103,15 @@ void simplify::id_reassign(vector<node *> *PIs)
     for (auto pi : (*PIs))
     {
         visit[pi] = true;
-        pi->id = i++;
+        if (pi->name.find("clk") != string::npos && !bfs_record.empty())
+        {
+            pi->id = 0;
+            bfs_record.front()->id = i++;
+        }
+        else
+        {
+            pi->id = i++;
+        }
         bfs_record.push(pi);
     }
     while (!bfs_record.empty())
@@ -127,8 +135,27 @@ void simplify::id_reassign(vector<node *> *PIs)
     visit.clear();
 }
 
+void simplify::deduplicate(int i, node *keep, node *dupl, vector<vector<node *> *> *layers)
+{
+    if (!dupl->outs)
+    {
+        cerr << "The inputs is empty! in jec.deduplicate!" << endl;
+        exit(-1);
+    }
+    for (auto &out : (*dupl->outs))
+    {
+        // grandson.ins.push(son)
+        out->ins->push_back(keep);
+        // son.outs.push(grandson)
+        keep->outs->push_back(out);
+    }
+    layers->at(i + 1)->erase(find(layers->at(i + 1)->begin(), layers->at(i + 1)->end(), dupl));
+    delete dupl;
+}
+
 vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
 {
+    this->id_reassign(PIs);
     vector<vector<node *> *> *layers = new vector<vector<node *> *>;
     if (PIs->empty())
     {
@@ -190,13 +217,13 @@ vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
             if (layers->at(i)->at(j)->outs && layers->at(i)->at(j)->outs->size() > 0)
             {
                 vector<int> child_DFF;
-                vector<int> add_DFF;
+                vector<node *> add_DFF;
                 // find all children which are DFF, and find all children which do not meet the path balancing
                 for (int k = 0; k < layers->at(i)->at(j)->outs->size(); k++)
                 {
                     if (logic_depth[layers->at(i)->at(j)->outs->at(k)->id] > i + 1)
                     {
-                        add_DFF.push_back(k);
+                        add_DFF.push_back(layers->at(i)->at(j)->outs->at(k));
                     }
                     else if (logic_depth[layers->at(i)->at(j)->outs->at(k)->id] < i + 1)
                     {
@@ -210,12 +237,7 @@ vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
                 }
                 for (int d = child_DFF.size() - 2; d >= 0; d--)
                 {
-                    // grandson.ins.push(son)
-                    layers->at(i)->at(j)->outs->at(child_DFF[d])->outs->at(0)->ins->push_back(layers->at(i)->at(j)->outs->at(child_DFF[child_DFF.size() - 1]));
-                    // son.outs.push(grandson)
-                    layers->at(i)->at(j)->outs->at(child_DFF[child_DFF.size() - 1])->outs->push_back(layers->at(i)->at(j)->outs->at(child_DFF[d])->outs->at(0));
-                    layers->at(i+1)->erase(find(layers->at(i+1)->begin(), layers->at(i+1)->end(), layers->at(i)->at(j)->outs->at(child_DFF[d])));
-                    delete layers->at(i)->at(j)->outs->at(child_DFF[d]);
+                    this->deduplicate(i, layers->at(i)->at(j)->outs->at(child_DFF[child_DFF.size() - 1]), layers->at(i)->at(j)->outs->at(child_DFF[d]), layers);
                     child_DFF[child_DFF.size() - 1]--;
                     reduceDFF++;
                 }
@@ -241,17 +263,17 @@ vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
                     for (int d = add_DFF.size() - 1; d >= 0; d--)
                     {
                         // grandson.ins.push(father)
-                        layers->at(i)->at(j)->outs->at(add_DFF[d])->ins->push_back(father);
+                        add_DFF[d]->ins->push_back(father);
                         // father.outs.push(grandson)
-                        father->outs->push_back(layers->at(i)->at(j)->outs->at(add_DFF[d]));
+                        father->outs->push_back(add_DFF[d]);
                         // grandson.ins.erase(grandpa)
-                        layers->at(i)->at(j)->outs->at(add_DFF[d])->ins->erase(find(layers->at(i)->at(j)->outs->at(add_DFF[d])->ins->begin(), layers->at(i)->at(j)->outs->at(add_DFF[d])->ins->end(), layers->at(i)->at(j)));
+                        add_DFF[d]->ins->erase(find(add_DFF[d]->ins->begin(), add_DFF[d]->ins->end(), layers->at(i)->at(j)));
                         // grandpa.ins.erase(grandson)
-                        layers->at(i)->at(j)->outs->erase(layers->at(i)->at(j)->outs->begin() + add_DFF[d]);
+                        layers->at(i)->at(j)->outs->erase(find(layers->at(i)->at(j)->outs->begin(), layers->at(i)->at(j)->outs->end(), add_DFF[d]));
                     }
                 }
                 vector<int>().swap(child_DFF);
-                vector<int>().swap(add_DFF);
+                vector<node *>().swap(add_DFF);
             }
             else if (!layers->at(i)->at(j)->ins || layers->at(i)->at(j)->ins->size() == 0)
             {
@@ -262,4 +284,105 @@ vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
     }
     cout << "The number of DFF reduction is " << reduceDFF << endl;
     return layers;
+}
+
+bool simplify::cmp(node *o1, node *o2)
+{
+    return o1->id < o2->id;
+}
+
+void simplify::sort_nodes(vector<vector<node *> *> *layers)
+{
+    for (int i = 0; i < layers->size() - 1; i++)
+    {
+        sort(layers->at(i)->begin(), layers->at(i)->end(), cmp);
+        for (auto &item : (*layers->at(i)))
+        {
+            if (item->ins && item->ins->size() > 0)
+                sort(item->ins->begin(), item->ins->end(), cmp);
+            if (item->outs && item->outs->size() > 0)
+                sort(item->outs->begin(), item->outs->end(), cmp);
+        }
+    }
+}
+
+void simplify::reduce_repeat_nodes(vector<vector<node *> *> *layers)
+{
+    if (!layers || layers->size() == 0)
+    {
+        cerr << "The layers is empty in simplify.reduce_repeat_nodes!" << endl;
+        exit(-1);
+    }
+    int reduce = 0;
+    this->id_reassign(layers->at(0));
+    this->sort_nodes(layers);
+    for (int i = 0; i < layers->size() - 2; i++)
+    {
+        for (auto &item : (*layers->at(i)))
+        {
+            if (item->outs && item->outs->size() > 0)
+            {
+                if (item->cell == IN && item->name.find("clk") != string::npos)
+                    continue;
+                map<Gtype, vector<node *>> record;
+                for (int j = 0; j < item->outs->size(); j++)
+                {
+                    if (record.count(item->outs->at(j)->cell))
+                    {
+                        record[item->outs->at(j)->cell].push_back(item->outs->at(j));
+                    }
+                    else
+                    {
+                        vector<node *> nodes;
+                        nodes.push_back(item->outs->at(j));
+                        record.insert(make_pair(item->outs->at(j)->cell, nodes));
+                    }
+                }
+                for (auto &it : record)
+                {
+                    if (it.second.size() > 1)
+                    {
+                        if (it.first == DFF || it.first == INV)
+                        {
+                            for (int d = 1; d < it.second.size(); ++d)
+                            {
+                                this->deduplicate(i, it.second.at(0), it.second.at(d), layers);
+                                reduce++;
+                            }
+                        }
+                        else
+                        {
+                            for (int si = 0; si < it.second.size(); si++)
+                            {
+                                for (int ri = si + 1; ri < it.second.size(); ri++)
+                                {
+                                    if (it.second.at(si)->ins->size() == it.second.at(ri)->ins->size())
+                                    {
+                                        bool flag = true;
+                                        for (int ii = 0; ii < it.second.at(si)->ins->size(); ii++)
+                                        {
+                                            if (it.second.at(si)->ins->at(ii)->id != it.second.at(ri)->ins->at(ii)->id)
+                                            {
+                                                flag = false;
+                                                break;
+                                            }
+                                        }
+                                        if (flag)
+                                        {
+                                            this->deduplicate(i, it.second.at(si), it.second.at(ri), layers);
+                                            it.second.erase(it.second.begin() + ri);
+                                            reduce++;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    it.second.clear();
+                }
+                record.clear();
+            }
+        }
+    }
+    cout << "The number of INV and DFF reduction is " << reduce << endl;
 }
