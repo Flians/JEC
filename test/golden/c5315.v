@@ -1,4 +1,4 @@
-// Benchmark "c5315" written by ABC on Sun May 24 21:28:21 2020
+// Benchmark "c5315" written by ABC on Wed May 27 22:05:51 2020
 
 module c5315 ( 
     G1, G4, G11, G14, G17, G20, G23, G24, G25, G26, G27, G31, G34, G37,

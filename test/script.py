@@ -38,8 +38,8 @@ def upCell(root):
             os.remove(OldName)
             os.rename(NewName, OldName)
 
-#rename('./revise', 'rf_')
-rename('./golden', 'gf_')
-#createBW('original', '../revise', 'resyn2')
+rename('./revise', 'rf_')
+#rename('./golden', 'gf_')
+#createBW('original', '../golden', 'dc2')
 #upCell('original')
 
