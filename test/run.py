@@ -10,7 +10,7 @@ def benchmarks(exePath, root='./', output='../output/'):
         os.mkdir(os.path.join(root, 'log'))
     for i, file in enumerate(files):
         names = file.split('.')
-        if file.endswith('.bench'):
+        if file.endswith('.bench') and names[0]!='c17':
             with open(os.path.join(root, 'log/'+names[0]+'.txt'), 'w', encoding='utf8') as log:
                 cmd = [exePath, os.path.join(golden, 'gf_'+names[0]+'.v'), os.path.join(revise, 'rf_'+names[0]+'.v'), os.path.join(output, 'output_' + names[0] + '.txt')]
                 p = subprocess.Popen(cmd, shell=False, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

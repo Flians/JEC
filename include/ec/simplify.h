@@ -20,11 +20,19 @@ public:
     // reassign id of each node
     void id_reassign(vector<node *> *PIs);
 
+    // delete duplicate node
+    void deduplicate(int i, node *keep, node *dupl, vector<vector<node *> *> *layers);
+
     // layer assigment according to the logic depth, and achieve path balancing
     vector<vector<node *> *> *layer_assignment(vector<node *> *PIs);
 
     // delete DFFs, use layers to ensure the order of execution
     vector<vector<node *> *> *layer_assignment_without_DFFs(vector<node *> *PIs);
+
+    static bool cmp(node *o1, node *o2);
+    void sort_nodes(vector<vector<node *> *> *layers);
+    // reduce the number of INV, DFF and others
+    void reduce_repeat_nodes(vector<vector<node *> *> *layers);
 };
 
 #endif

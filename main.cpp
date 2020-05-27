@@ -32,9 +32,10 @@ int main(int argc, char *argv[])
                 PIs->insert(PIs->end(), con);
             }
         }
-        sim.id_reassign(PIs);
         vector<vector<node *> *> *layers = sim.layer_assignment(PIs);
+        sim.reduce_repeat_nodes(layers);
         sim.id_reassign(PIs);
+        sim.sort_nodes(layers);
         // PIs->insert(PIs->end(),verilog_parser.get_constants()->begin(),verilog_parser.get_constants()->end());
         /*
         cout << ">>> after: " << endl;
@@ -45,8 +46,7 @@ int main(int argc, char *argv[])
         // cec cec_(argv[3]);
         // cec_.evaluate_from_PIs_to_POs(PIs);
         jec jec_(argv[3]);
-        jec_.reduce_repeat_nodes(layers);
-        jec_.evaluate_from_PIs_to_POs(layers);
+        jec_.evaluate_opensmt(layers);
     }
     else
     {

@@ -11,6 +11,20 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+#find OpenSMT library
+get_filename_component(CMAKE_MODULE_PATH
+    "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
+
+find_package(opensmt REQUIRED)
+
+#find GMP
+get_filename_component(CMAKE_MODULE_PATH
+    "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
+
+find_package(GMP REQUIRED)
+
+option(PRODUCE_PROOF "Produce proof" OFF)
+
 # the function is used to add all header files
 function(include_sub_directories_recursively root_dir)
     if (IS_DIRECTORY ${root_dir})
@@ -34,10 +48,18 @@ message("Source file: " ${SOURCE_FILES})
 
 set(JEC_ALL_SRCS main.cpp ${SOURCE_FILES})
 
+add_executable(${PROJECT_NAME} ${JEC_ALL_SRCS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSMT_INCLUDE_DIR} ${GMP_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${OPENSMT_LIBRARY} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES})
+if(PRODUCE_PROOF)
+    message("Compiling with PRODUCE_PROOF")
+    target_compile_definitions(${filename} PUBLIC -DPRODUCE_PROOF)
+endif(PRODUCE_PROOF)
+
+add_subdirectory(examples)
+
 include(CTest)
 enable_testing()
-
-add_executable(JEC ${JEC_ALL_SRCS})
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
