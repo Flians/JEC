@@ -8,14 +8,16 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     clock_t startTime, endTime;
-    startTime = clock();
     if (argc >= 4)
     {
         /* parse Verilog files */
         parser verilog_parser;
         vector<node *> *PIs = nullptr;
         vector<node *> *POs = nullptr;
+        startTime = clock();
         verilog_parser.parse(argv[1], argv[2], PIs, POs);
+        endTime = clock();
+        cout << "The parsing time is: " << (double)(endTime - startTime) / CLOCKS_PER_SEC << " S" << endl;
         /*
         cout << ">>> before: " << endl;
         verilog_parser.printG(miter);
@@ -23,6 +25,7 @@ int main(int argc, char *argv[])
 
         /* simplify the graph */
         simplify sim;
+        startTime = clock();
         sim.clean_wire_buf(PIs);
         // merge PIs and constants
         for (auto &con : *verilog_parser.get_constants())
@@ -36,6 +39,8 @@ int main(int argc, char *argv[])
         sim.reduce_repeat_nodes(layers);
         sim.id_reassign(PIs);
         sim.sort_nodes(layers);
+        endTime = clock();
+        cout << "The simplify time is: " << (double)(endTime - startTime) / CLOCKS_PER_SEC << " S" << endl;
         // PIs->insert(PIs->end(),verilog_parser.get_constants()->begin(),verilog_parser.get_constants()->end());
         /*
         cout << ">>> after: " << endl;
@@ -46,13 +51,14 @@ int main(int argc, char *argv[])
         // cec cec_(argv[3]);
         // cec_.evaluate_from_PIs_to_POs(PIs);
         jec jec_(argv[3]);
+        startTime = clock();
         jec_.evaluate_opensmt(layers);
+        endTime = clock();
+        cout << "The simulating time is: " << (double)(endTime - startTime) / CLOCKS_PER_SEC << " S" << endl;
     }
     else
     {
         printf("Please input three parameters, like \"./xec <golden.v> <revised.v> <output>\".");
     }
-    endTime = clock();
-    cout << "The run time is: " << (double)(endTime - startTime) / CLOCKS_PER_SEC << " S" << endl;
     return 0;
 }
