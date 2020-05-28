@@ -5,10 +5,9 @@ parser::parser(/* args */)
     this->constants = new vector<node *>[3];
     for (Value val = L; val <= X; val = (Value)(val + 1))
     {
-        node *cont = new node("1'b" + L, _CONSTANT, val);
+        node *cont = new node(Const_Str[val], _CONSTANT, val);
         this->constants->push_back(cont);
     }
-    this->constants->at(2)->name = "1'bx";
 }
 
 parser::~parser()

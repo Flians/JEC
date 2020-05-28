@@ -105,6 +105,12 @@ void jec::evaluate_opensmt(vector<vector<node *> *> *layers)
         nodes.push_back(v);
     }
 
+    for (auto &node: (*layers->at(0))) {
+        if (node->cell==_CONSTANT) {
+            nodes[node->id] = node->val==L?logic.getTerm_false():logic.getTerm_true();
+        }
+    }
+
     // layers[0][0] is clk
     for (int i = 1; i < layers->size(); i++)
     {

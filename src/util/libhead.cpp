@@ -58,6 +58,12 @@ map<Gtype, string> Str_Value = {
     {_EXOR, "_EXOR"}
 };
 
+map<Value, string> Const_Str = {
+    {L, "1'b0"},
+    {H, "1'b1"},
+    {X, "1'bx"}
+};
+
 /* Global operator overload */
 Value operator&(const Value &A, const Value &B)
 {

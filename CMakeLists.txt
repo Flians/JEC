@@ -56,8 +56,6 @@ if(PRODUCE_PROOF)
     target_compile_definitions(${filename} PUBLIC -DPRODUCE_PROOF)
 endif(PRODUCE_PROOF)
 
-add_subdirectory(examples)
-
 include(CTest)
 enable_testing()
 

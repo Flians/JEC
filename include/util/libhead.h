@@ -47,16 +47,18 @@ enum Gtype
     _EXOR,
 };
 
-extern map<string, Gtype> Value_Str;
-
-extern map<Gtype, string> Str_Value;
-
 enum Value
 {
     L,
     H,
     X
 };
+
+extern map<string, Gtype> Value_Str;
+
+extern map<Gtype, string> Str_Value;
+
+extern map<Value, string> Const_Str;
 
 struct node
 {

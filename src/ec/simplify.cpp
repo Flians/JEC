@@ -392,5 +392,5 @@ void simplify::reduce_repeat_nodes(vector<vector<node *> *> *layers)
             i--;
         }
     }
-    cout << "The number of INV and DFF reduction is " << reduce << endl;
+    cout << "The number of INV, DFF, and others reduction is " << reduce << endl;
 }
