@@ -22,5 +22,5 @@ make
 ## run
 
 ``` shell
-./JEC ../test/golden/gf_1_bit_full_adder.v ../test/revise/rf_1_bit_full_adder.v ../output/output_1_bit_full_adder.txt
+./JEC ../test/golden/gf_1_bit_full_adder.v ../test/revise/rf_1_bit_full_adder.v ../test/output/output_1_bit_full_adder.txt
 ```
