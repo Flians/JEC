@@ -14,8 +14,8 @@ def createBW(root, output, scom):
     files = os.listdir(root)
     for i, file in enumerate(files):
         names = file.split('.')
-        if file.endswith('.bench'):
-            print('read_bench ' + file + '\nstrash\n' + scom +
+        if file.endswith('.bench') or file.endswith('.blif'):
+            print('read_' + names[1] + ' ' + file + '\nstrash\n' + scom +
                   '\nread_library rsfq.genlib\nmap\nwrite_verilog ' + output + '/' + names[0] + '.v\nquit\n')
 
 
@@ -39,7 +39,8 @@ def upCell(root):
             os.rename(NewName, OldName)
 
 rename('./revise', 'rf_')
-#rename('./golden', 'gf_')
+rename('./golden', 'gf_')
 #createBW('original', '../golden', 'dc2')
+#createBW('original', '../revise', 'resyn2')
 #upCell('original')
 

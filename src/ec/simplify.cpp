@@ -281,6 +281,10 @@ vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
                 j--;
             }
         }
+        if (layers->at(i)->empty()) {
+            layers->erase(layers->begin()+i);
+            i--;
+        }
     }
     cout << "The number of DFF reduction is " << reduceDFF << endl;
     return layers;
@@ -382,6 +386,10 @@ void simplify::reduce_repeat_nodes(vector<vector<node *> *> *layers)
                 }
                 record.clear();
             }
+        }
+        if (layers->at(i)->empty()) {
+            layers->erase(layers->begin()+i);
+            i--;
         }
     }
     cout << "The number of INV and DFF reduction is " << reduce << endl;
