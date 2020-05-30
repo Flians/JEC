@@ -107,6 +107,7 @@ void simplify::id_reassign(vector<node *> *PIs)
         {
             pi->id = 0;
             bfs_record.front()->id = i++;
+            swap(PIs->at(0), pi);
         }
         else
         {
@@ -155,30 +156,21 @@ void simplify::deduplicate(int i, node *keep, node *dupl, vector<vector<node *> 
 
 vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
 {
-    this->id_reassign(PIs);
     vector<vector<node *> *> *layers = new vector<vector<node *> *>;
     if (PIs->empty())
     {
         cout << "PIs is empty in simplify.layer_assignment" << endl;
         return layers;
     }
+    this->id_reassign(PIs);
+    node *clk = PIs->at(0);
     layers->push_back(PIs);
-    int i = 0;
-    node *clk;
-    for (i = 0; i < PIs->size(); i++)
-    {
-        if (PIs->at(i)->name.find("clk") != string::npos)
-        {
-            clk = PIs->at(i);
-            swap(PIs->at(0), PIs->at(i));
-            break;
-        }
-    }
     if (clk && !clk->outs)
     {
-        clk->outs = new vector<node *>(init_id);
+        clk->outs = new vector<node *>(init_id - PIs->size());
     }
-    i = 0;
+
+    int i = 0;
     vector<int> visit(init_id, 0);
     vector<int> logic_depth(init_id, 0);
     // layer assignment, and calculate the logic depth of each node
@@ -189,12 +181,11 @@ vector<vector<node *> *> *simplify::layer_assignment(vector<node *> *PIs)
         {
             if (layers->at(i)->at(j)->outs)
             {
-                for (int k = 0; k < layers->at(i)->at(j)->outs->size(); k++)
-                {
-                    visit[layers->at(i)->at(j)->outs->at(k)->id]++;
-                    logic_depth[layers->at(i)->at(j)->outs->at(k)->id] = max(logic_depth[layers->at(i)->at(j)->id] + 1, logic_depth[layers->at(i)->at(j)->outs->at(k)->id]);
-                    if (layers->at(i)->at(j)->outs->at(k)->ins->size() == visit[layers->at(i)->at(j)->outs->at(k)->id])
-                        layer->push_back(layers->at(i)->at(j)->outs->at(k));
+                for (auto &out:(*layers->at(i)->at(j)->outs)) {
+                    visit[out->id]++;
+                    logic_depth[out->id] = max(logic_depth[layers->at(i)->at(j)->id] + 1, logic_depth[out->id]);
+                    if (out->ins->size() == visit[out->id])
+                        layer->push_back(out);
                 }
             }
         }
