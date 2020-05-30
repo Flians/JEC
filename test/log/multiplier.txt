@@ -1,1 +1,7 @@
-There are some troubles in parser.cpp for input port: jor g07873(.dina(w_n8128_30[1]),.dinb(w_n279_9[1]),.dout(n8129),.clk(gclk));
+The parsing time is: 11448.6 S
+The number of DFF reduction is 53036
+The number of INV, DFF, and others reduction is 20070
+The simplify time is: 174.126 S
+Running check!
+The simulating time is: 0.891109 S
+The parser is destroyed!
