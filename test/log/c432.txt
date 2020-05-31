@@ -1,7 +1,7 @@
-The parsing time is: 1.15495 S
+The parsing time is: 1.16045 S
 The number of DFF reduction is 630
 The number of INV, DFF, and others reduction is 366
-The simplify time is: 0.045753 S
+The simplify time is: 0.043358 S
 Running check!
-The simulating time is: 0.004145 S
+The simulating time is: 0.00407 S
 The parser is destroyed!
