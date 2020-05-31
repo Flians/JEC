@@ -9,11 +9,11 @@ if (OPENSMT_INCLUDE_DIR AND OPENSMT_LIBRARY)
 endif (OPENSMT_INCLUDE_DIR AND OPENSMT_LIBRARY)
 
 find_path(OPENSMT_INCLUDE_DIR NAMES "opensmt/opensmt2.h"
-        PATHS "/usr/local"
+        PATHS ${CMAKE_SOURCE_DIR}
         PATH_SUFFIXES "" "include" NO_DEFAULT_PATH
         )
 find_library(OPENSMT_LIBRARY NAMES opensmt2
-        PATHS "/usr/local"
+        PATHS ${CMAKE_SOURCE_DIR}
         PATH_SUFFIXES "" "lib" "lib64" NO_DEFAULT_PATH
         )
 MESSAGE(STATUS "opensmt libs: " ${OPENSMT_LIBRARY} )
