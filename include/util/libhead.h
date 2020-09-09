@@ -2,28 +2,31 @@
 #define _LIBHEAD_H_
 
 #include <algorithm>
+#include <cmath>
 #include <ctime>
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <queue>
 #include <regex>
 #include <set>
-#include <stack>
-#include <string>
-#include <vector>
+#include <sstream>
+#include <unordered_map>
 
-#if __linux__ || __unix__
-#include <opensmt/opensmt2.h>
-#endif
-
-#include "./libstring.h"
+#include "libstring.h"
 
 #define enumtoCharArr(val) #val
 
 using namespace std;
 
-extern unsigned int init_id;
+// resolve the error: 'implicit instantiation of undefined template 'std::__1::hash<Gtype>'
+struct EnumClassHash
+{
+    template <typename T>
+    std::size_t operator()(T t) const
+    {
+        return static_cast<std::size_t>(t);
+    }
+};
 
 // all cell types
 enum Gtype
@@ -48,6 +51,7 @@ enum Gtype
     _HMUX, // _HMUX \U$1 ( .O(\282 ), .I0(1'b1), .I1(\277 ), .S(\281 ));
     _DC,   // _DC \n6_5[9] ( .O(\108 ), .C(\96 ), .D(\107 ));
     _EXOR,
+    _MODULE
 };
 
 enum Value
@@ -57,63 +61,74 @@ enum Value
     X
 };
 
-extern map<string, Gtype> Value_Str;
+extern size_t init_id;
+extern std::unordered_map<string, Gtype> Value_Str;
+extern std::unordered_map<Gtype, string, EnumClassHash> Str_Value;
+extern std::unordered_map<Value, string, EnumClassHash> Const_Str;
 
-extern map<Gtype, string> Str_Value;
-
-extern map<Value, string> Const_Str;
-
-struct node
+struct Node
 {
     // the name of the gate
     string name;
     // the type of the gate
     Gtype cell;
     Value val;
-    int id;
+    size_t id;
     // record the number of times the node is visited
-    int vis;
-    vector<node *> *ins;
-    vector<node *> *outs;
+    size_t vis;
+    vector<Node *> *ins;
+    vector<Node *> *outs;
 
     // constructor
-    node() : val(X), id(init_id++), vis(0), ins(nullptr), outs(nullptr) {}
-    node(string _name, Gtype _cell = WIRE, Value _val = L, int _id = (init_id++)) : name(_name), cell(_cell), val(_val), id(_id), vis(0), ins(nullptr), outs(nullptr) {}
+    Node() : val(X), id(init_id++), vis(0), ins(nullptr), outs(nullptr) {}
+    Node(string _name, Gtype _cell = WIRE, Value _val = L, int _id = (init_id++)) : name(_name), cell(_cell), val(_val), id(_id), vis(0), ins(nullptr), outs(nullptr) {}
 
     // destructor
     // delete this node and all edges connected to this node.
-    ~node()
+    ~Node()
     {
-        // cout << "~delete node: " << this->name << endl;
+        cout << "~delete node: " << this->name << endl;
         if (this->ins)
         {
             for (auto &in : (*this->ins))
             {
-                vector<node *>::iterator temp = find(in->outs->begin(), in->outs->end(), this);
-                if (temp != in->outs->end())
-                    in->outs->erase(temp);
+                if (in && in->outs)
+                {
+                    vector<Node *>::iterator temp = find(in->outs->begin(), in->outs->end(), this);
+                    if (temp != in->outs->end())
+                    {
+                        // in->outs->erase(temp);
+                        *temp = *(in->outs->end() - 1);
+                        *(in->outs->end() - 1) = nullptr;
+                        in->outs->resize(in->outs->size() - 1);
+                    }
+                }
             }
-            vector<node *>().swap(*this->ins);
+            vector<Node *>().swap(*this->ins);
             this->ins = nullptr;
         }
         if (this->outs)
         {
             for (auto &out : (*this->outs))
             {
-                vector<node *>::iterator temp = find(out->ins->begin(), out->ins->end(), this);
-                if (temp != out->ins->end())
-                    out->ins->erase(temp);
+                if (out && out->ins)
+                {
+                    vector<Node *>::iterator temp = find(out->ins->begin(), out->ins->end(), this);
+                    if (temp != out->ins->end()) {
+                        out->ins->erase(temp);
+                    }
+                }
             }
-            vector<node *>().swap(*this->outs);
+            vector<Node *>().swap(*this->outs);
             this->outs = nullptr;
         }
     }
 
     /* operator overload */
     // AND
-    node operator&(const node &B)
+    Node operator&(const Node &B)
     {
-        node re;
+        Node re;
         if (this->val == L || B.val == L)
         {
             re.val = L;
@@ -127,9 +142,9 @@ struct node
     }
 
     // OR
-    node operator|(const node &B)
+    Node operator|(const Node &B)
     {
-        node re;
+        Node re;
         if (this->val == H || B.val == H)
         {
             re.val = H;
@@ -143,9 +158,9 @@ struct node
     }
 
     // XOR
-    node operator^(const node &B)
+    Node operator^(const Node &B)
     {
-        node re;
+        Node re;
         if (this->val == H && B.val == H)
         {
             re.val = L;
@@ -159,9 +174,9 @@ struct node
     }
 
     // not
-    node operator~()
+    Node operator~()
     {
-        node re;
+        Node re;
         switch (this->val)
         {
         case L:
@@ -177,47 +192,68 @@ struct node
         return re;
     }
 
-    bool operator==(const node &B)
+    // for find
+    bool operator==(const Node &B)
     {
         return this->id == B.id;
+    }
+
+    // for find
+    bool operator==(const Node *B)
+    {
+        return this->id == B->id;
+    }
+
+    // for sort
+    bool operator<(const Node &B)
+    {
+        if (this->outs)
+        {
+            if (B.outs)
+            {
+                return this->outs->size() > B.outs->size();
+            }
+            return true;
+        }
+        else
+        {
+            if (B.outs)
+            {
+                return false;
+            }
+            return this->id < B.id;
+        }
     }
 };
 
 /* Global operator overload */
 // and
-Value operator&(const Value &, const Value &);
+extern Value operator&(const Value &, const Value &);
 
 // or
-Value operator|(const Value &, const Value &);
+extern Value operator|(const Value &, const Value &);
 
 // xor
-Value operator^(const Value &, const Value &);
+extern Value operator^(const Value &, const Value &);
 
 // not
-Value operator~(const Value &);
+extern Value operator~(const Value &);
 
 /* O=D?1'bx:C */
-Value DC(const Value &C, const Value &D);
+extern Value DC(const Value &C, const Value &D);
 
 /* O=S?I1:I0 */
-Value HMUX(const Value &S, const Value &I0, const Value &I1);
+extern Value HMUX(const Value &S, const Value &I0, const Value &I1);
 
 // exor
-Value EXOR(const Value &, const Value &);
+extern Value EXOR(const Value &, const Value &);
 
-Value calculate(node *g);
+extern Value calculate(Node *g);
 
-template <typename T>
-vector<T> *unique_element_in_vector(vector<T> *v)
-{
-    typename vector<T>::iterator vector_iterator;
-    sort(v->begin(), v->end());
-    vector_iterator = unique(v->begin(), v->end());
-    if (vector_iterator != v->end())
-    {
-        v->erase(vector_iterator, v->end());
-    }
-    return v;
-}
+extern void unique_element_in_vector(vector<Node *> &v);
+
+extern void cleanVP(vector<Node *> vp);
+
+extern void error_fout(const string &message);
 
 #endif

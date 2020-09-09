@@ -1,23 +1,16 @@
 #include "cec.h"
 
-cec::cec(/* args */)
+cec::cec(const string &path_output) : ec(path_output)
 {
-}
-
-cec::cec(const string &path_output)
-{
-    this->fout.open(path_output, ios::out);
 }
 
 cec::~cec()
 {
-    this->fout.flush();
-    this->fout.close();
 }
 
-bool cec::assign_PIs_value(vector<node *> *PIs, int i)
+bool cec::assign_PIs_value(vector<Node *> &PIs, int i)
 {
-    if (i == PIs->size())
+    if (i == (int)PIs.size())
     {
         if (!evaluate(PIs))
         {
@@ -28,7 +21,7 @@ bool cec::assign_PIs_value(vector<node *> *PIs, int i)
     }
     else
     {
-        if (PIs->at(i)->cell == _CONSTANT)
+        if (PIs.at(i)->cell == _CONSTANT)
         {
             if (!assign_PIs_value(PIs, i + 1))
                 return false;
@@ -37,7 +30,7 @@ bool cec::assign_PIs_value(vector<node *> *PIs, int i)
         {
             for (Value val = L; val < X; val = (Value)(val + 1))
             {
-                PIs->at(i)->val = val;
+                PIs.at(i)->val = val;
                 if (!assign_PIs_value(PIs, i + 1))
                     return false;
             }
@@ -46,9 +39,9 @@ bool cec::assign_PIs_value(vector<node *> *PIs, int i)
     return true;
 }
 
-void cec::evaluate_from_PIs_to_POs(vector<node *> *PIs)
+void cec::evaluate_from_PIs_to_POs(vector<Node *> &PIs)
 {
-    if (!PIs || PIs->size() == 0)
+    if (PIs.empty())
     {
         cerr << "The vector PIs is empty!" << endl;
         exit(-1);
@@ -59,12 +52,12 @@ void cec::evaluate_from_PIs_to_POs(vector<node *> *PIs)
     }
 }
 
-bool cec::evaluate(vector<node *> *nodes)
+bool cec::evaluate(vector<Node *> &nodes)
 {
-    if (nodes->size() == 0)
+    if (nodes.size() == 0)
         return true;
-    vector<node *> qu;
-    for (auto &g : (*nodes))
+    vector<Node *> qu;
+    for (auto &g : nodes)
     {
         if (g->outs)
         {
@@ -98,9 +91,10 @@ bool cec::evaluate(vector<node *> *nodes)
             cout << "The outputs of the gate " << g->name << " are empty!" << endl;
         }
     }
-    return evaluate(unique_element_in_vector(&qu));
+    unique_element_in_vector(qu);
+    return evaluate(qu);
 }
 
-void cec::evaluate_from_POs_to_PIs(vector<node *> *POs) {
+void cec::evaluate_from_POs_to_PIs(vector<Node *> &POs) {
     
 }

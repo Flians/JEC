@@ -1,4 +1,10 @@
 if not exist build md build
 cd build
-cmake -G "MinGW Makefiles" ..
+
+if "%1" == "" (
+    cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+) else (
+    cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=%1 ..
+)
+
 make

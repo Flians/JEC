@@ -10,46 +10,24 @@ int main(int argc, char *argv[])
     clock_t startTime, endTime;
     if (argc >= 4)
     {
-        /* parse Verilog files */
         parser verilog_parser;
-        vector<node *> *PIs = nullptr;
-        vector<node *> *POs = nullptr;
         startTime = clock();
-        verilog_parser.parse(argv[1], argv[2], PIs, POs);
+        /* parse Verilog files */
+        parser miter;
+        miter.parse(argv[1], argv[2]);
         endTime = clock();
         cout << "The parsing time is: " << (double)(endTime - startTime) / CLOCKS_PER_SEC << " S" << endl;
-        /*
-        cout << ">>> before: " << endl;
-        verilog_parser.printG(miter);
-        */
 
         /* simplify the graph */
         simplify sim;
-        startTime = clock();
-        sim.clean_wire_buf(PIs);
-        // merge PIs and constants
-        for (auto &con : *verilog_parser.get_constants())
-        {
-            if (con->outs)
-            {
-                PIs->insert(PIs->end(), con);
-            }
-        }
-        vector<vector<node *> *> *layers = sim.layer_assignment(PIs);
-        sim.reduce_repeat_nodes(layers);
-        sim.id_reassign(PIs);
-        sim.sort_nodes(layers);
+        sim.clean_wire_buf(&miter.PIs);
+        vector<vector<Node *>> &layers = sim.id_reassign_and_layered(miter.PIs, miter.POs);
+        sim.reduce_repeat_nodes(layers); // no considering the positions of ports for DC and HUMX
+        sim.id_reassign(layers);
         endTime = clock();
         cout << "The simplify time is: " << (double)(endTime - startTime) / CLOCKS_PER_SEC << " S" << endl;
-        // PIs->insert(PIs->end(),verilog_parser.get_constants()->begin(),verilog_parser.get_constants()->end());
-        /*
-        cout << ">>> after: " << endl;
-        verilog_parser.printG(miter);
-        */
 
-        /* evaluate the graph */
-        // cec cec_(argv[3]);
-        // cec_.evaluate_from_PIs_to_POs(PIs);
+        /* verify the miter */
         jec jec_(argv[3]);
         startTime = clock();
         #if __linux__ || __unix__

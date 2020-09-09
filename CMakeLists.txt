@@ -4,6 +4,9 @@ project(JEC VERSION 0.1.0)
 #set(CMAKE_BUILD_TYPE Debug)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
+    SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall") 
+else()
+    SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g2 -ggdb")
 endif()
 message("Build type: " ${CMAKE_BUILD_TYPE})
 
@@ -35,6 +38,9 @@ get_filename_component(CMAKE_MODULE_PATH
     "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
 find_package(GMP REQUIRED)
 
+# add croaring
+add_library(croaring STATIC ${PROJECT_SOURCE_DIR}/include/CRoaring/roaring.c)
+target_include_directories(croaring PUBLIC ${PROJECT_SOURCE_DIR}/include/CRoaring/)
 
 # the function is used to add all header files
 function(include_sub_directories_recursively root_dir)
@@ -60,6 +66,7 @@ message("Source file: " ${SOURCE_FILES})
 set(JEC_ALL_SRCS main.cpp ${SOURCE_FILES})
 
 add_executable(${PROJECT_NAME} ${JEC_ALL_SRCS})
+target_link_libraries(${PROJECT_NAME} croaring)
 
 if (LINUX)
     target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSMT_INCLUDE_DIR} ${GMP_C_INCLUDE_DIR} ${GMP_CXX_INCLUDE_DIR})
