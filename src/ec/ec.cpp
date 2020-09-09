@@ -1,9 +1,33 @@
 #include "ec.h"
 
-void ec::print_PIs_value(vector<node *> *PIs, ofstream &output)
+ec::ec(const string &path_output)
 {
-    for (auto pi : *PIs)
+    this->fout.open(path_output, ios::out);
+    if (!this->fout.is_open())
+    {
+        cerr << "The output file can not be open!" << endl;
+        exit(-1);
+    }
+}
+
+ec::~ec()
+{
+    this->fout.flush();
+    this->fout.close();
+}
+
+void ec::print_PIs_value(vector<Node *> &PIs, ofstream &output)
+{
+    for (auto pi : PIs)
     {
         output << pi->name << " " << pi->val << endl;
+    }
+}
+
+void ec::print_PIs_value(vector<Node *> &PIs, FILE *output)
+{
+    for (auto pi : PIs)
+    {
+        fprintf(output, "%s %d", pi->name.c_str(), pi->val);
     }
 }

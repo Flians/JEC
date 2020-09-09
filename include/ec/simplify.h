@@ -2,37 +2,39 @@
 #define _SIMPLIFY_H_
 
 #include "libhead.h"
+#include "roaring.hh"
 
 class simplify
 {
 private:
-    /* data */
+    vector<vector<Node *> > layers;
+
+    // delete duplicate node, i is the index level of dupl
+    void deduplicate(int i, Node *keep, Node *dupl, vector<vector<Node *> > &layers, vector<Roaring> &nbrs);
+
 public:
     simplify(/* args */);
     ~simplify();
+    vector<vector<Node *> > &get_layers();
 
     // replace the node from vector<node *> *nodes with the new_node, which the id of this node is id
-    bool replace_node_by_id(vector<node *> *nodes, node *new_node, int id);
+    bool replace_node_by_id(vector<Node *> *nodes, Node *new_node, size_t id);
 
-    // clean all wires, bufs and splitters from PIs to POs
-    void clean_wire_buf(vector<node *> *PIs);
+    // clean all wires and bufs from PIs to POs
+    void clean_wire_buf(vector<Node *> *PIs);
+
+    // reassign id of each node, and layer assigment according to the logic depth, and achieve path balancing
+    vector<vector<Node *> > &id_reassign_and_layered(vector<Node *> &PIs, vector<Node *> &POs);
 
     // reassign id of each node
-    void id_reassign(vector<node *> *PIs);
-
-    // delete duplicate node
-    void deduplicate(int i, node *keep, node *dupl, vector<vector<node *> *> *layers);
+    void id_reassign(vector<Node *> &PIs);
+    void id_reassign(vector<vector<Node *> > &layers);
 
     // layer assigment according to the logic depth, and achieve path balancing
-    vector<vector<node *> *> *layer_assignment(vector<node *> *PIs);
+    vector<vector<Node *> > &layer_assignment(vector<Node *> &PIs, vector<Node *> &POs);
 
-    // delete DFFs, use layers to ensure the order of execution
-    vector<vector<node *> *> *layer_assignment_without_DFFs(vector<node *> *PIs);
-
-    static bool cmp(node *o1, node *o2);
-    void sort_nodes(vector<vector<node *> *> *layers);
-    // reduce the number of INV, DFF and others
-    void reduce_repeat_nodes(vector<vector<node *> *> *layers);
+    // reduce the number of INV, BUF and others
+    void reduce_repeat_nodes(vector<vector<Node *> > &layers);
 };
 
 #endif

@@ -5,14 +5,39 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(lldb) launch",
+            "name": "gdb_ubuntu_Launch",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/JEC",
             "args": [
-                "./test/golden/gf_1_bit_full_adder.v",
-                "./test/revise/rf_1_bit_full_adder.v",
-                "./output/output_1_bit_full_adder.txt"
+                "./test/golden/gf.v",
+                "./test/revise/rf.v",
+                "./test/output/output.txt"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build_sh"
+        },
+        {
+            "name": "lldb_mac_launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/JEC",
+            "args": [
+                "./test/golden/gf.v",
+                "./test/revise/rf.v",
+                "./test/output/output.txt"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -26,17 +51,17 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build_mac"
+            "preLaunchTask": "build_sh"
         },
         {
-            "name": "(gdb) launch",
+            "name": "gdb_win_launch",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/JEC.exe",
             "args": [
                 "./test/golden/gf.v",
                 "./test/revise/rf.v",
-                "./output/output.txt"
+                "./test/output/output.txt"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -44,7 +69,7 @@
             "externalConsole": false,
             "internalConsoleOptions": "openOnFirstSessionStart",
             "MIMode": "gdb",
-            "miDebuggerPath": "D:\\MinGW\\bin\\gdb.exe",
+            "miDebuggerPath": "gdb.exe",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",

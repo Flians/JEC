@@ -7,5 +7,12 @@ if [ ! -d "$build_dir" ]; then
 fi
 
 cd build
-cmake ..
+
+if [ $# -ge 1 ]
+then
+    cmake -DCMAKE_BUILD_TYPE=$1 ..
+else
+    cmake -DCMAKE_BUILD_TYPE=Release ..
+fi
+
 make
