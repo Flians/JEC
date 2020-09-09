@@ -40,10 +40,8 @@ class UFTHandler : public TSolverHandler
     Logic&     logic;
   protected:
     Egraph*    egraph;
-//  protected:
-//    const vec<int>& getSolverSchedule() const;
   public:
-    UFTHandler(SMTConfig& c, Logic& l, vec<DedElem>& d, TermMapper& tmap);
+    UFTHandler(SMTConfig & c, Logic & l, TermMapper & tmap);
     virtual ~UFTHandler();
     // This is for simplification, needed to run the theory solver code
     // as if it were running inside a SAT solver.
@@ -51,9 +49,7 @@ class UFTHandler : public TSolverHandler
     virtual const Logic& getLogic() const override;
     virtual lbool getPolaritySuggestion(PTRef) const override;
 
-#ifdef PRODUCE_PROOF
     virtual PTRef getInterpolant(const ipartitions_t& mask, map<PTRef, icolor_t> *labels) override;
-#endif // PRODUCE_PROOF
 };
 
 #endif

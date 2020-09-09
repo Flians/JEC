@@ -63,7 +63,6 @@ class SimpSMTSolver : public CoreSMTSolver
     //
     Var     newVar    (bool polarity = true, bool dvar = true) override;
 
-    bool addOriginalSMTClause(const vec<Lit> & smt_clause);
     bool addOriginalSMTClause(const vec<Lit> & smt_clause, pair<CRef, CRef> & inOutCRefs);
 public:
 
@@ -194,14 +193,14 @@ inline void SimpSMTSolver::updateElimHeap(Var v) {
         elim_heap.update(v); }
 
 inline void  SimpSMTSolver::setFrozen    (Var v, bool b) { if ( !use_simplification ) return; frozen[v] = (char)b; if (b) { updateElimHeap(v); } }
-inline lbool SimpSMTSolver::solve        (                     bool do_simp, bool turn_off_simp)  { budgetOff(); assumptions.clear(); return solve_(do_simp, turn_off_simp); }
-inline lbool SimpSMTSolver::solve        (Lit p       ,        bool do_simp, bool turn_off_simp)  { budgetOff(); assumptions.clear(); assumptions.push(p); return solve_(do_simp, turn_off_simp); }
-inline lbool SimpSMTSolver::solve        (Lit p, Lit q,        bool do_simp, bool turn_off_simp)  { budgetOff(); assumptions.clear(); assumptions.push(p); assumptions.push(q); return solve_(do_simp, turn_off_simp); }
-inline lbool SimpSMTSolver::solve        (Lit p, Lit q, Lit r, bool do_simp, bool turn_off_simp)  { budgetOff(); assumptions.clear(); assumptions.push(p); assumptions.push(q); assumptions.push(r); return solve_(do_simp, turn_off_simp); }
+inline lbool SimpSMTSolver::solve        (                     bool do_simp, bool turn_off_simp)  { return solve(vec<Lit>{}, do_simp, turn_off_simp); }
+inline lbool SimpSMTSolver::solve        (Lit p       ,        bool do_simp, bool turn_off_simp)  { return solve(vec<Lit>{p}, do_simp, turn_off_simp); }
+inline lbool SimpSMTSolver::solve        (Lit p, Lit q,        bool do_simp, bool turn_off_simp)  { return solve(vec<Lit>{p,q}, do_simp, turn_off_simp); }
+inline lbool SimpSMTSolver::solve        (Lit p, Lit q, Lit r, bool do_simp, bool turn_off_simp)  { return solve(vec<Lit>{p,q,r}, do_simp, turn_off_simp); }
 inline lbool SimpSMTSolver::solve        (const vec<Lit>& assumps, bool do_simp, bool turn_off_simp){ 
-    budgetOff(); assumps.copyTo(assumptions); return solve_(do_simp, turn_off_simp); }
-inline lbool SimpSMTSolver::solveLimited (const vec<Lit>& assumps, bool do_simp, bool turn_off_simp){ 
-    assumps.copyTo(assumptions); return solve_(do_simp, turn_off_simp); }
+    budgetOff(); setAssumptions(assumps); return solve_(do_simp, turn_off_simp); }
+inline lbool SimpSMTSolver::solveLimited (const vec<Lit>& assumps, bool do_simp, bool turn_off_simp){
+    setAssumptions(assumps); return solve_(do_simp, turn_off_simp); }
 //inline bool CoreSMTSolver::smtSolve     () { return solve(); }
 
 //=================================================================================================

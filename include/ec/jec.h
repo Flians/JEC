@@ -19,8 +19,10 @@ public:
     void evaluate_from_PIs_to_POs(vector<vector<node *> *> *layers);
     // evaluate from POs to PIs
     void evaluate_from_POs_to_PIs(vector<node *> *POs);
+    #if __linux__ || __unix__
     // evaluate by using opensmt
     void evaluate_opensmt(vector<vector<node *> *> *layers);
+    #endif
 };
 
 #endif

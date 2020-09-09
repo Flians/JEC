@@ -52,7 +52,11 @@ int main(int argc, char *argv[])
         // cec_.evaluate_from_PIs_to_POs(PIs);
         jec jec_(argv[3]);
         startTime = clock();
-        jec_.evaluate_opensmt(layers);
+        #if __linux__ || __unix__
+            jec_.evaluate_opensmt(layers);
+        #else
+            jec_.evaluate_from_PIs_to_POs(layers);
+        #endif
         endTime = clock();
         cout << "The simulating time is: " << (double)(endTime - startTime) / CLOCKS_PER_SEC << " S" << endl;
     }
