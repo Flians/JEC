@@ -12,7 +12,10 @@
 #include <stack>
 #include <string>
 #include <vector>
+
+#if __linux__ || __unix__
 #include <opensmt/opensmt2.h>
+#endif
 
 #include "./libstring.h"
 

@@ -81,6 +81,7 @@ void jec::evaluate_from_POs_to_PIs(vector<node *> *POs)
 {
 }
 
+#if __linux__ || __unix__
 // evaluate from PIs to POs
 void jec::evaluate_opensmt(vector<vector<node *> *> *layers)
 {
@@ -176,3 +177,4 @@ void jec::evaluate_opensmt(vector<vector<node *> *> *layers)
     else
         this->fout << "error" << endl;
 }
+#endif
