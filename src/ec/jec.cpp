@@ -1,39 +1,32 @@
 #include "jec.h"
 
-jec::jec(/* args */)
+jec::jec(const string &path_output) : ec(path_output)
 {
-}
-
-jec::jec(const string &path_output)
-{
-    this->fout.open(path_output, ios::out);
 }
 
 jec::~jec()
 {
-    this->fout.flush();
-    this->fout.close();
 }
 
-bool jec::assign_PIs_value(vector<vector<node *> *> *layers, int i)
+bool jec::assign_PIs_value(vector<vector<Node *>> &layers, int i)
 {
-    if (i == layers->at(0)->size())
+    if (i == (int)layers[0].size())
     {
         bool res = true;
-        for (int level = 1; level < layers->size(); level++)
+        for (size_t level = 1; level < layers.size(); level++)
         {
-            res = evaluate(layers->at(level));
+            res = evaluate(layers[level]);
         }
         if (!res)
         {
             this->fout << "NEQ" << endl;
-            print_PIs_value(layers->at(0), this->fout);
+            print_PIs_value(layers[0], this->fout);
             return false;
         }
     }
     else
     {
-        if (layers->at(0)->at(i)->cell == _CONSTANT)
+        if (layers[0][i]->cell == _CONSTANT)
         {
             if (!assign_PIs_value(layers, i + 1))
                 return false;
@@ -42,7 +35,7 @@ bool jec::assign_PIs_value(vector<vector<node *> *> *layers, int i)
         {
             for (Value val = L; val < X; val = (Value)(val + 1))
             {
-                layers->at(0)->at(i)->val = val;
+                layers[0][i]->val = val;
                 if (!assign_PIs_value(layers, i + 1))
                     return false;
             }
@@ -51,10 +44,10 @@ bool jec::assign_PIs_value(vector<vector<node *> *> *layers, int i)
     return true;
 }
 
-bool jec::evaluate(vector<node *> *nodes)
+bool jec::evaluate(vector<Node *> &nodes)
 {
     bool res = false;
-    for (auto node : (*nodes))
+    for (auto node : nodes)
     {
         res |= calculate(node);
     }
@@ -62,9 +55,9 @@ bool jec::evaluate(vector<node *> *nodes)
 }
 
 // evaluate from PIs to POs
-void jec::evaluate_from_PIs_to_POs(vector<vector<node *> *> *layers)
+void jec::evaluate_from_PIs_to_POs(vector<vector<Node *>> &layers)
 {
-    if (!layers || layers->size() == 0)
+    if (layers.empty())
     {
         cerr << "The vector layers is empty!" << endl;
         exit(-1);
@@ -77,15 +70,15 @@ void jec::evaluate_from_PIs_to_POs(vector<vector<node *> *> *layers)
 }
 
 // evaluate from POs to PIs
-void jec::evaluate_from_POs_to_PIs(vector<node *> *POs)
+void jec::evaluate_from_POs_to_PIs(vector<Node *> &POs)
 {
 }
 
 #if __linux__ || __unix__
 // evaluate from PIs to POs
-void jec::evaluate_opensmt(vector<vector<node *> *> *layers)
+void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
 {
-    if (!layers || layers->size() == 0)
+    if (layers.empty())
     {
         cerr << "The vector layers is empty!" << endl;
         exit(-1);
@@ -106,26 +99,25 @@ void jec::evaluate_opensmt(vector<vector<node *> *> *layers)
         nodes.push_back(v);
     }
 
-    for (auto &node: (*layers->at(0))) {
+    for (auto &node: layers[0]) {
         if (node->cell==_CONSTANT) {
             nodes[node->id] = node->val==L?logic.getTerm_false():logic.getTerm_true();
         }
     }
 
     // layers[0][0] is clk
-    for (int i = 1; i < layers->size(); i++)
+    for (int i = 1; i < layers.size(); i++)
     {
-        vector<node *> *layer = layers->at(i);
-        for (int j = 0; j < layer->size(); j++)
+        for (int j = 0; j < layers[i].size(); j++)
         {
             vec<PTRef> inputs;
-            // ayer->at(j)->ins->at(0) is clk
-            for (int k = 1; k < layer->at(j)->ins->size(); k++)
+            // layers[i][j]->ins->at(0) is clk
+            for (int k = 1; k < layers[i][j]->ins->size(); k++)
             {
-                inputs.push(nodes[layer->at(j)->ins->at(k)->id]);
+                inputs.push(nodes[layers[i][j]->ins->at(k)->id]);
             }
             PTRef res;
-            switch (layer->at(j)->cell)
+            switch (layers[i][j]->cell)
             {
             case AND:
                 res = logic.mkAnd(inputs);
@@ -148,9 +140,9 @@ void jec::evaluate_opensmt(vector<vector<node *> *> *layers)
                 res = inputs[0];
                 break;
             }
-            if (layer->at(j)->outs)
+            if (layers[i][j]->outs)
             {
-                for (auto &out : (*layer->at(j)->outs))
+                for (auto &out : (*layers[i][j]->outs))
                 {
                     nodes[out->id] = res;
                 }
@@ -159,7 +151,7 @@ void jec::evaluate_opensmt(vector<vector<node *> *> *layers)
     }
 
     vec<PTRef> outputs;
-    for (auto &output : (*layers->back()))
+    for (auto &output : layers.back())
     {
         outputs.push(nodes[output->id]);
     }

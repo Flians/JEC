@@ -3,9 +3,11 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "build_mac",
+            "label": "build_sh",
             "command": "./build.sh",
-            "args": [],
+            "args": [
+                "Debug"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -15,7 +17,9 @@
             "type": "shell",
             "label": "build_win",
             "command": "./build.bat",
-            "args": [],
+            "args": [
+                "Debug"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -24,7 +28,7 @@
         {
             "type": "shell",
             "label": "compile",
-            "command": "D:/MinGW/bin/g++.exe",
+            "command": "g++.exe",
             "args": [
                 "-g",
                 "${file}",
@@ -40,7 +44,7 @@
                 "-fexec-charset=UTF-8"
             ],
             "options": {
-                "cwd": "D:/MinGW/bin"
+                "cwd": ""
             }
         }
     ]
