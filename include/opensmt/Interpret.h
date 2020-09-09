@@ -105,11 +105,8 @@ class Interpret {
     bool                        pop();
     PTRef                       parseTerm(const ASTNode& term, vec<LetFrame>& let_branch);
     void                        exit();
-#ifdef PRODUCE_PROOF
     void                        getInterpolants(const ASTNode& n);
-#endif
     void                        interp (ASTNode& n);
-    void                        execute(const ASTNode* n);
 
     void                        notify_formatted(bool error, const char* s, ...);
     void                        notify_success();
@@ -143,11 +140,16 @@ class Interpret {
 
     int interpFile(FILE* in);
     int interpFile(char *content);
-    int interpInteractive(FILE* in);
     int interpPipe();
+
+    void    execute(const ASTNode* n);
+    bool    gotExit() const { return f_exit; }
+
 
     ValPair getValue       (PTRef tr) const;
     bool    getAssignment  ();
+
+    void    reportError(char const * msg) { notify_formatted(true, msg); }
 
 
     PTRef getParsedFormula();
