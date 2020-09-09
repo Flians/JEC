@@ -10,7 +10,7 @@ The following libraries and headers need be installed:
 - readline
 - flex
 - bison
-- opensmt
+- opensmt 2.0.1
 
 ### build opensmt
 
