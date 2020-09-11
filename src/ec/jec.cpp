@@ -12,12 +12,7 @@ bool jec::assign_PIs_value(vector<vector<Node *>> &layers, int i)
 {
     if (i == (int)layers[0].size())
     {
-        bool res = true;
-        for (size_t level = 1; level < layers.size(); level++)
-        {
-            res = evaluate(layers[level]);
-        }
-        if (!res)
+        if (!evaluate(layers))
         {
             this->fout << "NEQ" << endl;
             print_PIs_value(layers[0], this->fout);
@@ -44,12 +39,31 @@ bool jec::assign_PIs_value(vector<vector<Node *>> &layers, int i)
     return true;
 }
 
-bool jec::evaluate(vector<Node *> &nodes)
+bool jec::evaluate(vector<vector<Node *>> &layers)
 {
-    bool res = false;
-    for (auto node : nodes)
+    for (size_t level = 1; level < layers.size() - 1; level++)
     {
-        res |= calculate(node);
+        for (auto &node : layers[level])
+        {
+            node->val = calculate(node);
+        }
+    }
+    for (auto node : layers.back())
+    {
+        if (calculate(node) != L) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool jec::evaluate(vector<Node *> &nodes) {
+    for (auto &node : nodes)
+    {
+        node->val = calculate(node);
+        if (node->val != L && node->outs.empty()) {
+            return false;
+        }
     }
     return true;
 }
@@ -63,14 +77,14 @@ void jec::evaluate_from_PIs_to_POs(vector<vector<Node *>> &layers)
         exit(-1);
     }
     // layers[0][0] is clk
-    if (assign_PIs_value(layers, 1))
+    if (assign_PIs_value(layers, 0))
     {
         this->fout << "EQ" << endl;
     }
 }
 
 // evaluate from POs to PIs
-void jec::evaluate_from_POs_to_PIs(vector<Node *> &POs)
+void jec::evaluate_from_POs_to_PIs(vector<vector<Node *>> &layers)
 {
 }
 
@@ -93,28 +107,28 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
     Logic &logic = thandler->getLogic();
 
     vector<PTRef> nodes;
-    for (int i = 0; i < init_id; i++)
+    for (size_t i = 0; i < init_id; i++)
     {
         PTRef v = logic.mkBoolVar(to_string(i).c_str());
         nodes.push_back(v);
     }
 
+    // layers[0][0] is clk
     for (auto &node: layers[0]) {
         if (node->cell==_CONSTANT) {
             nodes[node->id] = node->val==L?logic.getTerm_false():logic.getTerm_true();
         }
     }
 
-    // layers[0][0] is clk
-    for (int i = 1; i < layers.size(); i++)
+    for (size_t i = 1; i < layers.size(); i++)
     {
-        for (int j = 0; j < layers[i].size(); j++)
+        for (size_t j = 0; j < layers[i].size(); j++)
         {
             vec<PTRef> inputs;
             // layers[i][j]->ins->at(0) is clk
-            for (int k = 1; k < layers[i][j]->ins->size(); k++)
+            for (size_t k = 1; k < layers[i][j]->ins.size(); k++)
             {
-                inputs.push(nodes[layers[i][j]->ins->at(k)->id]);
+                inputs.push(nodes[layers[i][j]->ins[k]->id]);
             }
             PTRef res;
             switch (layers[i][j]->cell)
@@ -140,12 +154,9 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
                 res = inputs[0];
                 break;
             }
-            if (layers[i][j]->outs)
+            for (auto &out : layers[i][j]->outs)
             {
-                for (auto &out : (*layers[i][j]->outs))
-                {
-                    nodes[out->id] = res;
-                }
+                nodes[out->id] = res;
             }
         }
     }

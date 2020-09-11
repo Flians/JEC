@@ -59,17 +59,17 @@ bool cec::evaluate(vector<Node *> &nodes)
     vector<Node *> qu;
     for (auto &g : nodes)
     {
-        if (g->outs)
+        if (!g->outs.empty())
         {
-            for (auto &out : *(g->outs))
+            for (auto &out : g->outs)
             {
                 ++out->vis;
-                if (out->vis == out->ins->size())
+                if (out->vis == out->ins.size())
                 {
                     out->vis = 0;
                     out->val = calculate(out);
                     // cout << out->name << " " << out->val << endl;
-                    if (out->outs)
+                    if (!out->outs.empty())
                     {
                         qu.push_back(out);
                     }

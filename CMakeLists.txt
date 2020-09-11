@@ -27,10 +27,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 if (LINUX)
-    #find OpenSMT library
+    #find Opensmt library
     get_filename_component(CMAKE_MODULE_PATH
         "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
-    find_package(opensmt REQUIRED)
+    find_package(Opensmt REQUIRED)
 endif()
 
 #find GMP

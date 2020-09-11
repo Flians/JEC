@@ -125,9 +125,9 @@ inline Value DC(const Value &C, const Value &D)
     }
 }
 
-inline Value HMUX(const Value &S, const Value &I0, const Value &I1)
+inline Value HMUX(const Value &I0, const Value &I1, const Value &S)
 {
-    if (S == H)
+    if (S == X)
     {
         return I0 == I1 ? I0 : X;
     }
@@ -151,66 +151,67 @@ inline Value EXOR(const Value &A, const Value &B)
 
 Value calculate(Node *g)
 {
-    Node temp_g;
+    Value res = X;
     if (g)
     {
-        temp_g.val = g->ins->front()->val;
-        vector<Node *>::iterator it_ = g->ins->begin();
-        vector<Node *>::iterator it_end = g->ins->end();
+        res = g->ins.front()->val;
+        vector<Node *>::iterator it_ = g->ins.begin();
+        vector<Node *>::iterator it_end = g->ins.end() - 1;
         switch (g->cell)
         {
         case AND:
             while (it_ != it_end)
             {
-                temp_g = temp_g & *(*(++it_));
+                res = res & (*(++it_))->val;
             }
             break;
         case NAND:
             while (it_ != it_end)
             {
-                temp_g = temp_g & *(*(++it_));
+                res = res & (*(++it_))->val;
             }
-            temp_g = ~temp_g;
+            res = ~res;
             break;
         case OR:
             while (it_ != it_end)
             {
-                temp_g = temp_g | *(*(++it_));
+                res = res | (*(++it_))->val;
             }
             break;
         case NOR:
             while (it_ != it_end)
             {
-                temp_g = temp_g | *(*(++it_));
+                res = res | (*(++it_))->val;
             }
-            temp_g = ~temp_g;
+            res = ~res;
             break;
         case XOR:
             while (it_ != it_end)
             {
-                temp_g = temp_g ^ *(*(++it_));
+                res = res ^ (*(++it_))->val;
             }
             break;
         case XNOR:
             while (it_ != it_end)
             {
-                temp_g = temp_g ^ *(*(++it_));
+                res = res ^ (*(++it_))->val;
             }
-            temp_g = ~temp_g;
+            res = ~res;
             break;
         case INV:
-            temp_g = ~temp_g;
+            res = ~res;
             break;
         case BUF:
             break;
         case _HMUX:
-            temp_g.val = HMUX(temp_g.val, (*it_)->val, (*(it_ + 1))->val);
+            ++it_;
+            res = HMUX(res, (*it_)->val, (*(it_ + 1))->val);
             break;
         case _DC:
-            temp_g.val = DC(temp_g.val, (*it_)->val);
+            res = DC(res, (*(it_ + 1))->val);
             break;
         case _EXOR:
-            temp_g.val = EXOR(temp_g.val, (*it_)->val);
+            res = EXOR(res, (*(it_ + 1))->val);
             break;
         default:
             break;
@@ -221,7 +222,7 @@ Value calculate(Node *g)
         cerr << "The node g is empty in libhead.cpp: Value calculate(node *g)" << endl;
         exit(-1);
     }
-    return temp_g.val;
+    return res;
 }
 
 void unique_element_in_vector(vector<Node *> &v)
@@ -229,18 +230,7 @@ void unique_element_in_vector(vector<Node *> &v)
     sort(v.begin(), v.end(), [](const Node *A, const Node *B) {
         if (A->id == B->id)
         {
-            if (A->outs)
-            {
-                if (B->outs)
-                {
-                    return A->outs->size() > B->outs->size();
-                }
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return A->outs.size() > B->outs.size();
         }
         else
         {
