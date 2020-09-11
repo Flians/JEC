@@ -156,6 +156,10 @@ Value calculate(Node *g)
     {
         res = g->ins.front()->val;
         vector<Node *>::iterator it_ = g->ins.begin();
+        if ((*it_)->cell == CLK) {
+            ++it_;
+            res = (*it_)->val;
+        }
         vector<Node *>::iterator it_end = g->ins.end() - 1;
         switch (g->cell)
         {

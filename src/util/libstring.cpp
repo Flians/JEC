@@ -74,12 +74,12 @@ string libstring::replace(const string &str, const string &src, const string &de
     return ret;
 }
 
-int libstring::startsWith(string &s, string sub)
+int libstring::startsWith(const string &s, string sub)
 {
     return s.find(sub) == 0 ? 1 : 0;
 }
 
-int libstring::endsWith(string &s, string sub)
+int libstring::endsWith(const string &s, string sub)
 {
     return s.rfind(sub) == (s.length() - sub.length()) ? 1 : 0;
 }

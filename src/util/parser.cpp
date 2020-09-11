@@ -15,9 +15,7 @@ parser::~parser()
     vector<Node *>().swap(this->PIs);
     vector<Node *>().swap(this->POs);
     vector<Node *>().swap(this->constants);
-    this->clean_wires();
-    this->map_PIs.clear();
-    this->map_POs.clear();
+    this->clean_wires_temp();
     cout << "The parser is destroyed!" << endl;
 }
 
@@ -36,13 +34,77 @@ vector<Node *> &parser::get_constants()
     return this->constants;
 }
 
-void parser::clean_wires()
+void parser::clean_wires_temp()
 {
     this->wires_golden.clear();
     this->wires_revised.clear();
+    this->map_PIs.clear();
+    this->map_POs.clear();
 }
 
-void parser::parse_verilog(stringstream &in)
+bool parser::is_clk(const string &name)
+{
+    return name.find("clk") != string::npos;
+}
+
+void parser::parse_inport(Node *g, const string &item, const string &line, std::unordered_map<std::string, Node *> &wires)
+{
+    Node *port;
+    if (item.length() == 4 && libstring::startsWith(item, "1'b"))
+    {
+        switch (item[3])
+        {
+        case '0':
+        case '1':
+            port = this->constants[item[3] - '0'];
+            break;
+        default:
+            port = this->constants[2];
+            break;
+        }
+    }
+    else
+    {
+        if (wires.count(item))
+        {
+            port = wires[item];
+        }
+        else if (this->map_PIs.count(item))
+        {
+            port = this->PIs[this->map_PIs[item]];
+        }
+        else
+        {
+            error_fout("There is no input port " + item + " in parser.parse_inport for " + line);
+        }
+    }
+    port->outs.emplace_back(g);
+    g->ins.emplace_back(port);
+    if (port->cell == CLK) {
+        swap(g->ins.front(), g->ins.back());
+    }
+}
+
+void parser::parse_outport(Node *g, const string &item, const string &line, std::unordered_map<std::string, Node *> &wires)
+{
+    Node *port = nullptr;
+    if (wires.count(item))
+    {
+        port = wires[item];
+    }
+    else if (this->map_POs.count(item))
+    {
+        port = this->POs[this->map_POs[item]];
+    }
+    else
+    {
+        error_fout("There is no output port " + item + " in parser.parse_outport for " + line);
+    }
+    port->ins.emplace_back(g);
+    g->outs.emplace_back(port);
+}
+
+void parser::parse_verilog(stringstream &in, bool is_golden)
 {
     string line;
     smatch match;
@@ -51,8 +113,20 @@ void parser::parse_verilog(stringstream &in)
     {
         line = libstring::trim(line);
         // skip annotations and empty line
-        if (line.find("//") == 0 || line.empty())
+        if (line.find("//") == 0 || line[0] == '`' || line.empty())
             continue;
+        // /* ... */
+        if (libstring::startsWith(line, "/*"))
+        {
+            while (line.find("*/") == line.npos)
+            {
+                string tl;
+                if (!getline(in, tl))
+                    return;
+                line += tl;
+            }
+            continue;
+        }
         // the wire is more than one line
         while (line.find(';') == line.npos)
         {
@@ -64,11 +138,28 @@ void parser::parse_verilog(stringstream &in)
         string::const_iterator iterStart = line.begin();
         string::const_iterator iterEnd = line.end();
         string item;
+        int bits_begin = -1;
+        int bits_end = -1;
         if (regex_search(iterStart, iterEnd, match, pattern))
         {
             item = match[0];
             iterStart = match[0].second;
             // cout << item << endl;
+            int mp = item.find_last_of(':');
+            if (mp != -1)
+            {
+                int lp = item.find_last_of('[');
+                int rp = item.find_last_of(']');
+                if (lp == -1 || rp == -1 || lp >= rp)
+                {
+                    error_fout("There are some troubles in parser.cpp for multiple bits: " + line);
+                }
+                bits_end = atoi(item.substr(lp + 1, mp - lp).c_str());
+                bits_begin = atoi(item.substr(mp + 1, rp - mp).c_str());
+                if (bits_begin > bits_end)
+                    swap(bits_begin, bits_end);
+                item = item.substr(0, lp);
+            }
             if (Value_Str.count(item))
             {
                 Gtype nt = Value_Str[item];
@@ -76,6 +167,7 @@ void parser::parse_verilog(stringstream &in)
                 {
                 case _MODULE:
                 {
+                    if (!is_golden) continue;
                     int io_num = count(iterStart, iterEnd, ',');
                     this->PIs.reserve(io_num);
                     this->POs.reserve(io_num);
@@ -83,22 +175,52 @@ void parser::parse_verilog(stringstream &in)
                 }
                 case IN:
                 {
+                    if (!is_golden) continue;
                     while (regex_search(iterStart, iterEnd, match, pattern))
                     {
                         item = match[0];
-                        this->map_PIs[item] = this->PIs.size();
-                        this->PIs.emplace_back(new Node(item, IN));
+                        if (bits_begin > 0)
+                        {
+                            for (int i = bits_begin; i <= bits_end; ++i)
+                            {
+                                this->map_PIs[item + "[" + to_string(i) + "]"] = this->PIs.size();
+                                this->PIs.emplace_back(new Node(item + "[" + to_string(i) + "]", IN));
+                            }
+                        }
+                        else
+                        {
+                            this->map_PIs[item] = this->PIs.size();
+                            if (is_clk(item)) {
+                                this->PIs.emplace_back(new Node(item, CLK));
+                                swap(this->map_PIs[item], this->map_PIs[this->PIs.front()->name]);
+                                swap(this->PIs.front(), this->PIs.back());
+                            } else {
+                                this->PIs.emplace_back(new Node(item, IN));
+                            }
+                        }
                         iterStart = match[0].second;
                     }
                     break;
                 }
                 case OUT:
                 {
+                    if (!is_golden) continue;
                     while (regex_search(iterStart, iterEnd, match, pattern))
                     {
                         item = match[0];
-                        this->map_POs[item] = this->POs.size();
-                        this->POs.emplace_back(new Node(item, _EXOR));
+                        if (bits_begin > 0)
+                        {
+                            for (int i = bits_begin; i <= bits_end; ++i)
+                            {
+                                this->map_POs[item + "[" + to_string(i) + "]"] = this->POs.size();
+                                this->POs.emplace_back(new Node(item + "[" + to_string(i) + "]", _EXOR));
+                            }
+                        }
+                        else
+                        {
+                            this->map_POs[item] = this->POs.size();
+                            this->POs.emplace_back(new Node(item, _EXOR));
+                        }
                         iterStart = match[0].second;
                     }
                     break;
@@ -108,8 +230,30 @@ void parser::parse_verilog(stringstream &in)
                     while (regex_search(iterStart, iterEnd, match, pattern))
                     {
                         item = match[0];
-                        if (this->map_PIs.count(item) == 0 && this->map_POs.count(item) == 0)
-                            this->wires_golden[item] = new Node(item, WIRE);
+                        if (bits_begin >= 0)
+                        {
+                            for (int i = bits_begin; i <= bits_end; ++i)
+                            {
+                                string bitN = item + "[" + to_string(i) + "]";
+                                if (this->map_PIs.count(bitN) == 0 && this->map_POs.count(bitN) == 0) {
+                                    if (is_golden) {
+                                        this->wires_golden[bitN] = new Node(bitN, WIRE);
+                                    } else {
+                                        this->wires_revised[bitN] = new Node(bitN, WIRE);
+                                    }
+                                } 
+                            }
+                        }
+                        else
+                        {
+                            if (this->map_PIs.count(item) == 0 && this->map_POs.count(item) == 0) {
+                                if (is_golden) {
+                                    this->wires_golden[item] = new Node(item, WIRE);
+                                } else {
+                                    this->wires_revised[item] = new Node(item, WIRE);
+                                }
+                            }
+                        }
                         iterStart = match[0].second;
                     }
                     break;
@@ -123,221 +267,48 @@ void parser::parse_verilog(stringstream &in)
                         g->name = match[0];
                         iterStart = match[0].second;
                     }
-                    // output port
-                    if (regex_search(iterStart, iterEnd, match, pattern))
-                    {
-                        item = match[0];
-                        iterStart = match[0].second;
-                        if (item[0] == '.')
-                        {
-                            regex_search(iterStart, iterEnd, match, pattern);
-                            item = match[0];
-                            iterStart = match[0].second;
-                            // cout << item << endl;
-                        }
-                        Node *port = nullptr;
-                        if (this->wires_golden.count(item))
-                        {
-                            port = this->wires_golden[item];
-                        }
-                        else if (this->map_POs.count(item))
-                        {
-                            port = this->POs[this->map_POs[item]];
-                        }
-                        else
-                        {
-                            error_fout("There is no output port " + item + " in parser.parse_verilog for " + line);
-                        }
-                        g->outs.emplace_back(port);
-                        port->ins.emplace_back(g);
-                        // cout << "output port: " << port->name << endl;
-                    }
-                    // input port
+                    // cout << "gate: " << g->name << endl;
+                    int index_port = 0;
+                    // ports: index_port = 0 -> output, index_port > 0 -> input
                     while (regex_search(iterStart, iterEnd, match, pattern))
                     {
                         item = match[0];
                         iterStart = match[0].second;
+                        // cout << "port: ";
                         if (item[0] == '.')
                         {
+                            bool flag = libstring::startsWith(item, ".dout");
                             regex_search(iterStart, iterEnd, match, pattern);
                             item = match[0];
                             iterStart = match[0].second;
-                            // cout << item << endl;
-                        }
-                        Node *port;
-                        if (item.length() == 4 && libstring::startsWith(item, "1'b"))
-                        {
-                            switch (item[3])
+                            if (flag)
                             {
-                            case '0':
-                            case '1':
-                                port = this->constants[item[3] - '0'];
-                                break;
-                            default:
-                                port = this->constants[2];
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            if (this->wires_golden.count(item))
-                            {
-                                port = this->wires_golden[item];
-                            }
-                            else if (this->map_PIs.count(item))
-                            {
-                                port = this->PIs[this->map_PIs[item]];
+                                parse_outport(g, item, line, is_golden ? this->wires_golden : this->wires_revised);
                             }
                             else
                             {
-                                error_fout("There is no input port " + item + " in parser.parse_verilog for " + line);
-                            }
-                        }
-                        g->ins.emplace_back(port);
-                        port->outs.emplace_back(g);
-                        // cout << "input port: " << port->name << endl;
-                    }
-                    break;
-                }
-                }
-            }
-        }
-    }
-}
-
-void parser::parse_revised(stringstream &in)
-{
-    string line;
-    smatch match;
-    regex pattern("[^ \f\n\r\t\v,;\()]+");
-    while (getline(in, line))
-    {
-        line = libstring::trim(line);
-        // skip annotations and empty line
-        if (line.find("//") == 0 || line.empty())
-            continue;
-        // the sentence is more than one line
-        while (line.find(';') == line.npos)
-        {
-            string tl;
-            if (!getline(in, tl))
-                return;
-            line += tl;
-        }
-        string::const_iterator iterStart = line.begin();
-        string::const_iterator iterEnd = line.end();
-        string item;
-        if (regex_search(iterStart, iterEnd, match, pattern))
-        {
-            item = match[0];
-            iterStart = match[0].second;
-            // cout << item << endl;
-            if (Value_Str.count(item))
-            {
-                Gtype nt = Value_Str[item];
-                switch (nt)
-                {
-                case _MODULE:
-                case IN:
-                case OUT:
-                    break;
-                case WIRE:
-                {
-                    while (regex_search(iterStart, iterEnd, match, pattern))
-                    {
-                        item = match[0];
-                        if (this->map_PIs.count(item) == 0 && this->map_POs.count(item) == 0)
-                            this->wires_revised[item] = new Node(item, WIRE);
-                        iterStart = match[0].second;
-                    }
-                    break;
-                }
-                default:
-                {
-                    Node *g = new Node();
-                    g->cell = nt;
-                    if (regex_search(iterStart, iterEnd, match, pattern))
-                    {
-                        g->name = match[0];
-                        iterStart = match[0].second;
-                    }
-                    // output port
-                    if (regex_search(iterStart, iterEnd, match, pattern))
-                    {
-                        item = match[0];
-                        iterStart = match[0].second;
-                        if (item[0] == '.')
-                        {
-                            regex_search(iterStart, iterEnd, match, pattern);
-                            item = match[0];
-                            iterStart = match[0].second;
-                            // cout << item << endl;
-                        }
-                        Node *port = nullptr;
-                        if (this->wires_revised.count(item))
-                        {
-                            port = this->wires_revised[item];
-                        }
-                        else if (this->map_POs.count(item))
-                        {
-                            port = this->POs[this->map_POs[item]];
-                        }
-                        else
-                        {
-                            error_fout("There is no output port " + item + " in parser.parse_verilog for " + line);
-                        }
-                        g->outs.emplace_back(port);
-                        port->ins.emplace_back(g);
-                        // cout << "output port: " << port->name << endl;
-                    }
-                    // input port
-                    while (regex_search(iterStart, iterEnd, match, pattern))
-                    {
-                        item = match[0];
-                        iterStart = match[0].second;
-                        if (item[0] == '.')
-                        {
-                            regex_search(iterStart, iterEnd, match, pattern);
-                            item = match[0];
-                            iterStart = match[0].second;
-                            // cout << item << endl;
-                        }
-                        Node *port;
-                        if (item.length() == 4 && libstring::startsWith(item, "1'b"))
-                        {
-                            switch (item[3])
-                            {
-                            case '0':
-                            case '1':
-                                port = this->constants[item[3] - '0'];
-                                break;
-                            default:
-                                port = this->constants[2];
-                                break;
+                                parse_inport(g, item, line, is_golden ? this->wires_golden : this->wires_revised);
                             }
                         }
                         else
                         {
-                            if (this->wires_revised.count(item))
+                            if (index_port == 0 || (g->cell == SPL && index_port < 2) || (g->cell == SPL3 && index_port < 3))
                             {
-                                port = this->wires_revised[item];
-                            }
-                            else if (this->map_PIs.count(item))
-                            {
-                                port = this->PIs[this->map_PIs[item]];
+                                parse_outport(g, item, line, is_golden ? this->wires_golden : this->wires_revised);
                             }
                             else
                             {
-                                error_fout("There is no input port " + item + " in parser.parse_verilog for " + line);
+                                parse_inport(g, item, line, is_golden ? this->wires_golden : this->wires_revised);
                             }
+                            ++index_port;
                         }
-                        g->ins.emplace_back(port);
-                        port->outs.emplace_back(g);
-                        // cout << "input port: " << port->name << endl;
+                        // cout << item << endl;
                     }
                     break;
                 }
                 }
+            } else {
+                error_fout("There key word '" + item + "' is unknown in parser.parse_verilog: " + line);
             }
         }
     }
@@ -372,12 +343,9 @@ void parser::parse(ifstream &golden, ifstream &revised)
     revised.seekg(0, std::ios::beg).read(&buffer[0], static_cast<std::streamsize>(buffer.size()));
     f_input.str(buffer);
 
-    parse_revised(f_input);
+    parse_verilog(f_input, false);
     buffer.clear();
     f_input.clear();
-
-    // clear the wires
-    this->clean_wires();
 
     // merge PIs and constants
     for (auto &con : this->constants)
@@ -387,6 +355,9 @@ void parser::parse(ifstream &golden, ifstream &revised)
             this->PIs.emplace_back(con);
         }
     }
+
+    // clear the wires
+    this->clean_wires_temp();
 }
 
 void parser::parse(const string &path_golden, const string &path_revised)

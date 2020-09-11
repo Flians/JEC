@@ -49,7 +49,7 @@ void simplify::clean_wire_buf(vector<Node *> &PIs)
             continue;
         }
 
-        if (pi->cell == WIRE || pi->cell == BUF)
+        if (pi->cell == WIRE || pi->cell == BUF || pi->cell == SPL || pi->cell == SPL3)
         {
             if (pi->ins.size() != 1)
             {
@@ -162,6 +162,12 @@ vector<vector<Node *>> &simplify::id_reassign_and_layered(vector<Node *> &PIs, v
     for (; iter != iter_end; ++iter)
     {
         this->layers[iter->second - 1].emplace_back(iter->first);
+    }
+    // move clk to the front of this->layers.front()
+    for (auto &pi : this->layers.front()) {
+        if (pi->cell == CLK) {
+            swap(this->layers.front().front(), pi);
+        }
     }
     visit.clear();
     return this->layers;
