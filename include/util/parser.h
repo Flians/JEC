@@ -37,10 +37,10 @@ public:
     void parse(const string &path_golden, const string &path_revised);
 
     // print the graph
-    void printG(vector<Node *> *);
+    void printG(vector<Node *> &);
 
     // find the node from vector<node *> *nodes by name
-    Node *find_node_by_name(vector<Node *> &nodes, string &name);
+    Node *find_node_by_name(vector<Node *> &nodes, const string &name);
 
     // replace the node from vector<node *> *nodes with the new_node, which the name of this node is same as the new_node
     bool replace_node_by_name(vector<Node *> &nodes, Node *new_node);

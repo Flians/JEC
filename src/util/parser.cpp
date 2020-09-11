@@ -116,9 +116,7 @@ void parser::parse_verilog(stringstream &in)
                 }
                 default:
                 {
-                    Node *g = new Node;
-                    g->ins = new vector<Node *>;
-                    g->outs = new vector<Node *>;
+                    Node *g = new Node();
                     g->cell = nt;
                     if (regex_search(iterStart, iterEnd, match, pattern))
                     {
@@ -150,13 +148,9 @@ void parser::parse_verilog(stringstream &in)
                         {
                             error_fout("There is no output port " + item + " in parser.parse_verilog for " + line);
                         }
-                        g->outs->emplace_back(port);
-                        if (!port->ins)
-                        {
-                            port->ins = new vector<Node *>[1];
-                        }
+                        g->outs.emplace_back(port);
+                        port->ins.emplace_back(g);
                         // cout << "output port: " << port->name << endl;
-                        port->ins->emplace_back(g);
                     }
                     // input port
                     while (regex_search(iterStart, iterEnd, match, pattern))
@@ -199,13 +193,9 @@ void parser::parse_verilog(stringstream &in)
                                 error_fout("There is no input port " + item + " in parser.parse_verilog for " + line);
                             }
                         }
-                        g->ins->emplace_back(port);
-                        if (!port->outs)
-                        {
-                            port->outs = new vector<Node *>[2];
-                        }
+                        g->ins.emplace_back(port);
+                        port->outs.emplace_back(g);
                         // cout << "input port: " << port->name << endl;
-                        port->outs->emplace_back(g);
                     }
                     break;
                 }
@@ -264,9 +254,7 @@ void parser::parse_revised(stringstream &in)
                 }
                 default:
                 {
-                    Node *g = new Node;
-                    g->ins = new vector<Node *>;
-                    g->outs = new vector<Node *>;
+                    Node *g = new Node();
                     g->cell = nt;
                     if (regex_search(iterStart, iterEnd, match, pattern))
                     {
@@ -298,13 +286,9 @@ void parser::parse_revised(stringstream &in)
                         {
                             error_fout("There is no output port " + item + " in parser.parse_verilog for " + line);
                         }
-                        g->outs->emplace_back(port);
-                        if (!port->ins)
-                        {
-                            port->ins = new vector<Node *>[1];
-                        }
+                        g->outs.emplace_back(port);
+                        port->ins.emplace_back(g);
                         // cout << "output port: " << port->name << endl;
-                        port->ins->emplace_back(g);
                     }
                     // input port
                     while (regex_search(iterStart, iterEnd, match, pattern))
@@ -347,13 +331,9 @@ void parser::parse_revised(stringstream &in)
                                 error_fout("There is no input port " + item + " in parser.parse_verilog for " + line);
                             }
                         }
-                        g->ins->emplace_back(port);
-                        if (!port->outs)
-                        {
-                            port->outs = new vector<Node *>[2];
-                        }
+                        g->ins.emplace_back(port);
+                        port->outs.emplace_back(g);
                         // cout << "input port: " << port->name << endl;
-                        port->outs->emplace_back(g);
                     }
                     break;
                 }
@@ -402,7 +382,7 @@ void parser::parse(ifstream &golden, ifstream &revised)
     // merge PIs and constants
     for (auto &con : this->constants)
     {
-        if (con->outs)
+        if (!con->outs.empty())
         {
             this->PIs.emplace_back(con);
         }
@@ -419,12 +399,10 @@ void parser::parse(const string &path_golden, const string &path_revised)
     cout << "The parsing process is over!" << endl;
 }
 
-void parser::printG(vector<Node *> *nodes)
+void parser::printG(vector<Node *> &nodes)
 {
-    if (!nodes || nodes->size() == 0)
-        return;
-    vector<Node *>::iterator pi = nodes->begin();
-    vector<Node *>::iterator pi_end = nodes->end();
+    vector<Node *>::iterator pi = nodes.begin();
+    vector<Node *>::iterator pi_end = nodes.end();
     while (pi != pi_end)
     {
         cout << (*pi)->name << " " << Str_Value[(*pi)->cell] << " " << (*pi)->val << endl;
@@ -433,7 +411,7 @@ void parser::printG(vector<Node *> *nodes)
     }
 }
 
-Node *parser::find_node_by_name(vector<Node *> &nodes, string &name)
+Node *parser::find_node_by_name(vector<Node *> &nodes, const string &name)
 {
     for (auto node : nodes)
     {
@@ -483,20 +461,17 @@ void parser::build_miter(vector<Node *> &PIs_golden, vector<Node *> &POs_golden,
         }
         else
         {
-            if (pi->outs)
+            vector<Node *>::iterator it = pi->outs.begin();
+            vector<Node *>::iterator it_end = pi->outs.end();
+            while (it != it_end)
             {
-                vector<Node *>::iterator it = pi->outs->begin();
-                vector<Node *>::iterator it_end = pi->outs->end();
-                while (it != it_end)
+                if (!replace_node_by_name((*it)->ins, (*iter)))
                 {
-                    if (!replace_node_by_name(*(*it)->ins, (*iter)))
-                    {
-                        cerr << "There may be some wrong!" << endl;
-                        error_fout("There may be some wrong!");
-                    }
-                    (*iter)->outs->emplace_back(*it);
-                    ++it;
+                    cerr << "There may be some wrong!" << endl;
+                    error_fout("There may be some wrong!");
                 }
+                (*iter)->outs.emplace_back(*it);
+                ++it;
             }
             delete pi;
             pi = nullptr;
@@ -518,10 +493,10 @@ void parser::build_miter(vector<Node *> &PIs_golden, vector<Node *> &POs_golden,
         else
         {
             (*iter)->cell = _EXOR;
-            for (auto &tg : *po->ins)
+            for (auto &tg : po->ins)
             {
-                (*iter)->ins->emplace_back(tg);
-                tg->outs->emplace_back((*iter));
+                (*iter)->ins.emplace_back(tg);
+                tg->outs.emplace_back((*iter));
             }
             delete po;
             po = nullptr;
