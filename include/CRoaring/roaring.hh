@@ -13,7 +13,6 @@ A C++ header for Roaring Bitmaps.
 #include <new>
 #include <stdexcept>
 #include <string>
-#include <cinttypes>
 
 class RoaringSetBitForwardIterator;
 
@@ -1457,7 +1456,7 @@ class Roaring64Map {
             outer_iter_data.high_bits = roarings.begin()->first;
             map_iter->second.iterate(
                 [](uint32_t low_bits, void *inner_iter_data) -> bool {
-                    std::printf("%c%" PRIu64,
+                    std::printf("%c%llu",
                                 ((iter_data *)inner_iter_data)->first_char,
                                 (long long unsigned)uniteBytes(
                                     ((iter_data *)inner_iter_data)->high_bits,
@@ -1471,7 +1470,7 @@ class Roaring64Map {
                 [](const std::pair<uint32_t, Roaring> &map_entry) {
                     map_entry.second.iterate(
                         [](uint32_t low_bits, void *high_bits) -> bool {
-                            std::printf(",%" PRIu64,
+                            std::printf(",%llu",
                                         (long long unsigned)uniteBytes(
                                             *(uint32_t *)high_bits, low_bits));
                             return true;
