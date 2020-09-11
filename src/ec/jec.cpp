@@ -76,8 +76,11 @@ void jec::evaluate_from_PIs_to_POs(vector<vector<Node *>> &layers)
         cerr << "The vector layers is empty!" << endl;
         exit(-1);
     }
+    int index_beg = 0;
+    if (layers[0][0]->cell == CLK)
+        index_beg = 1;
     // layers[0][0] is clk
-    if (assign_PIs_value(layers, 0))
+    if (assign_PIs_value(layers, index_beg))
     {
         this->fout << "EQ" << endl;
     }
