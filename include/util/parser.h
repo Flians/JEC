@@ -11,7 +11,10 @@ private:
     std::unordered_map<std::string, int> map_PIs;
     std::unordered_map<std::string, int> map_POs;
 
-    void clean_wires();
+    bool is_clk(const string &name);
+    void parse_inport(Node *g, const string &item, const string &line, std::unordered_map<std::string, Node *> &wires);
+    void parse_outport(Node *g, const string &item, const string &line, std::unordered_map<std::string, Node *> &wires);
+    void clean_wires_temp();
 
 public:
     vector<Node *> PIs;
@@ -25,10 +28,7 @@ public:
     vector<Node *> &get_constants();
 
     // parse the verilog file
-    void parse_verilog(stringstream &in);
-
-    // parse the revised verilog file
-    void parse_revised(stringstream &in);
+    void parse_verilog(stringstream &in, bool is_golden=true);
 
     // parse the verilog files, and return the PIs and POs of the miter
     void parse(ifstream &golden, ifstream &revised);

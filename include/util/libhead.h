@@ -34,6 +34,7 @@ enum Gtype
     _CONSTANT = 0,
     IN,
     OUT,
+    CLK,
     WIRE,
     AND,
     NAND,
