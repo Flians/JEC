@@ -50,18 +50,21 @@ bool jec::evaluate(vector<vector<Node *>> &layers)
     }
     for (auto node : layers.back())
     {
-        if (calculate(node) != L) {
+        if (calculate(node) != L)
+        {
             return false;
         }
     }
     return true;
 }
 
-bool jec::evaluate(vector<Node *> &nodes) {
+bool jec::evaluate(vector<Node *> &nodes)
+{
     for (auto &node : nodes)
     {
         node->val = calculate(node);
-        if (node->val != L && node->outs.empty()) {
+        if (node->val != L && node->outs.empty())
+        {
             return false;
         }
     }
@@ -105,21 +108,21 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
     UFTheory *uftheory = new UFTheory(c);
     THandler *thandler = new THandler(*uftheory);
     SimpSMTSolver *solver = new SimpSMTSolver(c, *thandler);
-    MainSolver *mainSolver = new MainSolver(*thandler, c, solver, "test solver");
+    MainSolver *mainSolver = new MainSolver(*thandler, c, solver, "JSolver");
 
     Logic &logic = thandler->getLogic();
 
-    vector<PTRef> nodes;
-    for (size_t i = 0; i < init_id; i++)
-    {
-        PTRef v = logic.mkBoolVar(to_string(i).c_str());
-        nodes.push_back(v);
-    }
-
+    vector<PTRef> nodes(init_id);
     // layers[0][0] is clk
-    for (auto &node: layers[0]) {
-        if (node->cell==_CONSTANT) {
-            nodes[node->id] = node->val==L?logic.getTerm_false():logic.getTerm_true();
+    for (size_t i = 1; i < layers[0].size(); i++)
+    {
+        if (layers[0][i]->cell == _CONSTANT)
+        {
+            nodes[layers[0][i]->id] = layers[0][i]->val == L ? logic.getTerm_false() : logic.getTerm_true();
+        }
+        else if (layers[0][i]->cell != CLK)
+        {
+            nodes[layers[0][i]->id] = logic.mkBoolVar(layers[0][i]->name.c_str());
         }
     }
 
@@ -129,9 +132,14 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
         {
             vec<PTRef> inputs;
             // layers[i][j]->ins->at(0) is clk
-            for (size_t k = 1; k < layers[i][j]->ins.size(); k++)
+            for (size_t k = 0; k < layers[i][j]->ins.size(); k++)
             {
-                inputs.push(nodes[layers[i][j]->ins[k]->id]);
+                if (layers[i][j]->ins[k]->cell != CLK)
+                    inputs.push(nodes[layers[i][j]->ins[k]->id]);
+            }
+            if (inputs.size() == 0)
+            {
+                error_fout("The inputs is empty! in jec.evaluate_opensmt!");
             }
             PTRef res;
             switch (layers[i][j]->cell)
@@ -140,6 +148,8 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
                 res = logic.mkAnd(inputs);
                 break;
             case OR:
+            case CB:
+            case CB3:
                 res = logic.mkOr(inputs);
                 break;
             case XOR:
@@ -148,12 +158,10 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
             case INV:
                 res = logic.mkNot(inputs);
                 break;
+            case _EXOR:
+                res = logic.mkXor(inputs);
+                break;
             default:
-                if (inputs.size() == 0)
-                {
-                    cerr << "The inputs is empty! in jec.evaluate_opensmt!" << endl;
-                    exit(-1);
-                }
                 res = inputs[0];
                 break;
             }
@@ -169,18 +177,35 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
     {
         outputs.push(nodes[output->id]);
     }
-    PTRef result = logic.mkAnd(outputs);
-    mainSolver->push(result);
-    cout << "Running check!" << endl;
-    sstat r = mainSolver->check();
+    PTRef assert = logic.mkEq(logic.getTerm_true(), logic.mkOr(outputs));
+    mainSolver->push(assert);
+    cout << "The prover is opensmt." << endl;
+    sstat reslut = mainSolver->check();
 
-    if (r == s_True)
-        this->fout << "EQ" << endl;
-    else if (r == s_False)
+    if (reslut == s_True)
+    {
         this->fout << "NEQ" << endl;
-    else if (r == s_Undef)
+        for (size_t i = 1; i < layers.front().size(); i++)
+        {
+            ValPair vp = mainSolver->getValue(nodes[layers[0][i]->id]);
+            this->fout << logic.printTerm(vp.tr) << " " << vp.val << endl;
+        }
+    }
+    else if (reslut == s_False)
+    {
+        this->fout << "EQ" << endl;
+    }
+    else if (reslut == s_Undef)
+    {
         this->fout << "unknown" << endl;
+    }
     else
+    {
         this->fout << "error" << endl;
+    }
+    delete uftheory;
+    delete thandler;
+    delete solver;
+    delete mainSolver;
 }
 #endif
