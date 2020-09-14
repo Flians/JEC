@@ -114,7 +114,7 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
 
     vector<PTRef> nodes(init_id);
     // layers[0][0] is clk
-    for (size_t i = 1; i < layers[0].size(); i++)
+    for (size_t i = 0; i < layers[0].size(); i++)
     {
         if (layers[0][i]->cell == _CONSTANT)
         {
@@ -165,10 +165,7 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
                 res = inputs[0];
                 break;
             }
-            for (auto &out : layers[i][j]->outs)
-            {
-                nodes[out->id] = res;
-            }
+            nodes[layers[i][j]->id] = res;
         }
     }
 
