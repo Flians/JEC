@@ -108,6 +108,7 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
     UFTheory *uftheory = new UFTheory(c);
     THandler *thandler = new THandler(*uftheory);
     SimpSMTSolver *solver = new SimpSMTSolver(c, *thandler);
+    solver->clause_lim = 100000;
     MainSolver *mainSolver = new MainSolver(*thandler, c, solver, "JSolver");
 
     Logic &logic = thandler->getLogic();
