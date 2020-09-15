@@ -4,7 +4,8 @@
 #include "ec.h"
 
 #if __linux__ || __unix__
-    #include <opensmt/opensmt2.h>
+    #include "opensmt/opensmt2.h"
+    #include "CaDiCaL/cadical.hpp"
 #endif
 
 class jec : public ec
@@ -26,6 +27,8 @@ public:
 #if __linux__ || __unix__
     // evaluate by using opensmt
     void evaluate_opensmt(vector<vector<Node *>> &layers);
+    // evaluate by using cadical
+    void evaluate_cadical(vector<vector<Node *>> &layers);
 #endif
 };
 
