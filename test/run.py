@@ -2,7 +2,7 @@
 import os
 import subprocess
 
-def benchmarks(exePath, root='./', output='../output/'):
+def benchmarks(exePath, root='./', output='./output/'):
     golden = os.path.join(root, 'golden')
     revise = os.path.join(root, 'revise')
     files = os.listdir(os.path.join(root, 'original'))
@@ -10,7 +10,7 @@ def benchmarks(exePath, root='./', output='../output/'):
         os.mkdir(os.path.join(root, 'log'))
     for i, file in enumerate(files):
         names = file.split('.')
-        if (file.endswith('.bench') or file.endswith('.blif')) and names[0]!='c17' and names[0]!='c2670':
+        if file.endswith('.bench') and names[0]!='c17' and names[0]!='c2670':
             with open(os.path.join(root, 'log/'+names[0]+'.txt'), 'w', encoding='utf8') as log:
                 cmd = [exePath, os.path.join(golden, 'gf_'+names[0]+'.v'), os.path.join(revise, 'rf_'+names[0]+'.v'), os.path.join(output, 'output_' + names[0] + '.txt')]
                 p = subprocess.Popen(cmd, shell=False, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
