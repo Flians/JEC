@@ -108,7 +108,6 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
     UFTheory *uftheory = new UFTheory(c);
     THandler *thandler = new THandler(*uftheory);
     SimpSMTSolver *solver = new SimpSMTSolver(c, *thandler);
-    solver->clause_lim = 100000;
     MainSolver *mainSolver = new MainSolver(*thandler, c, solver, "JSolver");
 
     Logic &logic = thandler->getLogic();
@@ -205,5 +204,9 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
     delete thandler;
     delete solver;
     delete mainSolver;
+}
+
+void jec::evaluate_cadical(vector<vector<Node *>> &layers) {
+
 }
 #endif

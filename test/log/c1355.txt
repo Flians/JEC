@@ -1,7 +1,8 @@
-The parsing time is: 0.431272 S
-The number of DFF reduction is 372
-The number of INV, DFF, and others reduction is 42
-The simplify time is: 0.016002 S
-Running check!
-The simulating time is: 0.003014 S
+The parsing process is over!
+The parsing time is: 0.13195 S
+The number of INV, BUF, and others reduction is 517
+The simplify time is: 0.155366 S
+The prover is opensmt.
+The simulating time is: 0.00638 S
+The parser is destroyed!
 The parser is destroyed!
