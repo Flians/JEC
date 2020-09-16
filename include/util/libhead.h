@@ -222,6 +222,9 @@ struct Node
     }
 };
 
+// delete the node, return its parent
+Node* delete_node (Node *node);
+
 Value calculate(Node *g);
 
 void unique_element_in_vector(vector<Node *> &v);

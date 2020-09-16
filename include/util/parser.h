@@ -14,7 +14,6 @@ private:
     bool is_clk(const string &name);
     void parse_inport(Node *g, const string &item, const string &line, std::unordered_map<std::string, Node *> &wires);
     void parse_outport(Node *g, const string &item, const string &line, std::unordered_map<std::string, Node *> &wires);
-    void clean_wires_temp();
 
 public:
     vector<Node *> PIs;
@@ -35,6 +34,12 @@ public:
 
     // parse the verilog files, and return the PIs and POs of the miter
     void parse(const string &path_golden, const string &path_revised);
+
+    // delete all wires
+    void clean_wires();
+
+    // clean the spl
+    void clean_spl();
 
     // print the graph
     void printG(vector<Node *> &);

@@ -15,12 +15,14 @@ int main(int argc, char *argv[])
         /* parse Verilog files */
         parser miter;
         miter.parse(argv[1], argv[2]);
+        miter.clean_wires();
+        miter.clean_spl();
         endTime = clock();
         cout << "The parsing time is: " << (double)(endTime - startTime) / CLOCKS_PER_SEC << " S" << endl;
-
+        
         /* simplify the graph */
         simplify sim;
-        sim.clean_wire_buf(miter.PIs);
+        // sim.clean_wire_buf_iterator(miter.PIs);
         vector<vector<Node *>> &layers = sim.id_reassign_and_layered(miter.PIs, miter.POs);
         sim.reduce_repeat_nodes(layers);
         sim.id_reassign(layers);
