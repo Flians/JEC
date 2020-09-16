@@ -20,8 +20,11 @@ public:
     // replace the node from vector<node *> *nodes with the new_node, which the id of this node is id
     bool replace_node_by_id(vector<Node *> *nodes, Node *new_node, size_t id);
 
-    // clean all wires and bufs from PIs to POs
-    void clean_wire_buf(vector<Node *> &PIs);
+    // clean all wires and bufs from PIs to POs by recusive
+    void clean_wire_buf_recusive(vector<Node *> &PIs);
+
+    // clean all wires and bufs from PIs to POs by iterator
+    void clean_wire_buf_iterator(vector<Node *> &PIs);
 
     // reassign id of each node, and layer assigment according to the logic depth, and achieve path balancing
     vector<vector<Node *> > &id_reassign_and_layered(vector<Node *> &PIs, vector<Node *> &POs);
