@@ -33,10 +33,10 @@ bool simplify::replace_node_by_id(vector<Node *> *nodes, Node *new_node, size_t 
 }
 
 /**
- * clean all wires and bufs
+ * clean all wires and bufs, SPL
  * from PIs to POs
  */
-void simplify::clean_wire_buf(vector<Node *> &PIs)
+void simplify::clean_wire_buf_recusive(vector<Node *> &PIs)
 {
     if (PIs.empty())
         return;
@@ -44,60 +44,49 @@ void simplify::clean_wire_buf(vector<Node *> &PIs)
     for (size_t i = 0; i < len; ++i)
     {
         Node *pi = PIs[i];
-        if (pi->outs.empty())
+        if (pi->outs.empty() || (pi->cell != IN && pi->outs.front()->cell != WIRE))
         {
             continue;
         }
+        if (pi->cell == WIRE || pi->cell == BUF || pi->cell == DFF || pi->cell == SPL || pi->cell == SPL3)
+        {
+            pi = delete_node(pi);
+        }
+        clean_wire_buf_recusive(pi->outs);
+    }
+}
 
-        if (pi->cell == WIRE || pi->cell == BUF || pi->cell == SPL || pi->cell == SPL3)
-        {
-            if (pi->ins.size() != 1)
-            {
-                cerr << pi->name << " WIRE have none or more one inputs in simplify.clean_wire_buf!" << endl;
-                exit(-1);
-            }
-            Node *tin = pi->ins.front();
-            vector<Node *>::iterator it = pi->outs.begin();
-            vector<Node *>::iterator it_end = pi->outs.end();
-            while (it != it_end)
-            {
-                vector<Node *>::iterator temp_in = (*it)->ins.begin();
-                vector<Node *>::iterator temp_in_end = (*it)->ins.end();
-                while (temp_in != temp_in_end)
-                {
-                    if (pi == (*temp_in))
-                    {
-                        (*temp_in) = tin;
-                        break;
-                    }
-                    ++temp_in;
-                }
-                if (temp_in != temp_in_end)
-                {
-                    tin->outs.emplace_back(*it);
-                }
-                else
-                {
-                    std::cerr << "There are some wrong in" << pi->name << std::endl;
-                    exit(-1);
-                }
-                ++it;
-            }
-            vector<Node *>().swap(pi->outs);
-            delete pi;
-            pi = nullptr;
-            clean_wire_buf(tin->outs);
-        }
-        // this node has been visited.
-        else if (pi->cell != IN && pi->outs.front()->cell != WIRE)
+/**
+ * clean all wires and bufs
+ * from PIs to POs
+ */
+void simplify::clean_wire_buf_iterator(vector<Node *> &PIs)
+{
+    if (PIs.empty())
+        return;
+    stack<Node *> record;
+    unordered_map<Node *, bool> vis;
+    for (auto &pi : PIs) {
+        record.push(pi);
+        vis[pi] = 1;
+    }
+    while (!record.empty()) {
+        Node *cur = record.top();
+        record.pop();
+        if (cur->outs.empty() || vis.count(cur))
         {
             continue;
         }
-        else
+        vis[cur] = 1;
+        if (cur->cell == WIRE || cur->cell == BUF || cur->cell == DFF || cur->cell == SPL || cur->cell == SPL3)
         {
-            clean_wire_buf(pi->outs);
+            cur = delete_node(cur);
+        }
+        for (auto &out : cur->outs) {
+            record.push(out);
         }
     }
+    vis.clear();
 }
 
 vector<vector<Node *>> &simplify::id_reassign_and_layered(vector<Node *> &PIs, vector<Node *> &POs)

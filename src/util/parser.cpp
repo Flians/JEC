@@ -15,7 +15,10 @@ parser::~parser()
     vector<Node *>().swap(this->PIs);
     vector<Node *>().swap(this->POs);
     vector<Node *>().swap(this->constants);
-    this->clean_wires_temp();
+    this->wires_golden.clear();
+    this->wires_revised.clear();
+    this->map_PIs.clear();
+    this->map_POs.clear();
     cout << "The parser is destroyed!" << endl;
 }
 
@@ -34,12 +37,46 @@ vector<Node *> &parser::get_constants()
     return this->constants;
 }
 
-void parser::clean_wires_temp()
+void parser::clean_wires()
 {
+    for (auto &item : this->wires_golden) {
+        delete_node(item.second);
+    }
+
+    for (auto &item : this->wires_revised) {
+        delete_node(item.second);
+    }
     this->wires_golden.clear();
     this->wires_revised.clear();
-    this->map_PIs.clear();
-    this->map_POs.clear();
+}
+
+void parser::clean_spl()
+{
+    if (this->PIs.empty())
+        return;
+    stack<Node *> record;
+    unordered_map<Node *, bool> vis;
+    for (auto &pi : this->PIs) {
+        record.push(pi);
+        vis[pi] = 1;
+    }
+    while (!record.empty()) {
+        Node *cur = record.top();
+        record.pop();
+        if (cur->outs.empty() || vis.count(cur))
+        {
+            continue;
+        }
+        vis[cur] = 1;
+        if (cur->cell == DFF || cur->cell == SPL || cur->cell == SPL3)
+        {
+            cur = delete_node(cur);
+        }
+        for (auto &out : cur->outs) {
+            record.push(out);
+        }
+    }
+    vis.clear();
 }
 
 bool parser::is_clk(const string &name)
@@ -356,8 +393,9 @@ void parser::parse(ifstream &golden, ifstream &revised)
         }
     }
 
-    // clear the wires
-    this->clean_wires_temp();
+    // clear IO map
+    this->map_PIs.clear();
+    this->map_POs.clear();
 }
 
 void parser::parse(const string &path_golden, const string &path_revised)
