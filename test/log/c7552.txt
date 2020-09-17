@@ -1,8 +1,8 @@
 The parsing process is over!
-The parsing time is: 0.612464 S
-The number of INV, BUF, and others reduction is 2447
-The simplify time is: 6.5538 S
-The prover is opensmt.
-The simulating time is: 0.382644 S
+The parsing time is: 0.650444 S
+The number of INV, BUF, and others reduction is 502
+The simplify time is: 0.706732 S
+The prover is CVC4.
+The simulating time is: 0.235906 S
 The parser is destroyed!
 The parser is destroyed!

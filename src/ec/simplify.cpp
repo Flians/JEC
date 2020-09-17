@@ -35,6 +35,8 @@ bool simplify::replace_node_by_id(vector<Node *> *nodes, Node *new_node, size_t 
 /**
  * clean all wires and bufs, SPL
  * from PIs to POs
+ * 
+ * There are some wrong!!!
  */
 void simplify::clean_wire_buf_recusive(vector<Node *> &PIs)
 {
@@ -126,8 +128,6 @@ vector<vector<Node *>> &simplify::id_reassign_and_layered(vector<Node *> &PIs, v
                 else if (visit[item] >= visit[out])
                 {
                     visit[out] = visit[item] + 1;
-                    if (longest_path < visit[out])
-                        longest_path = visit[out];
                     bfs_record.push(out);
                 }
             }
@@ -158,6 +158,7 @@ vector<vector<Node *>> &simplify::id_reassign_and_layered(vector<Node *> &PIs, v
     for (auto &pi : this->layers.front()) {
         if (pi->cell == CLK) {
             swap(this->layers.front().front(), pi);
+            break;
         }
     }
     visit.clear();

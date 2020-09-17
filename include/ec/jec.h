@@ -5,8 +5,10 @@
 
 #if __linux__ || __unix__
     #include "opensmt/opensmt2.h"
-    // #include "CaDiCaL/cadical.hpp"
 #endif
+
+#include "CaDiCaL/cadical.hpp"
+#include "cvc4/cvc4.h"
 
 class jec : public ec
 {
@@ -27,9 +29,11 @@ public:
 #if __linux__ || __unix__
     // evaluate by using opensmt
     void evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental = false);
+#endif
     // evaluate by using cadical
     void evaluate_cadical(vector<vector<Node *>> &layers);
-#endif
+    // evaluate by using cvc4
+    void evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental = false);
 };
 
 #endif
