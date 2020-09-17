@@ -11,6 +11,8 @@ The following libraries and headers need be installed:
 - flex
 - bison
 - opensmt 2.0.1
+- libantlr3c 3.2/2.4
+- CVC4 1.8
 
 ### build opensmt
 
@@ -24,12 +26,18 @@ cmake -DBUILD_STATIC_LIBS:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_BUILD_TYP
 make
 ```
 
+### build CaDiCaL
+
+The environment is linux
+
 The following command for compile:
 
 ``` shell
-mkdir build && cd build
-cmake ..
+./configure -fPIC
 make
+cp src/ccadical.h ../include/CaDiCaL/
+cp src/cadical.hpp ../include/CaDiCaL/
+cp build/libcadical.a  ../lib/
 ```
 
 ## run

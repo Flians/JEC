@@ -96,7 +96,7 @@ void jec::evaluate_from_POs_to_PIs(vector<vector<Node *>> &layers)
 
 #if __linux__ || __unix__
 // evaluate from PIs to POs
-void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
+void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
 {
     if (layers.empty())
     {
@@ -169,15 +169,28 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers)
         }
     }
 
-    vec<PTRef> outputs;
-    for (auto &output : layers.back())
-    {
-        outputs.push(nodes[output->id]);
+    
+    sstat reslut;
+    if (incremental) {
+        vec<PTRef> outputs;
+        for (auto &output : layers.back())
+        {
+            outputs.push(nodes[output->id]);
+        }
+        PTRef assert = logic.mkEq(logic.getTerm_true(), logic.mkOr(outputs));
+        mainSolver->push(assert);
+        reslut = mainSolver->check();
+    } else {
+        for (auto &output : layers.back())
+        {
+            PTRef assert = logic.mkEq(logic.getTerm_true(), nodes[output->id]);
+            mainSolver->push(assert);
+            reslut = mainSolver->check();
+            if (reslut == s_True)
+                break;
+        }
     }
-    PTRef assert = logic.mkEq(logic.getTerm_true(), logic.mkOr(outputs));
-    mainSolver->push(assert);
     cout << "The prover is opensmt." << endl;
-    sstat reslut = mainSolver->check();
 
     if (reslut == s_True)
     {
