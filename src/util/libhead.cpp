@@ -152,11 +152,11 @@ inline Value EXOR(const Value &A, const Value &B)
 Node* delete_node(Node *cur) {
     if (!cur)
         return NULL;
-    if (cur->ins.size() != 1)
+    if (cur->ins.size() != 1 && !(cur->ins.size() == 2 && cur->ins[0]->cell == CLK))
     {
         error_fout(cur->name + " Node have none or more one inputs in delete_node!");
     }
-    Node *tin = cur->ins.front();
+    Node *tin = cur->ins.size() == 2 ? cur->ins.back() : cur->ins.front();
     if (!cur->outs.empty())
     {
         vector<Node *>::iterator it = cur->outs.begin();

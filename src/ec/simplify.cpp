@@ -65,28 +65,30 @@ void simplify::clean_wire_buf_iterator(vector<Node *> &PIs)
     if (PIs.empty())
         return;
     stack<Node *> record;
-    unordered_map<Node *, bool> vis;
+    vector<bool> vis(init_id, 0);
     for (auto &pi : PIs) {
         record.push(pi);
-        vis[pi] = 1;
+        vis[pi->id] = 1;
     }
     while (!record.empty()) {
         Node *cur = record.top();
         record.pop();
-        if (cur->outs.empty() || vis.count(cur))
+        if (!cur || cur->outs.empty())
         {
             continue;
         }
-        vis[cur] = 1;
         if (cur->cell == WIRE || cur->cell == BUF || cur->cell == DFF || cur->cell == SPL || cur->cell == SPL3)
         {
             cur = delete_node(cur);
         }
         for (auto &out : cur->outs) {
-            record.push(out);
+            if (out && !vis[out->id]) {
+                record.push(out);
+                vis[out->id] = 1;
+            }
         }
     }
-    vis.clear();
+    vector<bool>().swap(vis);
 }
 
 vector<vector<Node *>> &simplify::id_reassign_and_layered(vector<Node *> &PIs, vector<Node *> &POs)
