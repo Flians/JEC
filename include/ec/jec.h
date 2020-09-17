@@ -26,7 +26,7 @@ public:
     void evaluate_from_POs_to_PIs(vector<vector<Node *>> &layers);
 #if __linux__ || __unix__
     // evaluate by using opensmt
-    void evaluate_opensmt(vector<vector<Node *>> &layers);
+    void evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental = false);
     // evaluate by using cadical
     void evaluate_cadical(vector<vector<Node *>> &layers);
 #endif

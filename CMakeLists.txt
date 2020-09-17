@@ -31,6 +31,10 @@ if (LINUX)
     get_filename_component(CMAKE_MODULE_PATH
         "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
     find_package(Opensmt REQUIRED)
+    #find CaDiCaL library
+    get_filename_component(CMAKE_MODULE_PATH
+        "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
+    find_package(CaDiCaL REQUIRED)
 endif()
 
 #find GMP
@@ -69,6 +73,6 @@ add_executable(${PROJECT_NAME} ${JEC_ALL_SRCS})
 target_link_libraries(${PROJECT_NAME} croaring)
 
 if (LINUX)
-    target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSMT_INCLUDE_DIR} ${GMP_C_INCLUDE_DIR} ${GMP_CXX_INCLUDE_DIR})
-    target_link_libraries(${PROJECT_NAME} ${OPENSMT_LIBRARY} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES})
+    target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSMT_INCLUDE_DIR} ${GMP_C_INCLUDE_DIR} ${GMP_CXX_INCLUDE_DIR} ${CADICAL_C_INCLUDE_DIR} ${CADICAL_CXX_INCLUDE_DIR})
+    target_link_libraries(${PROJECT_NAME} ${OPENSMT_LIBRARY} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES} ${CADICAL_LIBRARY})
 endif()

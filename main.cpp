@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
         jec jec_(argv[3]);
         startTime = clock();
         #if __linux__ || __unix__
-            jec_.evaluate_opensmt(layers);
+            jec_.evaluate_opensmt(layers, false);
         #else
             jec_.evaluate_from_PIs_to_POs(layers);
         #endif
