@@ -5,7 +5,7 @@
 
 #if __linux__ || __unix__
     #include "opensmt/opensmt2.h"
-    #include "CaDiCaL/cadical.hpp"
+    // #include "CaDiCaL/cadical.hpp"
 #endif
 
 class jec : public ec
