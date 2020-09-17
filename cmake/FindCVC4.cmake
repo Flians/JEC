@@ -1,0 +1,32 @@
+# Try to find the CVC4 librairies
+# CVC4_FOUND - system has CVC4 lib
+# CVC4_INCLUDE_DIR, CVC4_CXX_INCLUDE_DIR - the CVC4 include directory
+# CVC4_LIBRARIES - Libraries needed to use CVC4
+
+if (CVC4_INCLUDE_DIR AND CVC4_LIBRARIES)
+		# Already in cache, be silent
+		set(CVC4_FIND_QUIETLY TRUE)
+endif (CVC4_INCLUDE_DIR AND CVC4_LIBRARIES)
+
+find_path(CVC4_INCLUDE_DIR 
+		NAMES cvc4.h cvc4/cvc4.h
+		PATHS ${PROJECT_SOURCE_DIR} 
+		PATH_SUFFIXES "" "include" "include/cvc4"
+		NO_DEFAULT_PATH )
+find_library(CVC4_LIBRARIES 
+		NAMES cvc4 libcvc4
+		PATHS ${PROJECT_SOURCE_DIR}
+		PATH_SUFFIXES "" "lib" "lib64" 
+		NO_DEFAULT_PATH )
+find_library(CVC4_PARSER_LIBRARIES 
+		NAMES cvc4parser libcvc4parser
+		PATHS ${PROJECT_SOURCE_DIR}
+		PATH_SUFFIXES "" "lib" "lib64" 
+		NO_DEFAULT_PATH )
+
+MESSAGE(STATUS "CVC4 libs: " ${CVC4_LIBRARIES} " " ${CVC4_PARSER_LIBRARIES})
+
+include(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(CVC4 DEFAULT_MSG CVC4_INCLUDE_DIR CVC4_LIBRARIES)
+
+mark_as_advanced(CVC4_INCLUDE_DIR CVC4_LIBRARIES CVC4_PARSER_LIBRARIES)
