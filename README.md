@@ -40,6 +40,19 @@ cp src/cadical.hpp ../include/CaDiCaL/
 cp build/libcadical.a  ../lib/
 ```
 
+## Building CVC4
+
+``` shell
+./contrib/get-antlr-3.4  # download and build ANTLR
+./contrib/get-cadical  # download and build ANTLR
+./configure.sh production --prefix=../ --static --no-static-binary --no-python-bindings --cadical   # use --prefix to specify a prefix (default: /usr/local)
+                    # use --name=<PATH> for custom build directory
+cd build   # default is ./build
+make             # use -jN for parallel build with N threads
+make check       # to run default set of tests
+make install     # to install into the prefix specified above
+```
+
 ## run
 
 ``` shell
