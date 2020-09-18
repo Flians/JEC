@@ -11,6 +11,7 @@
 #include <set>
 #include <sstream>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "libstring.h"
 
@@ -224,6 +225,9 @@ struct Node
 
 // delete the node, return its parent
 Node* delete_node (Node *node);
+
+// merge two nodes
+void merge_node (Node *node, Node *repeat);
 
 Value calculate(Node *g);
 

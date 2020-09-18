@@ -22,10 +22,8 @@ int main(int argc, char *argv[])
         
         /* simplify the graph */
         simplify sim;
-        // sim.clean_wire_buf_iterator(miter.PIs);
-        vector<vector<Node *>> &layers = sim.id_reassign_and_layered(miter.PIs, miter.POs);
-        sim.reduce_repeat_nodes(layers);
-        sim.id_reassign(layers);
+        sim.id_reassign_and_layered(miter.PIs, miter.POs);
+        sim.merge_nodes_between_networks();
         endTime = clock();
         cout << "The simplify time is: " << (double)(endTime - startTime) / CLOCKS_PER_SEC << " S" << endl;
 
@@ -34,7 +32,7 @@ int main(int argc, char *argv[])
         startTime = clock();
         #if __linux__ || __unix__
             // jec_.evaluate_opensmt(layers, false);
-            jec_.evaluate_cvc4(layers, false);
+            jec_.evaluate_cvc4(sim.get_layers(), false);
         #else
             jec_.evaluate_from_PIs_to_POs(layers);
         #endif
