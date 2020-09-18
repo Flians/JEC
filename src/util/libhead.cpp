@@ -191,6 +191,44 @@ Node* delete_node(Node *cur) {
     return tin;
 }
 
+void merge_node (Node *node, Node *repeat) {
+    if (!node || !repeat) {
+        cout << "There are some NULL node in libhead.merge_node!" << endl;
+        return;
+    }
+    if (node == repeat) {
+        cout << "Both nodes are the same in libhead.merge_node!" << endl;
+        return;
+    }
+    for (auto &out : repeat->outs)
+    {
+        // grandson.ins.push(son)
+        vector<Node *>::iterator temp_in = out->ins.begin();
+        vector<Node *>::iterator temp_in_end = out->ins.end();
+        while (temp_in != temp_in_end)
+        {
+            if (repeat == (*temp_in))
+            {
+                (*temp_in) = node;
+                break;
+            }
+            ++temp_in;
+        }
+        if (temp_in != temp_in_end)
+        {
+            // son.outs.push(grandson)
+            node->outs.emplace_back(out);
+        }
+        else
+        {
+            cout << "repeat can't be found in the inputs of repeat's outputs in libhead.merge_node!" << endl;
+        }
+    }
+    vector<Node *>().swap(repeat->outs);
+    delete repeat;
+    repeat = NULL;
+}
+
 Value calculate(Node *g)
 {
     Value res = X;

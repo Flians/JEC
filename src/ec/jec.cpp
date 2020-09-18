@@ -104,14 +104,12 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
         exit(-1);
     }
 
-    SMTConfig c;
-    // c->setOption(SMTConfig::o_time_queries, SMTOption(true), msg);
-    UFTheory *uftheory = new UFTheory(c);
-    THandler *thandler = new THandler(*uftheory);
-    SimpSMTSolver *solver = new SimpSMTSolver(c, *thandler);
-    MainSolver *mainSolver = new MainSolver(*thandler, c, solver, "JSolver");
-
-    Logic &logic = thandler->getLogic();
+    auto config = std::unique_ptr<SMTConfig>(new SMTConfig());
+    // const char* msg;
+    // config->setOption(SMTConfig::o_produce_inter, SMTOption(true), msg);
+    Opensmt osmt(opensmt_logic::qf_bool, "JSolver", std::move(config));
+    MainSolver& mainSolver = osmt.getMainSolver();
+    Logic& logic = osmt.getLogic();
 
     vector<PTRef> nodes(init_id);
     // layers[0][0] is clk
@@ -181,14 +179,14 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
             outputs.push(nodes[output->id]);
         }
         PTRef assert = logic.mkEq(logic.getTerm_true(), logic.mkOr(outputs));
-        mainSolver->push(assert);
-        reslut = mainSolver->check();
+        mainSolver.push(assert);
+        reslut = mainSolver.check();
     } else {
         for (auto &output : layers.back())
         {
             PTRef assert = logic.mkEq(logic.getTerm_true(), nodes[output->id]);
-            mainSolver->push(assert);
-            reslut = mainSolver->check();
+            mainSolver.push(assert);
+            reslut = mainSolver.check();
             if (reslut == s_True)
                 break;
         }
@@ -200,7 +198,7 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
         this->fout << "NEQ" << endl;
         for (size_t i = 1; i < layers.front().size(); i++)
         {
-            ValPair vp = mainSolver->getValue(nodes[layers[0][i]->id]);
+            ValPair vp = mainSolver.getValue(nodes[layers[0][i]->id]);
             this->fout << logic.printTerm(vp.tr) << " " << vp.val << endl;
         }
     }
@@ -216,10 +214,6 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
     {
         this->fout << "error" << endl;
     }
-    delete uftheory;
-    delete thandler;
-    delete solver;
-    delete mainSolver;
 }
 
 #endif
