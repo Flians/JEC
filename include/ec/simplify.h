@@ -10,7 +10,7 @@ private:
     vector<vector<Node *> > layers;
 
     // delete duplicate node, i is the index level of dupl
-    void deduplicate(int i, Node *keep, Node *dupl, vector<vector<Node *> > &layers, vector<Roaring> &nbrs);
+    void deduplicate(int i, Node *keep, Node *dupl, vector<Roaring> &nbrs);
 
 public:
     simplify(/* args */);
@@ -31,13 +31,15 @@ public:
 
     // reassign id of each node
     void id_reassign(vector<Node *> &PIs);
-    void id_reassign(vector<vector<Node *> > &layers);
+    void id_reassign();
 
     // layer assigment according to the logic depth, and achieve path balancing
     vector<vector<Node *> > &layer_assignment(vector<Node *> &PIs, vector<Node *> &POs);
 
-    // reduce the number of INV, BUF and others
-    void reduce_repeat_nodes(vector<vector<Node *> > &layers);
+    // merge the equal nodes
+    void reduce_repeat_nodes();
+    // merge the equal nodes
+    void merge_nodes_between_networks();
 };
 
 #endif
