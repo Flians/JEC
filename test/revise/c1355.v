@@ -1,6 +1,6 @@
 // Benchmark "c1355" written by ABC on Sun May 24 21:31:58 2020
 
-module c1355 ( 
+module rf_c1355 ( 
     G1gat, G8gat, G15gat, G22gat, G29gat, G36gat, G43gat, G50gat, G57gat,
     G64gat, G71gat, G78gat, G85gat, G92gat, G99gat, G106gat, G113gat,
     G120gat, G127gat, G134gat, G141gat, G148gat, G155gat, G162gat, G169gat,

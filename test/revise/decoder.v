@@ -1,6 +1,6 @@
 // Benchmark "top" written by ABC on Wed May 27 23:34:46 2020
 
-module top ( 
+module rf_decoder ( 
     count0 , count1 , count2 , count3 , count4 , count5 ,
     count6 , count7 ,
     selectp10 , selectp11 , selectp12 , selectp13 ,

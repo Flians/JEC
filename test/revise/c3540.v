@@ -1,6 +1,6 @@
 // Benchmark "c3540" written by ABC on Wed May 27 22:07:19 2020
 
-module c3540 ( 
+module rf_c3540 ( 
     G1, G13, G20, G33, G41, G45, G50, G58, G68, G77, G87, G97, G107, G116,
     G124, G125, G128, G132, G137, G143, G150, G159, G169, G179, G190, G200,
     G213, G222, G223, G226, G232, G238, G244, G250, G257, G264, G270, G274,

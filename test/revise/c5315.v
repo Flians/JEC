@@ -1,6 +1,6 @@
 // Benchmark "c5315" written by ABC on Wed May 27 22:07:38 2020
 
-module c5315 ( 
+module rf_c5315 ( 
     G1, G4, G11, G14, G17, G20, G23, G24, G25, G26, G27, G31, G34, G37,
     G40, G43, G46, G49, G52, G53, G54, G61, G64, G67, G70, G73, G76, G79,
     G80, G81, G82, G83, G86, G87, G88, G91, G94, G97, G100, G103, G106,
@@ -1519,22 +1519,22 @@ module c5315 (
   jand g1348(.dina(n1649), .dinb(n1644), .dout(n1650));
   jand g1349(.dina(n1650), .dinb(n1642), .dout(n1651));
   jor  g1350(.dina(n1651), .dinb(n1624), .dout(G690));
-  buf  g1351(.din(G141), .dout(G144));
-  buf  g1352(.din(G293), .dout(G298));
-  buf  g1353(.din(G3173), .dout(G973));
+  jdff  g1351(.din(G141), .dout(G144));
+  jdff  g1352(.din(G293), .dout(G298));
+  jdff  g1353(.din(G3173), .dout(G973));
   jnot g1354(.din(G545), .dout(G603));
   jnot g1355(.din(G545), .dout(G604));
-  buf  g1356(.din(G137), .dout(G926));
-  buf  g1357(.din(G141), .dout(G923));
-  buf  g1358(.din(G1), .dout(G921));
-  buf  g1359(.din(G549), .dout(G892));
-  buf  g1360(.din(G299), .dout(G887));
+  jdff  g1356(.din(G137), .dout(G926));
+  jdff  g1357(.din(G141), .dout(G923));
+  jdff  g1358(.din(G1), .dout(G921));
+  jdff  g1359(.din(G549), .dout(G892));
+  jdff  g1360(.din(G299), .dout(G887));
   jnot g1361(.din(G549), .dout(G606));
-  buf  g1362(.din(G1), .dout(G993));
-  buf  g1363(.din(G1), .dout(G978));
-  buf  g1364(.din(G1), .dout(G949));
-  buf  g1365(.din(G1), .dout(G939));
-  buf  g1366(.din(G299), .dout(G889));
+  jdff  g1362(.din(G1), .dout(G993));
+  jdff  g1363(.din(G1), .dout(G978));
+  jdff  g1364(.din(G1), .dout(G949));
+  jdff  g1365(.din(G1), .dout(G939));
+  jdff  g1366(.din(G299), .dout(G889));
   jor  g1367(.dina(n336), .dinb(n333), .dout(G717));
   jand g1368(.dina(n652), .dinb(n633), .dout(G626));
   jand g1369(.dina(n607), .dinb(n587), .dout(G632));
