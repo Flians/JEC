@@ -1,6 +1,6 @@
 // Benchmark "c432" written by ABC on Sun May 24 21:36:43 2020
 
-module c432 ( 
+module rf_c432 ( 
     G1gat, G4gat, G8gat, G11gat, G14gat, G17gat, G21gat, G24gat, G27gat,
     G30gat, G34gat, G37gat, G40gat, G43gat, G47gat, G50gat, G53gat, G56gat,
     G60gat, G63gat, G66gat, G69gat, G73gat, G76gat, G79gat, G82gat, G86gat,

@@ -1,6 +1,6 @@
 // Benchmark "c2670" written by ABC on Wed May 27 22:08:07 2020
 
-module c2670 ( 
+module rf_c2670 ( 
     G1, G2, G3, G4, G5, G6, G7, G8, G11, G14, G15, G16, G19, G20, G21, G22,
     G23, G24, G25, G26, G27, G28, G29, G32, G33, G34, G35, G36, G37, G40,
     G43, G44, G47, G48, G49, G50, G51, G52, G53, G54, G55, G56, G57, G60,

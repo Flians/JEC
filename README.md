@@ -128,3 +128,18 @@ decoder	0.04	0.00	0.00
 c5315	0.70	0.02	0.01
 c7552	0.68	0.02	0.00
 ```
+
+## build cec_abc
+
+- readline: sudo apt-get install libreadline-dev
+
+``` shell
+gcc -Wall -g -c cec_abc.c -o cec_abc.o
+g++ -g -o cec_abc cec_abc.o ../lib/libabc.a -lm -ldl -lreadline -lpthread
+```
+
+### run
+
+``` shell
+./cec_abc ./original/abc.rc ./original/rsfq.genlib ./
+```

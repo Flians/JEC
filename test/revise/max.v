@@ -1,6 +1,6 @@
 // Benchmark "top" written by ABC on Thu May 28 22:01:59 2020
 
-module top ( 
+module rf_max ( 
     \in0[0] , \in0[1] , \in0[2] , \in0[3] , \in0[4] , \in0[5] , \in0[6] ,
     \in0[7] , \in0[8] , \in0[9] , \in0[10] , \in0[11] , \in0[12] ,
     \in0[13] , \in0[14] , \in0[15] , \in0[16] , \in0[17] , \in0[18] ,

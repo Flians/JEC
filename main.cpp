@@ -75,17 +75,18 @@ void evaluate(string root_path, SMT smt, bool incremental)
         "c432",
         "c499",
         "c5315",
-        "c6288",
+        // "c6288",
         "c7552",
         "c880",
         "adder",
         "bar",
         "decoder",
-        "divisor",
-        "log2",
-        "max",
-        "multiplier",
-        "sin"};
+        // "divisor",
+        // "log2",
+        // "max",
+        // "multiplier",
+        // "sin"
+    };
     int patch = 10;
     vector<vector<double>> avg(cases.size(), vector<double>(3, 0.0));
     ;
@@ -122,7 +123,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("Please input five parameters, like \"./xec <golden.v> <revised.v> <output> <FSM|OPENSMT|CVC4> <i>\".");
+        printf("Please input five parameters, like \"./JEC <golden.v> <revised.v> <output> <FSM|OPENSMT|CVC4> <i>\".");
     }
     return 0;
 }
