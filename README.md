@@ -56,5 +56,75 @@ make install     # to install into the prefix specified above
 ## run
 
 ``` shell
-./JEC ../test/golden/gf_1_bit_full_adder.v ../test/revise/rf_1_bit_full_adder.v ../test/output/output_1_bit_full_adder.txt
+./JEC ../test/golden/gf_1_bit_full_adder.v ../test/revise/rf_1_bit_full_adder.v ../test/output/output_1_bit_full_adder.txt CVC4 i
+```
+
+## result
+
+- CVC4
+
+> Unincremental
+
+``` bash
+bar     0.38    0.10    4.24
+c432    0.10    0.00    0.01
+c499    0.05    0.00    0.01
+c880    0.12    0.00    0.04
+adder   21.82   0.02    0.08
+c1908   0.10    0.00    0.03
+c1355   0.05    0.00    0.01
+c3540   0.27    0.01    0.53
+decoder 0.04    0.00    0.00
+c5315   0.65    0.02    0.18
+c7552   0.64    0.02    0.23
+```
+
+> Incremental
+
+``` bash
+bar     0.39    0.10    0.30
+c432    0.10    0.00    0.01
+c499    0.05    0.00    0.02
+c880    0.12    0.00    0.01
+adder   21.84   0.02    0.17
+c1908   0.10    0.00    0.02
+c1355   0.05    0.00    0.02
+c3540   0.26    0.01    0.67
+decoder 0.04    0.00    0.01
+c5315   0.67    0.02    0.08
+c7552   0.64    0.02    0.07
+```
+
+- OPENSMT
+
+> Unincremental
+
+``` bash
+bar 	0.41	0.11	3.74
+c432	0.10	0.00	0.01
+c499	0.05	0.00	0.01
+c880	0.13	0.00	0.02
+adder	22.67	0.02	0.04
+c1908	0.10	0.00	0.03
+c1355	0.05	0.00	0.01
+c3540	0.27	0.01	0.71
+decoder	0.04	0.00	0.00
+c5315	0.68	0.02	0.19
+c7552	0.67	0.02	0.19
+```
+
+> Incremental
+
+``` bash
+bar 	0.43	0.11	0.01
+c432	0.11	0.00	0.01
+c499	0.05	0.00	0.00
+c880	0.13	0.00	0.00
+adder	22.94	0.02	0.01
+c1908	0.10	0.00	0.01
+c1355	0.05	0.00	0.00
+c3540	0.33	0.01	0.53
+decoder	0.04	0.00	0.00
+c5315	0.70	0.02	0.01
+c7552	0.68	0.02	0.00
 ```
