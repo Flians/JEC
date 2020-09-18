@@ -1,8 +1,9 @@
 The parsing process is over!
-The parsing time is: 0.773838 S
+The parsing time is: 1.15584 S
 The number of INV, BUF, and others reduction is 441
-The simplify time is: 0.789629 S
-The prover is CVC4.
-The simulating time is: 0.148063 S
+The simplify time is: 1.17223 S
+; JSolver query time so far: 0.000000
+The prover is opensmt.
+The simulating time is: 0.149689 S
 The parser is destroyed!
 The parser is destroyed!
