@@ -1,6 +1,6 @@
 // Benchmark "c6288" written by ABC on Sun May 24 21:38:16 2020
 
-module c6288 ( 
+module rf_c6288 ( 
     G1gat, G18gat, G35gat, G52gat, G69gat, G86gat, G103gat, G120gat,
     G137gat, G154gat, G171gat, G188gat, G205gat, G222gat, G239gat, G256gat,
     G273gat, G290gat, G307gat, G324gat, G341gat, G358gat, G375gat, G392gat,

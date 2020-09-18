@@ -1,6 +1,6 @@
 // Benchmark "c1908" written by ABC on Wed May 27 22:04:46 2020
 
-module c1908 ( 
+module gf_c1908 ( 
     G101, G104, G107, G110, G113, G116, G119, G122, G125, G128, G131, G134,
     G137, G140, G143, G146, G210, G214, G217, G221, G224, G227, G234, G237,
     G469, G472, G475, G478, G898, G900, G902, G952, G953,

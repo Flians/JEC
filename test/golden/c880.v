@@ -1,6 +1,6 @@
 // Benchmark "c880" written by ABC on Sun May 24 21:28:53 2020
 
-module c880 ( 
+module gf_c880 ( 
     G1gat, G8gat, G13gat, G17gat, G26gat, G29gat, G36gat, G42gat, G51gat,
     G55gat, G59gat, G68gat, G72gat, G73gat, G74gat, G75gat, G80gat, G85gat,
     G86gat, G87gat, G88gat, G89gat, G90gat, G91gat, G96gat, G101gat,
