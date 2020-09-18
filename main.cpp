@@ -69,17 +69,23 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
 void evaluate(string root_path, SMT smt, bool incremental)
 {
     vector<string> cases = {
-        "bar",
+        "c1355",
+        "c1908",
+        "c3540",
         "c432",
         "c499",
+        "c5315",
+        "c6288",
+        "c7552",
         "c880",
         "adder",
-        "c1908",
-        "c1355",
-        "c3540",
+        "bar",
         "decoder",
-        "c5315",
-        "c7552"};
+        "divisor",
+        "log2",
+        "max",
+        "multiplier",
+        "sin"};
     int patch = 10;
     vector<vector<double>> avg(cases.size(), vector<double>(3, 0.0));
     ;
@@ -89,16 +95,17 @@ void evaluate(string root_path, SMT smt, bool incremental)
         for (size_t j = 0; j < cases.size(); ++j)
         {
             cout << "    >>> case " << cases[j] << endl;
-            auto runtimes = workflow((root_path + "/golden/gf_" + cases[j] + ".v").c_str(), (root_path + "/revise/rf_" + cases[j] + ".v").c_str(), (root_path + "/output/output_" + cases[j] + ".v").c_str(), smt, incremental);
+            auto runtimes = workflow((root_path + "/golden/gf_" + cases[j] + ".v").c_str(), (root_path + "/revise/rf_" + cases[j] + ".v").c_str(), (root_path + "/output/output_" + cases[j] + ".txt").c_str(), smt, incremental);
             avg[j][0] += runtimes[0];
             avg[j][1] += runtimes[1];
             avg[j][2] += runtimes[2];
         }
     }
-    cout << ">>> Iterator over!\n" << (incremental?"Incremental":"Unincremental") << endl;
+    cout << ">>> Iterator over!\n"
+         << (incremental ? "Incremental" : "Unincremental") << endl;
     for (size_t j = 0; j < cases.size(); ++j)
     {
-        cout << fixed << setprecision(2) << cases[j] << "\t" << avg[j][0] / patch << "\t" << avg[j][1] / patch << "\t" << avg[j][2] / patch << endl;
+        cout << fixed << setprecision(6) << cases[j] << "\t" << avg[j][0] / patch << "\t" << avg[j][1] / patch << "\t" << avg[j][2] / patch << endl;
     }
 }
 
@@ -111,11 +118,11 @@ int main(int argc, char *argv[])
     }
     else if (argc > 4)
     {
-        workflow(argv[1], argv[2], argv[3], Str_SMT[string(argv[4])]);
+        workflow(argv[1], argv[2], argv[3], Str_SMT[string(argv[4])], argc >= 5 ? argv[5][0] == 'i' : false);
     }
     else
     {
-        printf("Please input three parameters, like \"./xec <golden.v> <revised.v> <output>\".");
+        printf("Please input five parameters, like \"./xec <golden.v> <revised.v> <output> <FSM|OPENSMT|CVC4> <i>\".");
     }
     return 0;
 }
