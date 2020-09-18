@@ -1,8 +1,8 @@
 The parsing process is over!
-The parsing time is: 1.1248 S
+The parsing time is: 1.16142 S
 The number of INV, BUF, and others reduction is 503
-The simplify time is: 1.21112 S
+The simplify time is: 1.1866 S
 The prover is CVC4.
-The simulating time is: 1799.67 S
+The simulating time is: 1799.7 S
 The parser is destroyed!
 The parser is destroyed!
