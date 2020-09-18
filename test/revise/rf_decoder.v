@@ -4,18 +4,21 @@ top:
 	jspl: 56
 	jspl3: 248
 	jnot: 8
-	jdff: 28
+	jdff: 11
 	jand: 304
 
 Summary:
 	jspl: 56
 	jspl3: 248
 	jnot: 8
-	jdff: 28
+	jdff: 11
 	jand: 304
+
+The maximum logic level gap of any gate:
+	top: 1
 */
 
-module top(gclk, count0, count1, count2, count3, count4, count5, count6, count7, selectp10, selectp11, selectp12, selectp13, selectp14, selectp15, selectp16, selectp17, selectp18, selectp19, selectp110, selectp111, selectp112, selectp113, selectp114, selectp115, selectp116, selectp117, selectp118, selectp119, selectp120, selectp121, selectp122, selectp123, selectp124, selectp125, selectp126, selectp127, selectp128, selectp129, selectp130, selectp131, selectp132, selectp133, selectp134, selectp135, selectp136, selectp137, selectp138, selectp139, selectp140, selectp141, selectp142, selectp143, selectp144, selectp145, selectp146, selectp147, selectp148, selectp149, selectp150, selectp151, selectp152, selectp153, selectp154, selectp155, selectp156, selectp157, selectp158, selectp159, selectp160, selectp161, selectp162, selectp163, selectp164, selectp165, selectp166, selectp167, selectp168, selectp169, selectp170, selectp171, selectp172, selectp173, selectp174, selectp175, selectp176, selectp177, selectp178, selectp179, selectp180, selectp181, selectp182, selectp183, selectp184, selectp185, selectp186, selectp187, selectp188, selectp189, selectp190, selectp191, selectp192, selectp193, selectp194, selectp195, selectp196, selectp197, selectp198, selectp199, selectp1100, selectp1101, selectp1102, selectp1103, selectp1104, selectp1105, selectp1106, selectp1107, selectp1108, selectp1109, selectp1110, selectp1111, selectp1112, selectp1113, selectp1114, selectp1115, selectp1116, selectp1117, selectp1118, selectp1119, selectp1120, selectp1121, selectp1122, selectp1123, selectp1124, selectp1125, selectp1126, selectp1127, selectp20, selectp21, selectp22, selectp23, selectp24, selectp25, selectp26, selectp27, selectp28, selectp29, selectp210, selectp211, selectp212, selectp213, selectp214, selectp215, selectp216, selectp217, selectp218, selectp219, selectp220, selectp221, selectp222, selectp223, selectp224, selectp225, selectp226, selectp227, selectp228, selectp229, selectp230, selectp231, selectp232, selectp233, selectp234, selectp235, selectp236, selectp237, selectp238, selectp239, selectp240, selectp241, selectp242, selectp243, selectp244, selectp245, selectp246, selectp247, selectp248, selectp249, selectp250, selectp251, selectp252, selectp253, selectp254, selectp255, selectp256, selectp257, selectp258, selectp259, selectp260, selectp261, selectp262, selectp263, selectp264, selectp265, selectp266, selectp267, selectp268, selectp269, selectp270, selectp271, selectp272, selectp273, selectp274, selectp275, selectp276, selectp277, selectp278, selectp279, selectp280, selectp281, selectp282, selectp283, selectp284, selectp285, selectp286, selectp287, selectp288, selectp289, selectp290, selectp291, selectp292, selectp293, selectp294, selectp295, selectp296, selectp297, selectp298, selectp299, selectp2100, selectp2101, selectp2102, selectp2103, selectp2104, selectp2105, selectp2106, selectp2107, selectp2108, selectp2109, selectp2110, selectp2111, selectp2112, selectp2113, selectp2114, selectp2115, selectp2116, selectp2117, selectp2118, selectp2119, selectp2120, selectp2121, selectp2122, selectp2123, selectp2124, selectp2125, selectp2126, selectp2127);
+module rf_decoder(gclk, count0, count1, count2, count3, count4, count5, count6, count7, selectp10, selectp11, selectp12, selectp13, selectp14, selectp15, selectp16, selectp17, selectp18, selectp19, selectp110, selectp111, selectp112, selectp113, selectp114, selectp115, selectp116, selectp117, selectp118, selectp119, selectp120, selectp121, selectp122, selectp123, selectp124, selectp125, selectp126, selectp127, selectp128, selectp129, selectp130, selectp131, selectp132, selectp133, selectp134, selectp135, selectp136, selectp137, selectp138, selectp139, selectp140, selectp141, selectp142, selectp143, selectp144, selectp145, selectp146, selectp147, selectp148, selectp149, selectp150, selectp151, selectp152, selectp153, selectp154, selectp155, selectp156, selectp157, selectp158, selectp159, selectp160, selectp161, selectp162, selectp163, selectp164, selectp165, selectp166, selectp167, selectp168, selectp169, selectp170, selectp171, selectp172, selectp173, selectp174, selectp175, selectp176, selectp177, selectp178, selectp179, selectp180, selectp181, selectp182, selectp183, selectp184, selectp185, selectp186, selectp187, selectp188, selectp189, selectp190, selectp191, selectp192, selectp193, selectp194, selectp195, selectp196, selectp197, selectp198, selectp199, selectp1100, selectp1101, selectp1102, selectp1103, selectp1104, selectp1105, selectp1106, selectp1107, selectp1108, selectp1109, selectp1110, selectp1111, selectp1112, selectp1113, selectp1114, selectp1115, selectp1116, selectp1117, selectp1118, selectp1119, selectp1120, selectp1121, selectp1122, selectp1123, selectp1124, selectp1125, selectp1126, selectp1127, selectp20, selectp21, selectp22, selectp23, selectp24, selectp25, selectp26, selectp27, selectp28, selectp29, selectp210, selectp211, selectp212, selectp213, selectp214, selectp215, selectp216, selectp217, selectp218, selectp219, selectp220, selectp221, selectp222, selectp223, selectp224, selectp225, selectp226, selectp227, selectp228, selectp229, selectp230, selectp231, selectp232, selectp233, selectp234, selectp235, selectp236, selectp237, selectp238, selectp239, selectp240, selectp241, selectp242, selectp243, selectp244, selectp245, selectp246, selectp247, selectp248, selectp249, selectp250, selectp251, selectp252, selectp253, selectp254, selectp255, selectp256, selectp257, selectp258, selectp259, selectp260, selectp261, selectp262, selectp263, selectp264, selectp265, selectp266, selectp267, selectp268, selectp269, selectp270, selectp271, selectp272, selectp273, selectp274, selectp275, selectp276, selectp277, selectp278, selectp279, selectp280, selectp281, selectp282, selectp283, selectp284, selectp285, selectp286, selectp287, selectp288, selectp289, selectp290, selectp291, selectp292, selectp293, selectp294, selectp295, selectp296, selectp297, selectp298, selectp299, selectp2100, selectp2101, selectp2102, selectp2103, selectp2104, selectp2105, selectp2106, selectp2107, selectp2108, selectp2109, selectp2110, selectp2111, selectp2112, selectp2113, selectp2114, selectp2115, selectp2116, selectp2117, selectp2118, selectp2119, selectp2120, selectp2121, selectp2122, selectp2123, selectp2124, selectp2125, selectp2126, selectp2127);
 	input gclk;
 	input count0;
 	input count1;
@@ -641,34 +644,17 @@ module top(gclk, count0, count1, count2, count3, count4, count5, count6, count7,
 	wire[2:0] w_n559_5;
 	wire[2:0] w_n559_6;
 	wire[1:0] w_n559_7;
-	wire w_dff_A_hi6C8TFS3_0;
-	wire w_dff_A_SfGsFQTY3_2;
-	wire w_dff_A_OutpCdUL0_0;
-	wire w_dff_A_BPN39FUC4_2;
-	wire w_dff_A_i0oFdLqX2_0;
-	wire w_dff_A_AmwNz95M1_2;
-	wire w_dff_A_XvYwRTgM9_1;
-	wire w_dff_A_dajC1xDO0_1;
-	wire w_dff_A_BMeKY9zs9_2;
-	wire w_dff_A_zjWBfEYj3_0;
-	wire w_dff_A_EB2rjCT05_2;
-	wire w_dff_A_fPH5FAdM5_2;
-	wire w_dff_A_ezaUN0Q59_0;
-	wire w_dff_A_tSxiWc3X2_1;
-	wire w_dff_A_5r8UI9U52_2;
-	wire w_dff_A_5u2CoOoI3_1;
-	wire w_dff_A_wXtANeke6_1;
-	wire w_dff_A_5HU0GweN1_1;
-	wire w_dff_A_CgbBgMMW8_2;
-	wire w_dff_A_padWN2Ls7_0;
-	wire w_dff_A_SxhhZ42g5_2;
-	wire w_dff_A_bTbBNc4D3_1;
-	wire w_dff_A_JuXO7Cn94_1;
-	wire w_dff_A_xfK8pRQK4_0;
-	wire w_dff_A_zmjRnS476_2;
-	wire w_dff_A_dw4DFRVs6_1;
-	wire w_dff_A_hziv9A0g0_1;
-	wire w_dff_A_tgzZsGlg9_2;
+	wire w_dff_A_rDqOAD2a9_0;
+	wire w_dff_A_ab9CpXk92_2;
+	wire w_dff_A_tiktysty3_0;
+	wire w_dff_A_ZzlQ5K8V3_2;
+	wire w_dff_A_EO76XK5T7_1;
+	wire w_dff_A_TfocyPdz7_2;
+	wire w_dff_A_MsrlvNXs9_0;
+	wire w_dff_A_GOKZz8b87_2;
+	wire w_dff_A_9z3I3JML7_1;
+	wire w_dff_A_YL3lEjfQ9_2;
+	wire w_dff_A_kM279vRh1_2;
 	jnot g000(.din(w_count4_0[2]),.dout(n264),.clk(gclk));
 	jnot g001(.din(w_count5_0[2]),.dout(n265),.clk(gclk));
 	jand g002(.dina(w_n265_0[1]),.dinb(w_n264_0[1]),.dout(n266),.clk(gclk));
@@ -841,7 +827,7 @@ module top(gclk, count0, count1, count2, count3, count4, count5, count6, count7,
 	jand g169(.dina(w_n420_3[1]),.dinb(w_n306_5[0]),.dout(selectp1124),.clk(gclk));
 	jand g170(.dina(w_n420_3[0]),.dinb(w_n308_5[0]),.dout(selectp1125),.clk(gclk));
 	jand g171(.dina(w_n420_2[2]),.dinb(w_n310_5[0]),.dout(selectp1126),.clk(gclk));
-	jand g172(.dina(w_n420_2[1]),.dinb(w_n312_5[0]),.dout(w_dff_A_tgzZsGlg9_2),.clk(gclk));
+	jand g172(.dina(w_n420_2[1]),.dinb(w_n312_5[0]),.dout(w_dff_A_kM279vRh1_2),.clk(gclk));
 	jnot g173(.din(w_count7_0[0]),.dout(n437),.clk(gclk));
 	jand g174(.dina(w_n437_0[1]),.dinb(w_n267_0[0]),.dout(n438),.clk(gclk));
 	jand g175(.dina(w_n438_1[1]),.dinb(w_n266_0[2]),.dout(n439),.clk(gclk));
@@ -981,14 +967,14 @@ module top(gclk, count0, count1, count2, count3, count4, count5, count6, count7,
 	jand g309(.dina(w_n559_3[0]),.dinb(w_n308_2[1]),.dout(selectp2125),.clk(gclk));
 	jand g310(.dina(w_n559_2[2]),.dinb(w_n310_2[1]),.dout(selectp2126),.clk(gclk));
 	jand g311(.dina(w_n559_2[1]),.dinb(w_n312_2[1]),.dout(selectp2127),.clk(gclk));
-	jspl3 jspl3_w_count0_0(.douta(w_count0_0[0]),.doutb(w_dff_A_hziv9A0g0_1),.doutc(w_count0_0[2]),.din(count0));
-	jspl3 jspl3_w_count1_0(.douta(w_count1_0[0]),.doutb(w_dff_A_JuXO7Cn94_1),.doutc(w_count1_0[2]),.din(count1));
-	jspl3 jspl3_w_count2_0(.douta(w_count2_0[0]),.doutb(w_dff_A_dw4DFRVs6_1),.doutc(w_count2_0[2]),.din(count2));
-	jspl3 jspl3_w_count3_0(.douta(w_count3_0[0]),.doutb(w_dff_A_bTbBNc4D3_1),.doutc(w_count3_0[2]),.din(count3));
-	jspl3 jspl3_w_count4_0(.douta(w_count4_0[0]),.doutb(w_dff_A_wXtANeke6_1),.doutc(w_count4_0[2]),.din(count4));
-	jspl3 jspl3_w_count5_0(.douta(w_count5_0[0]),.doutb(w_dff_A_5u2CoOoI3_1),.doutc(w_count5_0[2]),.din(count5));
-	jspl3 jspl3_w_count6_0(.douta(w_dff_A_ezaUN0Q59_0),.doutb(w_count6_0[1]),.doutc(w_count6_0[2]),.din(count6));
-	jspl3 jspl3_w_count7_0(.douta(w_count7_0[0]),.doutb(w_count7_0[1]),.doutc(w_dff_A_fPH5FAdM5_2),.din(count7));
+	jspl3 jspl3_w_count0_0(.douta(w_count0_0[0]),.doutb(w_count0_0[1]),.doutc(w_count0_0[2]),.din(count0));
+	jspl3 jspl3_w_count1_0(.douta(w_count1_0[0]),.doutb(w_count1_0[1]),.doutc(w_count1_0[2]),.din(count1));
+	jspl3 jspl3_w_count2_0(.douta(w_count2_0[0]),.doutb(w_count2_0[1]),.doutc(w_count2_0[2]),.din(count2));
+	jspl3 jspl3_w_count3_0(.douta(w_count3_0[0]),.doutb(w_count3_0[1]),.doutc(w_count3_0[2]),.din(count3));
+	jspl3 jspl3_w_count4_0(.douta(w_count4_0[0]),.doutb(w_count4_0[1]),.doutc(w_count4_0[2]),.din(count4));
+	jspl3 jspl3_w_count5_0(.douta(w_count5_0[0]),.doutb(w_count5_0[1]),.doutc(w_count5_0[2]),.din(count5));
+	jspl3 jspl3_w_count6_0(.douta(w_count6_0[0]),.doutb(w_count6_0[1]),.doutc(w_count6_0[2]),.din(count6));
+	jspl3 jspl3_w_count7_0(.douta(w_count7_0[0]),.doutb(w_count7_0[1]),.doutc(w_count7_0[2]),.din(count7));
 	jspl jspl_w_n264_0(.douta(w_n264_0[0]),.doutb(w_n264_0[1]),.din(n264));
 	jspl jspl_w_n265_0(.douta(w_n265_0[0]),.doutb(w_n265_0[1]),.din(n265));
 	jspl3 jspl3_w_n266_0(.douta(w_n266_0[0]),.doutb(w_n266_0[1]),.doutc(w_n266_0[2]),.din(n266));
@@ -1058,7 +1044,7 @@ module top(gclk, count0, count1, count2, count3, count4, count5, count6, count7,
 	jspl3 jspl3_w_n287_5(.douta(w_n287_5[0]),.doutb(w_n287_5[1]),.doutc(w_n287_5[2]),.din(w_n287_1[1]));
 	jspl3 jspl3_w_n287_6(.douta(w_n287_6[0]),.doutb(w_n287_6[1]),.doutc(w_n287_6[2]),.din(w_n287_1[2]));
 	jspl jspl_w_n287_7(.douta(w_n287_7[0]),.doutb(w_n287_7[1]),.din(w_n287_2[0]));
-	jspl3 jspl3_w_n289_0(.douta(w_dff_A_xfK8pRQK4_0),.doutb(w_n289_0[1]),.doutc(w_dff_A_zmjRnS476_2),.din(n289));
+	jspl3 jspl3_w_n289_0(.douta(w_n289_0[0]),.doutb(w_n289_0[1]),.doutc(w_n289_0[2]),.din(n289));
 	jspl jspl_w_n289_1(.douta(w_n289_1[0]),.doutb(w_n289_1[1]),.din(w_n289_0[0]));
 	jspl3 jspl3_w_n290_0(.douta(w_n290_0[0]),.doutb(w_n290_0[1]),.doutc(w_n290_0[2]),.din(n290));
 	jspl3 jspl3_w_n290_1(.douta(w_n290_1[0]),.doutb(w_n290_1[1]),.doutc(w_n290_1[2]),.din(w_n290_0[0]));
@@ -1102,7 +1088,7 @@ module top(gclk, count0, count1, count2, count3, count4, count5, count6, count7,
 	jspl3 jspl3_w_n299_5(.douta(w_n299_5[0]),.doutb(w_n299_5[1]),.doutc(w_n299_5[2]),.din(w_n299_1[1]));
 	jspl3 jspl3_w_n299_6(.douta(w_n299_6[0]),.doutb(w_n299_6[1]),.doutc(w_n299_6[2]),.din(w_n299_1[2]));
 	jspl jspl_w_n299_7(.douta(w_n299_7[0]),.doutb(w_n299_7[1]),.din(w_n299_2[0]));
-	jspl3 jspl3_w_n301_0(.douta(w_dff_A_padWN2Ls7_0),.doutb(w_n301_0[1]),.doutc(w_dff_A_SxhhZ42g5_2),.din(n301));
+	jspl3 jspl3_w_n301_0(.douta(w_n301_0[0]),.doutb(w_n301_0[1]),.doutc(w_n301_0[2]),.din(n301));
 	jspl jspl_w_n301_1(.douta(w_n301_1[0]),.doutb(w_n301_1[1]),.din(w_n301_0[0]));
 	jspl3 jspl3_w_n302_0(.douta(w_n302_0[0]),.doutb(w_n302_0[1]),.doutc(w_n302_0[2]),.din(n302));
 	jspl3 jspl3_w_n302_1(.douta(w_n302_1[0]),.doutb(w_n302_1[1]),.doutc(w_n302_1[2]),.din(w_n302_0[0]));
@@ -1144,12 +1130,12 @@ module top(gclk, count0, count1, count2, count3, count4, count5, count6, count7,
 	jspl3 jspl3_w_n310_5(.douta(w_n310_5[0]),.doutb(w_n310_5[1]),.doutc(w_n310_5[2]),.din(w_n310_1[1]));
 	jspl3 jspl3_w_n310_6(.douta(w_n310_6[0]),.doutb(w_n310_6[1]),.doutc(w_n310_6[2]),.din(w_n310_1[2]));
 	jspl jspl_w_n310_7(.douta(w_n310_7[0]),.doutb(w_n310_7[1]),.din(w_n310_2[0]));
-	jspl3 jspl3_w_n312_0(.douta(w_n312_0[0]),.doutb(w_dff_A_5HU0GweN1_1),.doutc(w_dff_A_CgbBgMMW8_2),.din(n312));
-	jspl3 jspl3_w_n312_1(.douta(w_dff_A_zjWBfEYj3_0),.doutb(w_n312_1[1]),.doutc(w_dff_A_EB2rjCT05_2),.din(w_n312_0[0]));
+	jspl3 jspl3_w_n312_0(.douta(w_n312_0[0]),.doutb(w_dff_A_9z3I3JML7_1),.doutc(w_dff_A_YL3lEjfQ9_2),.din(n312));
+	jspl3 jspl3_w_n312_1(.douta(w_dff_A_MsrlvNXs9_0),.doutb(w_n312_1[1]),.doutc(w_dff_A_GOKZz8b87_2),.din(w_n312_0[0]));
 	jspl3 jspl3_w_n312_2(.douta(w_n312_2[0]),.doutb(w_n312_2[1]),.doutc(w_n312_2[2]),.din(w_n312_0[1]));
 	jspl3 jspl3_w_n312_3(.douta(w_n312_3[0]),.doutb(w_n312_3[1]),.doutc(w_n312_3[2]),.din(w_n312_0[2]));
 	jspl3 jspl3_w_n312_4(.douta(w_n312_4[0]),.doutb(w_n312_4[1]),.doutc(w_n312_4[2]),.din(w_n312_1[0]));
-	jspl3 jspl3_w_n312_5(.douta(w_n312_5[0]),.doutb(w_dff_A_dajC1xDO0_1),.doutc(w_dff_A_BMeKY9zs9_2),.din(w_n312_1[1]));
+	jspl3 jspl3_w_n312_5(.douta(w_n312_5[0]),.doutb(w_dff_A_EO76XK5T7_1),.doutc(w_dff_A_TfocyPdz7_2),.din(w_n312_1[1]));
 	jspl3 jspl3_w_n312_6(.douta(w_n312_6[0]),.doutb(w_n312_6[1]),.doutc(w_n312_6[2]),.din(w_n312_1[2]));
 	jspl jspl_w_n312_7(.douta(w_n312_7[0]),.doutb(w_n312_7[1]),.din(w_n312_2[0]));
 	jspl3 jspl3_w_n314_0(.douta(w_n314_0[0]),.doutb(w_n314_0[1]),.doutc(w_n314_0[2]),.din(n314));
@@ -1172,8 +1158,8 @@ module top(gclk, count0, count1, count2, count3, count4, count5, count6, count7,
 	jspl3 jspl3_w_n333_5(.douta(w_n333_5[0]),.doutb(w_n333_5[1]),.doutc(w_n333_5[2]),.din(w_n333_1[1]));
 	jspl3 jspl3_w_n333_6(.douta(w_n333_6[0]),.doutb(w_n333_6[1]),.doutc(w_n333_6[2]),.din(w_n333_1[2]));
 	jspl jspl_w_n333_7(.douta(w_n333_7[0]),.doutb(w_n333_7[1]),.din(w_n333_2[0]));
-	jspl3 jspl3_w_n350_0(.douta(w_n350_0[0]),.doutb(w_dff_A_tSxiWc3X2_1),.doutc(w_dff_A_5r8UI9U52_2),.din(n350));
-	jspl jspl_w_n350_1(.douta(w_n350_1[0]),.doutb(w_dff_A_XvYwRTgM9_1),.din(w_n350_0[0]));
+	jspl3 jspl3_w_n350_0(.douta(w_n350_0[0]),.doutb(w_n350_0[1]),.doutc(w_n350_0[2]),.din(n350));
+	jspl jspl_w_n350_1(.douta(w_n350_1[0]),.doutb(w_n350_1[1]),.din(w_n350_0[0]));
 	jspl3 jspl3_w_n351_0(.douta(w_n351_0[0]),.doutb(w_n351_0[1]),.doutc(w_n351_0[2]),.din(n351));
 	jspl3 jspl3_w_n351_1(.douta(w_n351_1[0]),.doutb(w_n351_1[1]),.doutc(w_n351_1[2]),.din(w_n351_0[0]));
 	jspl3 jspl3_w_n351_2(.douta(w_n351_2[0]),.doutb(w_n351_2[1]),.doutc(w_n351_2[2]),.din(w_n351_0[1]));
@@ -1182,7 +1168,7 @@ module top(gclk, count0, count1, count2, count3, count4, count5, count6, count7,
 	jspl3 jspl3_w_n351_5(.douta(w_n351_5[0]),.doutb(w_n351_5[1]),.doutc(w_n351_5[2]),.din(w_n351_1[1]));
 	jspl3 jspl3_w_n351_6(.douta(w_n351_6[0]),.doutb(w_n351_6[1]),.doutc(w_n351_6[2]),.din(w_n351_1[2]));
 	jspl jspl_w_n351_7(.douta(w_n351_7[0]),.doutb(w_n351_7[1]),.din(w_n351_2[0]));
-	jspl3 jspl3_w_n368_0(.douta(w_dff_A_i0oFdLqX2_0),.doutb(w_n368_0[1]),.doutc(w_dff_A_AmwNz95M1_2),.din(n368));
+	jspl3 jspl3_w_n368_0(.douta(w_n368_0[0]),.doutb(w_n368_0[1]),.doutc(w_n368_0[2]),.din(n368));
 	jspl jspl_w_n368_1(.douta(w_n368_1[0]),.doutb(w_n368_1[1]),.din(w_n368_0[0]));
 	jspl3 jspl3_w_n369_0(.douta(w_n369_0[0]),.doutb(w_n369_0[1]),.doutc(w_n369_0[2]),.din(n369));
 	jspl3 jspl3_w_n369_1(.douta(w_n369_1[0]),.doutb(w_n369_1[1]),.doutc(w_n369_1[2]),.din(w_n369_0[0]));
@@ -1208,9 +1194,9 @@ module top(gclk, count0, count1, count2, count3, count4, count5, count6, count7,
 	jspl3 jspl3_w_n403_5(.douta(w_n403_5[0]),.doutb(w_n403_5[1]),.doutc(w_n403_5[2]),.din(w_n403_1[1]));
 	jspl3 jspl3_w_n403_6(.douta(w_n403_6[0]),.doutb(w_n403_6[1]),.doutc(w_n403_6[2]),.din(w_n403_1[2]));
 	jspl jspl_w_n403_7(.douta(w_n403_7[0]),.doutb(w_n403_7[1]),.din(w_n403_2[0]));
-	jspl3 jspl3_w_n420_0(.douta(w_dff_A_OutpCdUL0_0),.doutb(w_n420_0[1]),.doutc(w_dff_A_BPN39FUC4_2),.din(n420));
+	jspl3 jspl3_w_n420_0(.douta(w_dff_A_tiktysty3_0),.doutb(w_n420_0[1]),.doutc(w_dff_A_ZzlQ5K8V3_2),.din(n420));
 	jspl3 jspl3_w_n420_1(.douta(w_n420_1[0]),.doutb(w_n420_1[1]),.doutc(w_n420_1[2]),.din(w_n420_0[0]));
-	jspl3 jspl3_w_n420_2(.douta(w_dff_A_hi6C8TFS3_0),.doutb(w_n420_2[1]),.doutc(w_dff_A_SfGsFQTY3_2),.din(w_n420_0[1]));
+	jspl3 jspl3_w_n420_2(.douta(w_dff_A_rDqOAD2a9_0),.doutb(w_n420_2[1]),.doutc(w_dff_A_ab9CpXk92_2),.din(w_n420_0[1]));
 	jspl3 jspl3_w_n420_3(.douta(w_n420_3[0]),.doutb(w_n420_3[1]),.doutc(w_n420_3[2]),.din(w_n420_0[2]));
 	jspl3 jspl3_w_n420_4(.douta(w_n420_4[0]),.doutb(w_n420_4[1]),.doutc(w_n420_4[2]),.din(w_n420_1[0]));
 	jspl3 jspl3_w_n420_5(.douta(w_n420_5[0]),.doutb(w_n420_5[1]),.doutc(w_n420_5[2]),.din(w_n420_1[1]));
@@ -1285,33 +1271,16 @@ module top(gclk, count0, count1, count2, count3, count4, count5, count6, count7,
 	jspl3 jspl3_w_n559_5(.douta(w_n559_5[0]),.doutb(w_n559_5[1]),.doutc(w_n559_5[2]),.din(w_n559_1[1]));
 	jspl3 jspl3_w_n559_6(.douta(w_n559_6[0]),.doutb(w_n559_6[1]),.doutc(w_n559_6[2]),.din(w_n559_1[2]));
 	jspl jspl_w_n559_7(.douta(w_n559_7[0]),.doutb(w_n559_7[1]),.din(w_n559_2[0]));
-	jdff dff_A_hi6C8TFS3_0(.dout(w_n420_2[0]),.din(w_dff_A_hi6C8TFS3_0),.clk(gclk));
-	jdff dff_A_SfGsFQTY3_2(.dout(w_n420_2[2]),.din(w_dff_A_SfGsFQTY3_2),.clk(gclk));
-	jdff dff_A_OutpCdUL0_0(.dout(w_n420_0[0]),.din(w_dff_A_OutpCdUL0_0),.clk(gclk));
-	jdff dff_A_BPN39FUC4_2(.dout(w_n420_0[2]),.din(w_dff_A_BPN39FUC4_2),.clk(gclk));
-	jdff dff_A_i0oFdLqX2_0(.dout(w_n368_0[0]),.din(w_dff_A_i0oFdLqX2_0),.clk(gclk));
-	jdff dff_A_AmwNz95M1_2(.dout(w_n368_0[2]),.din(w_dff_A_AmwNz95M1_2),.clk(gclk));
-	jdff dff_A_XvYwRTgM9_1(.dout(w_n350_1[1]),.din(w_dff_A_XvYwRTgM9_1),.clk(gclk));
-	jdff dff_A_dajC1xDO0_1(.dout(w_n312_5[1]),.din(w_dff_A_dajC1xDO0_1),.clk(gclk));
-	jdff dff_A_BMeKY9zs9_2(.dout(w_n312_5[2]),.din(w_dff_A_BMeKY9zs9_2),.clk(gclk));
-	jdff dff_A_zjWBfEYj3_0(.dout(w_n312_1[0]),.din(w_dff_A_zjWBfEYj3_0),.clk(gclk));
-	jdff dff_A_EB2rjCT05_2(.dout(w_n312_1[2]),.din(w_dff_A_EB2rjCT05_2),.clk(gclk));
-	jdff dff_A_fPH5FAdM5_2(.dout(w_count7_0[2]),.din(w_dff_A_fPH5FAdM5_2),.clk(gclk));
-	jdff dff_A_ezaUN0Q59_0(.dout(w_count6_0[0]),.din(w_dff_A_ezaUN0Q59_0),.clk(gclk));
-	jdff dff_A_tSxiWc3X2_1(.dout(w_n350_0[1]),.din(w_dff_A_tSxiWc3X2_1),.clk(gclk));
-	jdff dff_A_5r8UI9U52_2(.dout(w_n350_0[2]),.din(w_dff_A_5r8UI9U52_2),.clk(gclk));
-	jdff dff_A_5u2CoOoI3_1(.dout(w_count5_0[1]),.din(w_dff_A_5u2CoOoI3_1),.clk(gclk));
-	jdff dff_A_wXtANeke6_1(.dout(w_count4_0[1]),.din(w_dff_A_wXtANeke6_1),.clk(gclk));
-	jdff dff_A_5HU0GweN1_1(.dout(w_n312_0[1]),.din(w_dff_A_5HU0GweN1_1),.clk(gclk));
-	jdff dff_A_CgbBgMMW8_2(.dout(w_n312_0[2]),.din(w_dff_A_CgbBgMMW8_2),.clk(gclk));
-	jdff dff_A_padWN2Ls7_0(.dout(w_n301_0[0]),.din(w_dff_A_padWN2Ls7_0),.clk(gclk));
-	jdff dff_A_SxhhZ42g5_2(.dout(w_n301_0[2]),.din(w_dff_A_SxhhZ42g5_2),.clk(gclk));
-	jdff dff_A_bTbBNc4D3_1(.dout(w_count3_0[1]),.din(w_dff_A_bTbBNc4D3_1),.clk(gclk));
-	jdff dff_A_JuXO7Cn94_1(.dout(w_count1_0[1]),.din(w_dff_A_JuXO7Cn94_1),.clk(gclk));
-	jdff dff_A_xfK8pRQK4_0(.dout(w_n289_0[0]),.din(w_dff_A_xfK8pRQK4_0),.clk(gclk));
-	jdff dff_A_zmjRnS476_2(.dout(w_n289_0[2]),.din(w_dff_A_zmjRnS476_2),.clk(gclk));
-	jdff dff_A_dw4DFRVs6_1(.dout(w_count2_0[1]),.din(w_dff_A_dw4DFRVs6_1),.clk(gclk));
-	jdff dff_A_hziv9A0g0_1(.dout(w_count0_0[1]),.din(w_dff_A_hziv9A0g0_1),.clk(gclk));
-	jdff dff_A_tgzZsGlg9_2(.dout(selectp1127),.din(w_dff_A_tgzZsGlg9_2),.clk(gclk));
+	jdff dff_A_rDqOAD2a9_0(.dout(w_n420_2[0]),.din(w_dff_A_rDqOAD2a9_0),.clk(gclk));
+	jdff dff_A_ab9CpXk92_2(.dout(w_n420_2[2]),.din(w_dff_A_ab9CpXk92_2),.clk(gclk));
+	jdff dff_A_tiktysty3_0(.dout(w_n420_0[0]),.din(w_dff_A_tiktysty3_0),.clk(gclk));
+	jdff dff_A_ZzlQ5K8V3_2(.dout(w_n420_0[2]),.din(w_dff_A_ZzlQ5K8V3_2),.clk(gclk));
+	jdff dff_A_EO76XK5T7_1(.dout(w_n312_5[1]),.din(w_dff_A_EO76XK5T7_1),.clk(gclk));
+	jdff dff_A_TfocyPdz7_2(.dout(w_n312_5[2]),.din(w_dff_A_TfocyPdz7_2),.clk(gclk));
+	jdff dff_A_MsrlvNXs9_0(.dout(w_n312_1[0]),.din(w_dff_A_MsrlvNXs9_0),.clk(gclk));
+	jdff dff_A_GOKZz8b87_2(.dout(w_n312_1[2]),.din(w_dff_A_GOKZz8b87_2),.clk(gclk));
+	jdff dff_A_9z3I3JML7_1(.dout(w_n312_0[1]),.din(w_dff_A_9z3I3JML7_1),.clk(gclk));
+	jdff dff_A_YL3lEjfQ9_2(.dout(w_n312_0[2]),.din(w_dff_A_YL3lEjfQ9_2),.clk(gclk));
+	jdff dff_A_kM279vRh1_2(.dout(selectp1127),.din(w_dff_A_kM279vRh1_2),.clk(gclk));
 endmodule
 
