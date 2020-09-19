@@ -110,7 +110,7 @@ void evaluate(char *abcrc, char *genlib, char *root_path)
         // "divisor",
         // "log2",
         "max",
-        "multiplier",
+        // "multiplier",
         "sin"
     };
     int patch = 10;
