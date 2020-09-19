@@ -325,12 +325,12 @@ void simplify::deduplicate(int i, Node *keep, Node *dupl, vector<Roaring> &nbrs)
     dupl = nullptr;
 }
 
-void simplify::reduce_repeat_nodes()
+int simplify::reduce_repeat_nodes()
 {
     if (layers.empty())
     {
         cout << "The layers is empty in simplify.reduce_repeat_nodes!" << endl;
-        return;
+        return 0;
     }
     vector<int> level(init_id, 0);
     vector<Roaring> nbrs(init_id);
@@ -412,14 +412,15 @@ void simplify::reduce_repeat_nodes()
     // reassign the id for all nodes
     this->id_reassign();
     std::cout << "The number of INV, BUF, and others reduction is " << reduce << std::endl;
+    return reduce;
 }
 
-void simplify::merge_nodes_between_networks()
+int simplify::merge_nodes_between_networks()
 {
     if (layers.empty())
     {
         cout << "The layers is empty in simplify.reduce_repeat_nodes!" << endl;
-        return;
+        return 0;
     }
     vector<pair<int,int>> position(init_id, {0,0});
     vector<Node*> all_node(init_id, NULL);
@@ -477,4 +478,5 @@ void simplify::merge_nodes_between_networks()
     // reassign the id for all nodes
     this->id_reassign();
     std::cout << "The number of INV, BUF, and others reduction is " << reduce << std::endl;
+    return reduce;
 }
