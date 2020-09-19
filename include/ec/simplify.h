@@ -37,9 +37,9 @@ public:
     vector<vector<Node *> > &layer_assignment(vector<Node *> &PIs, vector<Node *> &POs);
 
     // merge the equal nodes
-    void reduce_repeat_nodes();
+    int reduce_repeat_nodes();
     // merge the equal nodes
-    void merge_nodes_between_networks();
+    int merge_nodes_between_networks();
 };
 
 #endif
