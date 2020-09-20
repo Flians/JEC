@@ -82,7 +82,7 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
         "adder",
         "bar",
         "decoder",
-        // "divisor",
+        "divisor",
         // "log2",
         "max",
         // "multiplier",
