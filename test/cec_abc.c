@@ -107,7 +107,7 @@ void evaluate(char *abcrc, char *genlib, char *root_path)
         "adder",
         "bar",
         "decoder",
-        // "divisor",
+        "divisor",
         // "log2",
         "max",
         // "multiplier",
