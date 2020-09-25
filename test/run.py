@@ -12,7 +12,7 @@ def benchmarks(exePath, root='./', output='./output/'):
         names = file.split('.')
         if file.endswith('.bench') and names[0]!='c17' and names[0]!='c2670' and names[0]!='c6288' or names[0]=='adder' or names[0]=='bar' or names[0]=='decoder' or names[0]=='one_bit_full_adder' :
             with open(os.path.join(root, 'log/'+names[0]+'.txt'), 'w', encoding='utf8') as log:
-                cmd = [exePath, os.path.join(golden, 'gf_'+names[0]+'.v'), os.path.join(revise, 'rf_'+names[0]+'.v'), os.path.join(output, 'output_' + names[0] + '.txt')]
+                cmd = [exePath, os.path.join(golden, 'gf_'+names[0]+'.v'), os.path.join(revise, 'rf_'+names[0]+'.v'), os.path.join(output, 'output_' + names[0] + '.txt'), 'CONE', 'i', 'm']
                 p = subprocess.Popen(cmd, shell=False, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 while p.poll() is None:
                     nextline = p.stdout.readline()
