@@ -11,12 +11,14 @@ enum SMT
 {
     _FSM,
     _OPENSMT,
+    _CONE,
     _CVC4
 };
 
 std::unordered_map<string, SMT> Str_SMT = {
     {"FSM", _FSM},
     {"OPENSMT", _OPENSMT},
+    {"CONE", _CONE},
     {"CVC4", _CVC4}};
 
 vector<double> workflow(const char *golden, const char *revise, const char *output, SMT smt, bool incremental = false, bool merge = true)
@@ -57,6 +59,11 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
         jec_.evaluate_opensmt(sim.get_layers(), incremental);
         break;
 #endif
+    case _CONE:
+#if __linux__ || __unix__
+        jec_.evaluate_min_cone(sim.get_layers());
+        break;
+#endif
     default:
         jec_.evaluate_cvc4(sim.get_layers(), incremental);
         break;
@@ -82,13 +89,13 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
         "adder",
         "bar",
         "decoder",
-        "divisor",
+        // "divisor",
         // "log2",
         "max",
         // "multiplier",
         "sin"
     };
-    int patch = 10;
+    int patch = 100;
     vector<vector<double>> avg(cases.size(), vector<double>(4, 0.0));
     for (int i = 0; i < patch; ++i)
     {

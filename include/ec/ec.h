@@ -6,6 +6,13 @@
 class ec
 {
 protected:
+    struct Cone
+    {
+        vector<Node *> inputs;
+        queue<Node *> cur;
+        vector<Node *> outputs;
+    };
+
     ofstream fout;
 
 public:
