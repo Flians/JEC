@@ -100,16 +100,15 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
 {
     if (layers.empty())
     {
-        cerr << "The vector layers is empty!" << endl;
-        exit(-1);
+        error_fout("The vector layers is empty!");
     }
 
     auto config = std::unique_ptr<SMTConfig>(new SMTConfig());
-    // const char* msg;
-    // config->setOption(SMTConfig::o_produce_inter, SMTOption(true), msg);
+    const char *msg;
+    config->setOption(SMTConfig::o_incremental, SMTOption(incremental), msg);
     Opensmt osmt(opensmt_logic::qf_bool, "JSolver", std::move(config));
-    MainSolver& mainSolver = osmt.getMainSolver();
-    Logic& logic = osmt.getLogic();
+    MainSolver &mainSolver = osmt.getMainSolver();
+    Logic &logic = osmt.getLogic();
 
     vector<PTRef> nodes(init_id);
     // layers[0][0] is clk
@@ -172,7 +171,8 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
         }
     }
     sstat reslut;
-    if (!incremental) {
+    if (!incremental)
+    {
         vec<PTRef> outputs;
         for (auto &output : layers.back())
         {
@@ -181,7 +181,9 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
         PTRef assert = logic.mkEq(logic.getTerm_true(), logic.mkOr(outputs));
         mainSolver.push(assert);
         reslut = mainSolver.check();
-    } else {
+    }
+    else
+    {
         for (auto &output : layers.back())
         {
             PTRef assert = logic.mkEq(logic.getTerm_true(), nodes[output->id]);
@@ -216,13 +218,223 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
     }
 }
 
-#endif
-
-void jec::evaluate_cadical(vector<vector<Node *>> &layers) {
-
+void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRef> &record)
+{
+    if (!cur)
+    {
+        error_fout("The current node is NULL in jec.build_equation_dfs!");
+    }
+    if (record.count(cur) || cur->cell == CLK)
+    {
+        return;
+    }
+    if (cur->cell == _CONSTANT)
+    {
+        record[cur] = cur->val == L ? logic.getTerm_false() : logic.getTerm_true();
+    }
+    else if (cur->cell == IN)
+    {
+        record[cur] = logic.mkBoolVar(cur->name.c_str());
+    }
+    else
+    {
+        vec<PTRef> inputs;
+        for (auto &in : cur->ins)
+        {
+            build_equation_dfs(in, logic, record);
+            if (in->cell != CLK)
+            {
+                inputs.push(record[in]);
+            }
+        }
+        if (inputs.size() == 0)
+        {
+            error_fout("The inputs is empty! in jec.build_equation_dfs!");
+        }
+        PTRef res;
+        switch (cur->cell)
+        {
+        case AND:
+            res = logic.mkAnd(inputs);
+            break;
+        case OR:
+        case CB:
+        case CB3:
+            res = logic.mkOr(inputs);
+            break;
+        case XOR:
+            res = logic.mkXor(inputs);
+            break;
+        case INV:
+            res = logic.mkNot(inputs);
+            break;
+        case _EXOR:
+            res = logic.mkXor(inputs);
+            break;
+        case WIRE:
+        case SPL:
+        case SPL3:
+            cout << "RG " << cur->name << endl;
+        default:
+            res = inputs[0];
+            break;
+        }
+        record[cur] = res;
+    }
 }
 
-void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental) {
+bool jec::evaluate_opensmt(Cone &cone)
+{
+    if (cone.inputs.empty())
+    {
+        error_fout("The vector PIs is empty in jec.evaluate_opensmt!");
+    }
+
+    auto config = std::unique_ptr<SMTConfig>(new SMTConfig());
+    const char *msg;
+    config->setOption(SMTConfig::o_incremental, SMTOption(true), msg);
+    Opensmt osmt(opensmt_logic::qf_bool, "ConeSolver", std::move(config));
+    MainSolver &mainSolver = osmt.getMainSolver();
+    Logic &logic = osmt.getLogic();
+
+    unordered_map<Node *, PTRef> nodes;
+    cone.inputs.clear();
+
+    sstat reslut;
+    for (auto &output : cone.outputs)
+    {
+        build_equation_dfs(output, logic, nodes);
+        PTRef assert = logic.mkEq(logic.getTerm_true(), nodes[output]);
+        mainSolver.push(assert);
+        reslut = mainSolver.check();
+        if (reslut == s_True) {
+            if (output->cell == _EXOR) {
+                return false;
+            }
+            output->cell = _CONSTANT;
+            output->val = H;
+        } else if (reslut == s_False) {
+            assert = logic.mkEq(logic.getTerm_false(), nodes[output]);
+            mainSolver.push(assert);
+            reslut = mainSolver.check();
+            if (reslut == s_True) {
+                output->cell = _CONSTANT;
+                output->val = L;
+            } else if (reslut == s_False) {
+                output->cell = IN;
+            } else {
+                error_fout("The result2 is unknown in jec.evaluate_opensmt!");
+            }
+        } else {
+            error_fout("The result is unknown in jec.evaluate_opensmt!");
+        }
+        if (output->cell != _EXOR) {
+            cone.inputs.emplace_back(output);
+        }
+    }
+    cone.outputs.clear();
+    return true;
+}
+
+void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
+{
+    // <level, color>
+    vector<pair<int, int>> info(init_id, {0, 0});
+    for (size_t i = 0; i < layers.size(); ++i)
+    {
+        for (auto &node_ : layers[i])
+        {
+            info[node_->id].first = i;
+            info[node_->id].second = -1;
+        }
+    }
+    // the max number of cones is the size of PIs.
+    vector<Cone> cones(layers[0].size());
+    // init cones
+    for (size_t i = 0; i < layers[0].size(); ++i)
+    {
+        if (layers[0][i]->cell != CLK) {
+            cones[i].inputs.emplace_back(layers[0][i]);
+            cones[i].cur.push(layers[0][i]);
+            info[layers[0][i]->id].second = i;
+        }
+    }
+    size_t flag = 0;
+    do
+    {
+        flag = 0;
+        for (auto cur_cone : cones) {
+            int cur_len = cur_cone.cur.size();
+            while (cur_len--) {
+                Node *cur = cur_cone.cur.front();
+                cur_cone.cur.pop();
+                for (auto &tout : cur->outs)
+                {
+                    info[tout->id].second = info[cur->id].second;
+                    if (tout->cell == _EXOR)
+                    {
+                        cur_cone.outputs.emplace_back(tout);
+                    } else {
+                        cur_cone.cur.push(tout);
+                    }
+
+                    for (auto tin : tout->ins)
+                    {
+                        if (tin->cell == CLK) {
+                            continue;
+                        }
+                        if (info[tin->id].second == -1) {
+                            info[tin->id].second = info[cur->id].second;
+                            if (tin->cell == IN) {
+                                cur_cone.inputs.emplace_back(tin);
+                            } else {
+                                cur_cone.cur.push(tin);
+                            }
+                        } else if (info[tin->id].second != info[cur->id].second) {
+                            for (auto &in : cones[info[tin->id].second].inputs) {
+                                info[in->id].second = info[cur->id].second;
+                                cur_cone.inputs.emplace_back(in);
+                            }
+                            vector<Node *>().swap(cones[info[tin->id].second].inputs);
+
+                            cur_len += cones[info[tin->id].second].cur.size();
+                            while (!cones[info[tin->id].second].cur.empty()) {
+                                Node *tmp = cones[info[tin->id].second].cur.front();
+                                cones[info[tin->id].second].cur.pop();
+                                info[tmp->id].second = info[cur->id].second;
+                                cur_cone.cur.push(tmp);
+                            }
+                            vector<Node *>().swap(cones[info[tin->id].second].outputs);
+
+                            for (auto &out : cones[info[tin->id].second].outputs) {
+                                info[out->id].second = info[cur->id].second;
+                                cur_cone.outputs.emplace_back(out);
+                            }
+                            vector<Node *>().swap(cones[info[tin->id].second].outputs);
+                        }
+                    }
+                }
+            }
+            
+            if (cur_cone.cur.empty()) {
+                if (cur_cone.inputs.empty()) {
+                    ++flag;
+                } else {
+                    if (!evaluate_opensmt(cur_cone)) {
+                        this->fout << "NEQ" << endl;
+                        return;
+                    }
+                }
+            }
+        }
+    } while (flag == cones.size());
+    this->fout << "EQ" << endl;
+}
+
+#endif
+
+void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
+{
     if (layers.empty())
     {
         cerr << "The vector layers is empty!" << endl;
@@ -292,7 +504,8 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental) {
         }
     }
     CVC4::Result reslut;
-    if (!incremental) {
+    if (!incremental)
+    {
         vector<CVC4::Expr> outputs;
         for (auto &output : layers.back())
         {
@@ -301,7 +514,9 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental) {
         CVC4::Expr assert = em.mkExpr(CVC4::kind::EQUAL, em.mkConst<bool>(true), em.mkExpr(CVC4::kind::OR, outputs));
         smt.assertFormula(assert);
         reslut = smt.checkSat();
-    } else {
+    }
+    else
+    {
         for (auto &output : layers.back())
         {
             CVC4::Expr assert = em.mkExpr(CVC4::kind::EQUAL, em.mkConst<bool>(true), nodes[output->id]);
