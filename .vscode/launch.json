@@ -10,9 +10,9 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/JEC",
             "args": [
-                "./test/golden/gf_one_bit_full_adder.v",
-                "./test/revise/rf_one_bit_full_adder.v",
-                "./test/output/output_one_bit_full_adder.txt",
+                "./test/golden/gf_c432.v",
+                "./test/revise/rf_c432.v",
+                "./test/output/output_c432.txt",
                 "CONE",
                 "i",
                 "m"
