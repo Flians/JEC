@@ -303,8 +303,7 @@ Value calculate(Node *g)
     }
     else
     {
-        cerr << "The node g is empty in libhead.cpp: Value calculate(node *g)" << endl;
-        exit(-1);
+        error_fout("The node g is empty in libhead.cpp: Value calculate(node *g)");
     }
     return res;
 }
@@ -348,5 +347,6 @@ void cleanVP(vector<Node *> vecPtr)
 void error_fout(const string &message)
 {
     cerr << "Error: " << message << endl;
+    std::cout.flush();
     exit(-1);
 }
