@@ -16,6 +16,9 @@ protected:
 
     ofstream fout;
 
+    // return the size of other.cur
+    size_t merge_cone(int cur_color, Cone &cur_cone, Cone &other_cone, vector<pair<size_t, int>> &info);
+
 public:
     ec(const string &path_output);
     virtual ~ec();
