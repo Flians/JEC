@@ -3,16 +3,28 @@
 
 #ifdef WIN32
     #include <io.h>
+    #include <direct.h>
 #else
-    #include <string.h>
+    #include <unistd.h>
     #include <dirent.h>
     #include <sys/stat.h>
     #include <sys/types.h>
 #endif
 
 #include <string>
+#include <cstring>
 #include <vector>
 #include <fstream>
+
+#define MAX_PATH_LEN 256
+
+#ifdef WIN32
+    #define ACCESS(fileName,accessMode) _access(fileName,accessMode)
+    #define MKDIR(path) _mkdir(path)
+#else
+    #define ACCESS(fileName,accessMode) access(fileName,accessMode)
+    #define MKDIR(path) mkdir(path,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
+#endif
 
 using namespace std;
 
@@ -24,7 +36,8 @@ public:
     libfile();
     ~libfile();
 
-    bool getAllFiles(const string &path, vector<string>& files);
+    static bool getAllFiles(const string &path, vector<string>& files);
+    static int createDirectory(const std::string &directoryPath);
 };
 
 #endif

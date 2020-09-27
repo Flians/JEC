@@ -62,3 +62,29 @@ bool libfile::getAllFiles(const string &path, vector<string> &files)
 #endif
     return true;
 }
+
+int libfile::createDirectory(const std::string &directoryPath)
+{
+    size_t dirPathLen = directoryPath.length();
+    if (dirPathLen > MAX_PATH_LEN)
+    {
+        return -1;
+    }
+    char tmpDirPath[MAX_PATH_LEN] = { 0 };
+    for (size_t i = 0; i < dirPathLen; ++i)
+    {
+        tmpDirPath[i] = directoryPath[i];
+        if (tmpDirPath[i] == '\\' || tmpDirPath[i] == '/')
+        {
+            if (ACCESS(tmpDirPath, 0) != 0)
+            {
+                int32_t ret = MKDIR(tmpDirPath);
+                if (ret != 0)
+                {
+                    return ret;
+                }
+            }
+        }
+    }
+    return 0;
+}

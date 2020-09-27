@@ -76,8 +76,7 @@ void jec::evaluate_from_PIs_to_POs(vector<vector<Node *>> &layers)
 {
     if (layers.empty())
     {
-        cerr << "The vector layers is empty!" << endl;
-        exit(-1);
+        error_fout("The vector layers is empty!");
     }
     int index_beg = 0;
     if (layers[0][0]->cell == CLK)
@@ -447,8 +446,7 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
 {
     if (layers.empty())
     {
-        cerr << "The vector layers is empty!" << endl;
-        exit(-1);
+        error_fout("The vector layers is empty!");
     }
 
     CVC4::ExprManager em;

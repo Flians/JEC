@@ -280,13 +280,11 @@ void simplify::deduplicate(int i, Node *keep, Node *dupl, vector<Roaring> &nbrs)
 {
     if (keep->id == dupl->id)
     {
-        cerr << "keep is the same as dupl in cec.deduplicate!" << endl;
-        exit(-1);
+        error_fout("keep is the same as dupl in cec.deduplicate!");
     }
     if (dupl->outs.empty())
     {
-        cerr << "The inputs is empty in cec.deduplicate!" << endl;
-        exit(-1);
+        error_fout("The inputs is empty in cec.deduplicate!");
     }
     for (auto &out : dupl->outs)
     {
