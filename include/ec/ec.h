@@ -9,7 +9,7 @@ protected:
     struct Cone
     {
         vector<Node *> inputs;
-        queue<Node *> cur;
+        deque<Node *> cur;
         vector<Node *> outputs;
     };
 

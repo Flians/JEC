@@ -338,6 +338,7 @@ bool jec::evaluate_opensmt(Cone &cone)
 
 void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
 {
+    int smt_id = 0;
     // <level, color>
     vector<pair<int, int>> info(init_id, {0, 0});
     for (size_t i = 0; i < layers.size(); ++i)
@@ -355,7 +356,7 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
     {
         if (layers[0][i]->cell != CLK) {
             cones[i].inputs.emplace_back(layers[0][i]);
-            cones[i].cur.push(layers[0][i]);
+            cones[i].cur.push_back(layers[0][i]);
             info[layers[0][i]->id].second = i;
         }
     }
@@ -363,19 +364,25 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
     do
     {
         flag = 0;
-        for (auto cur_cone : cones) {
+        for (auto &cur_cone : cones) {
             int cur_len = cur_cone.cur.size();
             while (cur_len--) {
                 Node *cur = cur_cone.cur.front();
-                cur_cone.cur.pop();
+                cur_cone.cur.pop_front();
                 for (auto &tout : cur->outs)
                 {
-                    info[tout->id].second = info[cur->id].second;
-                    if (tout->cell == _EXOR)
-                    {
-                        cur_cone.outputs.emplace_back(tout);
+                    if (info[tout->id].second == -1) {
+                        info[tout->id].second = info[cur->id].second;
+                        if (tout->cell == _EXOR)
+                        {
+                            cur_cone.outputs.emplace_back(tout);
+                        } else {
+                            cur_cone.cur.push_back(tout);
+                        }
+                    } else if (info[tout->id].second == info[cur->id].second) {
+                        // cout << "The color of the current node '" << cur->name << "' is the same as the color of its output node '" << tout->name << "'!" << endl;
                     } else {
-                        cur_cone.cur.push(tout);
+                        cout << "The color of the current node '" << cur->name << "' is different from the color of its output node '" << tout->name << "'!" << endl;
                     }
 
                     for (auto tin : tout->ins)
@@ -383,34 +390,36 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                         if (tin->cell == CLK) {
                             continue;
                         }
-                        if (info[tin->id].second == -1) {
+                        int old_color = info[tin->id].second;
+                        if (old_color == -1) {
                             info[tin->id].second = info[cur->id].second;
                             if (tin->cell == IN) {
                                 cur_cone.inputs.emplace_back(tin);
                             } else {
-                                cur_cone.cur.push(tin);
+                                cur_cone.cur.push_back(tin);
                             }
-                        } else if (info[tin->id].second != info[cur->id].second) {
-                            for (auto &in : cones[info[tin->id].second].inputs) {
+                        } else if (old_color != info[cur->id].second) {
+                            cur_len += cones[old_color].cur.size();
+                            while (!cones[old_color].cur.empty()) {
+                                Node *tmp = cones[old_color].cur.front();
+                                cones[old_color].cur.pop_front();
+                                if (info[tmp->id].second != info[cur->id].second) {
+                                    info[tmp->id].second = info[cur->id].second;
+                                    cur_cone.cur.push_front(tmp);
+                                }
+                            }
+                            
+                            for (auto &in : cones[old_color].inputs) {
                                 info[in->id].second = info[cur->id].second;
                                 cur_cone.inputs.emplace_back(in);
                             }
-                            vector<Node *>().swap(cones[info[tin->id].second].inputs);
+                            vector<Node *>().swap(cones[old_color].inputs);
 
-                            cur_len += cones[info[tin->id].second].cur.size();
-                            while (!cones[info[tin->id].second].cur.empty()) {
-                                Node *tmp = cones[info[tin->id].second].cur.front();
-                                cones[info[tin->id].second].cur.pop();
-                                info[tmp->id].second = info[cur->id].second;
-                                cur_cone.cur.push(tmp);
-                            }
-                            vector<Node *>().swap(cones[info[tin->id].second].outputs);
-
-                            for (auto &out : cones[info[tin->id].second].outputs) {
+                            for (auto &out : cones[old_color].outputs) {
                                 info[out->id].second = info[cur->id].second;
                                 cur_cone.outputs.emplace_back(out);
                             }
-                            vector<Node *>().swap(cones[info[tin->id].second].outputs);
+                            vector<Node *>().swap(cones[old_color].outputs);
                         }
                     }
                 }
@@ -420,6 +429,7 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                 if (cur_cone.inputs.empty()) {
                     ++flag;
                 } else {
+                    cout << ">>> The cone " << (smt_id++) << " is evaluated." << endl;
                     if (!evaluate_opensmt(cur_cone)) {
                         this->fout << "NEQ" << endl;
                         return;
@@ -427,7 +437,7 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                 }
             }
         }
-    } while (flag == cones.size());
+    } while (flag < cones.size());
     this->fout << "EQ" << endl;
 }
 
