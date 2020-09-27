@@ -384,7 +384,7 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                         cout << "The color of the current node '" << cur->name << "' is different from the color of its output node '" << tout->name << "'!" << endl;
                     }
 
-                    for (auto tin : tout->ins)
+                    for (auto &tin : tout->ins)
                     {
                         if (tin->cell == CLK) {
                             continue;
@@ -395,7 +395,8 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                             if (tin->cell == IN) {
                                 cur_cone.inputs.emplace_back(tin);
                             } else {
-                                cur_cone.cur.push_back(tin);
+                                ++cur_len;
+                                cur_cone.cur.push_front(tin);
                             }
                         } else if (old_color != info[cur->id].second) {
                             cur_len += cones[old_color].cur.size();
