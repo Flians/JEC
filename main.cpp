@@ -82,7 +82,7 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
         "c432",
         "c499",
         "c5315",
-        // "c6288",
+        "c6288",
         "c7552",
         "c880",
         "adder",
