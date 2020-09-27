@@ -5,8 +5,9 @@ ec::ec(const string &path_output)
     this->fout.open(path_output, ios::out);
     if (!this->fout.is_open())
     {
-        cerr << "The output file can not be open!" << endl;
-        exit(-1);
+        if (libfile::createDirectory(path_output) == -1) {
+            error_fout("The output file can not be open!");
+        }
     }
 }
 

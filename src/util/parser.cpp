@@ -358,7 +358,6 @@ void parser::parse(ifstream &golden, ifstream &revised)
     // parse the golden file
     if (!golden.is_open())
     {
-        cerr << "The golden can not be open!" << endl;
         error_fout("The golden can not be open");
     }
     string buffer;
@@ -374,7 +373,6 @@ void parser::parse(ifstream &golden, ifstream &revised)
     // parse the revised file
     if (!revised.is_open())
     {
-        cerr << "The revised can not be open!" << endl;
         error_fout("The revised can not be open");
     }
 
@@ -455,7 +453,6 @@ void parser::build_miter(vector<Node *> &PIs_golden, vector<Node *> &POs_golden,
     int or_len = POs_revised.size();
     if (ig_len != ir_len || og_len != or_len)
     {
-        cerr << "The golden Verilog has a different number of PIs and POs than the revised Verilog!" << endl;
         error_fout("The golden Verilog has a different number of PIs and POs than the revised Verilog!");
     }
     vector<Node *>::iterator iter = PIs_golden.begin();
@@ -467,7 +464,6 @@ void parser::build_miter(vector<Node *> &PIs_golden, vector<Node *> &POs_golden,
         Node *pi = find_node_by_name(PIs_revised, (*iter)->name);
         if (!pi)
         {
-            cerr << "The input pi in the golden Verilog does not exist in the revised Verilog!" << endl;
             error_fout("The input pi in the golden Verilog does not exist in the revised Verilog!");
         }
         else
@@ -478,7 +474,6 @@ void parser::build_miter(vector<Node *> &PIs_golden, vector<Node *> &POs_golden,
             {
                 if (!replace_node_by_name((*it)->ins, (*iter)))
                 {
-                    cerr << "There may be some wrong!" << endl;
                     error_fout("There may be some wrong!");
                 }
                 (*iter)->outs.emplace_back(*it);
@@ -498,7 +493,6 @@ void parser::build_miter(vector<Node *> &PIs_golden, vector<Node *> &POs_golden,
         Node *po = find_node_by_name(POs_revised, (*iter)->name);
         if (!po)
         {
-            cerr << "The output po in the golden Verilog does not exist in the revised Verilog!" << endl;
             error_fout("The output po in the golden Verilog does not exist in the revised Verilog!");
         }
         else

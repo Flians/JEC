@@ -43,8 +43,7 @@ void cec::evaluate_from_PIs_to_POs(vector<Node *> &PIs)
 {
     if (PIs.empty())
     {
-        cerr << "The vector PIs is empty!" << endl;
-        exit(-1);
+        error_fout("The vector PIs is empty!");
     }
     if (assign_PIs_value(PIs, 0))
     {
@@ -80,8 +79,7 @@ bool cec::evaluate(vector<Node *> &nodes)
                     }
                     else
                     {
-                        cerr << out->name << " Gate have no outputs!" << endl;
-                        exit(-1);
+                        error_fout(out->name + " Gate have no outputs!");
                     }
                 }
             }

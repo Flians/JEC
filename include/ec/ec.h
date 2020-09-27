@@ -2,6 +2,7 @@
 #define _EC_H_
 
 #include "libhead.h"
+#include "libfile.h"
 
 class ec
 {
