@@ -19,7 +19,7 @@ private:
     bool evaluate(vector<Node *> &nodes);
 
     void build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRef> &record);
-    bool evaluate_opensmt(Cone &cone);
+    bool evaluate_opensmt(deque<Node*> &cone);
 public:
     jec(const string &path_output);
     virtual ~jec();

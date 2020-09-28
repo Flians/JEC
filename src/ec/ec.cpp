@@ -16,6 +16,7 @@ ec::~ec()
 {
     this->fout.flush();
     this->fout.close();
+    cout << "The ec is destroyed!" << endl;
 }
 
 size_t ec::merge_cone(int cur_color, Cone &cur_cone, Cone &other_cone, vector<pair<size_t, int>> &info) {
