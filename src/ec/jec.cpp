@@ -282,11 +282,11 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
     }
 }
 
-bool jec::evaluate_opensmt(Cone &cone)
+bool jec::evaluate_opensmt(deque<Node*> &cone)
 {
-    if (cone.inputs.empty())
+    if (cone.empty())
     {
-        error_fout("The vector PIs is empty in jec.evaluate_opensmt!");
+        cout << "The vector POs is empty in jec.evaluate_opensmt!" << endl;
     }
 
     auto config = std::unique_ptr<SMTConfig>(new SMTConfig());
@@ -298,11 +298,13 @@ bool jec::evaluate_opensmt(Cone &cone)
     Logic &logic = osmt.getLogic();
 
     unordered_map<Node *, PTRef> nodes;
-    cone.inputs.clear();
 
     sstat reslut;
-    for (auto &output : cone.outputs)
+    int out_len =  cone.size();
+    while (out_len--)
     {
+        Node *output = cone.front();
+        cone.pop_front();
         build_equation_dfs(output, logic, nodes);
         PTRef assert = logic.mkEq(logic.getTerm_true(), nodes[output]);
         mainSolver.push(assert);
@@ -332,10 +334,9 @@ bool jec::evaluate_opensmt(Cone &cone)
             error_fout("The result is unknown in jec.evaluate_opensmt!");
         }
         if (output->cell != _EXOR) {
-            cone.inputs.emplace_back(output);
+            cone.emplace_back(output);
         }
     }
-    cone.outputs.clear();
     return true;
 }
 
@@ -361,15 +362,18 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
             cones[i].emplace_back(layers[0][i]);
         }
     }
-
-    for (size_t i = 1; i < layers[0].size(); ++i) {
-        for (int j = 0; j < cones.size(); ++j) {
+    int smt_id = 0;
+    for (size_t i = 1; i < layers.size(); ++i) {
+        for (size_t j = 0; j < cones.size(); ++j) {
+            size_t exor_num = 0;
             int cur_len = cones[j].size();
             while (cur_len--) {
                 Node *cur = cones[j].front();
                 cones[j].pop_front();
                 if (info[cur->id].first >= i || cur->cell == _EXOR) {
                     cones[j].emplace_back(cur);
+                    if (cur->cell == _EXOR)
+                        ++exor_num;
                     continue;
                 }
                 for (auto &tout : cur->outs)
@@ -377,8 +381,10 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                     if (info[tout->id].second == -1) {
                         info[tout->id].second = j;
                         cones[j].emplace_back(tout);
+                        if (tout->cell == _EXOR)
+                            ++exor_num;
                     } else {
-                        int old_color = info[tout->id].second;
+                        size_t old_color = info[tout->id].second;
                         if (old_color == j) {
                             continue;
                         }
@@ -386,8 +392,10 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                             Node *tmp = cones[old_color].front();
                             cones[old_color].pop_front();
                             info[tmp->id].second = j;
-                            if (info[tmp->id].first >= i || cur->cell == _EXOR) {
+                            if (info[tmp->id].first >= i || tmp->cell == _EXOR) {
                                 cones[j].emplace_back(tmp);
+                                if (tmp->cell == _EXOR)
+                                    ++exor_num;
                             } else {
                                 cones[j].emplace_front(tmp);
                                 ++cur_len;
@@ -397,134 +405,17 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                 }
             }
             // evaluate cur_cone
-        }
-    }
-}
-/*
-    for (int i = 1; i < layers.size(); ++i) {
-        for (auto &cur : layers[i]) {
-            bool flag = true;
-            int cur_color = -1;
-            for (auto &in : cur->ins) {
-                if (in->cell == CLK)
-                    continue;
-                if (flag) {
-                    cur_color = colors[info[in->id].second];
-                    flag = false;
-                } else {
-                    colors[info[in->id].second] = cur_color;
-                    info[in->id].second = cur_color;
-                }
-            }
-            colors[info[cur->id].second] = cur_color;
-
-            if (old_color != colors[old_color]) {
-                cout << "The color between old_color and colors[old_color] is different." << endl;
-            }
-            colors[old_color] = colors[j];
-            for (int c = 0; c < colors.size(); ++c) {
-                if (colors[c] == old_color) {
-                    colors[c] = colors[j];
+            if (!cones[j].empty() && (cones[j].size() == 1 || exor_num == cones[j].size())) {
+                cout << ">>> The cone " << (smt_id++) << " is evaluated." << endl;
+                if (!evaluate_opensmt(cones[j])) {
+                    this->fout << "NEQ" << endl;
+                    return;
                 }
             }
         }
     }
-}
-*/
-
-/*
-void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
-{
-    int smt_id = 0;
-    // <level, color>
-    vector<pair<size_t, int>> info(init_id, {0, 0});
-    for (size_t i = 0; i < layers.size(); ++i)
-    {
-        for (auto &node_ : layers[i])
-        {
-            info[node_->id].first = i;
-            info[node_->id].second = -1;
-        }
-    }
-    // the max number of cones is the size of PIs.
-    vector<Cone> cones(layers[0].size());
-    // init cones
-    for (size_t i = 0; i < layers[0].size(); ++i)
-    {
-        if (layers[0][i]->cell != CLK) {
-            cones[i].inputs.emplace_back(layers[0][i]);
-            cones[i].cur.push_back(layers[0][i]);
-            info[layers[0][i]->id].second = i;
-        }
-    }
-    size_t level = 0;
-    do
-    {
-        for (auto &cur_cone : cones) {
-            int cur_len = cur_cone.cur.size();
-            while (cur_len--) {
-                Node *cur = cur_cone.cur.front();
-                cur_cone.cur.pop_front();
-                if (info[cur->id].first > level) {
-                    cur_cone.cur.push_back(cur);
-                    continue;
-                }
-                for (auto &tout : cur->outs)
-                {
-                    if (info[tout->id].second == -1) {
-                        info[tout->id].second = info[cur->id].second;
-                        if (tout->cell == _EXOR)
-                        {
-                            cur_cone.outputs.emplace_back(tout);
-                        } else {
-                            cur_cone.cur.push_back(tout);
-                        }
-                    } else {
-                        if (info[tout->id].second != info[cur->id].second) {
-                            // need to combine the current cone and the cone which contains tout.
-                            // cout << "The color of the current node '" << cur->name << "' is different from the color of its output node '" << tout->name << "'!" << endl;
-                            cur_len += merge_cone(info[cur->id].second, cur_cone, cones[info[tout->id].second], info);
-                        }
-                        continue;
-                    }
-                    if (info[tout->id].first > level + 1) {
-                        continue;
-                    }
-                    for (auto &tin : tout->ins)
-                    {
-                        if (tin->cell == CLK) {
-                            continue;
-                        }
-                        int old_color = info[tin->id].second;
-                        if (old_color == -1) {
-                            info[tin->id].second = info[cur->id].second;
-                            if (tin->cell == IN) {
-                                cur_cone.inputs.emplace_back(tin);
-                            } else {
-                                ++cur_len;
-                                cur_cone.cur.push_front(tin);
-                            }
-                        } else if (old_color != info[cur->id].second) {
-                            cur_len += merge_cone(info[cur->id].second, cur_cone, cones[old_color], info);
-                        }
-                    }
-                }
-            }
-            
-            if (cur_cone.cur.empty()) {
-                if (!cur_cone.inputs.empty()) {
-                    cout << ">>> The cone " << (smt_id++) << " is evaluated." << endl;
-                    if (!evaluate_opensmt(cur_cone)) {
-                        this->fout << "NEQ" << endl;
-                        return;
-                    }
-                }
-            }
-        }
-    } while ((level++) < layers.size());
     this->fout << "EQ" << endl;
 }
-*/
 
 #endif
 

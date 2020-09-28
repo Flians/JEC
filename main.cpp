@@ -70,6 +70,7 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
     endTime = clock();
     times[2] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
     cout << "The simulating time is: " << times[2] << " S" << endl;
+    std::cout.flush();
     return times;
 }
 
