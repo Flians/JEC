@@ -12,6 +12,7 @@ simplify::~simplify()
         cleanVP(item);
     }
     vector<vector<Node *>>().swap(this->layers);
+    cout << "The simplify is destroyed!" << endl;
 }
 
 vector<vector<Node *>> &simplify::get_layers()
