@@ -1,9 +1,81 @@
 The parsing process is over!
-The parsing time is: 1.15584 S
-The number of INV, BUF, and others reduction is 441
-The simplify time is: 1.17223 S
-; JSolver query time so far: 0.000000
-The prover is opensmt.
-The simulating time is: 0.149689 S
-The parser is destroyed!
+The parsing time is: 0.442248 S
+The number of INV, BUF, and others reduction is 422
+The simplify time is: 0.013059 S
+>>> The cone 0 is evaluated.
+>>> The cone 1 is evaluated.
+>>> The cone 2 is evaluated.
+>>> The cone 3 is evaluated.
+>>> The cone 4 is evaluated.
+>>> The cone 5 is evaluated.
+>>> The cone 6 is evaluated.
+>>> The cone 7 is evaluated.
+>>> The cone 8 is evaluated.
+>>> The cone 9 is evaluated.
+>>> The cone 10 is evaluated.
+>>> The cone 11 is evaluated.
+>>> The cone 12 is evaluated.
+>>> The cone 13 is evaluated.
+>>> The cone 14 is evaluated.
+>>> The cone 15 is evaluated.
+>>> The cone 16 is evaluated.
+>>> The cone 17 is evaluated.
+>>> The cone 18 is evaluated.
+>>> The cone 19 is evaluated.
+>>> The cone 20 is evaluated.
+>>> The cone 21 is evaluated.
+>>> The cone 22 is evaluated.
+>>> The cone 23 is evaluated.
+>>> The cone 24 is evaluated.
+>>> The cone 25 is evaluated.
+>>> The cone 26 is evaluated.
+>>> The cone 27 is evaluated.
+>>> The cone 28 is evaluated.
+>>> The cone 29 is evaluated.
+>>> The cone 30 is evaluated.
+>>> The cone 31 is evaluated.
+>>> The cone 32 is evaluated.
+>>> The cone 33 is evaluated.
+>>> The cone 34 is evaluated.
+>>> The cone 35 is evaluated.
+>>> The cone 36 is evaluated.
+>>> The cone 37 is evaluated.
+>>> The cone 38 is evaluated.
+>>> The cone 39 is evaluated.
+>>> The cone 40 is evaluated.
+>>> The cone 41 is evaluated.
+>>> The cone 42 is evaluated.
+>>> The cone 43 is evaluated.
+>>> The cone 44 is evaluated.
+>>> The cone 45 is evaluated.
+>>> The cone 46 is evaluated.
+>>> The cone 47 is evaluated.
+>>> The cone 48 is evaluated.
+>>> The cone 49 is evaluated.
+>>> The cone 50 is evaluated.
+>>> The cone 51 is evaluated.
+>>> The cone 52 is evaluated.
+>>> The cone 53 is evaluated.
+>>> The cone 54 is evaluated.
+>>> The cone 55 is evaluated.
+>>> The cone 56 is evaluated.
+>>> The cone 57 is evaluated.
+>>> The cone 58 is evaluated.
+>>> The cone 59 is evaluated.
+>>> The cone 60 is evaluated.
+>>> The cone 61 is evaluated.
+>>> The cone 62 is evaluated.
+>>> The cone 63 is evaluated.
+>>> The cone 64 is evaluated.
+>>> The cone 65 is evaluated.
+>>> The cone 66 is evaluated.
+>>> The cone 67 is evaluated.
+>>> The cone 68 is evaluated.
+>>> The cone 69 is evaluated.
+>>> The cone 70 is evaluated.
+>>> The cone 71 is evaluated.
+>>> The cone 72 is evaluated.
+The simulating time is: 0.012181 S
+The ec is destroyed!
+The simplify is destroyed!
 The parser is destroyed!

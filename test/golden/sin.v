@@ -1,20 +1,20 @@
 // Benchmark "top" written by ABC on Thu May 28 22:00:58 2020
 
 module gf_sin ( 
-    \a[0] , \a[1] , \a[2] , \a[3] , \a[4] , \a[5] , \a[6] , \a[7] , \a[8] ,
-    \a[9] , \a[10] , \a[11] , \a[12] , \a[13] , \a[14] , \a[15] , \a[16] ,
-    \a[17] , \a[18] , \a[19] , \a[20] , \a[21] , \a[22] , \a[23] ,
-    \sin[0] , \sin[1] , \sin[2] , \sin[3] , \sin[4] , \sin[5] , \sin[6] ,
-    \sin[7] , \sin[8] , \sin[9] , \sin[10] , \sin[11] , \sin[12] ,
-    \sin[13] , \sin[14] , \sin[15] , \sin[16] , \sin[17] , \sin[18] ,
-    \sin[19] , \sin[20] , \sin[21] , \sin[22] , \sin[23] , \sin[24]   );
-  input  \a[0] , \a[1] , \a[2] , \a[3] , \a[4] , \a[5] , \a[6] , \a[7] ,
-    \a[8] , \a[9] , \a[10] , \a[11] , \a[12] , \a[13] , \a[14] , \a[15] ,
-    \a[16] , \a[17] , \a[18] , \a[19] , \a[20] , \a[21] , \a[22] , \a[23] ;
-  output \sin[0] , \sin[1] , \sin[2] , \sin[3] , \sin[4] , \sin[5] , \sin[6] ,
-    \sin[7] , \sin[8] , \sin[9] , \sin[10] , \sin[11] , \sin[12] ,
-    \sin[13] , \sin[14] , \sin[15] , \sin[16] , \sin[17] , \sin[18] ,
-    \sin[19] , \sin[20] , \sin[21] , \sin[22] , \sin[23] , \sin[24] ;
+    a0 , a1 , a2 , a3 , a4 , a5 , a6 , a7 , a8 ,
+    a9 , a10 , a11 , a12 , a13 , a14 , a15 , a16 ,
+    a17 , a18 , a19 , a20 , a21 , a22 , a23 ,
+    sin0 , sin1 , sin2 , sin3 , sin4 , sin5 , sin6 ,
+    sin7 , sin8 , sin9 , sin10 , sin11 , sin12 ,
+    sin13 , sin14 , sin15 , sin16 , sin17 , sin18 ,
+    sin19 , sin20 , sin21 , sin22 , sin23 , sin24   );
+  input  a0 , a1 , a2 , a3 , a4 , a5 , a6 , a7 ,
+    a8 , a9 , a10 , a11 , a12 , a13 , a14 , a15 ,
+    a16 , a17 , a18 , a19 , a20 , a21 , a22 , a23 ;
+  output sin0 , sin1 , sin2 , sin3 , sin4 , sin5 , sin6 ,
+    sin7 , sin8 , sin9 , sin10 , sin11 , sin12 ,
+    sin13 , sin14 , sin15 , sin16 , sin17 , sin18 ,
+    sin19 , sin20 , sin21 , sin22 , sin23 , sin24 ;
   wire n49, n50, n51, n52, n53, n54, n55, n56, n57, n58, n59, n60, n61, n62,
     n63, n64, n65, n66, n67, n68, n69, n70, n71, n72, n73, n74, n75, n76,
     n77, n78, n79, n80, n81, n82, n83, n84, n85, n86, n87, n88, n89, n90,
@@ -541,53 +541,53 @@ module gf_sin (
     n5476, n5478, n5479, n5480, n5481, n5482, n5483, n5484, n5485, n5486,
     n5487, n5488, n5490, n5491, n5492, n5493, n5494, n5495, n5496, n5497,
     n5498, n5499, n5500, n5501, n5502, n5503;
-  jnot g0000(.din(\a[22] ), .dout(n49));
-  jor  g0001(.dina(\a[1] ), .dinb(\a[0] ), .dout(n50));
-  jor  g0002(.dina(n50), .dinb(\a[2] ), .dout(n51));
-  jor  g0003(.dina(n51), .dinb(\a[3] ), .dout(n52));
-  jor  g0004(.dina(n52), .dinb(\a[4] ), .dout(n53));
-  jor  g0005(.dina(n53), .dinb(\a[5] ), .dout(n54));
-  jor  g0006(.dina(n54), .dinb(\a[6] ), .dout(n55));
-  jor  g0007(.dina(n55), .dinb(\a[7] ), .dout(n56));
-  jor  g0008(.dina(n56), .dinb(\a[8] ), .dout(n57));
-  jor  g0009(.dina(n57), .dinb(\a[9] ), .dout(n58));
-  jor  g0010(.dina(n58), .dinb(\a[10] ), .dout(n59));
-  jor  g0011(.dina(n59), .dinb(\a[11] ), .dout(n60));
-  jor  g0012(.dina(n60), .dinb(\a[12] ), .dout(n61));
-  jor  g0013(.dina(n61), .dinb(\a[13] ), .dout(n62));
-  jor  g0014(.dina(n62), .dinb(\a[14] ), .dout(n63));
-  jor  g0015(.dina(n63), .dinb(\a[15] ), .dout(n64));
-  jor  g0016(.dina(n64), .dinb(\a[16] ), .dout(n65));
-  jor  g0017(.dina(n65), .dinb(\a[17] ), .dout(n66));
-  jor  g0018(.dina(n66), .dinb(\a[18] ), .dout(n67));
-  jor  g0019(.dina(n67), .dinb(\a[19] ), .dout(n68));
+  jnot g0000(.din(a22 ), .dout(n49));
+  jor  g0001(.dina(a1 ), .dinb(a0 ), .dout(n50));
+  jor  g0002(.dina(n50), .dinb(a2 ), .dout(n51));
+  jor  g0003(.dina(n51), .dinb(a3 ), .dout(n52));
+  jor  g0004(.dina(n52), .dinb(a4 ), .dout(n53));
+  jor  g0005(.dina(n53), .dinb(a5 ), .dout(n54));
+  jor  g0006(.dina(n54), .dinb(a6 ), .dout(n55));
+  jor  g0007(.dina(n55), .dinb(a7 ), .dout(n56));
+  jor  g0008(.dina(n56), .dinb(a8 ), .dout(n57));
+  jor  g0009(.dina(n57), .dinb(a9 ), .dout(n58));
+  jor  g0010(.dina(n58), .dinb(a10 ), .dout(n59));
+  jor  g0011(.dina(n59), .dinb(a11 ), .dout(n60));
+  jor  g0012(.dina(n60), .dinb(a12 ), .dout(n61));
+  jor  g0013(.dina(n61), .dinb(a13 ), .dout(n62));
+  jor  g0014(.dina(n62), .dinb(a14 ), .dout(n63));
+  jor  g0015(.dina(n63), .dinb(a15 ), .dout(n64));
+  jor  g0016(.dina(n64), .dinb(a16 ), .dout(n65));
+  jor  g0017(.dina(n65), .dinb(a17 ), .dout(n66));
+  jor  g0018(.dina(n66), .dinb(a18 ), .dout(n67));
+  jor  g0019(.dina(n67), .dinb(a19 ), .dout(n68));
   jand g0020(.dina(n68), .dinb(n49), .dout(n69));
-  jxor g0021(.dina(n69), .dinb(\a[20] ), .dout(n70));
-  jnot g0022(.din(\a[21] ), .dout(n71));
-  jor  g0023(.dina(n68), .dinb(\a[20] ), .dout(n72));
+  jxor g0021(.dina(n69), .dinb(a20 ), .dout(n70));
+  jnot g0022(.din(a21 ), .dout(n71));
+  jor  g0023(.dina(n68), .dinb(a20 ), .dout(n72));
   jand g0024(.dina(n72), .dinb(n49), .dout(n73));
   jxor g0025(.dina(n73), .dinb(n71), .dout(n74));
   jor  g0026(.dina(n74), .dinb(n70), .dout(n75));
   jand g0027(.dina(n63), .dinb(n49), .dout(n76));
-  jxor g0028(.dina(n76), .dinb(\a[15] ), .dout(n77));
+  jxor g0028(.dina(n76), .dinb(a15 ), .dout(n77));
   jor  g0029(.dina(n77), .dinb(n75), .dout(n78));
-  jnot g0030(.din(\a[19] ), .dout(n79));
+  jnot g0030(.din(a19 ), .dout(n79));
   jand g0031(.dina(n67), .dinb(n49), .dout(n80));
   jxor g0032(.dina(n80), .dinb(n79), .dout(n81));
   jand g0033(.dina(n66), .dinb(n49), .dout(n82));
-  jxor g0034(.dina(n82), .dinb(\a[18] ), .dout(n83));
+  jxor g0034(.dina(n82), .dinb(a18 ), .dout(n83));
   jnot g0035(.din(n83), .dout(n84));
   jand g0036(.dina(n84), .dinb(n81), .dout(n85));
   jand g0037(.dina(n65), .dinb(n49), .dout(n86));
-  jxor g0038(.dina(n86), .dinb(\a[17] ), .dout(n87));
+  jxor g0038(.dina(n86), .dinb(a17 ), .dout(n87));
   jnot g0039(.din(n87), .dout(n88));
   jand g0040(.dina(n64), .dinb(n49), .dout(n89));
-  jxor g0041(.dina(n89), .dinb(\a[16] ), .dout(n90));
+  jxor g0041(.dina(n89), .dinb(a16 ), .dout(n90));
   jand g0042(.dina(n90), .dinb(n88), .dout(n91));
   jand g0043(.dina(n91), .dinb(n85), .dout(n92));
   jnot g0044(.din(n92), .dout(n93));
   jor  g0045(.dina(n93), .dinb(n78), .dout(n94));
-  jxor g0046(.dina(n80), .dinb(\a[19] ), .dout(n95));
+  jxor g0046(.dina(n80), .dinb(a19 ), .dout(n95));
   jand g0047(.dina(n83), .dinb(n95), .dout(n96));
   jand g0048(.dina(n90), .dinb(n87), .dout(n97));
   jand g0049(.dina(n97), .dinb(n96), .dout(n98));
@@ -596,9 +596,9 @@ module gf_sin (
   jor  g0052(.dina(n100), .dinb(n75), .dout(n101));
   jor  g0053(.dina(n101), .dinb(n99), .dout(n102));
   jand g0054(.dina(n102), .dinb(n94), .dout(n103));
-  jnot g0055(.din(\a[20] ), .dout(n104));
+  jnot g0055(.din(a20 ), .dout(n104));
   jxor g0056(.dina(n69), .dinb(n104), .dout(n105));
-  jxor g0057(.dina(n73), .dinb(\a[21] ), .dout(n106));
+  jxor g0057(.dina(n73), .dinb(a21 ), .dout(n106));
   jor  g0058(.dina(n106), .dinb(n105), .dout(n107));
   jor  g0059(.dina(n107), .dinb(n100), .dout(n108));
   jnot g0060(.din(n90), .dout(n109));
@@ -1011,7 +1011,7 @@ module gf_sin (
   jor  g0467(.dina(n515), .dinb(n504), .dout(n516));
   jxor g0468(.dina(n516), .dinb(n486), .dout(n517));
   jand g0469(.dina(n51), .dinb(n49), .dout(n518));
-  jxor g0470(.dina(n518), .dinb(\a[3] ), .dout(n519));
+  jxor g0470(.dina(n518), .dinb(a3 ), .dout(n519));
   jand g0471(.dina(n519), .dinb(n517), .dout(n520));
   jnot g0472(.din(n520), .dout(n521));
   jand g0473(.dina(n388), .dinb(n250), .dout(n522));
@@ -1372,7 +1372,7 @@ module gf_sin (
   jxor g0828(.dina(n876), .dinb(n716), .dout(n877));
   jand g0829(.dina(n877), .dinb(n815), .dout(n878));
   jand g0830(.dina(n57), .dinb(n49), .dout(n879));
-  jxor g0831(.dina(n879), .dinb(\a[9] ), .dout(n880));
+  jxor g0831(.dina(n879), .dinb(a9 ), .dout(n880));
   jnot g0832(.din(n880), .dout(n881));
   jand g0833(.dina(n881), .dinb(n878), .dout(n882));
   jand g0834(.dina(n370), .dinb(n221), .dout(n883));
@@ -1486,7 +1486,7 @@ module gf_sin (
   jor  g0942(.dina(n990), .dinb(n882), .dout(n991));
   jor  g0943(.dina(n931), .dinb(n815), .dout(n992));
   jand g0944(.dina(n58), .dinb(n49), .dout(n993));
-  jxor g0945(.dina(n993), .dinb(\a[10] ), .dout(n994));
+  jxor g0945(.dina(n993), .dinb(a10 ), .dout(n994));
   jand g0946(.dina(n994), .dinb(n992), .dout(n995));
   jnot g0947(.din(n994), .dout(n996));
   jor  g0948(.dina(n877), .dinb(n987), .dout(n997));
@@ -1646,7 +1646,7 @@ module gf_sin (
   jand g1102(.dina(n1150), .dinb(n1116), .dout(n1151));
   jor  g1103(.dina(n1151), .dinb(n1115), .dout(n1152));
   jand g1104(.dina(n53), .dinb(n49), .dout(n1153));
-  jxor g1105(.dina(n1153), .dinb(\a[5] ), .dout(n1154));
+  jxor g1105(.dina(n1153), .dinb(a5 ), .dout(n1154));
   jor  g1106(.dina(n1154), .dinb(n1152), .dout(n1155));
   jnot g1107(.din(n1154), .dout(n1156));
   jand g1108(.dina(n1114), .dinb(n1055), .dout(n1157));
@@ -1658,7 +1658,7 @@ module gf_sin (
   jand g1114(.dina(n1151), .dinb(n1158), .dout(n1163));
   jnot g1115(.din(n1163), .dout(n1164));
   jand g1116(.dina(n54), .dinb(n49), .dout(n1165));
-  jxor g1117(.dina(n1165), .dinb(\a[6] ), .dout(n1166));
+  jxor g1117(.dina(n1165), .dinb(a6 ), .dout(n1166));
   jand g1118(.dina(n1166), .dinb(n1164), .dout(n1167));
   jnot g1119(.din(n1166), .dout(n1168));
   jnot g1120(.din(n1115), .dout(n1169));
@@ -1749,7 +1749,7 @@ module gf_sin (
   jor  g1205(.dina(n1253), .dinb(n1232), .dout(n1254));
   jnot g1206(.din(n1254), .dout(n1255));
   jand g1207(.dina(n56), .dinb(n49), .dout(n1256));
-  jxor g1208(.dina(n1256), .dinb(\a[8] ), .dout(n1257));
+  jxor g1208(.dina(n1256), .dinb(a8 ), .dout(n1257));
   jand g1209(.dina(n1257), .dinb(n1255), .dout(n1258));
   jnot g1210(.din(n1257), .dout(n1259));
   jxor g1211(.dina(n1252), .dinb(n607), .dout(n1260));
@@ -1758,7 +1758,7 @@ module gf_sin (
   jor  g1214(.dina(n1262), .dinb(n1258), .dout(n1263));
   jnot g1215(.din(n1263), .dout(n1264));
   jand g1216(.dina(n55), .dinb(n49), .dout(n1265));
-  jxor g1217(.dina(n1265), .dinb(\a[7] ), .dout(n1266));
+  jxor g1217(.dina(n1265), .dinb(a7 ), .dout(n1266));
   jnot g1218(.din(n1253), .dout(n1267));
   jor  g1219(.dina(n1252), .dinb(n607), .dout(n1268));
   jor  g1220(.dina(n1268), .dinb(n1055), .dout(n1269));
@@ -1848,11 +1848,11 @@ module gf_sin (
   jor  g1304(.dina(n1352), .dinb(n1317), .dout(n1353));
   jnot g1305(.din(n1353), .dout(n1354));
   jand g1306(.dina(n59), .dinb(n49), .dout(n1355));
-  jxor g1307(.dina(n1355), .dinb(\a[11] ), .dout(n1356));
+  jxor g1307(.dina(n1355), .dinb(a11 ), .dout(n1356));
   jand g1308(.dina(n1356), .dinb(n1354), .dout(n1357));
   jnot g1309(.din(n1357), .dout(n1358));
   jand g1310(.dina(n60), .dinb(n49), .dout(n1359));
-  jxor g1311(.dina(n1359), .dinb(\a[12] ), .dout(n1360));
+  jxor g1311(.dina(n1359), .dinb(a12 ), .dout(n1360));
   jand g1312(.dina(n1360), .dinb(n1353), .dout(n1361));
   jxor g1313(.dina(n1361), .dinb(n716), .dout(n1362));
   jand g1314(.dina(n1362), .dinb(n1358), .dout(n1363));
@@ -1926,11 +1926,11 @@ module gf_sin (
   jor  g1382(.dina(n1430), .dinb(n1428), .dout(n1431));
   jand g1383(.dina(n1431), .dinb(n1303), .dout(n1432));
   jand g1384(.dina(n61), .dinb(n49), .dout(n1433));
-  jxor g1385(.dina(n1433), .dinb(\a[13] ), .dout(n1434));
+  jxor g1385(.dina(n1433), .dinb(a13 ), .dout(n1434));
   jand g1386(.dina(n1434), .dinb(n1354), .dout(n1435));
   jnot g1387(.din(n1435), .dout(n1436));
   jand g1388(.dina(n62), .dinb(n49), .dout(n1437));
-  jxor g1389(.dina(n1437), .dinb(\a[14] ), .dout(n1438));
+  jxor g1389(.dina(n1437), .dinb(a14 ), .dout(n1438));
   jand g1390(.dina(n1438), .dinb(n1353), .dout(n1439));
   jxor g1391(.dina(n1439), .dinb(n716), .dout(n1440));
   jand g1392(.dina(n1440), .dinb(n1436), .dout(n1441));
@@ -1986,7 +1986,7 @@ module gf_sin (
   jnot g1442(.din(n1474), .dout(n1494));
   jand g1443(.dina(n1493), .dinb(n519), .dout(n1497));
   jand g1444(.dina(n52), .dinb(n49), .dout(n1498));
-  jxor g1445(.dina(n1498), .dinb(\a[4] ), .dout(n1499));
+  jxor g1445(.dina(n1498), .dinb(a4 ), .dout(n1499));
   jnot g1446(.din(n1499), .dout(n1500));
   jxor g1447(.dina(n1500), .dinb(n1474), .dout(n1501));
   jor  g1448(.dina(n1501), .dinb(n1490), .dout(n1502));
@@ -3508,7 +3508,7 @@ module gf_sin (
   jxor g2964(.dina(n3017), .dinb(n1257), .dout(n3018));
   jxor g2965(.dina(n3018), .dinb(n2934), .dout(n3019));
   jxor g2966(.dina(n3019), .dinb(n2906), .dout(n3020));
-  jnot g2967(.din(\a[2] ), .dout(n3021));
+  jnot g2967(.din(a2 ), .dout(n3021));
   jand g2968(.dina(n50), .dinb(n49), .dout(n3022));
   jxor g2969(.dina(n3022), .dinb(n3021), .dout(n3023));
   jxor g2970(.dina(n3023), .dinb(n519), .dout(n3024));
@@ -3942,11 +3942,11 @@ module gf_sin (
   jxor g3398(.dina(n3452), .dinb(n3363), .dout(n3453));
   jnot g3399(.din(n3453), .dout(n3454));
   jnot g3400(.din(n3023), .dout(n3455));
-  jnot g3401(.din(\a[0] ), .dout(n3456));
-  jor  g3402(.dina(\a[22] ), .dinb(n3456), .dout(n3457));
-  jxor g3403(.dina(n3457), .dinb(\a[1] ), .dout(n3458));
+  jnot g3401(.din(a0 ), .dout(n3456));
+  jor  g3402(.dina(a22 ), .dinb(n3456), .dout(n3457));
+  jxor g3403(.dina(n3457), .dinb(a1 ), .dout(n3458));
   jxor g3404(.dina(n3458), .dinb(n3023), .dout(n3459));
-  jand g3405(.dina(n3459), .dinb(\a[0] ), .dout(n3460));
+  jand g3405(.dina(n3459), .dinb(a0 ), .dout(n3460));
   jnot g3406(.din(n3460), .dout(n3461));
   jnot g3407(.din(n3200), .dout(n3462));
   jxor g3408(.dina(n3462), .dinb(n3194), .dout(n3463));
@@ -4043,7 +4043,7 @@ module gf_sin (
   jor  g3499(.dina(n3459), .dinb(n3456), .dout(n3554));
   jor  g3500(.dina(n3554), .dinb(n3547), .dout(n3555));
   jand g3501(.dina(n3555), .dinb(n3553), .dout(n3556));
-  jand g3502(.dina(\a[1] ), .dinb(n3456), .dout(n3557));
+  jand g3502(.dina(a1 ), .dinb(n3456), .dout(n3557));
   jnot g3503(.din(n3557), .dout(n3558));
   jor  g3504(.dina(n3558), .dinb(n3510), .dout(n3559));
   jand g3505(.dina(n3559), .dinb(n3556), .dout(n3560));
@@ -4575,9 +4575,9 @@ module gf_sin (
   jxor g4031(.dina(n4088), .dinb(n4076), .dout(n4089));
   jxor g4032(.dina(n4089), .dinb(n3971), .dout(n4090));
   jxor g4033(.dina(n3969), .dinb(n3854), .dout(n4091));
-  jxor g4034(.dina(n4091), .dinb(n4090), .dout(\sin[0] ));
-  jxor g4035(.dina(\a[23] ), .dinb(\a[22] ), .dout(n4093));
-  jand g4036(.dina(n4093), .dinb(\sin[0] ), .dout(n4094));
+  jxor g4034(.dina(n4091), .dinb(n4090), .dout(sin0 ));
+  jxor g4035(.dina(a23 ), .dinb(a22 ), .dout(n4093));
+  jand g4036(.dina(n4093), .dinb(sin0 ), .dout(n4094));
   jnot g4037(.din(n4094), .dout(n4095));
   jand g4038(.dina(n4091), .dinb(n4090), .dout(n4096));
   jor  g4039(.dina(n4088), .dinb(n4076), .dout(n4097));
@@ -4730,7 +4730,7 @@ module gf_sin (
   jand g4186(.dina(n4245), .dinb(n4095), .dout(n4246));
   jnot g4187(.din(n4244), .dout(n4247));
   jand g4188(.dina(n4247), .dinb(n4094), .dout(n4248));
-  jor  g4189(.dina(n4248), .dinb(n4246), .dout(\sin[1] ));
+  jor  g4189(.dina(n4248), .dinb(n4246), .dout(sin1 ));
   jand g4190(.dina(n4244), .dinb(n4096), .dout(n4250));
   jor  g4191(.dina(n4242), .dinb(n4227), .dout(n4251));
   jnot g4192(.din(n4251), .dout(n4252));
@@ -4842,9 +4842,9 @@ module gf_sin (
   jxor g4298(.dina(n4357), .dinb(n4271), .dout(n4358));
   jxor g4299(.dina(n4358), .dinb(n4254), .dout(n4359));
   jxor g4300(.dina(n4359), .dinb(n4250), .dout(n4360));
-  jor  g4301(.dina(n4245), .dinb(\sin[0] ), .dout(n4361));
+  jor  g4301(.dina(n4245), .dinb(sin0 ), .dout(n4361));
   jand g4302(.dina(n4361), .dinb(n4093), .dout(n4362));
-  jxor g4303(.dina(n4362), .dinb(n4360), .dout(\sin[2] ));
+  jxor g4303(.dina(n4362), .dinb(n4360), .dout(sin2 ));
   jor  g4304(.dina(n4361), .dinb(n4360), .dout(n4364));
   jand g4305(.dina(n4364), .dinb(n4093), .dout(n4365));
   jand g4306(.dina(n4359), .dinb(n4250), .dout(n4366));
@@ -4936,7 +4936,7 @@ module gf_sin (
   jxor g4392(.dina(n4451), .dinb(n4382), .dout(n4452));
   jxor g4393(.dina(n4452), .dinb(n4369), .dout(n4453));
   jxor g4394(.dina(n4453), .dinb(n4366), .dout(n4454));
-  jxor g4395(.dina(n4454), .dinb(n4365), .dout(\sin[3] ));
+  jxor g4395(.dina(n4454), .dinb(n4365), .dout(sin3 ));
   jand g4396(.dina(n4453), .dinb(n4366), .dout(n4456));
   jand g4397(.dina(n4451), .dinb(n4382), .dout(n4457));
   jand g4398(.dina(n4452), .dinb(n4369), .dout(n4458));
@@ -5026,7 +5026,7 @@ module gf_sin (
   jxor g4482(.dina(n4541), .dinb(n4456), .dout(n4542));
   jor  g4483(.dina(n4454), .dinb(n4364), .dout(n4543));
   jand g4484(.dina(n4543), .dinb(n4093), .dout(n4544));
-  jxor g4485(.dina(n4544), .dinb(n4542), .dout(\sin[4] ));
+  jxor g4485(.dina(n4544), .dinb(n4542), .dout(sin4 ));
   jand g4486(.dina(n4541), .dinb(n4456), .dout(n4546));
   jand g4487(.dina(n4539), .dinb(n4470), .dout(n4547));
   jand g4488(.dina(n4540), .dinb(n4459), .dout(n4548));
@@ -5112,7 +5112,7 @@ module gf_sin (
   jxor g4568(.dina(n4627), .dinb(n4546), .dout(n4628));
   jor  g4569(.dina(n4543), .dinb(n4542), .dout(n4629));
   jand g4570(.dina(n4629), .dinb(n4093), .dout(n4630));
-  jxor g4571(.dina(n4630), .dinb(n4628), .dout(\sin[5] ));
+  jxor g4571(.dina(n4630), .dinb(n4628), .dout(sin5 ));
   jand g4572(.dina(n4627), .dinb(n4546), .dout(n4632));
   jand g4573(.dina(n4625), .dinb(n4564), .dout(n4633));
   jand g4574(.dina(n4626), .dinb(n4549), .dout(n4634));
@@ -5196,7 +5196,7 @@ module gf_sin (
   jxor g4652(.dina(n4711), .dinb(n4632), .dout(n4712));
   jor  g4653(.dina(n4629), .dinb(n4628), .dout(n4713));
   jand g4654(.dina(n4713), .dinb(n4093), .dout(n4714));
-  jxor g4655(.dina(n4714), .dinb(n4712), .dout(\sin[6] ));
+  jxor g4655(.dina(n4714), .dinb(n4712), .dout(sin6 ));
   jand g4656(.dina(n4711), .dinb(n4632), .dout(n4716));
   jand g4657(.dina(n4709), .dinb(n4653), .dout(n4717));
   jand g4658(.dina(n4710), .dinb(n4635), .dout(n4718));
@@ -5269,7 +5269,7 @@ module gf_sin (
   jxor g4725(.dina(n4784), .dinb(n4716), .dout(n4785));
   jor  g4726(.dina(n4713), .dinb(n4712), .dout(n4786));
   jand g4727(.dina(n4786), .dinb(n4093), .dout(n4787));
-  jxor g4728(.dina(n4787), .dinb(n4785), .dout(\sin[7] ));
+  jxor g4728(.dina(n4787), .dinb(n4785), .dout(sin7 ));
   jand g4729(.dina(n4784), .dinb(n4716), .dout(n4789));
   jor  g4730(.dina(n4782), .dinb(n4773), .dout(n4790));
   jnot g4731(.din(n4790), .dout(n4791));
@@ -5351,7 +5351,7 @@ module gf_sin (
   jxor g4807(.dina(n4866), .dinb(n4789), .dout(n4867));
   jor  g4808(.dina(n4786), .dinb(n4785), .dout(n4868));
   jand g4809(.dina(n4868), .dinb(n4093), .dout(n4869));
-  jxor g4810(.dina(n4869), .dinb(n4867), .dout(\sin[8] ));
+  jxor g4810(.dina(n4869), .dinb(n4867), .dout(sin8 ));
   jand g4811(.dina(n4866), .dinb(n4789), .dout(n4871));
   jand g4812(.dina(n4864), .dinb(n4814), .dout(n4872));
   jand g4813(.dina(n4865), .dinb(n4793), .dout(n4873));
@@ -5417,7 +5417,7 @@ module gf_sin (
   jxor g4873(.dina(n4932), .dinb(n4871), .dout(n4933));
   jor  g4874(.dina(n4868), .dinb(n4867), .dout(n4934));
   jand g4875(.dina(n4934), .dinb(n4093), .dout(n4935));
-  jxor g4876(.dina(n4935), .dinb(n4933), .dout(\sin[9] ));
+  jxor g4876(.dina(n4935), .dinb(n4933), .dout(sin9 ));
   jand g4877(.dina(n4932), .dinb(n4871), .dout(n4937));
   jand g4878(.dina(n4930), .dinb(n4887), .dout(n4938));
   jand g4879(.dina(n4931), .dinb(n4874), .dout(n4939));
@@ -5487,7 +5487,7 @@ module gf_sin (
   jxor g4943(.dina(n5002), .dinb(n4937), .dout(n5003));
   jor  g4944(.dina(n4934), .dinb(n4933), .dout(n5004));
   jand g4945(.dina(n5004), .dinb(n4093), .dout(n5005));
-  jxor g4946(.dina(n5005), .dinb(n5003), .dout(\sin[10] ));
+  jxor g4946(.dina(n5005), .dinb(n5003), .dout(sin10 ));
   jand g4947(.dina(n5002), .dinb(n4937), .dout(n5007));
   jand g4948(.dina(n5000), .dinb(n4953), .dout(n5008));
   jand g4949(.dina(n5001), .dinb(n4940), .dout(n5009));
@@ -5541,7 +5541,7 @@ module gf_sin (
   jxor g4997(.dina(n5056), .dinb(n5007), .dout(n5057));
   jor  g4998(.dina(n5004), .dinb(n5003), .dout(n5058));
   jand g4999(.dina(n5058), .dinb(n4093), .dout(n5059));
-  jxor g5000(.dina(n5059), .dinb(n5057), .dout(\sin[11] ));
+  jxor g5000(.dina(n5059), .dinb(n5057), .dout(sin11 ));
   jand g5001(.dina(n5056), .dinb(n5007), .dout(n5061));
   jand g5002(.dina(n5054), .dinb(n5017), .dout(n5062));
   jand g5003(.dina(n5055), .dinb(n5010), .dout(n5063));
@@ -5596,7 +5596,7 @@ module gf_sin (
   jxor g5052(.dina(n5111), .dinb(n5061), .dout(n5112));
   jor  g5053(.dina(n5058), .dinb(n5057), .dout(n5113));
   jand g5054(.dina(n5113), .dinb(n4093), .dout(n5114));
-  jxor g5055(.dina(n5114), .dinb(n5112), .dout(\sin[12] ));
+  jxor g5055(.dina(n5114), .dinb(n5112), .dout(sin12 ));
   jand g5056(.dina(n5111), .dinb(n5061), .dout(n5116));
   jand g5057(.dina(n5109), .dinb(n5077), .dout(n5117));
   jand g5058(.dina(n5110), .dinb(n5064), .dout(n5118));
@@ -5647,7 +5647,7 @@ module gf_sin (
   jxor g5103(.dina(n5162), .dinb(n5116), .dout(n5163));
   jor  g5104(.dina(n5113), .dinb(n5112), .dout(n5164));
   jand g5105(.dina(n5164), .dinb(n4093), .dout(n5165));
-  jxor g5106(.dina(n5165), .dinb(n5163), .dout(\sin[13] ));
+  jxor g5106(.dina(n5165), .dinb(n5163), .dout(sin13 ));
   jand g5107(.dina(n5162), .dinb(n5116), .dout(n5167));
   jand g5108(.dina(n5160), .dinb(n5135), .dout(n5168));
   jand g5109(.dina(n5161), .dinb(n5119), .dout(n5169));
@@ -5693,7 +5693,7 @@ module gf_sin (
   jxor g5149(.dina(n5208), .dinb(n5167), .dout(n5209));
   jor  g5150(.dina(n5164), .dinb(n5163), .dout(n5210));
   jand g5151(.dina(n5210), .dinb(n4093), .dout(n5211));
-  jxor g5152(.dina(n5211), .dinb(n5209), .dout(\sin[14] ));
+  jxor g5152(.dina(n5211), .dinb(n5209), .dout(sin14 ));
   jand g5153(.dina(n5208), .dinb(n5167), .dout(n5213));
   jand g5154(.dina(n5206), .dinb(n5185), .dout(n5214));
   jand g5155(.dina(n5207), .dinb(n5170), .dout(n5215));
@@ -5731,7 +5731,7 @@ module gf_sin (
   jxor g5187(.dina(n5246), .dinb(n5213), .dout(n5247));
   jor  g5188(.dina(n5210), .dinb(n5209), .dout(n5248));
   jand g5189(.dina(n5248), .dinb(n4093), .dout(n5249));
-  jxor g5190(.dina(n5249), .dinb(n5247), .dout(\sin[15] ));
+  jxor g5190(.dina(n5249), .dinb(n5247), .dout(sin15 ));
   jand g5191(.dina(n5246), .dinb(n5213), .dout(n5251));
   jnot g5192(.din(n5251), .dout(n5252));
   jand g5193(.dina(n5244), .dinb(n5230), .dout(n5253));
@@ -5834,7 +5834,7 @@ module gf_sin (
   jxor g5290(.dina(n5349), .dinb(n5252), .dout(n5350));
   jor  g5291(.dina(n5248), .dinb(n5247), .dout(n5351));
   jand g5292(.dina(n5351), .dinb(n4093), .dout(n5352));
-  jxor g5293(.dina(n5352), .dinb(n5350), .dout(\sin[16] ));
+  jxor g5293(.dina(n5352), .dinb(n5350), .dout(sin16 ));
   jor  g5294(.dina(n5351), .dinb(n5350), .dout(n5354));
   jand g5295(.dina(n5354), .dinb(n4093), .dout(n5355));
   jor  g5296(.dina(n5349), .dinb(n5252), .dout(n5356));
@@ -5861,7 +5861,7 @@ module gf_sin (
   jand g5317(.dina(n5376), .dinb(n5372), .dout(n5377));
   jxor g5318(.dina(n5377), .dinb(n5369), .dout(n5378));
   jxor g5319(.dina(n5378), .dinb(n5357), .dout(n5379));
-  jxor g5320(.dina(n5379), .dinb(n5355), .dout(\sin[17] ));
+  jxor g5320(.dina(n5379), .dinb(n5355), .dout(sin17 ));
   jand g5321(.dina(n489), .dinb(n250), .dout(n5381));
   jand g5322(.dina(n5381), .dinb(n3488), .dout(n5382));
   jand g5323(.dina(n5382), .dinb(n1365), .dout(n5383));
@@ -5883,7 +5883,7 @@ module gf_sin (
   jxor g5339(.dina(n5398), .dinb(n5390), .dout(n5399));
   jor  g5340(.dina(n5379), .dinb(n5354), .dout(n5400));
   jand g5341(.dina(n5400), .dinb(n4093), .dout(n5401));
-  jxor g5342(.dina(n5401), .dinb(n5399), .dout(\sin[18] ));
+  jxor g5342(.dina(n5401), .dinb(n5399), .dout(sin18 ));
   jand g5343(.dina(n5378), .dinb(n5357), .dout(n5403));
   jnot g5344(.din(n5390), .dout(n5404));
   jand g5345(.dina(n5404), .dinb(n5403), .dout(n5405));
@@ -5901,7 +5901,7 @@ module gf_sin (
   jxor g5357(.dina(n5416), .dinb(n5405), .dout(n5417));
   jor  g5358(.dina(n5400), .dinb(n5399), .dout(n5418));
   jand g5359(.dina(n5418), .dinb(n4093), .dout(n5419));
-  jxor g5360(.dina(n5419), .dinb(n5417), .dout(\sin[19] ));
+  jxor g5360(.dina(n5419), .dinb(n5417), .dout(sin19 ));
   jor  g5361(.dina(n5415), .dinb(n5406), .dout(n5421));
   jand g5362(.dina(n4556), .dinb(n300), .dout(n5422));
   jand g5363(.dina(n5422), .dinb(n252), .dout(n5423));
@@ -5924,7 +5924,7 @@ module gf_sin (
   jand g5380(.dina(n5439), .dinb(n5432), .dout(n5440));
   jor  g5381(.dina(n5418), .dinb(n5417), .dout(n5441));
   jand g5382(.dina(n5441), .dinb(n4093), .dout(n5442));
-  jxor g5383(.dina(n5442), .dinb(n5440), .dout(\sin[20] ));
+  jxor g5383(.dina(n5442), .dinb(n5440), .dout(sin20 ));
   jand g5384(.dina(n5416), .dinb(n5405), .dout(n5444));
   jnot g5385(.din(n5415), .dout(n5445));
   jand g5386(.dina(n5445), .dinb(n5435), .dout(n5446));
@@ -5938,7 +5938,7 @@ module gf_sin (
   jxor g5394(.dina(n5453), .dinb(n5449), .dout(n5454));
   jor  g5395(.dina(n5441), .dinb(n5440), .dout(n5455));
   jand g5396(.dina(n5455), .dinb(n4093), .dout(n5456));
-  jxor g5397(.dina(n5456), .dinb(n5454), .dout(\sin[21] ));
+  jxor g5397(.dina(n5456), .dinb(n5454), .dout(sin21 ));
   jand g5398(.dina(n5453), .dinb(n5449), .dout(n5458));
   jand g5399(.dina(n5447), .dinb(n5446), .dout(n5459));
   jnot g5400(.din(n5452), .dout(n5460));
@@ -5958,7 +5958,7 @@ module gf_sin (
   jand g5414(.dina(n5473), .dinb(n5464), .dout(n5474));
   jor  g5415(.dina(n5455), .dinb(n5454), .dout(n5475));
   jand g5416(.dina(n5475), .dinb(n4093), .dout(n5476));
-  jxor g5417(.dina(n5476), .dinb(n5474), .dout(\sin[22] ));
+  jxor g5417(.dina(n5476), .dinb(n5474), .dout(sin22 ));
   jnot g5418(.din(n72), .dout(n5478));
   jand g5419(.dina(n5478), .dinb(n49), .dout(n5479));
   jand g5420(.dina(n5479), .dinb(n71), .dout(n5480));
@@ -5970,7 +5970,7 @@ module gf_sin (
   jand g5426(.dina(n5474), .dinb(n4093), .dout(n5486));
   jor  g5427(.dina(n5486), .dinb(n5476), .dout(n5487));
   jxor g5428(.dina(n5487), .dinb(n5485), .dout(n5488));
-  jor  g5429(.dina(n5488), .dinb(n5480), .dout(\sin[23] ));
+  jor  g5429(.dina(n5488), .dinb(n5480), .dout(sin23 ));
   jand g5430(.dina(n5487), .dinb(n5484), .dout(n5490));
   jnot g5431(.din(n5454), .dout(n5491));
   jxor g5432(.dina(n5438), .dinb(n5444), .dout(n5492));
@@ -5985,7 +5985,7 @@ module gf_sin (
   jand g5441(.dina(n5500), .dinb(n5483), .dout(n5501));
   jor  g5442(.dina(n5501), .dinb(n5480), .dout(n5502));
   jand g5443(.dina(n5502), .dinb(n4093), .dout(n5503));
-  jor  g5444(.dina(n5503), .dinb(n5490), .dout(\sin[24] ));
+  jor  g5444(.dina(n5503), .dinb(n5490), .dout(sin24 ));
 endmodule
 
 

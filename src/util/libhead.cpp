@@ -151,7 +151,7 @@ inline Value EXOR(const Value &A, const Value &B)
 
 Node* delete_node(Node *cur) {
     if (!cur)
-        return NULL;
+        return nullptr;
     if (cur->ins.size() != 1 && !(cur->ins.size() == 2 && cur->ins[0]->cell == CLK))
     {
         error_fout(cur->name + " Node have none or more one inputs in delete_node!");
@@ -226,7 +226,7 @@ void merge_node (Node *node, Node *repeat) {
     }
     vector<Node *>().swap(repeat->outs);
     delete repeat;
-    repeat = NULL;
+    repeat = nullptr;
 }
 
 Value calculate(Node *g)
@@ -347,6 +347,6 @@ void cleanVP(vector<Node *> vecPtr)
 void error_fout(const string &message)
 {
     cerr << "Error: " << message << endl;
-    std::cout.flush();
+    std::cerr.flush();
     exit(-1);
 }

@@ -120,7 +120,7 @@ vector<vector<Node *>> &simplify::id_reassign_and_layered(vector<Node *> &PIs, v
         {
             for (auto out : item->outs)
             {
-                if (visit.count(out) == 0)
+                if (visit.find(out) == visit.end())
                 {
                     visit[out] = visit[item] + 1;
                     out->id = i++;
@@ -188,7 +188,7 @@ void simplify::id_reassign()
             if (!layers[i][j]) {
                 if(j <= last) {
                     layers[i][j] = layers[i][last];
-                    layers[i][last] = NULL;
+                    layers[i][last] = nullptr;
                 }
             }
             layers[i][j]->id = id++;
@@ -222,7 +222,7 @@ void simplify::id_reassign(vector<Node *> &PIs)
         Node *item = bfs_record.front();
         for (auto out : item->outs)
         {
-            if (visit.count(out) == 0)
+            if (visit.find(out) == visit.end())
             {
                 visit[out] = true;
                 out->id = i++;
@@ -422,7 +422,7 @@ int simplify::merge_nodes_between_networks()
         return 0;
     }
     vector<pair<int,int>> position(init_id, {0,0});
-    vector<Node*> all_node(init_id, NULL);
+    vector<Node*> all_node(init_id, nullptr);
     for (size_t i = 0; i < layers.size(); ++i)
     {
         for (size_t j = 0; j < layers[i].size(); ++j)
@@ -464,8 +464,8 @@ int simplify::merge_nodes_between_networks()
             {
                 if (all_node[it.i.current_value] && it.i.current_value != layers[i][j]->id) {
                     merge_node(layers[i][j], all_node[it.i.current_value]);
-                    all_node[it.i.current_value] = NULL;
-                    layers[position[it.i.current_value].first][position[it.i.current_value].second] = NULL;
+                    all_node[it.i.current_value] = nullptr;
+                    layers[position[it.i.current_value].first][position[it.i.current_value].second] = nullptr;
                     ++reduce;
                 }
                 ++it;

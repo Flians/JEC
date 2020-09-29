@@ -223,7 +223,7 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
     {
         error_fout("The current node is NULL in jec.build_equation_dfs!");
     }
-    if (record.count(cur) || cur->cell == CLK)
+    if (record.find(cur) != record.end() || cur->cell == CLK)
     {
         return;
     }
@@ -292,10 +292,10 @@ bool jec::evaluate_opensmt(deque<Node*> &cone)
     auto config = std::unique_ptr<SMTConfig>(new SMTConfig());
     const char *msg;
     config->setOption(SMTConfig::o_incremental, SMTOption(true), msg);
-    config->setOption(SMTConfig::o_time_queries, SMTOption(false), msg);
     Opensmt osmt(opensmt_logic::qf_bool, "ConeSolver", std::move(config));
     MainSolver &mainSolver = osmt.getMainSolver();
     Logic &logic = osmt.getLogic();
+    mainSolver.getConfig().setOption(SMTConfig::o_time_queries, SMTOption(false), msg);
 
     unordered_map<Node *, PTRef> nodes;
 
@@ -303,8 +303,11 @@ bool jec::evaluate_opensmt(deque<Node*> &cone)
     int out_len =  cone.size();
     while (out_len--)
     {
-        Node *output = cone.front();
-        cone.pop_front();
+        Node *output = cone.back();
+        cone.pop_back();
+        if (output->cell != _EXOR) {
+            cone.emplace_front(output);
+        }
         build_equation_dfs(output, logic, nodes);
         PTRef assert = logic.mkEq(logic.getTerm_true(), nodes[output]);
         mainSolver.push(assert);
@@ -313,28 +316,22 @@ bool jec::evaluate_opensmt(deque<Node*> &cone)
             if (output->cell == _EXOR) {
                 return false;
             }
-            output->cell = _CONSTANT;
-            output->val = H;
-        } else if (reslut == s_False) {
-            if (output->cell == _EXOR) {
-                continue;
-            }
             assert = logic.mkEq(logic.getTerm_false(), nodes[output]);
             mainSolver.push(assert);
             reslut = mainSolver.check();
             if (reslut == s_True) {
-                output->cell = _CONSTANT;
-                output->val = L;
-            } else if (reslut == s_False) {
                 output->cell = IN;
+            } else if (reslut == s_False) {
+                output->cell = _CONSTANT;
+                output->val = H;
             } else {
                 error_fout("The result2 is unknown in jec.evaluate_opensmt!");
             }
+        } else if (reslut == s_False) {
+            output->cell = _CONSTANT;
+            output->val = L;
         } else {
             error_fout("The result is unknown in jec.evaluate_opensmt!");
-        }
-        if (output->cell != _EXOR) {
-            cone.emplace_back(output);
         }
     }
     return true;
@@ -363,9 +360,10 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
         }
     }
     int smt_id = 0;
+    vector<size_t> exor_num(layers[0].size(), 0);
     for (size_t i = 1; i < layers.size(); ++i) {
         for (size_t j = 0; j < cones.size(); ++j) {
-            size_t exor_num = 0;
+            exor_num[j] = 0;
             int cur_len = cones[j].size();
             while (cur_len--) {
                 Node *cur = cones[j].front();
@@ -373,7 +371,7 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                 if (info[cur->id].first >= i || cur->cell == _EXOR) {
                     cones[j].emplace_back(cur);
                     if (cur->cell == _EXOR)
-                        ++exor_num;
+                        ++exor_num[j];
                     continue;
                 }
                 for (auto &tout : cur->outs)
@@ -382,7 +380,7 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                         info[tout->id].second = j;
                         cones[j].emplace_back(tout);
                         if (tout->cell == _EXOR)
-                            ++exor_num;
+                            ++exor_num[j];
                     } else {
                         size_t old_color = info[tout->id].second;
                         if (old_color == j) {
@@ -395,7 +393,7 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                             if (info[tmp->id].first >= i || tmp->cell == _EXOR) {
                                 cones[j].emplace_back(tmp);
                                 if (tmp->cell == _EXOR)
-                                    ++exor_num;
+                                    ++exor_num[j];
                             } else {
                                 cones[j].emplace_front(tmp);
                                 ++cur_len;
@@ -404,8 +402,10 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                     }
                 }
             }
+        }
+        for (size_t j = 0; j < cones.size(); ++j) {
             // evaluate cur_cone
-            if (!cones[j].empty() && (cones[j].size() == 1 || exor_num == cones[j].size())) {
+            if (!cones[j].empty() && (cones[j].size() == 1 || exor_num[j] == cones[j].size())) {
                 cout << ">>> The cone " << (smt_id++) << " is evaluated." << endl;
                 if (!evaluate_opensmt(cones[j])) {
                     this->fout << "NEQ" << endl;

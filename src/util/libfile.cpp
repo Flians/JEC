@@ -37,11 +37,11 @@ bool libfile::getAllFiles(const string &path, vector<string> &files)
 #else
     DIR *dir;
 	struct dirent *ptr;
-	if ((dir = opendir(path.c_str())) == NULL)
+	if ((dir = opendir(path.c_str())) == nullptr)
 	{
 		return false;
 	}
-	while ((ptr = readdir(dir)) != NULL)
+	while ((ptr = readdir(dir)) != nullptr)
 	{
 		if (strcmp(ptr->d_name, ".") == 0 || strcmp(ptr->d_name, "..") == 0)
 			continue;
