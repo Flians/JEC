@@ -347,6 +347,5 @@ void cleanVP(vector<Node *> vecPtr)
 void error_fout(const string &message)
 {
     cerr << "Error: " << message << endl;
-    std::cerr.flush();
     exit(-1);
 }
