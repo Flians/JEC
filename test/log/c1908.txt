@@ -1,9 +1,9 @@
 The parsing process is over!
-The parsing time is: 0.042987 S
+The parsing time is: 0.104213 S
 The number of INV, BUF, and others reduction is 45
-The simplify time is: 0.00267 S
+The simplify time is: 0.007764 S
 >>> The cone 0 is evaluated.
-The simulating time is: 0.016505 S
+The simulating time is: 0.04528 S
 The ec is destroyed!
 The simplify is destroyed!
 The parser is destroyed!
