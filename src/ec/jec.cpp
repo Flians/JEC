@@ -316,9 +316,11 @@ bool jec::evaluate_opensmt(deque<Node*> &cone)
             if (output->cell == _EXOR) {
                 return false;
             }
+            mainSolver.pop();
             assert = logic.mkEq(logic.getTerm_false(), nodes[output]);
             mainSolver.push(assert);
             reslut = mainSolver.check();
+            // mainSolver.printFramesAsQuery();
             if (reslut == s_True) {
                 output->cell = IN;
             } else if (reslut == s_False) {
