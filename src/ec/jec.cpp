@@ -376,7 +376,14 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                 }
                 for (auto &tout : cur->outs)
                 {
+                    if (tout->id == 211) {
+                        cout << tout->name << endl;
+                    }
+                    cout << info[tout->id].first << endl;
                     if (info[tout->id].second == -1) {
+                        if (info[tout->id].first > i && ((tout->ins.size() > 2 && tout->ins[0]->cell == CLK) || (tout->ins.size() > 1 && tout->ins[0]->cell != CLK))) {
+                            continue;
+                        }
                         info[tout->id].second = j;
                         cones[j].emplace_back(tout);
                         if (tout->cell == _EXOR)
@@ -405,7 +412,7 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
         }
         for (size_t j = 0; j < cones.size(); ++j) {
             // evaluate cur_cone
-            if (!cones[j].empty() && (cones[j].size() == 1 || exor_num[j] == cones[j].size())) {
+            if (!cones[j].empty() && ((cones[j].size() == 1 && cones[j][0]->ins.size() == 1) || exor_num[j] == cones[j].size())) {
                 cout << ">>> The cone " << (smt_id++) << " is evaluated." << endl;
                 if (!evaluate_opensmt(cones[j])) {
                     this->fout << "NEQ" << endl;
