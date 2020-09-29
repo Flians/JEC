@@ -104,11 +104,11 @@ void parser::parse_inport(Node *g, const string &item, const string &line, std::
     }
     else
     {
-        if (wires.count(item))
+        if (wires.find(item) != wires.end())
         {
             port = wires[item];
         }
-        else if (this->map_PIs.count(item))
+        else if (this->map_PIs.find(item) != this->map_PIs.end())
         {
             port = this->PIs[this->map_PIs[item]];
         }
@@ -127,11 +127,11 @@ void parser::parse_inport(Node *g, const string &item, const string &line, std::
 void parser::parse_outport(Node *g, const string &item, const string &line, std::unordered_map<std::string, Node *> &wires)
 {
     Node *port = nullptr;
-    if (wires.count(item))
+    if (wires.find(item) != wires.end())
     {
         port = wires[item];
     }
-    else if (this->map_POs.count(item))
+    else if (this->map_POs.find(item) != this->map_POs.end())
     {
         port = this->POs[this->map_POs[item]];
     }
@@ -199,7 +199,7 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                     swap(bits_begin, bits_end);
                 item = item.substr(0, lp);
             }
-            if (Value_Str.count(item))
+            if (Value_Str.find(item) != Value_Str.end())
             {
                 Gtype nt = Value_Str[item];
                 switch (nt)
@@ -274,7 +274,7 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
                                 string bitN = item + "[" + to_string(i) + "]";
-                                if (this->map_PIs.count(bitN) == 0 && this->map_POs.count(bitN) == 0) {
+                                if (this->map_PIs.find(bitN) == this->map_PIs.end() && this->map_POs.find(bitN) == this->map_POs.end()) {
                                     if (is_golden) {
                                         this->wires_golden[bitN] = new Node(bitN, WIRE);
                                     } else {
@@ -285,7 +285,7 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                         }
                         else
                         {
-                            if (this->map_PIs.count(item) == 0 && this->map_POs.count(item) == 0) {
+                            if (this->map_PIs.find(item) == this->map_PIs.end() && this->map_POs.find(item) == this->map_POs.end()) {
                                 if (is_golden) {
                                     this->wires_golden[item] = new Node(item, WIRE);
                                 } else {

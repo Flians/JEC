@@ -1,4 +1,0 @@
-The parsing process is over!
-The parsing time is: 1.16955 S
-The number of INV, BUF, and others reduction is 503
-The simplify time is: 1.19604 S
