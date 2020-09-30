@@ -200,6 +200,7 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
 
     if (reslut == s_True)
     {
+        cout << "The miter is not equivalent." << endl;
         this->fout << "NEQ" << endl;
         for (auto &pi : layers[0])
         {
@@ -211,14 +212,17 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
     }
     else if (reslut == s_False)
     {
+        cout << "The miter is equivalent." << endl;
         this->fout << "EQ" << endl;
     }
     else if (reslut == s_Undef)
     {
+        cout << "The miter is unknown." << endl;
         this->fout << "unknown" << endl;
     }
     else
     {
+        cout << "The miter is error." << endl;
         this->fout << "error" << endl;
     }
     vector<PTRef>().swap(nodes);
@@ -421,6 +425,7 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
             if (!cones[j].empty() && ((num_node == 1 && info[cones[j][0]->id].first == i) || exor_num[j] == num_node)) {
                 cout << ">>> The cone " << (smt_id++) << " is evaluated." << endl;
                 if (!evaluate_opensmt(cones[j])) {
+                    cout << "The miter is not equivalent." << endl;
                     this->fout << "NEQ" << endl;
                     return;
                 }
@@ -430,6 +435,7 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
     vector<pair<size_t, int>>().swap(info);
     vector<deque<Node*>>().swap(cones);
     vector<size_t>().swap(exor_num);
+    cout << "The miter is equivalent." << endl;
     this->fout << "EQ" << endl;
 }
 
@@ -531,6 +537,7 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
 
     if (reslut.isSat() == 1)
     {
+        cout << "The miter is not equivalent." << endl;
         this->fout << "NEQ" << endl;
         for (auto &pi : layers[0])
         {
@@ -540,10 +547,12 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
     }
     else if (reslut.isSat() == 0)
     {
+        cout << "The miter is equivalent." << endl;
         this->fout << "EQ" << endl;
     }
     else
     {
+        cout << "The miter is unknown." << endl;
         this->fout << "unknown" << endl;
     }
     vector<CVC4::Expr>().swap(nodes);
