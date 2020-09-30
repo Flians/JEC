@@ -190,20 +190,33 @@ cec golden.v revise.v
 
 The result <parse, cec>:
 ```
-c1355   0.003846        0.040957
-c1908   0.005273        0.145739
-c3540   0.012986        0.442472
-c432    0.003875        0.045970
-c499    0.003295        0.072421
-c5315   0.017121        0.517517
-c7552   0.019709        0.779324
-c880    0.005614        0.258527
-adder   0.010502        0.088273
-bar     0.047912        1.119685
-decoder 0.006263        0.008762    Networks are equivalent after structural hashing
-divisor 0.265793        9.963715
-log2    0.310544        28.498065
-max     0.065809        0.965807
-multiplier      0.253371        10.325793
-sin     0.075339        4.056654
+c1355	0.012091	0.077142
+c1908	0.004693	0.180226
+c3540	0.013721	0.560867
+c432	0.003969	0.040848
+c499	0.003856	0.070894
+c5315	0.019077	0.587466
+c7552	0.018403	0.875334
+c880	0.009771	0.278090
+adder	0.010443	0.077313
+bar	0.036429	1.339717
+decoder	0.005418	0.007647
+divisor	0.310117	12.486118
+max	0.054789	1.027411
+sin	0.061184	4.987837
+```
+
+## Analyze performance
+
+``` CMake
+    # Analyze performance
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg")
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
+    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
+```
+
+``` bash
+./build/JEC ./test/golden/gf_c880.v ./test/revise/rf_c880.v ./test/output/output_c880.txt CONE i m
+gprof ./build/JEC gmon.out > profile.txt
 ```
