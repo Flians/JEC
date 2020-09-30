@@ -57,7 +57,7 @@ make install     # to install into the prefix specified above
 
 ``` shell
 # for one
-./JEC ../test/golden/gf_1_bit_full_adder.v ../test/revise/rf_1_bit_full_adder.v ../test/output/output_1_bit_full_adder.txt CVC4 i m
+./JEC ../test/golden/gf_c880.v ../test/revise/rf_c880.v ../test/output/output_c880.txt CONE i m
 # for batch
 ./JEC ../test/ OPENSMT i m
 ```
