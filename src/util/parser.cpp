@@ -148,6 +148,8 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
     string line;
     smatch match;
     regex pattern("[^ \f\n\r\t\v,;\()]+");
+    size_t num_pi = this->PIs.size();
+    size_t num_po = this->POs.size();
     while (getline(in, line))
     {
         line = libstring::trim(line);
@@ -222,13 +224,13 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                this->map_PIs[item + "[" + to_string(i) + "]"] = this->PIs.size();
+                                this->map_PIs[item + "[" + to_string(i) + "]"] = num_pi++;
                                 this->PIs.emplace_back(new Node(item + "[" + to_string(i) + "]", IN));
                             }
                         }
                         else
                         {
-                            this->map_PIs[item] = this->PIs.size();
+                            this->map_PIs[item] = num_pi++;
                             if (is_clk(item)) {
                                 this->PIs.emplace_back(new Node(item, CLK));
                                 swap(this->map_PIs[item], this->map_PIs[this->PIs.front()->name]);
@@ -251,13 +253,13 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                this->map_POs[item + "[" + to_string(i) + "]"] = this->POs.size();
+                                this->map_POs[item + "[" + to_string(i) + "]"] = num_po++;
                                 this->POs.emplace_back(new Node(item + "[" + to_string(i) + "]", _EXOR));
                             }
                         }
                         else
                         {
-                            this->map_POs[item] = this->POs.size();
+                            this->map_POs[item] = num_po++;
                             this->POs.emplace_back(new Node(item, _EXOR));
                         }
                         iterStart = match[0].second;

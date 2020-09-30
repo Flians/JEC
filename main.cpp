@@ -83,7 +83,7 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
         "c432",
         "c499",
         "c5315",
-        "c6288",
+        // "c6288",
         "c7552",
         "c880",
         "adder",
@@ -96,11 +96,12 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
         "sin"
     };
     int patch = 100;
-    vector<vector<double>> avg(cases.size(), vector<double>(4, 0.0));
+    size_t num_case = cases.size();
+    vector<vector<double>> avg(num_case, vector<double>(4, 0.0));
     for (int i = 0; i < patch; ++i)
     {
         cout << ">>> Iterator #" << i + 1 << endl;
-        for (size_t j = 0; j < cases.size(); ++j)
+        for (size_t j = 0; j < num_case; ++j)
         {
             cout << "    >>> case " << cases[j] << endl;
             auto runtimes = workflow((root_path + "/golden/gf_" + cases[j] + ".v").c_str(), (root_path + "/revise/rf_" + cases[j] + ".v").c_str(), (root_path + "/output/output_" + cases[j] + ".txt").c_str(), smt, incremental, merge);
@@ -112,7 +113,7 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
     }
     cout << ">>> Iterator over!\n"
          << (incremental ? "Incremental" : "Unincremental") << endl;
-    for (size_t j = 0; j < cases.size(); ++j)
+    for (size_t j = 0; j < num_case; ++j)
     {
         cout << fixed << setprecision(6) << cases[j] << "\t" << avg[j][0] / patch << "\t" << avg[j][1] / patch << "\t" << avg[j][2] / patch << "\t" << avg[j][3] / patch << endl;
     }

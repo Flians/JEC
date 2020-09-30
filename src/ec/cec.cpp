@@ -53,7 +53,7 @@ void cec::evaluate_from_PIs_to_POs(vector<Node *> &PIs)
 
 bool cec::evaluate(vector<Node *> &nodes)
 {
-    if (nodes.size() == 0)
+    if (nodes.empty())
         return true;
     vector<Node *> qu;
     for (auto &g : nodes)

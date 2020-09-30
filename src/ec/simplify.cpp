@@ -174,7 +174,8 @@ void simplify::id_reassign()
         return;
     }
     int id = 0;
-    for (size_t i = 0; i < layers.size(); ++i)
+    size_t num_layer = layers.size();
+    for (size_t i = 0; i < num_layer; ++i)
     {
         long last = layers[i].size() - 1;
         for (long j = 0; j <= last; ++j)
@@ -195,7 +196,7 @@ void simplify::id_reassign()
         }
         layers[i].resize(last + 1);
         if (layers[i].empty()) {
-            layers.erase(layers.begin() + i);
+            layers.erase(layers.begin() + (i--));
         }
     }
     init_id = id;
@@ -333,7 +334,8 @@ int simplify::reduce_repeat_nodes()
     }
     vector<int> level(init_id, 0);
     vector<Roaring> nbrs(init_id);
-    for (size_t i = 0; i < layers.size(); ++i)
+    size_t num_layer = layers.size();
+    for (size_t i = 0; i < num_layer; ++i)
     {
         for (auto &node_ : layers[i])
         {
@@ -345,18 +347,18 @@ int simplify::reduce_repeat_nodes()
         }
     }
     int reduce = 0;
-    for (size_t i = 0; i < layers.size() - 2; ++i)
+    for (size_t i = 0; i < num_layer - 2; ++i)
     {
         // the number of the Gtype
         vector<vector<Node *>> record(COUNT, vector<Node *>());
         for (auto &item : layers[i])
         {
-            for (size_t j = 0; j < item->outs.size(); ++j)
+            for (auto &out : item->outs)
             {
                 // not including output
-                if (item->outs[j]->cell != _EXOR)
+                if (out->cell != _EXOR)
                 {
-                    record[item->outs[j]->cell].emplace_back(item->outs[j]);
+                    record[out->cell].emplace_back(out);
                 }
             }
         }
@@ -402,8 +404,7 @@ int simplify::reduce_repeat_nodes()
     {
         if (layers[i].empty())
         {
-            layers.erase(layers.begin() + i);
-            --i;
+            layers.erase(layers.begin() + (i--));
         }
     }
     vector<int>().swap(level);
@@ -423,30 +424,34 @@ int simplify::merge_nodes_between_networks()
     }
     vector<pair<int,int>> position(init_id, {0,0});
     vector<Node*> all_node(init_id, nullptr);
-    for (size_t i = 0; i < layers.size(); ++i)
+    size_t num_layer = layers.size();
+    for (size_t i = 0; i < num_layer; ++i)
     {
-        for (size_t j = 0; j < layers[i].size(); ++j)
+        size_t num_node = layers[i].size();
+        for (size_t j = 0; j < num_node; ++j)
         {
             position[layers[i][j]->id] = {i,j};
             all_node[layers[i][j]->id] = layers[i][j];
         }
     }
     int reduce = 0;
-    for (size_t i = 1; i < layers.size() - 1; ++i) {
-        for (size_t j = 0; j < layers[i].size(); ++j) {
+    for (size_t i = 1; i < num_layer - 1; ++i) {
+        size_t num_node = layers[i].size();
+        for (size_t j = 0; j < num_node; ++j) {
             if (!layers[i][j] || layers[i][j]->ins.empty()) {
                 continue;
             }
             Roaring same_id;
             bool flag = false;
-            for (size_t k = 0; k < layers[i][j]->ins.size(); ++k) {
+            size_t num_npi = layers[i][j]->ins.size();
+            for (size_t k = 0; k < num_npi; ++k) {
                 if (layers[i][j]->ins[k]->cell == CLK) {
                     continue;
                 }
                 Roaring tmp;
                 for (auto &iout: layers[i][j]->ins[k]->outs) {
                     if (iout && iout->cell == layers[i][j]->cell) {
-                        if (iout->ins.size() != layers[i][j]->ins.size()) {
+                        if (iout->ins.size() != num_npi) {
                             error_fout("The number of inputs of the same type of node is different in simplify.merge_nodes_between_networks");
                         }
                         tmp.add(iout->id);
