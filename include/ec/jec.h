@@ -13,7 +13,7 @@ class jec : public ec
 {
 private:
     // assign values to the i-th element in the PIs
-    bool assign_PIs_value(vector<vector<Node *>> &layers, int i);
+    bool assign_PIs_value(vector<vector<Node *>> &layers, size_t i);
     // Calculate all nodes according to PIs
     bool evaluate(vector<vector<Node *>> &layers);
     bool evaluate(vector<Node *> &nodes);
