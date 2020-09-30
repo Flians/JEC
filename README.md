@@ -193,3 +193,18 @@ divisor	0.310117	12.486118
 max	0.054789	1.027411
 sin	0.061184	4.987837
 ```
+
+## Analyze performance
+
+``` CMake
+    # Analyze performance
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg")
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
+    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
+```
+
+``` bash
+./build/JEC ./test/golden/gf_c880.v ./test/revise/rf_c880.v ./test/output/output_c880.txt CONE i m
+gprof ./build/JEC gmon.out > profile.txt
+```
