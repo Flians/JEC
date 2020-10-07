@@ -424,7 +424,7 @@ void parser::printG(vector<Node *> &nodes)
 
 Node *parser::find_node_by_name(vector<Node *> &nodes, const string &name)
 {
-    for (auto node : nodes)
+    for (auto &node : nodes)
     {
         if (name == node->name)
         {

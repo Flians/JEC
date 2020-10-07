@@ -46,7 +46,7 @@ size_t ec::merge_cone(int cur_color, Cone &cur_cone, Cone &other_cone, vector<pa
 
 void ec::print_PIs_value(vector<Node *> &PIs, ofstream &output)
 {
-    for (auto pi : PIs)
+    for (auto &pi : PIs)
     {
         output << pi->name << " " << pi->val << endl;
     }
@@ -54,7 +54,7 @@ void ec::print_PIs_value(vector<Node *> &PIs, ofstream &output)
 
 void ec::print_PIs_value(vector<Node *> &PIs, FILE *output)
 {
-    for (auto pi : PIs)
+    for (auto &pi : PIs)
     {
         fprintf(output, "%s %d", pi->name.c_str(), pi->val);
     }
