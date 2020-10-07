@@ -106,7 +106,7 @@ vector<vector<Node *>> &simplify::id_reassign_and_layered(vector<Node *> &PIs, v
     queue<Node *> bfs_record;
     // reassign id of each node, and obtain the length of the longest path
     size_t i = 0;
-    for (auto pi : PIs)
+    for (auto &pi : PIs)
     {
         visit[pi] = 1;
         pi->id = i++;
@@ -118,7 +118,7 @@ vector<vector<Node *>> &simplify::id_reassign_and_layered(vector<Node *> &PIs, v
         Node *item = bfs_record.front();
         if (!item->outs.empty())
         {
-            for (auto out : item->outs)
+            for (auto &out : item->outs)
             {
                 if (visit.find(out) == visit.end())
                 {
@@ -212,7 +212,7 @@ void simplify::id_reassign(vector<Node *> &PIs)
     unordered_map<Node *, bool> visit;
     queue<Node *> bfs_record;
     int i = 0;
-    for (auto pi : PIs)
+    for (auto &pi : PIs)
     {
         visit[pi] = true;
         pi->id = i++;
@@ -221,7 +221,7 @@ void simplify::id_reassign(vector<Node *> &PIs)
     while (!bfs_record.empty())
     {
         Node *item = bfs_record.front();
-        for (auto out : item->outs)
+        for (auto &out : item->outs)
         {
             if (visit.find(out) == visit.end())
             {
