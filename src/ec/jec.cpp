@@ -52,7 +52,7 @@ bool jec::evaluate(vector<vector<Node *>> &layers)
             node->val = calculate(node);
         }
     }
-    for (auto node : layers.back())
+    for (auto &node : layers.back())
     {
         if (calculate(node) != L)
         {
