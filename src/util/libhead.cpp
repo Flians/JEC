@@ -152,6 +152,12 @@ inline Value EXOR(const Value &A, const Value &B)
 Node* delete_node(Node *cur) {
     if (!cur)
         return nullptr;
+    if (cur->ins.empty() && cur->outs.empty() && cur->cell == WIRE) {
+        // cout << cur->name << " Wire is useless in delete_node!" << endl;
+        delete cur;
+        cur = nullptr;
+        return nullptr;
+    }
     size_t num_ins = cur->ins.size();
     if (num_ins != 1 && !(num_ins == 2 && cur->ins[0]->cell == CLK))
     {
@@ -166,16 +172,17 @@ Node* delete_node(Node *cur) {
         {
             vector<Node *>::iterator temp_in = (*it)->ins.begin();
             vector<Node *>::iterator temp_in_end = (*it)->ins.end();
+            bool flag = false;
             while (temp_in != temp_in_end)
             {
                 if (cur == (*temp_in))
                 {
                     (*temp_in) = tin;
-                    break;
+                    flag = true;
                 }
                 ++temp_in;
             }
-            if (temp_in != temp_in_end)
+            if (flag)
             {
                 tin->outs.emplace_back(*it);
             }
@@ -206,16 +213,17 @@ void merge_node (Node *node, Node *repeat) {
         // grandson.ins.push(son)
         vector<Node *>::iterator temp_in = out->ins.begin();
         vector<Node *>::iterator temp_in_end = out->ins.end();
+        bool flag = false;
         while (temp_in != temp_in_end)
         {
             if (repeat == (*temp_in))
             {
                 (*temp_in) = node;
-                break;
+                flag = true;
             }
             ++temp_in;
         }
-        if (temp_in != temp_in_end)
+        if (flag)
         {
             // son.outs.push(grandson)
             node->outs.emplace_back(out);
