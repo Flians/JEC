@@ -55,6 +55,7 @@ void parser::clean_spl()
     if (this->PIs.empty())
         return;
     stack<Node *> record;
+    stack<Node *> record_empty_out;
     vector<bool> vis(init_id, 0);
     for (auto &pi : this->PIs) {
         record.push(pi);
@@ -63,8 +64,12 @@ void parser::clean_spl()
     while (!record.empty()) {
         Node *cur = record.top();
         record.pop();
-        if (!cur || cur->outs.empty())
+        if (!cur || cur->cell == _EXOR)
         {
+            continue;
+        }
+        if (cur->outs.empty()) {
+            record_empty_out.push(cur);
             continue;
         }
         if (cur->cell == DFF || cur->cell == SPL || cur->cell == SPL3)
@@ -75,6 +80,27 @@ void parser::clean_spl()
             if (out && !vis[out->id]) {
                 record.push(out);
                 vis[out->id] = 1;
+            }
+        }
+    }
+    // delete all nodes whose outputs are empty.
+    std::fill(vis.begin(), vis.end(), 0);
+    while (!record_empty_out.empty()) {
+        Node *cur = record_empty_out.top();
+        record_empty_out.pop();
+        if (cur->outs.empty()) {
+            for (auto &in : cur->ins) {
+                if (in->cell != CLK && in->outs.size() == 1 && !vis[in->id]) {
+                    record_empty_out.push(in);
+                    vis[in->id] = 1;
+                }
+            }
+            if (cur->cell != IN) {
+                delete cur;
+                cur = nullptr;
+            } else {
+                // this->PIs.erase(find(this->PIs.begin(), this->PIs.end(), cur));
+                cout << "The useless primary input: " << cur->name << endl;
             }
         }
     }

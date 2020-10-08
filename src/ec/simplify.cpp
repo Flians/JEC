@@ -293,16 +293,17 @@ void simplify::deduplicate(int i, Node *keep, Node *dupl, vector<Roaring> &nbrs)
         // grandson.ins.push(son)
         vector<Node *>::iterator temp_in = out->ins.begin();
         vector<Node *>::iterator temp_in_end = out->ins.end();
+        bool flag = false;
         while (temp_in != temp_in_end)
         {
             if (dupl == (*temp_in))
             {
                 (*temp_in) = keep;
-                break;
+                flag = true;
             }
             ++temp_in;
         }
-        if (temp_in != temp_in_end)
+        if (flag)
         {
             // son.outs.push(grandson)
             keep->outs.emplace_back(out);
