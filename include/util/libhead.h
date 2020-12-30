@@ -54,6 +54,7 @@ enum Gtype
     _DC,   // _DC \n6_5[9] ( .O(\108 ), .C(\96 ), .D(\107 ));
     _EXOR,
     _MODULE,
+    _UNDEFINED,
     COUNT
 };
 
