@@ -16,7 +16,7 @@ private:
     bool assign_PIs_value(vector<vector<Node *>> &layers, size_t i);
     // Calculate all nodes according to PIs
     bool evaluate(vector<vector<Node *>> &layers);
-    bool evaluate(vector<Node *> &nodes);
+    bool evaluate(const vector<Node *> &nodes);
 
     void build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRef> &record);
     bool evaluate_opensmt(deque<Node*> &cone);
