@@ -1,12 +1,13 @@
 #include "netlist.h"
 
-netlist::netlist(/* args */)
+Netlist::Netlist(/* args */)
 {
 }
 
-netlist::~netlist()
+Netlist::~Netlist()
 {
-    vector<Node *>().swap(this->PIs);
-    vector<Node *>().swap(this->POs);
+    cleanVP<Node>(this->PIs);
+    cleanVP<Node>(this->POs);
+    cleanVP<Node>(this->gates);
     cout << "The parser is destroyed!" << endl;
 }

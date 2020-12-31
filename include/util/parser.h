@@ -1,7 +1,8 @@
 #ifndef _PARSER_H_
 #define _PARSER_H_
 
-#include "libhead.h"
+#include "util.h"
+#include "libstring.h"
 
 class parser
 {

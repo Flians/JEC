@@ -21,7 +21,7 @@ bool cec::assign_PIs_value(vector<Node *> &PIs, int i)
     }
     else
     {
-        if (PIs.at(i)->cell == _CONSTANT)
+        if (PIs.at(i)->type == _CONSTANT)
         {
             if (!assign_PIs_value(PIs, i + 1))
                 return false;
@@ -51,46 +51,39 @@ void cec::evaluate_from_PIs_to_POs(vector<Node *> &PIs)
     }
 }
 
-bool cec::evaluate(vector<Node *> &nodes)
+bool cec::evaluate(const vector<Node *> &nodes)
 {
     if (nodes.empty())
         return true;
-    vector<Node *> qu;
+    queue<Node *> qu;
     for (auto &g : nodes)
     {
-        if (!g->outs.empty())
-        {
-            for (auto &out : g->outs)
+        qu.push(g);
+    }
+    size_t len = qu.size();
+    bool visited[init_id] = {0};
+    while (len > 0)
+    {
+        while (len--) {
+            Node* cur = qu.front();
+            qu.pop();
+            cur->calculate();
+            visited[cur->id] = 1;
+            for (auto &out : cur->outs)
             {
-                ++out->vis;
-                if (out->vis == out->ins.size())
+                if (!visited[cur->id])
                 {
-                    out->vis = 0;
-                    out->val = calculate(out);
-                    // cout << out->name << " " << out->val << endl;
-                    if (!out->outs.empty())
+                    if (out->type == _EXOR && out->val == H)
                     {
-                        qu.push_back(out);
+                        return false;
                     }
-                    else if (out->cell == _EXOR)
-                    {
-                        if (out->val == H)
-                            return false;
-                    }
-                    else
-                    {
-                        error_fout(out->name + " Gate have no outputs!");
-                    }
+                    qu.push(out);
                 }
             }
         }
-        else
-        {
-            cout << "The outputs of the gate " << g->name << " are empty!" << endl;
-        }
+        len = qu.size();
     }
-    unique_element_in_vector(qu);
-    return evaluate(qu);
+    return true;
 }
 
 void cec::evaluate_from_POs_to_PIs(vector<Node *> &POs) {
