@@ -1,7 +1,7 @@
 #ifndef _SIMPLIFY_H_
 #define _SIMPLIFY_H_
 
-#include "libhead.h"
+#include "util.h"
 #include "CRoaring/roaring.hh"
 
 class simplify

@@ -1,24 +1,17 @@
 #ifndef _NETLIST_H_
 #define _NETLIST_H_
 
-#include "libhead.h"
+#include "util.h"
 
-class netlist
+class Netlist
 {
 private:
     vector<Node *> PIs;
     vector<Node *> POs;
+    vector<Node *> gates;
 public:
-    netlist(/* args */);
-    ~netlist();
+    Netlist(/* args */);
+    ~Netlist();
 };
-
-netlist::netlist(/* args */)
-{
-}
-
-netlist::~netlist()
-{
-}
 
 #endif

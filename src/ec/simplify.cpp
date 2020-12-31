@@ -47,11 +47,11 @@ void simplify::clean_wire_buf_recusive(vector<Node *> &PIs)
     for (size_t i = 0; i < len; ++i)
     {
         Node *pi = PIs[i];
-        if (pi->outs.empty() || (pi->cell != IN && pi->outs.front()->cell != WIRE))
+        if (pi->outs.empty() || (pi->type != IN && pi->outs.front()->type != WIRE))
         {
             continue;
         }
-        if (pi->cell == WIRE || pi->cell == BUF || pi->cell == DFF || pi->cell == SPL || pi->cell == SPL3)
+        if (pi->type == WIRE || pi->type == BUF || pi->type == DFF || pi->type == SPL || pi->type == SPL3)
         {
             pi = delete_node(pi);
         }
@@ -80,7 +80,7 @@ void simplify::clean_wire_buf_iterator(vector<Node *> &PIs)
         {
             continue;
         }
-        if (cur->cell == WIRE || cur->cell == BUF || cur->cell == DFF || cur->cell == SPL || cur->cell == SPL3)
+        if (cur->type == WIRE || cur->type == BUF || cur->type == DFF || cur->type == SPL || cur->type == SPL3)
         {
             cur = delete_node(cur);
         }
@@ -157,7 +157,7 @@ vector<vector<Node *>> &simplify::id_reassign_and_layered(vector<Node *> &PIs, v
     }
     // move clk to the front of this->layers.front()
     for (auto &pi : this->layers.front()) {
-        if (pi->cell == CLK) {
+        if (pi->type == CLK) {
             swap(this->layers.front().front(), pi);
             break;
         }
@@ -259,7 +259,7 @@ vector<vector<Node *>> &simplify::layer_assignment(vector<Node *> &PIs, vector<N
             {
                 ++visit[out->id];
                 logic_depth[out->id] = max(logic_depth[this->layers[i][j]->id] + 1, logic_depth[out->id]);
-                if (out->ins.size() == visit[out->id] && out->cell != _EXOR)
+                if (out->ins.size() == visit[out->id] && out->type != _EXOR)
                     layer.emplace_back(out);
             }
         }
@@ -357,9 +357,9 @@ int simplify::reduce_repeat_nodes()
             for (auto &out : item->outs)
             {
                 // not including output
-                if (out->cell != _EXOR)
+                if (out->type != _EXOR)
                 {
-                    record[out->cell].emplace_back(out);
+                    record[out->type].emplace_back(out);
                 }
             }
         }
@@ -446,12 +446,12 @@ int simplify::merge_nodes_between_networks()
             bool flag = false;
             size_t num_npi = layers[i][j]->ins.size();
             for (size_t k = 0; k < num_npi; ++k) {
-                if (layers[i][j]->ins[k]->cell == CLK) {
+                if (layers[i][j]->ins[k]->type == CLK) {
                     continue;
                 }
                 Roaring tmp;
                 for (auto &iout: layers[i][j]->ins[k]->outs) {
-                    if (iout && iout->cell == layers[i][j]->cell) {
+                    if (iout && iout->type == layers[i][j]->type) {
                         if (iout->ins.size() != num_npi) {
                             error_fout("The number of inputs of the same type of node is different in simplify.merge_nodes_between_networks");
                         }

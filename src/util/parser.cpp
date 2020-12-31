@@ -64,7 +64,7 @@ void parser::clean_spl()
     while (!record.empty()) {
         Node *cur = record.top();
         record.pop();
-        if (!cur || cur->cell == _EXOR)
+        if (!cur || cur->type == _EXOR)
         {
             continue;
         }
@@ -72,7 +72,7 @@ void parser::clean_spl()
             record_empty_out.push(cur);
             continue;
         }
-        if (cur->cell == DFF || cur->cell == SPL || cur->cell == SPL3)
+        if (cur->type == DFF || cur->type == SPL || cur->type == SPL3)
         {
             cur = delete_node(cur);
         }
@@ -90,12 +90,12 @@ void parser::clean_spl()
         record_empty_out.pop();
         if (cur->outs.empty()) {
             for (auto &in : cur->ins) {
-                if (in->cell != CLK && in->outs.size() == 1 && !vis[in->id]) {
+                if (in->type != CLK && in->outs.size() == 1 && !vis[in->id]) {
                     record_empty_out.push(in);
                     vis[in->id] = 1;
                 }
             }
-            if (cur->cell != IN) {
+            if (cur->type != IN) {
                 delete cur;
                 cur = nullptr;
             } else {
@@ -145,7 +145,7 @@ void parser::parse_inport(Node *g, const string &item, const string &line, std::
     }
     port->outs.emplace_back(g);
     g->ins.emplace_back(port);
-    if (port->cell == CLK) {
+    if (port->type == CLK) {
         swap(g->ins.front(), g->ins.back());
     }
 }
@@ -328,7 +328,7 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                 default:
                 {
                     Node *g = new Node();
-                    g->cell = nt;
+                    g->type = nt;
                     if (regex_search(iterStart, iterEnd, match, pattern))
                     {
                         g->name = match[0];
@@ -359,7 +359,7 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                         }
                         else
                         {
-                            if (index_port == 0 || (g->cell == SPL && index_port < 2) || (g->cell == SPL3 && index_port < 3))
+                            if (index_port == 0 || (g->type == SPL && index_port < 2) || (g->type == SPL3 && index_port < 3))
                             {
                                 parse_outport(g, item, line, is_golden ? this->wires_golden : this->wires_revised);
                             }
@@ -442,7 +442,7 @@ void parser::printG(vector<Node *> &nodes)
     vector<Node *>::iterator pi_end = nodes.end();
     while (pi != pi_end)
     {
-        cout << (*pi)->name << " " << Str_Value[(*pi)->cell] << " " << (*pi)->val << endl;
+        cout << (*pi)->name << " " << Str_Value[(*pi)->type] << " " << (*pi)->val << endl;
         printG((*pi)->outs);
         ++pi;
     }
@@ -525,7 +525,7 @@ void parser::build_miter(vector<Node *> &PIs_golden, vector<Node *> &POs_golden,
         }
         else
         {
-            (*iter)->cell = _EXOR;
+            (*iter)->type = _EXOR;
             for (auto &tg : po->ins)
             {
                 (*iter)->ins.emplace_back(tg);
