@@ -63,6 +63,11 @@ enum Value
     X = 2
 };
 
+extern size_t init_id;
+extern std::unordered_map<string, Gtype> Value_Str;
+extern std::unordered_map<Gtype, string, EnumClassHash> Str_Value;
+extern std::unordered_map<Value, string, EnumClassHash> Const_Str;
+
 /* Global operator overload */
 // and
 Value operator&(const Value &, const Value &);
@@ -85,14 +90,6 @@ Value HMUX(const Value &I0, const Value &I1, const Value &S);
 // exor
 Value EXOR(const Value &, const Value &);
 
-extern size_t init_id;
-extern std::unordered_map<string, Gtype> Value_Str;
-extern std::unordered_map<Gtype, string, EnumClassHash> Str_Value;
-extern std::unordered_map<Value, string, EnumClassHash> Const_Str;
-
-template<typename T>
-void cleanVP(vector<T *> &vp);
-
-void error_fout(const string &message);
+void error_fout(string &&message);
 
 #endif

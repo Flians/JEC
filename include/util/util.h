@@ -3,12 +3,18 @@
 
 #include "node.h"
 
-// delete the node, return its parent
-Node *delete_node(Node *node);
+class Util
+{
+private:
+    Util();
+    Util(const Util &);
+    Util &operator=(const Util &);
+    ~Util();
 
-// merge two nodes
-void merge_node(Node *node, Node *repeat);
-
-void unique_element_in_vector(vector<Node *> &v);
+public:
+    static void unique_element_in_vector(vector<Node *> &v);
+    static void cleanVP(vector<Node *> &vp);
+    
+};
 
 #endif

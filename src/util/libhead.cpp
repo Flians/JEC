@@ -66,7 +66,7 @@ std::unordered_map<Value, string, EnumClassHash> Const_Str = {
     {X, "1'bx"}};
 
 /* Global operator overload */
-inline Value operator&(const Value &A, const Value &B)
+ Value operator&(const Value &A, const Value &B)
 {
     if (A == L || B == L)
     {
@@ -78,7 +78,7 @@ inline Value operator&(const Value &A, const Value &B)
     }
 }
 
-inline Value operator|(const Value &A, const Value &B)
+ Value operator|(const Value &A, const Value &B)
 {
     if (A == H || B == H)
     {
@@ -90,7 +90,7 @@ inline Value operator|(const Value &A, const Value &B)
     }
 }
 
-inline Value operator^(const Value &A, const Value &B)
+ Value operator^(const Value &A, const Value &B)
 {
     if (A == H && B == H)
     {
@@ -102,7 +102,7 @@ inline Value operator^(const Value &A, const Value &B)
     }
 }
 
-inline Value operator~(const Value &A)
+ Value operator~(const Value &A)
 {
     switch (A)
     {
@@ -115,7 +115,7 @@ inline Value operator~(const Value &A)
     }
 }
 
-inline Value DC(const Value &C, const Value &D)
+ Value DC(const Value &C, const Value &D)
 {
     if (D == L)
     {
@@ -127,7 +127,7 @@ inline Value DC(const Value &C, const Value &D)
     }
 }
 
-inline Value HMUX(const Value &I0, const Value &I1, const Value &S)
+ Value HMUX(const Value &I0, const Value &I1, const Value &S)
 {
     if (S == X)
     {
@@ -139,7 +139,7 @@ inline Value HMUX(const Value &I0, const Value &I1, const Value &S)
     }
 }
 
-inline Value EXOR(const Value &A, const Value &B)
+ Value EXOR(const Value &A, const Value &B)
 {
     if (A == X || A == B)
     {
@@ -151,25 +151,7 @@ inline Value EXOR(const Value &A, const Value &B)
     }
 }
 
-template<typename T>
-void cleanVP(vector<T *>& vecPtr)
-{
-    if (vecPtr.empty())
-        return;
-    typename vector<T *>::iterator it = vecPtr.begin();
-    int len = vecPtr.size();
-    for (int i = 0; i < len; ++i, ++it)
-    {
-        if (*it)
-        {
-            delete *it;
-            *it = nullptr;
-        }
-    }
-    vector<T *>().swap(vecPtr);
-}
-
-void error_fout(const string &message)
+ void error_fout(string &&message)
 {
     cerr << "Error: " << message << endl;
     exit(-1);
