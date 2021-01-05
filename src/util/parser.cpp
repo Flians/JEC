@@ -40,11 +40,11 @@ vector<Node *> &parser::get_constants()
 void parser::clean_wires()
 {
     for (auto &item : this->wires_golden) {
-        delete_node(item.second);
+        Netlist::delete_node(item.second);
     }
 
     for (auto &item : this->wires_revised) {
-        delete_node(item.second);
+        Netlist::delete_node(item.second);
     }
     this->wires_golden.clear();
     this->wires_revised.clear();
@@ -74,7 +74,7 @@ void parser::clean_spl()
         }
         if (cur->type == DFF || cur->type == SPL || cur->type == SPL3)
         {
-            cur = delete_node(cur);
+            cur = Netlist::delete_node(cur);
         }
         for (auto &out : cur->outs) {
             if (out && !vis[out->id]) {

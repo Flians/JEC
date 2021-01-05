@@ -9,7 +9,7 @@ simplify::~simplify()
     /* free up space */
     for (auto &item : this->layers)
     {
-        cleanVP(item);
+        Util::cleanVP(item);
     }
     vector<vector<Node *>>().swap(this->layers);
     cout << "The simplify is destroyed!" << endl;
@@ -53,7 +53,7 @@ void simplify::clean_wire_buf_recusive(vector<Node *> &PIs)
         }
         if (pi->type == WIRE || pi->type == BUF || pi->type == DFF || pi->type == SPL || pi->type == SPL3)
         {
-            pi = delete_node(pi);
+            pi = Netlist::delete_node(pi);
         }
         clean_wire_buf_recusive(pi->outs);
     }
@@ -82,7 +82,7 @@ void simplify::clean_wire_buf_iterator(vector<Node *> &PIs)
         }
         if (cur->type == WIRE || cur->type == BUF || cur->type == DFF || cur->type == SPL || cur->type == SPL3)
         {
-            cur = delete_node(cur);
+            cur = Netlist::delete_node(cur);
         }
         for (auto &out : cur->outs) {
             if (out && !vis[out->id]) {
@@ -370,7 +370,7 @@ int simplify::reduce_repeat_nodes()
                 continue;
             }
             // remove duplicate elements in vector
-            unique_element_in_vector(item);
+            Util::unique_element_in_vector(item);
             if (item.size() <= 1)
             {
                 continue;
@@ -469,7 +469,7 @@ int simplify::merge_nodes_between_networks()
             while (it != same_id.end())
             {
                 if (all_node[it.i.current_value] && it.i.current_value != layers[i][j]->id) {
-                    merge_node(layers[i][j], all_node[it.i.current_value]);
+                    Netlist::merge_node(layers[i][j], all_node[it.i.current_value]);
                     all_node[it.i.current_value] = nullptr;
                     layers[position[it.i.current_value].first][position[it.i.current_value].second] = nullptr;
                     ++reduce;
