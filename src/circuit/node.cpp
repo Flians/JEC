@@ -35,15 +35,17 @@ Node::~Node()
 
 Value Node::calculate()
 {
-    Value res = X;
-    res = this->ins.front()->val;
     vector<Node *>::iterator it_ = this->ins.begin();
-    if ((*it_)->type == CLK)
+    vector<Node *>::iterator it_end = this->ins.end();
+    if (it_ != it_end && (*it_)->type == CLK)
     {
         ++it_;
-        res = (*it_)->val;
     }
-    vector<Node *>::iterator it_end = this->ins.end() - 1;
+    if (it_ == it_end) {
+        return X;
+    }
+    --it_end;
+    Value res = (*it_)->val;
     switch (this->type)
     {
     case AND:

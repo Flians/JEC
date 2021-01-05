@@ -2,6 +2,7 @@
 #define _SIMPLIFY_H_
 
 #include "util.h"
+#include "netlist.h"
 #include "CRoaring/roaring.hh"
 
 class simplify
