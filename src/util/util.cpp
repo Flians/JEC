@@ -18,3 +18,11 @@ void Util::unique_element_in_vector(vector<Node *> &v)
         v.erase(vector_iterator, v.end());
     }
 }
+
+/** make a miter for golden and revised */
+Netlist *Util::make_miter(Netlist *golden, Netlist *revised)
+{
+    Netlist* miter = new Netlist();
+
+    return miter;
+}
