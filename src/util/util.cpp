@@ -18,21 +18,3 @@ void Util::unique_element_in_vector(vector<Node *> &v)
         v.erase(vector_iterator, v.end());
     }
 }
-
-
-void Util::cleanVP(vector<Node *> &vecPtr)
-{
-    if (vecPtr.empty())
-        return;
-    typename vector<Node *>::iterator it = vecPtr.begin();
-    int len = vecPtr.size();
-    for (int i = 0; i < len; ++i, ++it)
-    {
-        if (*it)
-        {
-            delete *it;
-            *it = nullptr;
-        }
-    }
-    vector<Node *>().swap(vecPtr);
-}
