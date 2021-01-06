@@ -82,7 +82,8 @@
         "cfloat": "cpp",
         "ciso646": "cpp",
         "climits": "cpp",
-        "cstdbool": "cpp"
+        "cstdbool": "cpp",
+        "variant": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "cmake.buildDirectory": "${workspaceRoot}/build",
