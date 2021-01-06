@@ -70,26 +70,102 @@ extern std::unordered_map<Value, string, EnumClassHash> Const_Str;
 
 /* Global operator overload */
 // and
-Value operator&(const Value &, const Value &);
+inline Value operator&(const Value &A, const Value &B)
+{
+    if (A == L || B == L)
+    {
+        return L;
+    }
+    else
+    {
+        return max(A, B);
+    }
+}
 
 // or
-Value operator|(const Value &, const Value &);
+inline Value operator|(const Value &A, const Value &B)
+{
+    if (A == H || B == H)
+    {
+        return H;
+    }
+    else
+    {
+        return max(A, B);
+    }
+}
 
-// xor
-Value operator^(const Value &, const Value &);
+// xore
+inline Value operator^(const Value &A, const Value &B)
+{
+    if (A == H && B == H)
+    {
+        return L;
+    }
+    else
+    {
+        return max(A, B);
+    }
+}
 
 // not
-Value operator~(const Value &);
+inline Value operator~(const Value &A)
+{
+    switch (A)
+    {
+    case L:
+        return H;
+    case H:
+        return L;
+    default:
+        return X;
+    }
+}
 
-/* O=D?1'bx:C */
-Value DC(const Value &C, const Value &D);
+// _DC in ICCAD's 2020 contest
+inline Value DC(const Value &C, const Value &D)
+{
+    if (D == L)
+    {
+        return C;
+    }
+    else
+    {
+        return X;
+    }
+}
 
-/* O=S?I1:I0 */
-Value HMUX(const Value &I0, const Value &I1, const Value &S);
+// _HMUX in ICCAD's 2020 contest
+inline Value HMUX(const Value &I0, const Value &I1, const Value &S)
+{
+    if (S == X)
+    {
+        return I0 == I1 ? I0 : X;
+    }
+    else
+    {
+        return S == L ? I0 : I1;
+    }
+}
 
-// exor
-Value EXOR(const Value &, const Value &);
+// Output
+inline Value EXOR(const Value &A, const Value &B)
+{
+    if (A == X || A == B)
+    {
+        return L;
+    }
+    else
+    {
+        return H;
+    }
+}
 
-void error_fout(string &&message);
+// show error message
+inline void error_fout(string &&message)
+{
+    cerr << "Error: " << message << endl;
+    exit(-1);
+}
 
 #endif
