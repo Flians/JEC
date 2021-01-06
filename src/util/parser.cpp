@@ -115,7 +115,7 @@ bool parser::is_clk(const string &name)
 void parser::parse_inport(Node *g, const string &item, const string &line, std::unordered_map<std::string, Node *> &wires)
 {
     Node *port;
-    if (item.length() == 4 && libstring::startsWith(item, "1'b"))
+    if (item.length() == 4 && Libstring::startsWith(item, "1'b"))
     {
         switch (item[3])
         {
@@ -178,12 +178,12 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
     size_t num_po = this->POs.size();
     while (getline(in, line))
     {
-        line = libstring::trim(line);
+        line = Libstring::trim(line);
         // skip annotations and empty line
         if (line.find("//") == 0 || line[0] == '`' || line.empty())
             continue;
         // /* ... */
-        if (libstring::startsWith(line, "/*"))
+        if (Libstring::startsWith(line, "/*"))
         {
             while (line.find("*/") == line.npos)
             {
@@ -344,7 +344,7 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                         // cout << "port: ";
                         if (item[0] == '.')
                         {
-                            bool flag = libstring::startsWith(item, ".dout");
+                            bool flag = Libstring::startsWith(item, ".dout");
                             regex_search(iterStart, iterEnd, match, pattern);
                             item = match[0];
                             iterStart = match[0].second;

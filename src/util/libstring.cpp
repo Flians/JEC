@@ -1,14 +1,6 @@
 #include "libstring.h"
 
-libstring::libstring(/* args */)
-{
-}
-
-libstring::~libstring()
-{
-}
-
-string libstring::trim(const string &str)
+string Libstring::trim(const string &str)
 {
     string::size_type pos = str.find_first_not_of(' ');
     if (pos == string::npos)
@@ -23,7 +15,7 @@ string libstring::trim(const string &str)
     return str.substr(pos);
 }
 
-void libstring::split(const string &str, vector<string> &ret_, string sep = ",")
+void Libstring::split(const string &str, vector<string> &ret_, string sep = ",")
 {
     if (str.empty())
         return;
@@ -54,7 +46,7 @@ void libstring::split(const string &str, vector<string> &ret_, string sep = ",")
     }
 }
 
-string libstring::replace(const string &str, const string &src, const string &dest)
+string Libstring::replace(const string &str, const string &src, const string &dest)
 {
     string ret;
 
@@ -74,12 +66,12 @@ string libstring::replace(const string &str, const string &src, const string &de
     return ret;
 }
 
-int libstring::startsWith(const string &s, string sub)
+int Libstring::startsWith(const string &s, string sub)
 {
     return s.find(sub) == 0 ? 1 : 0;
 }
 
-int libstring::endsWith(const string &s, string sub)
+int Libstring::endsWith(const string &s, string sub)
 {
     return s.rfind(sub) == (s.length() - sub.length()) ? 1 : 0;
 }
