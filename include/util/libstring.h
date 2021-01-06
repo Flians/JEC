@@ -6,14 +6,15 @@
 
 using namespace std;
 
-class libstring
+class Libstring
 {
 private:
-    /* data */
-public:
-    libstring(/* args */);
-    ~libstring();
+    Libstring(/* args */);
+    Libstring(const Libstring &);
+    Libstring &operator=(const Libstring &);
+    ~Libstring();
 
+public:
     static string trim(const string &str);
     static void split(const string &str, vector<string> &ret_, string sep);
     static string replace(const string &str, const string &src, const string &dest);
