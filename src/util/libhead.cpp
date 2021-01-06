@@ -2,7 +2,7 @@
 
 /* initial */
 size_t init_id = 0;
-std::unordered_map<string, Gtype> Value_Str = {
+std::unordered_map<string, GType> Str_GType = {
     {"constant", _CONSTANT},
     {"input", IN},
     {"output", OUT},
@@ -36,7 +36,7 @@ std::unordered_map<string, Gtype> Value_Str = {
     {"module", _MODULE},
     {"undefined", _UNDEFINED}};
 
-std::unordered_map<Gtype, string, EnumClassHash> Str_Value = {
+std::unordered_map<GType, string, EnumClassHash> GType_Str = {
     {_CONSTANT, "constant"},
     {IN, "input"},
     {OUT, "output"},

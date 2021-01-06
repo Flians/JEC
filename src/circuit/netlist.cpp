@@ -1,15 +1,72 @@
 #include "netlist.h"
 
-Netlist::Netlist(/* args */)
+Netlist::Netlist()
 {
+    this->name = GType_Str[_UNDEFINED];
+}
+
+Netlist::Netlist(const string &_name)
+{
+    this->name = _name;
 }
 
 Netlist::~Netlist()
 {
-    Util::cleanVP(this->PIs);
-    Util::cleanVP(this->POs);
     Util::cleanVP(this->gates);
-    cout << "The parser is destroyed!" << endl;
+    this->map_PIs.clear();
+    this->map_POs.clear();
+    cout << "The netlist is destroyed!" << endl;
+}
+
+void Netlist::parse_inport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires)
+{
+    Node *port = nullptr;
+    if (wires.find(item) != wires.end())
+    {
+        port = wires.at(item);
+    }
+    else if (map_PIs.find(item) != map_PIs.end())
+    {
+        port = this->gates[this->map_PIs[item]];
+    }
+    else if (item.length() == 4 && Libstring::startsWith(item, "1'b"))
+    {
+        int index = item[3] - '0';
+        if (index > 2)
+            index = 2;
+        port = new Node(Const_Str[(Value)index], _CONSTANT, (Value)index);
+        this->gates.emplace_back(port);
+        this->map_PIs[port->name] = port->id;
+    }
+    else
+    {
+        error_fout("There is a undefined input port '" + item + "' in netlist.parse_inport for " + line);
+    }
+    port->outs.emplace_back(g);
+    g->ins.emplace_back(port);
+    if (port->type == CLK)
+    {
+        swap(g->ins.front(), g->ins.back());
+    }
+}
+
+void Netlist::parse_outport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires)
+{
+    Node *port = nullptr;
+    if (wires.find(item) != wires.end())
+    {
+        port = wires.at(item);
+    }
+    else if (this->map_POs.find(item) != this->map_POs.end())
+    {
+        port = this->gates[this->map_POs[item]];
+    }
+    else
+    {
+        error_fout("There is a undefined output port '" + item + "' in netlist.parse_outport for " + line);
+    }
+    port->ins.emplace_back(g);
+    g->outs.emplace_back(port);
 }
 
 

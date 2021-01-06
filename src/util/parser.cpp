@@ -227,9 +227,9 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                     swap(bits_begin, bits_end);
                 item = item.substr(0, lp);
             }
-            if (Value_Str.find(item) != Value_Str.end())
+            if (Str_GType.find(item) != Str_GType.end())
             {
-                Gtype nt = Value_Str[item];
+                GType nt = Str_GType[item];
                 switch (nt)
                 {
                 case _MODULE:
@@ -442,7 +442,7 @@ void parser::printG(vector<Node *> &nodes)
     vector<Node *>::iterator pi_end = nodes.end();
     while (pi != pi_end)
     {
-        cout << (*pi)->name << " " << Str_Value[(*pi)->type] << " " << (*pi)->val << endl;
+        cout << (*pi)->name << " " << GType_Str[(*pi)->type] << " " << (*pi)->val << endl;
         printG((*pi)->outs);
         ++pi;
     }
