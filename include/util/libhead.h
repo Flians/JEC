@@ -28,7 +28,7 @@ struct EnumClassHash
 };
 
 // all cell types
-enum Gtype
+enum GType
 {
     _CONSTANT = 0,
     IN,
@@ -64,8 +64,8 @@ enum Value
 };
 
 extern size_t init_id;
-extern std::unordered_map<string, Gtype> Value_Str;
-extern std::unordered_map<Gtype, string, EnumClassHash> Str_Value;
+extern std::unordered_map<string, GType> Str_GType;
+extern std::unordered_map<GType, string, EnumClassHash> GType_Str;
 extern std::unordered_map<Value, string, EnumClassHash> Const_Str;
 
 /* Global operator overload */
