@@ -2,17 +2,18 @@
 #define _NETLIST_H_
 
 #include "util.h"
-#include "libhead.h"
 
 class Netlist
 {
-private:
-    vector<Node *> PIs;
-    vector<Node *> POs;
+public:
+    string name;
     vector<Node *> gates;
+    std::unordered_map<std::string, int> map_PIs;
+    std::unordered_map<std::string, int> map_POs;
 
 public:
-    Netlist(/* args */);
+    Netlist();
+    Netlist(const string &_name);
     ~Netlist();
 
     // delete the node, return its parent
@@ -20,6 +21,12 @@ public:
 
     // merge two nodes
     static void merge_node(Node *node, Node *repeat);
+
+private:
+    /** parse a port of the Node */
+    void parse_inport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires);
+    void parse_outport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires);
+
 };
 
 #endif
