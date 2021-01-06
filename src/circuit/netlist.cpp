@@ -3,11 +3,37 @@
 Netlist::Netlist()
 {
     this->name = GType_Str[_UNDEFINED];
+    this->num_gate = 0;
 }
 
-Netlist::Netlist(const string &_name)
+/** parse an netlist */
+Netlist::Netlist(const string &path_verilog)
 {
-    this->name = _name;
+    this->num_gate = 0;
+    ifstream netlist(path_verilog);
+    this->parse_netlist(netlist);
+    netlist.close();
+}
+Netlist::Netlist(ifstream &in)
+{
+    this->num_gate = 0;
+    this->parse_netlist(in);
+}
+
+/** parse golden and revised verilog files, and make the miter */
+Netlist::Netlist(const string &path_golden, const string &path_revised)
+{
+    this->num_gate = 0;
+    ifstream golden(path_golden);
+    ifstream revised(path_revised);
+    this->make_miter(golden, revised);
+    golden.close();
+    revised.close();
+}
+Netlist::Netlist(ifstream &golden, ifstream &revised)
+{
+    this->num_gate = 0;
+    this->make_miter(golden, revised);
 }
 
 Netlist::~Netlist()
@@ -16,6 +42,10 @@ Netlist::~Netlist()
     this->map_PIs.clear();
     this->map_POs.clear();
     cout << "The netlist is destroyed!" << endl;
+}
+
+void Netlist::clean_wires()
+{
 }
 
 void Netlist::parse_inport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires)
@@ -68,7 +98,6 @@ void Netlist::parse_outport(Node *g, const string &item, const string &line, con
     port->ins.emplace_back(g);
     g->outs.emplace_back(port);
 }
-
 
 Node *Netlist::delete_node(Node *cur)
 {
@@ -162,4 +191,35 @@ void Netlist::merge_node(Node *node, Node *repeat)
     vector<Node *>().swap(repeat->outs);
     delete repeat;
     repeat = nullptr;
+}
+
+void Netlist::parse_netlist(const stringstream &in, bool is_golden)
+{
+    /** parse the netlist */
+    this->clean_wires();
+}
+
+void Netlist::parse_netlist(ifstream &in, bool is_golden)
+{
+    if (!in.is_open())
+    {
+        error_fout("The netlist can not be open!");
+    }
+    string buffer;
+    // clear eof flag first
+    in.clear();
+    buffer.resize(in.seekg(0, std::ios::end).tellg());
+    in.seekg(0, std::ios::beg).read(&buffer[0], static_cast<std::streamsize>(buffer.size()));
+    stringstream f_input;
+    f_input.str(buffer);
+    this->parse_netlist(f_input);
+    buffer.clear();
+    f_input.clear();
+}
+
+void Netlist::make_miter(ifstream &golden, ifstream &revised)
+{
+    this->parse_netlist(golden);
+    this->parse_netlist(revised, false);
+    /** reassign id */
 }
