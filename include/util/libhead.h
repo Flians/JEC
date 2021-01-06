@@ -12,6 +12,7 @@
 #include <sstream>
 #include <unordered_map>
 #include <unordered_set>
+#include <memory>
 
 #define enumtoCharArr(val) #val
 
@@ -159,6 +160,12 @@ inline Value EXOR(const Value &A, const Value &B)
     {
         return H;
     }
+}
+
+template<typename T, typename... Ts>
+std::unique_ptr<T> make_unique(Ts&&... params)
+{
+    return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
 }
 
 // show error message

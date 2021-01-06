@@ -44,8 +44,12 @@ Netlist::~Netlist()
     cout << "The netlist is destroyed!" << endl;
 }
 
-void Netlist::clean_wires()
+void Netlist::clean_wires(std::unordered_map<std::string, Node *> &wires)
 {
+    for (auto &item : wires) {
+        Netlist::delete_node(item.second);
+    }
+    wires.clear();
 }
 
 void Netlist::parse_inport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires)
@@ -193,10 +197,226 @@ void Netlist::merge_node(Node *node, Node *repeat)
     repeat = nullptr;
 }
 
-void Netlist::parse_netlist(const stringstream &in, bool is_golden)
+/** parse the netlist */
+void Netlist::parse_netlist(stringstream &in, bool is_golden)
 {
-    /** parse the netlist */
-    this->clean_wires();
+    string line;
+    smatch match;
+    regex pattern("[^ \f\n\r\t\v,;\()]+");
+    std::unordered_map<std::string, Node *> wires;
+    while (getline(in, line))
+    {
+        line = Libstring::trim(line);
+        // skip annotations and empty line
+        if (line.find("//") == 0 || line[0] == '`' || line.empty())
+            continue;
+        // /* ... */
+        if (Libstring::startsWith(line, "/*"))
+        {
+            while (line.find("*/") == line.npos)
+            {
+                string tl;
+                if (!getline(in, tl))
+                    return;
+                line += tl;
+            }
+            continue;
+        }
+        // the wire is more than one line
+        while (line.find(';') == line.npos)
+        {
+            string tl;
+            if (!getline(in, tl))
+                return;
+            line += tl;
+        }
+        string::const_iterator iterStart = line.begin();
+        string::const_iterator iterEnd = line.end();
+        int bits_begin = -1;
+        int bits_end = -1;
+        if (regex_search(iterStart, iterEnd, match, pattern))
+        {
+            string item = match[0];
+            iterStart = match[0].second;
+            // cout << item << endl;
+            int mp = item.find_last_of(':');
+            if (mp != -1)
+            {
+                int lp = item.find_last_of('[');
+                int rp = item.find_last_of(']');
+                if (lp == -1 || rp == -1 || lp >= rp)
+                {
+                    error_fout("There are some troubles in netlist.cpp for multiple bits: " + line);
+                }
+                bits_end = atoi(item.substr(lp + 1, mp - lp).c_str());
+                bits_begin = atoi(item.substr(mp + 1, rp - mp).c_str());
+                if (bits_begin > bits_end)
+                    swap(bits_begin, bits_end);
+                item = item.substr(0, lp);
+            }
+            if (Str_GType.find(item) != Str_GType.end())
+            {
+                GType nt = Str_GType[item];
+                switch (nt)
+                {
+                case _MODULE:
+                {
+                    if (regex_search(iterStart, iterEnd, match, pattern)) 
+                    {
+                        item = match[0];
+                        iterStart = match[0].second;;
+                    } else
+                    {
+                        error_fout("There are some troubles in netlist.cpp for module: " + line);
+                    }
+                    if (is_golden) {
+                        this->name = item;
+                    } else {
+                        this->name += "_miter_" + item;
+                    }
+                    // int io_num = count(iterStart, iterEnd, ',');
+                    break;
+                }
+                case IN:
+                {
+                    if (!is_golden) continue;
+                    while (regex_search(iterStart, iterEnd, match, pattern))
+                    {
+                        item = match[0];
+                        iterStart = match[0].second;
+                        if (bits_begin > 0)
+                        {
+                            for (int i = bits_begin; i <= bits_end; ++i)
+                            {
+                                this->gates.emplace_back(make_unique<Node>(item + "[" + to_string(i) + "]", IN, X, this->num_gate));
+                                this->map_PIs[this->gates.back()->name] = this->num_gate++;
+                            }
+                        }
+                        else
+                        {
+                            this->gates.emplace_back(make_unique<Node>(item, IN, X, this->num_gate));
+                            this->map_PIs[item] = this->num_gate++;
+                            if (item.find("clk") != string::npos) {
+                                
+                                this->gates.back()->type = CLK;
+                                swap(this->map_PIs[item], this->map_PIs[this->gates.front()->name]);
+                                swap(this->gates.front()->id, this->gates.back()->id);
+                                swap(this->gates.front(), this->gates.back());
+                            }                            
+                        }
+                    }
+                    break;
+                }
+                case OUT:
+                {
+                    if (!is_golden) continue;
+                    while (regex_search(iterStart, iterEnd, match, pattern))
+                    {
+                        item = match[0];
+                        iterStart = match[0].second;
+                        if (bits_begin > 0)
+                        {
+                            for (int i = bits_begin; i <= bits_end; ++i)
+                            {
+                                this->gates.emplace_back(make_unique<Node>(item + "[" + to_string(i) + "]", _EXOR, X, this->num_gate));
+                                this->map_POs[this->gates.back()->name] = this->num_gate++;
+                            }
+                        }
+                        else
+                        {
+                            this->gates.emplace_back(make_unique<Node>(item, _EXOR, X, this->num_gate));
+                            this->map_POs[this->gates.back()->name] = this->num_gate++;
+                        }
+                    }
+                    break;
+                }
+                case WIRE:
+                {
+                    while (regex_search(iterStart, iterEnd, match, pattern))
+                    {
+                        item = match[0];
+                        iterStart = match[0].second;
+                        if (bits_begin >= 0)
+                        {
+                            for (int i = bits_begin; i <= bits_end; ++i)
+                            {
+                                string bitN = item + "[" + to_string(i) + "]";
+                                if (wires.find(bitN) != wires.end()) {
+                                    error_fout("The wire '" + bitN + "' is repeatedly defined in netlist.parse.netlist!");
+                                }
+                                if (this->map_PIs.find(bitN) == this->map_PIs.end() && this->map_POs.find(bitN) == this->map_POs.end()) {
+                                    wires[bitN] = new Node(bitN, WIRE, X, this->num_gate++);
+                                } 
+                            }
+                        }
+                        else
+                        {
+                            if (this->map_PIs.find(item) == this->map_PIs.end() && this->map_POs.find(item) == this->map_POs.end()) {
+                                if (wires.find(item) != wires.end()) {
+                                    error_fout("The wire '" + item + "' is repeatedly defined in netlist.parse.netlist!");
+                                }
+                                wires[item] = new Node(item, WIRE, X, this->num_gate++);
+                            }
+                        }
+                        
+                    }
+                    break;
+                }
+                default:
+                {
+                    Node *g = new Node();
+                    g->type = nt;
+                    if (regex_search(iterStart, iterEnd, match, pattern))
+                    {
+                        g->name = match[0];
+                        iterStart = match[0].second;
+                    }
+                    // cout << "gate: " << g->name << endl;
+                    int index_port = 0;
+                    // ports: index_port = 0 -> output, index_port > 0 -> input
+                    while (regex_search(iterStart, iterEnd, match, pattern))
+                    {
+                        item = match[0];
+                        iterStart = match[0].second;
+                        // cout << "port: ";
+                        if (item[0] == '.')
+                        {
+                            bool flag = Libstring::startsWith(item, ".dout");
+                            regex_search(iterStart, iterEnd, match, pattern);
+                            item = match[0];
+                            iterStart = match[0].second;
+                            if (flag)
+                            {
+                                parse_outport(g, item, line, wires);
+                            }
+                            else
+                            {
+                                parse_inport(g, item, line, wires);
+                            }
+                        }
+                        else
+                        {
+                            if (index_port == 0 || (g->type == SPL && index_port < 2) || (g->type == SPL3 && index_port < 3))
+                            {
+                                parse_outport(g, item, line, wires);
+                            }
+                            else
+                            {
+                                parse_inport(g, item, line, wires);
+                            }
+                            ++index_port;
+                        }
+                        // cout << item << endl;
+                    }
+                    break;
+                }
+                }
+            } else {
+                error_fout("There key word '" + item + "' is unknown in parser.parse_verilog: " + line);
+            }
+        }
+    }
+    this->clean_wires(wires);
 }
 
 void Netlist::parse_netlist(ifstream &in, bool is_golden)
