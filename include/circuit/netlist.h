@@ -27,6 +27,9 @@ public:
     /** delete all splitters. If delete_dff is true, delete all DFFs*/
     void clean_spl(bool delete_dff = false);
 
+    /** delete all useless nodes*/
+    void clean_useless_nodes();
+
     // print the netlist
     void print_netlist();
 

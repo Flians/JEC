@@ -437,6 +437,7 @@ void Netlist::make_miter(ifstream &golden, ifstream &revised)
 {
     this->parse_netlist(golden);
     this->parse_netlist(revised, false);
+    // change the outputs' type into _EXOR
     for (auto po : this->map_POs) {
         this->gates[po.second]->type = _EXOR;
     }
@@ -444,13 +445,32 @@ void Netlist::make_miter(ifstream &golden, ifstream &revised)
 
 void Netlist::clean_spl(bool delete_dff)
 {
-    if (this->map_PIs.empty())
-        return;
     for (size_t i = 0; i < this->num_gate; ++i) {
         if (this->gates[i]->type == SPL || this->gates[i]->type == SPL3 || (delete_dff && this->gates[i]->type == DFF))
         {
+            // maintain the id
+            --this->num_gate;
+            swap(this->gates[i]->id, this->gates[this->num_gate]->id);
+            swap(this->gates[i], this->gates[this->num_gate]);
             Netlist::delete_node(this->gates[i]);
             this->gates[i] = nullptr;
+            this->gates.pop_back();
+        }
+    }
+}
+
+void Netlist::clean_useless_nodes()
+{
+    for (size_t i = 0; i < this->num_gate; ++i) {
+        if (this->gates[i]->type == SPL || this->gates[i]->type == SPL3 || this->gates[i]->type == DFF)
+        {
+            // maintain the id
+            --this->num_gate;
+            swap(this->gates[i]->id, this->gates[this->num_gate]->id);
+            swap(this->gates[i], this->gates[this->num_gate]);
+            Netlist::delete_node(this->gates[i]);
+            this->gates[i] = nullptr;
+            this->gates.pop_back();
         }
     }
 }
