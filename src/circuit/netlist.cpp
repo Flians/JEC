@@ -261,14 +261,12 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                 {
                 case _MODULE:
                 {
-                    if (regex_search(iterStart, iterEnd, match, pattern)) 
-                    {
-                        item = match[0];
-                        iterStart = match[0].second;;
-                    } else
+                    if (!regex_search(iterStart, iterEnd, match, pattern)) 
                     {
                         error_fout("There are some troubles in netlist.cpp for module: " + line);
                     }
+                    item = match[0];
+                    iterStart = match[0].second;
                     if (is_golden) {
                         this->name = item;
                     } else {
@@ -288,16 +286,15 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                this->gates.emplace_back(make_unique<Node>(item + "[" + to_string(i) + "]", IN, X, this->num_gate));
+                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", IN, X, this->num_gate));
                                 this->map_PIs[this->gates.back()->name] = this->num_gate++;
                             }
                         }
                         else
                         {
-                            this->gates.emplace_back(make_unique<Node>(item, IN, X, this->num_gate));
+                            this->gates.emplace_back(new Node(item, IN, X, this->num_gate));
                             this->map_PIs[item] = this->num_gate++;
                             if (item.find("clk") != string::npos) {
-                                
                                 this->gates.back()->type = CLK;
                                 swap(this->map_PIs[item], this->map_PIs[this->gates.front()->name]);
                                 swap(this->gates.front()->id, this->gates.back()->id);
@@ -318,13 +315,13 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                this->gates.emplace_back(make_unique<Node>(item + "[" + to_string(i) + "]", _EXOR, X, this->num_gate));
+                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", _EXOR, X, this->num_gate));
                                 this->map_POs[this->gates.back()->name] = this->num_gate++;
                             }
                         }
                         else
                         {
-                            this->gates.emplace_back(make_unique<Node>(item, _EXOR, X, this->num_gate));
+                            this->gates.emplace_back(new Node(item, _EXOR, X, this->num_gate));
                             this->map_POs[this->gates.back()->name] = this->num_gate++;
                         }
                     }
@@ -382,7 +379,9 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         if (item[0] == '.')
                         {
                             bool flag = Libstring::startsWith(item, ".dout");
-                            regex_search(iterStart, iterEnd, match, pattern);
+                            if(!regex_search(iterStart, iterEnd, match, pattern)) {
+                                error_fout("There are some troubles in netlist.cpp for module: " + line);
+                            }
                             item = match[0];
                             iterStart = match[0].second;
                             if (flag)
