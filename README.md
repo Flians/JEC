@@ -4,6 +4,16 @@ Equivalence Checking of Superconducting RSFQ Logic Circuits
 
 ## build
 
+```
+> $win: 
+cd JEC
+build.dat
+
+> $linux:
+cd JEC
+build.sh
+```
+
 The following libraries and headers need be installed:
 
 - gmp: sudo apt-get install libgmp-dev
@@ -40,7 +50,7 @@ cp src/cadical.hpp ../include/CaDiCaL/
 cp build/libcadical.a  ../lib/
 ```
 
-## Building CVC4
+### Building CVC4
 
 ``` shell
 ./contrib/get-antlr-3.4  # download and build ANTLR

@@ -19,24 +19,25 @@
 #define MAX_PATH_LEN 256
 
 #ifdef WIN32
-    #define ACCESS(fileName,accessMode) _access(fileName,accessMode)
+    #define ACCESS(fileName, accessMode) _access(fileName, accessMode)
     #define MKDIR(path) _mkdir(path)
 #else
-    #define ACCESS(fileName,accessMode) access(fileName,accessMode)
-    #define MKDIR(path) mkdir(path,S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
+    #define ACCESS(fileName, accessMode) access(fileName, accessMode)
+    #define MKDIR(path) mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
 #endif
 
 using namespace std;
 
-class libfile
+class Libfile
 {
 private:
-    /* data */
-public:
-    libfile();
-    ~libfile();
+    Libfile();
+    Libfile(const Libfile &);
+    Libfile &operator=(const Libfile &);
+    ~Libfile();
 
-    static bool getAllFiles(const string &path, vector<string>& files);
+public:
+    static bool getAllFiles(const string &path, vector<string> &files);
     static int createDirectory(const std::string &directoryPath);
 };
 

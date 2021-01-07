@@ -41,7 +41,8 @@ Value Node::calculate()
     {
         ++it_;
     }
-    if (it_ == it_end) {
+    if (it_ == it_end)
+    {
         return X;
     }
     --it_end;

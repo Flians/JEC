@@ -12,6 +12,7 @@
 #include <sstream>
 #include <unordered_map>
 #include <unordered_set>
+#include <memory>
 
 #define enumtoCharArr(val) #val
 
@@ -28,7 +29,7 @@ struct EnumClassHash
 };
 
 // all cell types
-enum Gtype
+enum GType
 {
     _CONSTANT = 0,
     IN,
@@ -64,8 +65,8 @@ enum Value
 };
 
 extern size_t init_id;
-extern std::unordered_map<string, Gtype> Value_Str;
-extern std::unordered_map<Gtype, string, EnumClassHash> Str_Value;
+extern std::unordered_map<string, GType> Str_GType;
+extern std::unordered_map<GType, string, EnumClassHash> GType_Str;
 extern std::unordered_map<Value, string, EnumClassHash> Const_Str;
 
 /* Global operator overload */
@@ -159,6 +160,12 @@ inline Value EXOR(const Value &A, const Value &B)
     {
         return H;
     }
+}
+
+template<typename T, typename... Ts>
+std::unique_ptr<T> make_unique(Ts&&... params)
+{
+    return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
 }
 
 // show error message

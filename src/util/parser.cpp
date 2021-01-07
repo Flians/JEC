@@ -115,7 +115,7 @@ bool parser::is_clk(const string &name)
 void parser::parse_inport(Node *g, const string &item, const string &line, std::unordered_map<std::string, Node *> &wires)
 {
     Node *port;
-    if (item.length() == 4 && libstring::startsWith(item, "1'b"))
+    if (item.length() == 4 && Libstring::startsWith(item, "1'b"))
     {
         switch (item[3])
         {
@@ -178,12 +178,12 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
     size_t num_po = this->POs.size();
     while (getline(in, line))
     {
-        line = libstring::trim(line);
+        line = Libstring::trim(line);
         // skip annotations and empty line
         if (line.find("//") == 0 || line[0] == '`' || line.empty())
             continue;
         // /* ... */
-        if (libstring::startsWith(line, "/*"))
+        if (Libstring::startsWith(line, "/*"))
         {
             while (line.find("*/") == line.npos)
             {
@@ -227,9 +227,9 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                     swap(bits_begin, bits_end);
                 item = item.substr(0, lp);
             }
-            if (Value_Str.find(item) != Value_Str.end())
+            if (Str_GType.find(item) != Str_GType.end())
             {
-                Gtype nt = Value_Str[item];
+                GType nt = Str_GType[item];
                 switch (nt)
                 {
                 case _MODULE:
@@ -344,7 +344,7 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                         // cout << "port: ";
                         if (item[0] == '.')
                         {
-                            bool flag = libstring::startsWith(item, ".dout");
+                            bool flag = Libstring::startsWith(item, ".dout");
                             regex_search(iterStart, iterEnd, match, pattern);
                             item = match[0];
                             iterStart = match[0].second;
@@ -442,7 +442,7 @@ void parser::printG(vector<Node *> &nodes)
     vector<Node *>::iterator pi_end = nodes.end();
     while (pi != pi_end)
     {
-        cout << (*pi)->name << " " << Str_Value[(*pi)->type] << " " << (*pi)->val << endl;
+        cout << (*pi)->name << " " << GType_Str[(*pi)->type] << " " << (*pi)->val << endl;
         printG((*pi)->outs);
         ++pi;
     }

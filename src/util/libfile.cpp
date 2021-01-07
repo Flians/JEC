@@ -1,14 +1,6 @@
 #include "libfile.h"
 
-libfile::libfile()
-{
-}
-
-libfile::~libfile()
-{
-}
-
-bool libfile::getAllFiles(const string &path, vector<string> &files)
+bool Libfile::getAllFiles(const string &path, vector<string> &files)
 {
     if (path.empty()) {
         return false;
@@ -63,7 +55,7 @@ bool libfile::getAllFiles(const string &path, vector<string> &files)
     return true;
 }
 
-int libfile::createDirectory(const std::string &directoryPath)
+int Libfile::createDirectory(const std::string &directoryPath)
 {
     size_t dirPathLen = directoryPath.length();
     if (dirPathLen > MAX_PATH_LEN)

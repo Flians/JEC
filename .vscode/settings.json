@@ -72,7 +72,18 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "strstream": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "ios": "cpp",
+        "locale": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "cassert": "cpp",
+        "cerrno": "cpp",
+        "cfloat": "cpp",
+        "ciso646": "cpp",
+        "climits": "cpp",
+        "cstdbool": "cpp",
+        "variant": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "cmake.buildDirectory": "${workspaceRoot}/build",
@@ -80,5 +91,6 @@
     "cmake.default.generator": "MinGW Makefiles",
     "C_Cpp.default.intelliSenseMode": "gcc-x64",
     "C_Cpp.default.cppStandard": "c++17",
-    "C_Cpp.default.cStandard": "c11"
+    "C_Cpp.default.cStandard": "c11",
+    "cmake.configureOnOpen": true
 }
