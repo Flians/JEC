@@ -25,7 +25,6 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
 {
     vector<double> times(4, 0.0);
     clock_t startTime, endTime;
-    parser verilog_parser;
     /* parse Verilog files */
     parser miter;
     startTime = clock();

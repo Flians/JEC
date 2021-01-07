@@ -202,7 +202,7 @@ r -m revise.v
 cec golden.v revise.v
 ```
 
-### run
+### run using abc
 
 ``` shell
 ./cec_abc ./original/abc.rc ./original/rsfq.genlib ./
