@@ -38,8 +38,14 @@ public:
         vector<T *>().swap(vp);
     }
 
+    // find the node from vector<node *> *nodes by name
+    static Node *find_node_by_name(vector<Node *> &nodes, const string &name);
+
+    // replace the node from vector<node *> *nodes with the new_node, which the name of this node is same as the new_node
+    static bool replace_node_by_name(vector<Node *> &nodes, Node *new_node);
+
     /** make a miter for the golden netlist and the revised netlist */
-    static Netlist *make_miter(Netlist *golden, Netlist *revised);
+    static Netlist *make_miter(Netlist *&golden, Netlist *&revised);
 };
 
 #endif
