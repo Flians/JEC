@@ -97,7 +97,7 @@ void jec::evaluate_from_POs_to_PIs(vector<vector<Node *>> &layers)
 {
 }
 
-#if __linux__ || __unix__
+#ifndef WIN
 // evaluate from PIs to POs
 void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
 {

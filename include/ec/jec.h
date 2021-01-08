@@ -3,7 +3,7 @@
 
 #include "ec.h"
 
-#if __linux__ || __unix__
+#ifndef WIN
     #include "opensmt/opensmt2.h"
 #endif
 
@@ -27,7 +27,7 @@ public:
     void evaluate_from_PIs_to_POs(vector<vector<Node *>> &layers);
     // evaluate from POs to PIs
     void evaluate_from_POs_to_PIs(vector<vector<Node *>> &layers);
-#if __linux__ || __unix__
+#ifndef WIN
     // evaluate by using opensmt
     void evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental = false);
     void evaluate_min_cone(vector<vector<Node *>> &layers);

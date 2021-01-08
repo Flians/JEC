@@ -6,7 +6,7 @@ bool Libfile::getAllFiles(const string &path, vector<string> &files)
         return false;
     }
 
-#ifdef WIN32
+#ifdef WIN
 	long   hFile = 0;
 	struct _finddata_t fileinfo;
 	string p;

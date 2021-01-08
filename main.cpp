@@ -54,12 +54,12 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
         jec_.evaluate_from_PIs_to_POs(sim.get_layers());
         break;
     case _OPENSMT:
-#if __linux__ || __unix__
+#ifndef WIN
         jec_.evaluate_opensmt(sim.get_layers(), incremental);
         break;
 #endif
     case _CONE:
-#if __linux__ || __unix__
+#ifndef WIN
         jec_.evaluate_min_cone(sim.get_layers());
         break;
 #endif

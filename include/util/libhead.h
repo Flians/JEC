@@ -14,6 +14,8 @@
 #include <unordered_set>
 #include <memory>
 
+#include "_platform.h"
+
 #define enumtoCharArr(val) #val
 
 using namespace std;
