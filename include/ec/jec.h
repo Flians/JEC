@@ -17,8 +17,9 @@ private:
     // Calculate all nodes according to PIs
     bool evaluate(vector<vector<Node *>> &layers);
     bool evaluate(const vector<Node *> &nodes);
-
+#ifndef WIN
     void build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRef> &record);
+#endif
     bool evaluate_opensmt(deque<Node*> &cone);
 public:
     jec(const string &path_output);
