@@ -60,7 +60,6 @@ find_package(CVC4 REQUIRED)
 
 # add croaring
 add_library(croaring STATIC ${PROJECT_SOURCE_DIR}/include/CRoaring/roaring.c)
-target_include_directories(croaring PUBLIC ${PROJECT_SOURCE_DIR}/include/CRoaring/)
 
 # the function is used to add all header files
 function(include_sub_directories_recursively root_dir)

@@ -17,7 +17,7 @@ bool Libfile::getAllFiles(const string &path, vector<string> &files)
 			if ((fileinfo.attrib &  _A_SUBDIR))
 			{
 				if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
-					getFiles(p.assign(path).append("\\").append(fileinfo.name), files);
+					getAllFiles(p.assign(path).append("\\").append(fileinfo.name), files);
 			}
 			else
 			{

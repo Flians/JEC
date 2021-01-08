@@ -1,7 +1,9 @@
 #ifndef _LIBFILE_H_
 #define _LIBFILE_H_
 
-#ifdef WIN32
+#include "_platform.h"
+
+#ifdef WIN
     #include <io.h>
     #include <direct.h>
 #else

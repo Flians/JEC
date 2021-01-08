@@ -4,10 +4,10 @@
 #include "ec.h"
 
 #ifndef WIN
-    #include "opensmt/opensmt2.h"
+    #include <opensmt/opensmt2.h>
 #endif
 
-#include "cvc4/cvc4.h"
+#include <cvc4/cvc4.h>
 
 class jec : public ec
 {
