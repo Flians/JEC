@@ -3,7 +3,7 @@
 
 #include "util.h"
 #include "netlist.h"
-#include "CRoaring/roaring.hh"
+#include <CRoaring/roaring.hh>
 
 class simplify
 {

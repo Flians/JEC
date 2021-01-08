@@ -27,9 +27,12 @@ elseif(CMAKE_HOST_UNIX)
     message("The enviriment is in linux.")
 endif()
 
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_MACOSX_RPATH OFF)
 
 #find GMP
 get_filename_component(CMAKE_MODULE_PATH
@@ -60,6 +63,7 @@ find_package(CVC4 REQUIRED)
 
 # add croaring
 add_library(croaring STATIC ${PROJECT_SOURCE_DIR}/include/CRoaring/roaring.c)
+target_include_directories(croaring PUBLIC ${PROJECT_SOURCE_DIR}/include/CRoaring/)
 
 # the function is used to add all header files
 function(include_sub_directories_recursively root_dir)
@@ -70,9 +74,10 @@ function(include_sub_directories_recursively root_dir)
 
     file(GLOB ALL_SUB RELATIVE ${root_dir} ${root_dir}/*)
     foreach(sub ${ALL_SUB})
-        if (IS_DIRECTORY ${root_dir}/${sub} AND NOT(${sub} STREQUAL "gmp") AND NOT(${sub} STREQUAL "opensmt") AND NOT(${sub} STREQUAL "cvc4") )
+        if (IS_DIRECTORY ${root_dir}/${sub} AND NOT(${sub} STREQUAL "CRoaring") AND NOT(${sub} STREQUAL "gmp") AND NOT(${sub} STREQUAL "opensmt") AND NOT(${sub} STREQUAL "cvc4") )
             include_sub_directories_recursively(${root_dir}/${sub})
         endif()
+        
     endforeach()
 endfunction()
 
