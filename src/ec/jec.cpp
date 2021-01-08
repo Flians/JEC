@@ -80,7 +80,7 @@ void jec::evaluate_from_PIs_to_POs(vector<vector<Node *>> &layers)
 {
     if (layers.empty())
     {
-        error_fout("The vector layers is empty!");
+        ERROR_Exit_Fout("The vector layers is empty!");
     }
     size_t index_beg = 0;
     if (layers[0][0]->type == CLK)
@@ -242,7 +242,7 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
     {
         record[cur] = cur->val == L ? logic.getTerm_false() : logic.getTerm_true();
     }
-    else if (cur->type == IN)
+    else if (cur->type == _IN)
     {
         record[cur] = logic.mkBoolVar(cur->name.c_str());
     }
@@ -333,7 +333,7 @@ bool jec::evaluate_opensmt(deque<Node*> &cone)
             reslut = mainSolver.check();
             // mainSolver.printFramesAsQuery();
             if (reslut == s_True) {
-                output->type = IN;
+                output->type = _IN;
             } else if (reslut == s_False) {
                 output->type = _CONSTANT;
                 output->val = H;

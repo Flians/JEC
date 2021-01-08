@@ -66,7 +66,7 @@ void Netlist::parse_inport(Node *g, const string &item, const string &line, cons
     }
     else
     {
-        error_fout("There is a undefined input port '" + item + "' in netlist.parse_inport for " + line);
+        ERROR_Exit_Fout("There is a undefined input port '" + item + "' in netlist.parse_inport for " + line);
     }
     port->outs.emplace_back(g);
     g->ins.emplace_back(port);
@@ -89,7 +89,7 @@ void Netlist::parse_outport(Node *g, const string &item, const string &line, con
     }
     else
     {
-        error_fout("There is a undefined output port '" + item + "' in netlist.parse_outport for " + line);
+        ERROR_Exit_Fout("There is a undefined output port '" + item + "' in netlist.parse_outport for " + line);
     }
     port->ins.emplace_back(g);
     g->outs.emplace_back(port);
@@ -109,7 +109,7 @@ Node *Netlist::delete_node(Node *cur)
     size_t num_ins = cur->ins.size();
     if (num_ins != 1 && !(cur->type != WIRE && num_ins == 2 && cur->ins[0]->type == CLK))
     {
-        error_fout("The node '" + cur->name + "' have none or more one inputs in netlist.delete_node!");
+        ERROR_Exit_Fout("The node '" + cur->name + "' have none or more one inputs in netlist.delete_node!");
     }
     Node *tin = cur->ins.back();
     if (!cur->outs.empty())
@@ -136,7 +136,7 @@ Node *Netlist::delete_node(Node *cur)
             }
             else
             {
-                error_fout("There are some troubles in netlist.delete_node for the node: " + cur->name);
+                ERROR_Exit_Fout("There are some troubles in netlist.delete_node for the node: " + cur->name);
             }
             ++it;
         }
@@ -238,7 +238,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                 int rp = item.find_last_of(']');
                 if (lp == -1 || rp == -1 || lp >= rp)
                 {
-                    error_fout("There are some troubles in netlist.parse_netlist for multiple bits: " + line);
+                    ERROR_Exit_Fout("There are some troubles in netlist.parse_netlist for multiple bits: " + line);
                 }
                 bits_end = atoi(item.substr(lp + 1, mp - lp).c_str());
                 bits_begin = atoi(item.substr(mp + 1, rp - mp).c_str());
@@ -255,7 +255,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                 {
                     if (!regex_search(iterStart, iterEnd, match, pattern)) 
                     {
-                        error_fout("There are some troubles in netlist.parse_netlist for MODULE: " + line);
+                        ERROR_Exit_Fout("There are some troubles in netlist.parse_netlist for MODULE: " + line);
                     }
                     item = match[0];
                     iterStart = match[0].second;
@@ -267,7 +267,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                     // int io_num = count(iterStart, iterEnd, ',');
                     break;
                 }
-                case IN:
+                case _IN:
                 {
                     if (!is_golden) continue;
                     while (regex_search(iterStart, iterEnd, match, pattern))
@@ -278,13 +278,13 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", IN, X, this->num_gate));
+                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", _IN, X, this->num_gate));
                                 this->map_PIs.insert(make_pair(this->gates.back()->name, this->num_gate++));
                             }
                         }
                         else
                         {
-                            this->gates.emplace_back(new Node(item, IN, X, this->num_gate));
+                            this->gates.emplace_back(new Node(item, _IN, X, this->num_gate));
                             this->map_PIs.insert(make_pair(this->gates.back()->name, this->num_gate++));
                             if (item.find("clk") != string::npos) {
                                 this->gates.back()->type = CLK;
@@ -296,7 +296,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                     }
                     break;
                 }
-                case OUT:
+                case _OUT:
                 {
                     if (!is_golden) continue;
                     while (regex_search(iterStart, iterEnd, match, pattern))
@@ -307,13 +307,13 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", OUT, X, this->num_gate));
+                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", _OUT, X, this->num_gate));
                                 this->map_POs.insert(make_pair(this->gates.back()->name, this->num_gate++));
                             }
                         }
                         else
                         {
-                            this->gates.emplace_back(new Node(item, OUT, X, this->num_gate));
+                            this->gates.emplace_back(new Node(item, _OUT, X, this->num_gate));
                             this->map_POs.insert(make_pair(this->gates.back()->name, this->num_gate++));
                         }
                     }
@@ -331,7 +331,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                             {
                                 string bitN = item + "[" + to_string(i) + "]";
                                 if (wires.find(bitN) != wires.end()) {
-                                    error_fout("The wire '" + bitN + "' is repeatedly defined in netlist.parse_netlist!");
+                                    ERROR_Exit_Fout("The wire '" + bitN + "' is repeatedly defined in netlist.parse_netlist!");
                                 }
                                 if (this->map_PIs.find(bitN) == this->map_PIs.end() && this->map_POs.find(bitN) == this->map_POs.end()) {
                                     wires.insert(make_pair(bitN, new Node(bitN, WIRE, X, -1)));
@@ -342,7 +342,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         else
                         {
                             if (wires.find(item) != wires.end()) {
-                                error_fout("The wire '" + item + "' is repeatedly defined in netlist.parse_netlist!");
+                                ERROR_Exit_Fout("The wire '" + item + "' is repeatedly defined in netlist.parse_netlist!");
                             }
                             if (this->map_PIs.find(item) == this->map_PIs.end() && this->map_POs.find(item) == this->map_POs.end()) {
                                 wires.insert(make_pair(item, new Node(item, WIRE, X, -1)));
@@ -355,7 +355,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                 {
                     if (!regex_search(iterStart, iterEnd, match, pattern))
                     {
-                        error_fout("There are some troubles in netlist.parse_netlist for GATE definition: " + line);
+                        ERROR_Exit_Fout("There are some troubles in netlist.parse_netlist for GATE definition: " + line);
                     }
                     Node *g = new Node(match[0], nt, X, this->num_gate++);
                     iterStart = match[0].second;
@@ -371,7 +371,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             bool flag = Libstring::startsWith(item, ".dout");
                             if(!regex_search(iterStart, iterEnd, match, pattern)) {
-                                error_fout("There are some troubles in netlist.parse_netlist for PORT definition: " + line);
+                                ERROR_Exit_Fout("There are some troubles in netlist.parse_netlist for PORT definition: " + line);
                             }
                             item = match[0];
                             iterStart = match[0].second;
@@ -402,7 +402,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                 }
                 }
             } else {
-                error_fout("There key word '" + item + "' is unknown in netlist.parse_netlist: " + line);
+                ERROR_Exit_Fout("There key word '" + item + "' is unknown in netlist.parse_netlist: " + line);
             }
         }
     }
@@ -419,7 +419,7 @@ void Netlist::parse_netlist(ifstream &in, bool is_golden)
 {
     if (!in.is_open())
     {
-        error_fout("The netlist can not be open!");
+        ERROR_Exit_Fout("The netlist can not be open!");
     }
     string buffer;
     // clear eof flag first

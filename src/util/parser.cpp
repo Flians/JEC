@@ -95,7 +95,7 @@ void parser::clean_spl()
                     vis[in->id] = 1;
                 }
             }
-            if (cur->type != IN) {
+            if (cur->type != _IN) {
                 delete cur;
                 cur = nullptr;
             } else {
@@ -140,7 +140,7 @@ void parser::parse_inport(Node *g, const string &item, const string &line, std::
         }
         else
         {
-            error_fout("There is no input port " + item + " in parser.parse_inport for " + line);
+            ERROR_Exit_Fout("There is no input port " + item + " in parser.parse_inport for " + line);
         }
     }
     port->outs.emplace_back(g);
@@ -163,7 +163,7 @@ void parser::parse_outport(Node *g, const string &item, const string &line, std:
     }
     else
     {
-        error_fout("There is no output port " + item + " in parser.parse_outport for " + line);
+        ERROR_Exit_Fout("There is no output port " + item + " in parser.parse_outport for " + line);
     }
     port->ins.emplace_back(g);
     g->outs.emplace_back(port);
@@ -219,7 +219,7 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                 int rp = item.find_last_of(']');
                 if (lp == -1 || rp == -1 || lp >= rp)
                 {
-                    error_fout("There are some troubles in parser.cpp for multiple bits: " + line);
+                    ERROR_Exit_Fout("There are some troubles in parser.cpp for multiple bits: " + line);
                 }
                 bits_end = atoi(item.substr(lp + 1, mp - lp).c_str());
                 bits_begin = atoi(item.substr(mp + 1, rp - mp).c_str());
@@ -240,7 +240,7 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                     this->POs.reserve(io_num);
                     break;
                 }
-                case IN:
+                case _IN:
                 {
                     if (!is_golden) continue;
                     while (regex_search(iterStart, iterEnd, match, pattern))
@@ -251,7 +251,7 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
                                 this->map_PIs[item + "[" + to_string(i) + "]"] = num_pi++;
-                                this->PIs.emplace_back(new Node(item + "[" + to_string(i) + "]", IN));
+                                this->PIs.emplace_back(new Node(item + "[" + to_string(i) + "]", _IN));
                             }
                         }
                         else
@@ -262,14 +262,14 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                                 swap(this->map_PIs[item], this->map_PIs[this->PIs.front()->name]);
                                 swap(this->PIs.front(), this->PIs.back());
                             } else {
-                                this->PIs.emplace_back(new Node(item, IN));
+                                this->PIs.emplace_back(new Node(item, _IN));
                             }
                         }
                         iterStart = match[0].second;
                     }
                     break;
                 }
-                case OUT:
+                case _OUT:
                 {
                     if (!is_golden) continue;
                     while (regex_search(iterStart, iterEnd, match, pattern))
@@ -375,7 +375,7 @@ void parser::parse_verilog(stringstream &in, bool is_golden)
                 }
                 }
             } else {
-                error_fout("There key word '" + item + "' is unknown in parser.parse_verilog: " + line);
+                ERROR_Exit_Fout("There key word '" + item + "' is unknown in parser.parse_verilog: " + line);
             }
         }
     }
@@ -386,7 +386,7 @@ void parser::parse(ifstream &golden, ifstream &revised)
     // parse the golden file
     if (!golden.is_open())
     {
-        error_fout("The golden can not be open");
+        ERROR_Exit_Fout("The golden can not be open");
     }
     string buffer;
     buffer.resize(golden.seekg(0, std::ios::end).tellg());
@@ -401,7 +401,7 @@ void parser::parse(ifstream &golden, ifstream &revised)
     // parse the revised file
     if (!revised.is_open())
     {
-        error_fout("The revised can not be open");
+        ERROR_Exit_Fout("The revised can not be open");
     }
 
     buffer.resize(revised.seekg(0, std::ios::end).tellg());
@@ -481,7 +481,7 @@ void parser::build_miter(vector<Node *> &PIs_golden, vector<Node *> &POs_golden,
     int or_len = POs_revised.size();
     if (ig_len != ir_len || og_len != or_len)
     {
-        error_fout("The golden Verilog has a different number of PIs and POs than the revised Verilog!");
+        ERROR_Exit_Fout("The golden Verilog has a different number of PIs and POs than the revised Verilog!");
     }
     vector<Node *>::iterator iter = PIs_golden.begin();
     vector<Node *>::iterator iter_end = PIs_golden.end();
@@ -492,7 +492,7 @@ void parser::build_miter(vector<Node *> &PIs_golden, vector<Node *> &POs_golden,
         Node *pi = find_node_by_name(PIs_revised, (*iter)->name);
         if (!pi)
         {
-            error_fout("The input pi in the golden Verilog does not exist in the revised Verilog!");
+            ERROR_Exit_Fout("The input pi in the golden Verilog does not exist in the revised Verilog!");
         }
         else
         {
@@ -502,7 +502,7 @@ void parser::build_miter(vector<Node *> &PIs_golden, vector<Node *> &POs_golden,
             {
                 if (!replace_node_by_name((*it)->ins, (*iter)))
                 {
-                    error_fout("There may be some wrong!");
+                    ERROR_Exit_Fout("There may be some wrong!");
                 }
                 (*iter)->outs.emplace_back(*it);
                 ++it;
@@ -521,7 +521,7 @@ void parser::build_miter(vector<Node *> &PIs_golden, vector<Node *> &POs_golden,
         Node *po = find_node_by_name(POs_revised, (*iter)->name);
         if (!po)
         {
-            error_fout("The output po in the golden Verilog does not exist in the revised Verilog!");
+            ERROR_Exit_Fout("The output po in the golden Verilog does not exist in the revised Verilog!");
         }
         else
         {

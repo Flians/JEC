@@ -88,9 +88,9 @@
     "C_Cpp.errorSquiggles": "Enabled",
     "cmake.buildDirectory": "${workspaceRoot}/build",
     "cmake.cpptools.intelliSenseMode": "gcc-x64",
-    "cmake.default.generator": "MinGW Makefiles",
+    "cmake.default.generator": "Unix Makefiles",
     "C_Cpp.default.intelliSenseMode": "gcc-x64",
     "C_Cpp.default.cppStandard": "c++11",
-    "C_Cpp.default.cStandard": "c11",
+    "C_Cpp.default.cStandard": "c99",
     "cmake.configureOnOpen": true
 }

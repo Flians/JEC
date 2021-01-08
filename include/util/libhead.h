@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <memory>
+#include <Windows.h>
 
 #include "_platform.h"
 
@@ -34,8 +35,8 @@ struct EnumClassHash
 enum GType
 {
     _CONSTANT = 0,
-    IN,
-    OUT,
+    _IN,
+    _OUT,
     CLK,
     WIRE,
     AND,
@@ -164,17 +165,33 @@ inline Value EXOR(const Value &A, const Value &B)
     }
 }
 
-template<typename T, typename... Ts>
-std::unique_ptr<T> make_unique(Ts&&... params)
+template <typename T, typename... Ts>
+std::unique_ptr<T> make_unique(Ts &&... params)
 {
     return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
 }
 
-// show error message
-inline void error_fout(string &&message)
+// show error message and exit
+inline void ERROR_Exit_Fout(string &&message)
 {
-    cerr << "Error: " << message << endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED);
+    cerr << "ERROR: " << message << endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
     exit(-1);
+}
+
+// show warning message
+inline void WARN_Fout(string &&message)
+{
+    SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN);
+    cerr << "WARN: " << message << endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+}
+
+// show info message
+inline void INFO_Fout(string &&message)
+{
+    cerr << "INFO: " << message << endl;
 }
 
 #endif

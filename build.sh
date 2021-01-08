@@ -10,9 +10,9 @@ cd build
 
 if [ $# -ge 1 ]
 then
-    cmake -DCMAKE_BUILD_TYPE=$1 ..
+    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=$1 ..
 else
-    cmake -DCMAKE_BUILD_TYPE=Release ..
+    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
 fi
 
 make

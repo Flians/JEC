@@ -4,8 +4,8 @@
 size_t init_id = 0;
 std::unordered_map<string, GType> Str_GType = {
     {"constant", _CONSTANT},
-    {"input", IN},
-    {"output", OUT},
+    {"input", _IN},
+    {"output", _OUT},
     {"wire", WIRE},
 
     {"jand", AND},
@@ -38,8 +38,8 @@ std::unordered_map<string, GType> Str_GType = {
 
 std::unordered_map<GType, string, EnumClassHash> GType_Str = {
     {_CONSTANT, "constant"},
-    {IN, "input"},
-    {OUT, "output"},
+    {_IN, "input"},
+    {_OUT, "output"},
     {WIRE, "wire"},
     {AND, "and"},
     {NAND, "nand"},

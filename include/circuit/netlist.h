@@ -30,6 +30,9 @@ public:
     /** delete all useless nodes*/
     void clean_useless_nodes();
 
+    // layer assigment according to the logic depth
+    vector<vector<Node *> > &layer_assignment(vector<Node *> &PIs, vector<Node *> &POs);
+
     // print the netlist
     void print_netlist();
 

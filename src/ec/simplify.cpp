@@ -47,7 +47,7 @@ void simplify::clean_wire_buf_recusive(vector<Node *> &PIs)
     for (size_t i = 0; i < len; ++i)
     {
         Node *pi = PIs[i];
-        if (pi->outs.empty() || (pi->type != IN && pi->outs.front()->type != WIRE))
+        if (pi->outs.empty() || (pi->type != _IN && pi->outs.front()->type != WIRE))
         {
             continue;
         }
@@ -282,11 +282,11 @@ void simplify::deduplicate(int i, Node *keep, Node *dupl, vector<Roaring> &nbrs)
 {
     if (keep->id == dupl->id)
     {
-        error_fout("keep is the same as dupl in cec.deduplicate!");
+        ERROR_Exit_Fout("keep is the same as dupl in cec.deduplicate!");
     }
     if (dupl->outs.empty())
     {
-        error_fout("The inputs is empty in cec.deduplicate!");
+        ERROR_Exit_Fout("The inputs is empty in cec.deduplicate!");
     }
     for (auto &out : dupl->outs)
     {
@@ -453,7 +453,7 @@ int simplify::merge_nodes_between_networks()
                 for (auto &iout: layers[i][j]->ins[k]->outs) {
                     if (iout && iout->type == layers[i][j]->type) {
                         if (iout->ins.size() != num_npi) {
-                            error_fout("The number of inputs of the same type of node is different in simplify.merge_nodes_between_networks");
+                            ERROR_Exit_Fout("The number of inputs of the same type of node is different in simplify.merge_nodes_between_networks");
                         }
                         tmp.add(iout->id);
                     }
