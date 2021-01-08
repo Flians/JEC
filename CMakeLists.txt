@@ -45,16 +45,6 @@ if (LINUX)
         "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
     find_package(GMP REQUIRED)
 
-    #find CaDiCaL library
-    get_filename_component(CMAKE_MODULE_PATH
-        "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
-    find_package(CaDiCaL REQUIRED)
-
-    #find ANTLR
-    get_filename_component(CMAKE_MODULE_PATH
-        "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
-    find_package(ANTLR REQUIRED)
-
     #find CVC4 library
     get_filename_component(CMAKE_MODULE_PATH
         "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
@@ -98,7 +88,7 @@ add_executable(${PROJECT_NAME} ${JEC_ALL_SRCS})
 target_link_libraries(${PROJECT_NAME} croaring)
 
 if (LINUX)
-    # target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSMT_INCLUDE_DIR} ${CVC4_INCLUDE_DIR} ${GMP_C_INCLUDE_DIR} ${GMP_CXX_INCLUDE_DIR} ${CADICAL_C_INCLUDE_DIR} ${CADICAL_CXX_INCLUDE_DIR} ${ANTLR_INCLUDE_DIR})
-    target_link_libraries(${PROJECT_NAME} ${OPENSMT_LIBRARY} ${CVC4_PARSER_LIBRARIES} ${CVC4_LIBRARIES} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES} ${CADICAL_LIBRARY} ${ANTLR_LIBRARIES})
+    target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSMT_INCLUDE_DIR} ${CVC4_INCLUDE_DIR} ${GMP_INCLUDE_DIR})
+    target_link_libraries(${PROJECT_NAME} ${OPENSMT_LIBRARY} ${CVC4_PARSER_LIBRARIES} ${CVC4_LIBRARIES} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES} ${CADICAL_LIBRARY})
 endif()
 
