@@ -386,7 +386,8 @@ void parser::parse(ifstream &golden, ifstream &revised)
     // parse the golden file
     if (!golden.is_open())
     {
-        ERROR_Exit_Fout("The golden can not be open");
+        WARN_Fout("The golden can not be open");
+        return;
     }
     string buffer;
     buffer.resize(golden.seekg(0, std::ios::end).tellg());

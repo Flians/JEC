@@ -13,9 +13,12 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <memory>
-#include <Windows.h>
 
 #include "_platform.h"
+
+#ifdef WIN
+#include <Windows.h>
+#endif
 
 #define enumtoCharArr(val) #val
 
@@ -174,18 +177,30 @@ std::unique_ptr<T> make_unique(Ts &&... params)
 // show error message and exit
 inline void ERROR_Exit_Fout(string &&message)
 {
+    std::cerr << "ERROR: ";
+#ifdef WIN
     SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED);
-    cerr << "ERROR: " << message << endl;
+    std::cerr << message;
     SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+#else
+    std::cerr << "\033[31m" << message << "\033[0m";
+#endif
+    std::cerr << std::endl;
     exit(-1);
 }
 
 // show warning message
 inline void WARN_Fout(string &&message)
 {
+    std::cerr << "WARN: ";
+#ifdef WIN
     SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN);
-    cerr << "WARN: " << message << endl;
+    std::cerr << message;
     SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+#else
+    std::cerr << "\033[33m" << message << "\033[0m";
+#endif
+    std::cerr << std::endl;
 }
 
 // show info message

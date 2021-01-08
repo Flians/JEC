@@ -103,7 +103,7 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
 {
     if (layers.empty())
     {
-        error_fout("The vector layers is empty!");
+        WARN_Fout("The layers is empty!");
     }
 
     auto config = std::unique_ptr<SMTConfig>(new SMTConfig());
@@ -140,7 +140,7 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
             }
             if (inputs.size() == 0)
             {
-                error_fout("The inputs is empty! in jec.evaluate_opensmt!");
+                ERROR_Exit_Fout("The inputs is empty! in jec.evaluate_opensmt!");
             }
             PTRef res;
             switch (node->type)
@@ -232,7 +232,8 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
 {
     if (!cur)
     {
-        error_fout("The current node is NULL in jec.build_equation_dfs!");
+        WARN_Fout("The current node is NULL in jec.build_equation_dfs!");
+        return;
     }
     if (record.find(cur) != record.end() || cur->type == CLK)
     {
@@ -259,7 +260,7 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
         }
         if (inputs.size() == 0)
         {
-            error_fout("The inputs is empty! in jec.build_equation_dfs!");
+            WARN_Fout("The inputs is empty! in jec.build_equation_dfs!");
         }
         PTRef res;
         switch (cur->type)
@@ -338,13 +339,13 @@ bool jec::evaluate_opensmt(deque<Node*> &cone)
                 output->type = _CONSTANT;
                 output->val = H;
             } else {
-                error_fout("The result2 is unknown in jec.evaluate_opensmt!");
+                WARN_Fout("The result2 is unknown in jec.evaluate_opensmt!");
             }
         } else if (reslut == s_False) {
             output->type = _CONSTANT;
             output->val = L;
         } else {
-            error_fout("The result is unknown in jec.evaluate_opensmt!");
+            WARN_Fout("The result is unknown in jec.evaluate_opensmt!");
         }
     }
     nodes.clear();
@@ -443,7 +444,8 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
 {
     if (layers.empty())
     {
-        error_fout("The vector layers is empty!");
+        WARN_Fout("The layers is empty!");
+        return;
     }
 
     CVC4::ExprManager em;
@@ -479,7 +481,7 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
             }
             if (inputs.size() == 0)
             {
-                error_fout("The inputs is empty! in jec.evaluate_opensmt!");
+                WARN_Fout("The inputs is empty! in jec.evaluate_opensmt!");
             }
             CVC4::Expr res;
             switch (node->type)
