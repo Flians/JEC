@@ -11,7 +11,7 @@ endif (CVC4_INCLUDE_DIR AND CVC4_LIBRARIES)
 find_path(CVC4_INCLUDE_DIR 
 		NAMES cvc4.h cvc4/cvc4.h
 		PATHS ${PROJECT_SOURCE_DIR} 
-		PATH_SUFFIXES "" "include" "include/cvc4"
+		PATH_SUFFIXES "" "dependencies" "dependencies/cvc4"
 		NO_DEFAULT_PATH )
 find_library(CVC4_LIBRARIES 
 		NAMES cvc4 libcvc4

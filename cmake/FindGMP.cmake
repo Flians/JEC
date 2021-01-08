@@ -11,12 +11,12 @@ endif (GMP_C_INCLUDE_DIR AND GMP_CXX_INCLUDE_DIR AND GMP_LIBRARIES)
 find_path(GMP_C_INCLUDE_DIR 
 		NAMES gmp.h gmp/gmp.h
 		PATHS ${PROJECT_SOURCE_DIR} 
-		PATH_SUFFIXES "" "include" "include/gmp"
+		PATH_SUFFIXES "" "dependencies" "dependencies/gmp"
 		NO_DEFAULT_PATH )
 find_path(GMP_CXX_INCLUDE_DIR 
 		NAMES gmpxx.h gmp/gmpxx.h
 		PATHS ${PROJECT_SOURCE_DIR} 
-		PATH_SUFFIXES "" "include" "include/gmp"
+		PATH_SUFFIXES "" "dependencies" "dependencies/gmp"
 		NO_DEFAULT_PATH )
 find_library(GMP_LIBRARIES 
 		NAMES gmp libgmp

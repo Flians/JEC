@@ -11,12 +11,12 @@ endif (CADICAL_INCLUDE_DIR AND CADICAL_LIBRARY)
 find_path(CADICAL_C_INCLUDE_DIR 
         NAMES CaDiCaL/ccadical.h
         PATHS ${PROJECT_SOURCE_DIR}
-        PATH_SUFFIXES "" "include" 
+        PATH_SUFFIXES "" "dependencies" 
         NO_DEFAULT_PATH )
 find_path(CADICAL_CXX_INCLUDE_DIR 
         NAMES CaDiCaL/cadical.hpp
         PATHS ${PROJECT_SOURCE_DIR} 
-        PATH_SUFFIXES "" "include" 
+        PATH_SUFFIXES "" "dependencies" 
         NO_DEFAULT_PATH )
 find_library(CADICAL_LIBRARY 
         NAMES cadical

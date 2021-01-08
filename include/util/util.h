@@ -1,8 +1,8 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
 
-#include "node.h"
-#include "netlist.h"
+#include "circuit/node.h"
+#include "circuit/netlist.h"
 
 class Node;
 class Netlist;

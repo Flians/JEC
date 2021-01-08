@@ -6,7 +6,7 @@
 
 find_path(ANTLR_INCLUDE_DIR NAMES antlr3.h antlr3/antlr3.h 
         PATHS ${PROJECT_SOURCE_DIR} 
-        PATH_SUFFIXES "" "include" 
+        PATH_SUFFIXES "" "dependencies" 
         NO_DEFAULT_PATH )
 find_library(ANTLR_LIBRARIES NAMES antlr3c antlr3c-static libantlr3c
         PATHS ${PROJECT_SOURCE_DIR} 

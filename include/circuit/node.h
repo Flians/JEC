@@ -1,8 +1,8 @@
 #ifndef _NODE_H_
 #define _NODE_H_
 
-#include "libhead.h"
-#include "libstring.h"
+#include "util/libhead.h"
+#include "util/libstring.h"
 
 class Node
 {

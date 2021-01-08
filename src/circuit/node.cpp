@@ -1,4 +1,4 @@
-#include "node.h"
+#include "circuit/node.h"
 
 Node::~Node()
 {

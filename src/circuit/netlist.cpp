@@ -1,4 +1,4 @@
-#include "netlist.h"
+#include "circuit/netlist.h"
 
 Netlist::Netlist()
 {

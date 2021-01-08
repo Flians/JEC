@@ -1,4 +1,4 @@
-#include "cec.h"
+#include "ec/cec.h"
 
 cec::cec(const string &path_output) : ec(path_output)
 {

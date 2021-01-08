@@ -1,4 +1,4 @@
-#include "jec.h"
+#include "ec/jec.h"
 
 jec::jec(const string &path_output) : ec(path_output)
 {

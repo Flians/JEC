@@ -6,7 +6,7 @@ find_path(Readline_ROOT_DIR
 # Search for include directory
 find_path(Readline_INCLUDE_DIR
     NAMES readline/readline.h
-    HINTS ${Readline_ROOT_DIR}/include
+    HINTS ${Readline_ROOT_DIR}/dependencies
 )
  
 # Search for library

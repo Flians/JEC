@@ -1,8 +1,8 @@
 #ifndef _NETLIST_H_
 #define _NETLIST_H_
 
-#include "util.h"
-#include "libstring.h"
+#include "util/util.h"
+#include "util/libstring.h"
 
 class Netlist
 {

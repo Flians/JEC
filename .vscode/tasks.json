@@ -18,7 +18,7 @@
             "label": "build_win",
             "command": "./build.bat",
             "args": [
-                "Debug"
+                "Release"
             ],
             "group": {
                 "kind": "build",

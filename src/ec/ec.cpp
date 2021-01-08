@@ -1,4 +1,4 @@
-#include "ec.h"
+#include "ec/ec.h"
 
 ec::ec(const string &path_output)
 {

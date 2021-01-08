@@ -1,8 +1,7 @@
-#include "include/ec/cec.h"
-#include "include/ec/jec.h"
-#include "include/ec/simplify.h"
-#include "include/util/parser.h"
-#include "include/util/libfile.h"
+#include "ec/cec.h"
+#include "ec/jec.h"
+#include "ec/simplify.h"
+#include "util/parser.h"
 #include <iomanip>
 
 using namespace std;

@@ -1,9 +1,9 @@
 #ifndef _SIMPLIFY_H_
 #define _SIMPLIFY_H_
 
-#include "util.h"
-#include "netlist.h"
-#include <CRoaring/roaring.hh>
+#include "util/util.h"
+#include "circuit/netlist.h"
+#include <roaring.hh>
 
 class simplify
 {

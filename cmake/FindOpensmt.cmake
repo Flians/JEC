@@ -11,7 +11,7 @@ endif (OPENSMT_INCLUDE_DIR AND OPENSMT_LIBRARY)
 find_path(OPENSMT_INCLUDE_DIR 
         NAMES "opensmt/opensmt2.h"
         PATHS ${PROJECT_SOURCE_DIR}
-        PATH_SUFFIXES "" "include" 
+        PATH_SUFFIXES "" "dependencies" 
         NO_DEFAULT_PATH )
 find_library(OPENSMT_LIBRARY 
         NAMES opensmt2

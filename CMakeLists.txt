@@ -63,8 +63,8 @@ if (LINUX)
 endif()
 
 # add croaring
-add_library(croaring STATIC ${PROJECT_SOURCE_DIR}/include/CRoaring/roaring.c)
-target_include_directories(croaring PUBLIC ${PROJECT_SOURCE_DIR}/include/CRoaring/)
+add_library(croaring STATIC ${PROJECT_SOURCE_DIR}/dependencies/CRoaring/roaring.c)
+target_include_directories(croaring PUBLIC ${PROJECT_SOURCE_DIR}/dependencies/CRoaring/)
 
 # the function is used to add all header files
 function(include_sub_directories_recursively root_dir)
@@ -75,27 +75,30 @@ function(include_sub_directories_recursively root_dir)
 
     file(GLOB ALL_SUB RELATIVE ${root_dir} ${root_dir}/*)
     foreach(sub ${ALL_SUB})
-        if (IS_DIRECTORY ${root_dir}/${sub} AND ((${sub} STREQUAL "circuit") OR (${sub} STREQUAL "ec") OR (${sub} STREQUAL "util")) )
+        if (IS_DIRECTORY ${root_dir}/${sub})
+            #  AND ((${sub} STREQUAL "circuit") OR (${sub} STREQUAL "ec") OR (${sub} STREQUAL "util"))
             include_sub_directories_recursively(${root_dir}/${sub})
         endif()
-        
     endforeach()
 endfunction()
 
 # add all header files
-include_sub_directories_recursively(${CMAKE_SOURCE_DIR}/include)
+# include_sub_directories_recursively(${PROJECT_SOURCE_DIR}/include)
 
-file(GLOB_RECURSE SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/*.cpp)
+include_directories(${PROJECT_SOURCE_DIR}/include)
+message("include dir: " ${PROJECT_SOURCE_DIR}/include)
+
+file(GLOB_RECURSE SOURCE_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 message("Source file: " ${SOURCE_FILES})
 
-set(JEC_ALL_SRCS main.cpp ${SOURCE_FILES})
+set(JEC_ALL_SRCS ${SOURCE_FILES} main.cpp)
 
 add_executable(${PROJECT_NAME} ${JEC_ALL_SRCS})
 
+target_link_libraries(${PROJECT_NAME} croaring)
+
 if (LINUX)
-    target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSMT_INCLUDE_DIR} ${CVC4_INCLUDE_DIR} ${GMP_C_INCLUDE_DIR} ${GMP_CXX_INCLUDE_DIR} ${CADICAL_C_INCLUDE_DIR} ${CADICAL_CXX_INCLUDE_DIR} ${ANTLR_INCLUDE_DIR})
+    # target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSMT_INCLUDE_DIR} ${CVC4_INCLUDE_DIR} ${GMP_C_INCLUDE_DIR} ${GMP_CXX_INCLUDE_DIR} ${CADICAL_C_INCLUDE_DIR} ${CADICAL_CXX_INCLUDE_DIR} ${ANTLR_INCLUDE_DIR})
     target_link_libraries(${PROJECT_NAME} ${OPENSMT_LIBRARY} ${CVC4_PARSER_LIBRARIES} ${CVC4_LIBRARIES} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES} ${CADICAL_LIBRARY} ${ANTLR_LIBRARIES})
 endif()
-
-target_link_libraries(${PROJECT_NAME} croaring)
 
