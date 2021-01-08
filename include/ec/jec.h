@@ -5,9 +5,8 @@
 
 #ifndef WIN
     #include <opensmt/opensmt2.h>
+    #include <cvc4/cvc4.h>
 #endif
-
-#include <cvc4/cvc4.h>
 
 class jec : public ec
 {
@@ -33,9 +32,9 @@ public:
     // evaluate by using opensmt
     void evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental = false);
     void evaluate_min_cone(vector<vector<Node *>> &layers);
-#endif
     // evaluate by using cvc4
     void evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental = false);
+#endif
 };
 
 #endif

@@ -34,32 +34,33 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_MACOSX_RPATH OFF)
 
-#find GMP
-get_filename_component(CMAKE_MODULE_PATH
-    "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
-find_package(GMP REQUIRED)
-
 if (LINUX)
     #find Opensmt library
     get_filename_component(CMAKE_MODULE_PATH
         "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
     find_package(Opensmt REQUIRED)
+
+    #find GMP
+    get_filename_component(CMAKE_MODULE_PATH
+        "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
+    find_package(GMP REQUIRED)
+
+    #find CaDiCaL library
+    get_filename_component(CMAKE_MODULE_PATH
+        "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
+    find_package(CaDiCaL REQUIRED)
+
+    #find ANTLR
+    get_filename_component(CMAKE_MODULE_PATH
+        "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
+    find_package(ANTLR REQUIRED)
+
+    #find CVC4 library
+    get_filename_component(CMAKE_MODULE_PATH
+        "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
+    find_package(CVC4 REQUIRED)
+
 endif()
-
-#find CaDiCaL library
-get_filename_component(CMAKE_MODULE_PATH
-    "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
-find_package(CaDiCaL REQUIRED)
-
-#find ANTLR
-get_filename_component(CMAKE_MODULE_PATH
-    "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
-find_package(ANTLR REQUIRED)
-
-#find CVC4 library
-get_filename_component(CMAKE_MODULE_PATH
-    "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
-find_package(CVC4 REQUIRED)
 
 # add croaring
 add_library(croaring STATIC ${PROJECT_SOURCE_DIR}/include/CRoaring/roaring.c)
@@ -74,7 +75,7 @@ function(include_sub_directories_recursively root_dir)
 
     file(GLOB ALL_SUB RELATIVE ${root_dir} ${root_dir}/*)
     foreach(sub ${ALL_SUB})
-        if (IS_DIRECTORY ${root_dir}/${sub} AND NOT(${sub} STREQUAL "CRoaring") AND NOT(${sub} STREQUAL "gmp") AND NOT(${sub} STREQUAL "opensmt") AND NOT(${sub} STREQUAL "cvc4") )
+        if (IS_DIRECTORY ${root_dir}/${sub} AND ((${sub} STREQUAL "circuit") OR (${sub} STREQUAL "ec") OR (${sub} STREQUAL "util")) )
             include_sub_directories_recursively(${root_dir}/${sub})
         endif()
         
@@ -92,8 +93,9 @@ set(JEC_ALL_SRCS main.cpp ${SOURCE_FILES})
 add_executable(${PROJECT_NAME} ${JEC_ALL_SRCS})
 
 if (LINUX)
-    target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSMT_INCLUDE_DIR})
-    target_link_libraries(${PROJECT_NAME} ${OPENSMT_LIBRARY})
+    target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSMT_INCLUDE_DIR} ${CVC4_INCLUDE_DIR} ${GMP_C_INCLUDE_DIR} ${GMP_CXX_INCLUDE_DIR} ${CADICAL_C_INCLUDE_DIR} ${CADICAL_CXX_INCLUDE_DIR} ${ANTLR_INCLUDE_DIR})
+    target_link_libraries(${PROJECT_NAME} ${OPENSMT_LIBRARY} ${CVC4_PARSER_LIBRARIES} ${CVC4_LIBRARIES} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES} ${CADICAL_LIBRARY} ${ANTLR_LIBRARIES})
 endif()
-target_include_directories(${PROJECT_NAME} PUBLIC ${CVC4_INCLUDE_DIR} ${GMP_C_INCLUDE_DIR} ${GMP_CXX_INCLUDE_DIR} ${CADICAL_C_INCLUDE_DIR} ${CADICAL_CXX_INCLUDE_DIR} ${ANTLR_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} croaring ${CVC4_PARSER_LIBRARIES} ${CVC4_LIBRARIES} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES} ${CADICAL_LIBRARY} ${ANTLR_LIBRARIES} )
+
+target_link_libraries(${PROJECT_NAME} croaring)
+

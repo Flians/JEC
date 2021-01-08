@@ -439,8 +439,6 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
     this->fout << "EQ" << endl;
 }
 
-#endif
-
 void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
 {
     if (layers.empty())
@@ -557,3 +555,5 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
     }
     vector<CVC4::Expr>().swap(nodes);
 }
+
+#endif

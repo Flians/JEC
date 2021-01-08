@@ -50,22 +50,19 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
     startTime = clock();
     switch (smt)
     {
-    case _FSM:
-        jec_.evaluate_from_PIs_to_POs(sim.get_layers());
-        break;
-    case _OPENSMT:
 #ifndef WIN
+    case _OPENSMT:
         jec_.evaluate_opensmt(sim.get_layers(), incremental);
         break;
-#endif
     case _CONE:
-#ifndef WIN
         jec_.evaluate_min_cone(sim.get_layers());
+        break;
+    case _CVC4:
+        jec_.evaluate_cvc4(sim.get_layers(), incremental);
         break;
 #endif
     default:
-        jec_.evaluate_cvc4(sim.get_layers(), incremental);
-        break;
+        jec_.evaluate_from_PIs_to_POs(sim.get_layers());
     }
     endTime = clock();
     times[2] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
@@ -92,8 +89,7 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
         // "log2",
         "max",
         // "multiplier",
-        "sin"
-    };
+        "sin"};
     int patch = 100;
     size_t num_case = cases.size();
     vector<vector<double>> avg(num_case, vector<double>(4, 0.0));
