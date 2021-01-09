@@ -24,19 +24,32 @@ public:
     Netlist(ifstream &golden, ifstream &revised);
     ~Netlist();
 
-    /** delete all splitters. If delete_dff is true, delete all DFFs*/
+    /** 
+     * delete all splitters. 
+     * if delete_dff is true, delete all DFFs
+     */
     void clean_spl(bool delete_dff = false);
 
-    /** delete all useless nodes*/
+    /** 
+     * delete all useless nodes whose in-degree or out-degree is 0 except I/Os
+     */
     void clean_useless_nodes();
 
-    // layer assigment according to the logic depth
-    vector<vector<Node *> > &layer_assignment(vector<Node *> &PIs, vector<Node *> &POs);
+    void cycle_break(vector<pair<Node*, Node*> > reversed);
+
+    /**
+     *  calculate the logic level of each node, and judge whether the netlist is path balanced
+     * @return the layers group by the logic level
+     */
+    bool path_balance(vector<vector<Node *> > &layers);
 
     // print the netlist
     void print_netlist();
 
-    // delete the node, return its parent
+    /**
+     * delete the node whose in-degree = 1 except the clk input
+     * @return its non-clock parent node
+     */
     static Node *delete_node(Node *node);
     // merge two nodes
     static void merge_node(Node *node, Node *repeat);
