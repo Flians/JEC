@@ -83,7 +83,7 @@ void jec::evaluate_from_PIs_to_POs(vector<vector<Node *>> &layers)
         ERROR_Exit_Fout("The vector layers is empty!");
     }
     size_t index_beg = 0;
-    if (layers[0][0]->type == CLK)
+    if (layers[0][0]->type == _CLK)
         index_beg = 1;
     // layers[0][0] is clk
     if (assign_PIs_value(layers, index_beg))
@@ -121,7 +121,7 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
         {
             nodes[pi->id] = pi->val == L ? logic.getTerm_false() : logic.getTerm_true();
         }
-        else if (pi->type != CLK)
+        else if (pi->type != _CLK)
         {
             nodes[pi->id] = logic.mkBoolVar(pi->name.c_str());
         }
@@ -135,7 +135,7 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
             // layers[i][j]->ins->at(0) is clk
             for (auto &npi : node->ins)
             {
-                if (npi->type != CLK)
+                if (npi->type != _CLK)
                     inputs.push(nodes[npi->id]);
             }
             if (inputs.size() == 0)
@@ -204,7 +204,7 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
         this->fout << "NEQ" << endl;
         for (auto &pi : layers[0])
         {
-            if (pi->type != CLK) {
+            if (pi->type != _CLK) {
                 ValPair vp = mainSolver.getValue(nodes[pi->id]);
                 this->fout << logic.printTerm(vp.tr) << " " << vp.val << endl;
             }
@@ -235,7 +235,7 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
         WARN_Fout("The current node is NULL in jec.build_equation_dfs!");
         return;
     }
-    if (record.find(cur) != record.end() || cur->type == CLK)
+    if (record.find(cur) != record.end() || cur->type == _CLK)
     {
         return;
     }
@@ -253,7 +253,7 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
         for (auto &in : cur->ins)
         {
             build_equation_dfs(in, logic, record);
-            if (in->type != CLK)
+            if (in->type != _CLK)
             {
                 inputs.push(record[in]);
             }
@@ -372,7 +372,7 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
     for (size_t i = 0; i < num_pis; ++i)
     {
         info[layers[0][i]->id].second = i;
-        if (layers[0][i]->type != CLK) {
+        if (layers[0][i]->type != _CLK) {
             cones[i].emplace_back(layers[0][i]);
         }
     }
@@ -462,7 +462,7 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
         {
             nodes[pi->id] = pi->val == L ? em.mkConst<bool>(false) : em.mkConst<bool>(true);
         }
-        else if (pi->type != CLK)
+        else if (pi->type != _CLK)
         {
             nodes[pi->id] = em.mkVar(pi->name.c_str(), boolean);
         }
@@ -476,7 +476,7 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
             // layers[i][j]->ins->at(0) is clk
             for (auto &npi : node->ins)
             {
-                if (npi->type != CLK)
+                if (npi->type != _CLK)
                     inputs.emplace_back(nodes[npi->id]);
             }
             if (inputs.size() == 0)

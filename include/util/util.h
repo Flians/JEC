@@ -1,6 +1,7 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
 
+#include <roaring.hh>
 #include "circuit/node.h"
 #include "circuit/netlist.h"
 
@@ -44,7 +45,10 @@ public:
     // replace the node from vector<node *> *nodes with the new_node, which the name of this node is same as the new_node
     static bool replace_node_by_name(vector<Node *> &nodes, Node *new_node);
 
-    /** make a miter for the golden netlist and the revised netlist */
+    /** 
+     * make a miter for the golden netlist and the revised netlist
+     * @return the miter
+     */
     static Netlist *make_miter(Netlist *&golden, Netlist *&revised);
 };
 

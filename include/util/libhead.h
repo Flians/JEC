@@ -38,9 +38,10 @@ struct EnumClassHash
 enum GType
 {
     _CONSTANT = 0,
+    _CLK,
     _IN,
+    _EXOR, // connected to outputs
     _OUT,
-    CLK,
     WIRE,
     AND,
     NAND,
@@ -57,7 +58,6 @@ enum GType
     CB3,
     _HMUX, // _HMUX \U$1 ( .O(\282 ), .I0(1'b1), .I1(\277 ), .S(\281 ));
     _DC,   // _DC \n6_5[9] ( .O(\108 ), .C(\96 ), .D(\107 ));
-    _EXOR,
     _MODULE,
     _UNDEFINED,
     COUNT
@@ -71,9 +71,9 @@ enum Value
 };
 
 extern size_t init_id;
-extern std::unordered_map<string, GType> Str_GType;
-extern std::unordered_map<GType, string, EnumClassHash> GType_Str;
-extern std::unordered_map<Value, string, EnumClassHash> Const_Str;
+extern const std::unordered_map<string, GType> Str_GType;
+extern const std::unordered_map<GType, string, EnumClassHash> GType_Str;
+extern const std::unordered_map<Value, string, EnumClassHash> Const_Str;
 
 /* Global operator overload */
 // and

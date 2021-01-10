@@ -1,7 +1,6 @@
+#include "circuit/netlist.h"
 #include "ec/cec.h"
 #include "ec/jec.h"
-#include "ec/simplify.h"
-#include "util/parser.h"
 #include <iomanip>
 
 using namespace std;
@@ -24,22 +23,19 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
 {
     vector<double> times(4, 0.0);
     clock_t startTime, endTime;
-    /* parse Verilog files */
-    parser miter;
     startTime = clock();
-    miter.parse(golden, revise);
-    miter.clean_wires();
-    miter.clean_spl();
+    /* parse Verilog files */
+    Netlist miter(golden, revise);
     endTime = clock();
     times[0] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
     cout << "The parsing time is: " << times[0] << " S" << endl;
 
     /* simplify the graph */
-    simplify sim;
     startTime = clock();
-    sim.id_reassign_and_layered(miter.PIs, miter.POs);
+    vector<vector<Node *> > layers;
+    miter.path_balance(layers);
     if (merge)
-        times[3] = sim.merge_nodes_between_networks();
+        times[3] = miter.merge_nodes_between_networks(layers);
     endTime = clock();
     times[1] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
     cout << "The simplify time is: " << times[1] << " S" << endl;
@@ -51,17 +47,17 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
     {
 #ifndef WIN
     case _OPENSMT:
-        jec_.evaluate_opensmt(sim.get_layers(), incremental);
+        jec_.evaluate_opensmt(layers, incremental);
         break;
     case _CONE:
-        jec_.evaluate_min_cone(sim.get_layers());
+        jec_.evaluate_min_cone(layers);
         break;
     case _CVC4:
-        jec_.evaluate_cvc4(sim.get_layers(), incremental);
+        jec_.evaluate_cvc4(layers, incremental);
         break;
 #endif
     default:
-        jec_.evaluate_from_PIs_to_POs(sim.get_layers());
+        jec_.evaluate_from_PIs_to_POs(layers);
     }
     endTime = clock();
     times[2] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
