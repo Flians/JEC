@@ -1,8 +1,11 @@
 #ifndef _NETLIST_H_
 #define _NETLIST_H_
 
-#include <math.h>
-#include <float.h>
+#include <cmath>
+#include <cfloat>
+#include <climits>
+#include <ctime>
+#include <cstdlib>
 #include "util/util.h"
 #include "util/libstring.h"
 
@@ -42,7 +45,7 @@ public:
      */
     void clean_useless_nodes();
 
-    void cycle_break(vector<pair<Node *, Node *>> reversed);
+    void cycle_break(vector<pair<Node *, Node *>> &reversed);
 
     /**
      *  calculate the logic level of each node, and judge whether the netlist is path balanced

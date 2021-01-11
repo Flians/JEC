@@ -146,7 +146,8 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
             while (line.find("*/") == line.npos)
             {
                 string tl;
-                if (!getline(in, tl)) {
+                if (!getline(in, tl))
+                {
                     break;
                 }
                 line += tl;
@@ -157,7 +158,8 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
         while (line.find(';') == line.npos)
         {
             string tl;
-            if (!getline(in, tl)) {
+            if (!getline(in, tl))
+            {
                 break;
             }
             line += tl;
@@ -444,9 +446,172 @@ void Netlist::id_reassign()
     vector<Node *>(this->gates).swap(this->gates);
 }
 
-void Netlist::cycle_break(vector<pair<Node *, Node *>> reversed)
+void Netlist::cycle_break(vector<pair<Node *, Node *>> &reversed)
 {
     vector<pair<Node *, Node *>>().swap(reversed);
+    /** indegree values and outdegree values for the nodes; mark for the nodes, inducing an ordering of the nodes. */
+    int indeg[this->num_gate] = {0}, outdeg[this->num_gate] = {0}, mark[this->num_gate] = {0};
+    /** list of source nodes and sink nodes. */
+    queue<Node *> sources, sinks;
+    /**
+     * Updates indegree and outdegree values of the neighbors of the given node,
+     * simulating its removal from the graph. the sources and sinks lists are
+     * also updated.
+     * 
+     * @param node node for which neighbors are updated
+     */
+    auto updateNeighbors = [&indeg, &outdeg, &sources, &sinks](const Node *node) {
+        for (Node *src : node->ins)
+        {
+            // exclude self-loops
+            if (node == src)
+            {
+                continue;
+            }
+            int index = src->id;
+            outdeg[index] -= 1;
+            if (outdeg[index] <= 0 && indeg[index] > 0)
+            {
+                sinks.emplace(src);
+            }
+        }
+        for (Node *tar : node->outs)
+        {
+            // exclude self-loops
+            if (node == tar)
+            {
+                continue;
+            }
+            int index = tar->id;
+            indeg[index] -= 1;
+            if (indeg[index] <= 0 && outdeg[index] > 0)
+            {
+                sources.emplace(tar);
+            }
+        }
+    };
+
+    // obtain the indegree and outdegree
+    for (auto node : this->gates)
+    {
+        indeg[node->id] = node->ins.size();
+        outdeg[node->id] = node->outs.size();
+        // collect sources and sinks
+        if (outdeg[node->id] == 0)
+        {
+            sinks.emplace(node);
+        }
+        else if (indeg[node->id] == 0)
+        {
+            sources.emplace(node);
+        }
+    }
+    // next rank values used for sinks and sources (from right and from left)
+    int nextRight = -1, nextLeft = 1;
+
+    // assign marks to all nodes
+    vector<Node *> maxNodes;
+    srand(time(0));
+    size_t unprocessedNodeCount = this->num_gate;
+
+    while (unprocessedNodeCount > 0)
+    {
+        // sinks are put to the right --> assign negative rank, which is later shifted to positive
+        while (!sinks.empty())
+        {
+            Node *sink = sinks.front();
+            sinks.pop();
+            mark[sink->id] = nextRight--;
+            updateNeighbors(sink);
+            unprocessedNodeCount--;
+        }
+
+        // sources are put to the left --> assign positive rank
+        while (!sources.empty())
+        {
+            Node *source = sources.front();
+            sources.pop();
+            mark[source->id] = nextLeft++;
+            updateNeighbors(source);
+            unprocessedNodeCount--;
+        }
+
+        // while there are unprocessed nodes left that are neither sinks nor sources...
+        if (unprocessedNodeCount > 0)
+        {
+            int maxOutflow = INT_MIN;
+
+            // find the set of unprocessed node (=> mark == 0), with the largest out flow
+            for (Node *node : this->gates)
+            {
+                if (mark[node->id] == 0)
+                {
+                    int outflow = outdeg[node->id] - indeg[node->id];
+                    if (outflow >= maxOutflow)
+                    {
+                        if (outflow > maxOutflow)
+                        {
+                            maxNodes.clear();
+                            maxOutflow = outflow;
+                        }
+                        maxNodes.emplace_back(node);
+                    }
+                }
+            }
+
+            // randomly select a node from the ones with maximal outflow and put it left
+            Node *maxNode = maxNodes[rand() % maxNodes.size()];
+            mark[maxNode->id] = nextLeft++;
+            updateNeighbors(maxNode);
+            unprocessedNodeCount--;
+        }
+    }
+
+    // shift negative ranks to positive; this applies to sinks of the graph
+    size_t shiftBase = this->num_gate + 1;
+    for (size_t index = 0; index < this->num_gate; index++)
+    {
+        if (mark[index] < 0)
+        {
+            mark[index] += shiftBase;
+        }
+    }
+
+    // reverse edges that point left
+    for (Node *node : this->gates)
+    {
+        // look at the node's outgoing edges
+        for (Node *tar : node->outs)
+        {
+            if (mark[node->id] > mark[tar->id])
+            {
+                Node *last = nullptr;
+                // no considering the splitters in the cycle
+                while (node->type == SPL || node->type == SPL3)
+                {
+                    if (node->ins.size() == 1)
+                    {
+                        last = node;
+                        node = node->ins[0];
+                    }
+                    else
+                    {
+                        WARN_Fout("The splitter in the cycle has no input!");
+                        last = nullptr;
+                        break;
+                    }
+                }
+                if (last == nullptr)
+                    continue;
+                reversed.emplace_back(make_pair(last, node));
+                // reverse the edge
+                last->outs.erase(find(last->outs.begin(), last->outs.end(), node));
+                node->ins.erase(find(node->ins.begin(), node->ins.end(), last));
+                last->ins.emplace_back(node);
+                node->outs.emplace_back(last);
+            }
+        }
+    }
 }
 
 bool Netlist::path_balance(vector<vector<Node *>> &layers)
