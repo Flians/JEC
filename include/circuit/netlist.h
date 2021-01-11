@@ -9,6 +9,10 @@
 #include "util/util.h"
 #include "util/libstring.h"
 
+enum PROPERTY {
+    CYCLE,
+};
+
 class Netlist
 {
 public:
@@ -17,6 +21,7 @@ public:
     vector<Node *> gates;
     std::unordered_map<std::string, int> map_PIs;
     std::unordered_map<std::string, int> map_POs;
+    std::unordered_map<PROPERTY, void*> properties;
 
 public:
     // make an empty netlist
