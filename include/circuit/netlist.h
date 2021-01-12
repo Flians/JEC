@@ -17,11 +17,13 @@ class Netlist
 {
 public:
     string name;
-    size_t num_gate;
     vector<Node *> gates;
     std::unordered_map<std::string, int> map_PIs;
     std::unordered_map<std::string, int> map_POs;
     std::unordered_map<PROPERTY, std::shared_ptr<FieldInterface>> properties;
+
+private:
+    size_t num_gate;
 
 public:
     // make an empty netlist
@@ -35,6 +37,12 @@ public:
     ~Netlist();
 
     /**
+     * @return the number of nodes
+     */
+    size_t get_num_gates();
+    void update_num_gates();
+
+    /**
      * determine if the netlist is empty
      */
     bool isEmpty();
@@ -44,24 +52,27 @@ public:
      */
     void print_netlist();
 
+    /**
+     * reassign id of each node, and assign ids to I/Os first
+     */
+    void id_reassign();
+
     /** 
      * delete all useless nodes whose in-degree or out-degree is 0 except I/Os
      */
     void clean_useless_nodes();
 
-    /**
-     * delete the node whose in-degree = 1 except the clk input
-     * @return its non-clock parent node
+    /** 
+     * delete all splitters, and set properties[CLEAN_SPL] = true.
+     * @param delete_dff if delete_dff is true, delete all DFFs, and set properties[CLEAN_DFF] = true.
      */
-    Node *delete_node(Node *node);
-    /**
-     * merge two nodes
+    void clean_spl(bool delete_dff = false);
+
+    /** 
+     * merge equivalent nodes 
+     * @return the number of nodes to be merged
      */
-    void merge_node(Node *node, Node *repeat);
-    /**
-     * reassign id of each node, and assign ids to I/Os first
-     */
-    void id_reassign();
+    int merge_nodes_between_networks();
 
 private:
     /** parse a port of the Node */
@@ -74,6 +85,16 @@ private:
      * parse two netlist files, and make a miter for them
      */
     void make_miter(ifstream &golden, ifstream &revised);
+
+    /**
+     * delete the node whose in-degree = 1 except the clk input
+     * @return its non-clock parent node
+     */
+    Node *delete_node(Node *node);
+    /**
+     * merge two nodes
+     */
+    void merge_node(Node *node, Node *repeat);
 };
 
 #endif

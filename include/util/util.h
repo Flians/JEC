@@ -23,7 +23,7 @@ public:
     static void unique_element_in_vector(vector<Node *> &v);
 
     /** intersection of two vectors */
-    static vector<Node *> vectors_intersection(vector<Node *> v1,vector<Node *> v2);
+    static vector<Node *> vectors_intersection(vector<Node *> v1, vector<Node *> v2);
 
     /** clean vector<*>, and release the space */
     template <typename T = Node>
@@ -55,20 +55,6 @@ public:
      * @return the miter
      */
     static Netlist *make_miter(Netlist *&golden, Netlist *&revised);
-
-    /** 
-     * delete all splitters, and set properties[CLEAN_SPL] = true.
-     * @param netlist the pointer of the netlist
-     * @param delete_dff if delete_dff is true, delete all DFFs, and set properties[CLEAN_DFF] = true.
-     */
-    static void clean_spl(Netlist *netlist, bool delete_dff = false);
-
-    /** 
-     * merge equivalent nodes 
-     * @param netlist the pointer of the netlist
-     * @return the number of nodes to be merged
-     */
-    static int merge_nodes_between_networks(Netlist *netlist);
 
     /**
      * break the cycles, and store the reversed edge into properties[CYCLE]

@@ -44,26 +44,6 @@ Netlist::~Netlist()
     cout << "The netlist is destroyed!" << endl;
 }
 
-bool Netlist::isEmpty()
-{
-    return this->gates.empty();
-}
-
-void Netlist::print_netlist()
-{
-    vector<Node *>::iterator pi = this->gates.begin();
-    vector<Node *>::iterator pi_end = this->gates.end();
-    while (pi != pi_end)
-    {
-        cout << (*pi)->name << " " << GType_Str.at((*pi)->type) << " " << (*pi)->val << endl;
-        ++pi;
-    }
-}
-
-void Netlist::clean_useless_nodes()
-{
-}
-
 void Netlist::parse_inport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires)
 {
     Node *port = nullptr;
@@ -396,44 +376,6 @@ void Netlist::make_miter(ifstream &golden, ifstream &revised)
     this->num_gate = this->gates.size();
 }
 
-void Netlist::id_reassign()
-{
-    sort(this->gates.begin(), this->gates.end(), [](Node *a, Node *b) {
-        if (a && b)
-        {
-            return a->type < b->type;
-        }
-        else
-        {
-            return a != nullptr;
-        }
-    });
-    this->map_PIs.clear();
-    this->map_POs.clear();
-    for (size_t i = 0; i < this->num_gate; ++i)
-    {
-        if (this->gates[i])
-        {
-            this->gates[i]->id = i;
-            if (this->gates[i]->type <= _IN)
-            {
-                this->map_PIs[this->gates[i]->name] = i;
-            }
-            else if (this->gates[i]->type <= _OUT)
-            {
-                this->map_POs[this->gates[i]->name] = i;
-            }
-        }
-        else
-        {
-            this->gates[--this->num_gate]->id = i;
-            this->gates[i] = this->gates[this->num_gate];
-            this->gates.pop_back();
-        }
-    }
-    vector<Node *>(this->gates).swap(this->gates);
-}
-
 Node *Netlist::delete_node(Node *cur)
 {
     if (!cur)
@@ -532,4 +474,198 @@ void Netlist::merge_node(Node *node, Node *repeat)
     vector<Node *>().swap(repeat->outs);
     delete repeat;
     repeat = nullptr;
+}
+
+size_t Netlist::get_num_gates()
+{
+    return this->num_gate;
+}
+
+void Netlist::update_num_gates()
+{
+    this->num_gate = this->gates.size();
+}
+
+bool Netlist::isEmpty()
+{
+    return this->gates.empty();
+}
+
+void Netlist::print_netlist()
+{
+    vector<Node *>::iterator pi = this->gates.begin();
+    vector<Node *>::iterator pi_end = this->gates.end();
+    while (pi != pi_end)
+    {
+        cout << (*pi)->name << " " << GType_Str.at((*pi)->type) << " " << (*pi)->val << endl;
+        ++pi;
+    }
+}
+
+void Netlist::id_reassign()
+{
+    this->num_gate = this->gates.size();
+    sort(this->gates.begin(), this->gates.end(), [](Node *a, Node *b) {
+        if (a && b)
+        {
+            return a->type < b->type;
+        }
+        else
+        {
+            return a != nullptr;
+        }
+    });
+    this->map_PIs.clear();
+    this->map_POs.clear();
+    for (size_t i = 0; i < this->num_gate; ++i)
+    {
+        if (this->gates[i])
+        {
+            this->gates[i]->id = i;
+            if (this->gates[i]->type <= _IN)
+            {
+                this->map_PIs[this->gates[i]->name] = i;
+            }
+            else if (this->gates[i]->type <= _OUT)
+            {
+                this->map_POs[this->gates[i]->name] = i;
+            }
+        }
+        else
+        {
+            this->gates[--this->num_gate]->id = i;
+            this->gates[i] = this->gates[this->num_gate];
+            this->gates.pop_back();
+        }
+    }
+    vector<Node *>(this->gates).swap(this->gates);
+}
+
+void Netlist::clean_useless_nodes()
+{
+}
+
+void Netlist::clean_spl(bool delete_dff)
+{
+    bool flag_spl = false, flag_dff = false;
+    for (size_t i = 0; i < num_gate; ++i)
+    {
+        if (this->gates[i]->type == SPL || this->gates[i]->type == SPL3 || (delete_dff && this->gates[i]->type == DFF))
+        {
+            // maintain the id
+            --num_gate;
+            if (this->gates[i]->type == DFF)
+            {
+                flag_dff = true;
+            }
+            else
+            {
+                flag_spl = true;
+            }
+            swap(this->gates[i]->id, this->gates[num_gate]->id);
+            swap(this->gates[i], this->gates[num_gate]);
+            this->delete_node(this->gates[i]);
+            this->gates[i] = nullptr;
+            this->gates.pop_back();
+        }
+    }
+    if (flag_spl)
+    {
+        this->properties[CLEAN_SPL] = make_shared<Field<bool>>(true);
+    }
+    if (flag_dff)
+    {
+        this->properties[CLEAN_DFF] = make_shared<Field<bool>>(true);
+    }
+}
+
+int Netlist::merge_nodes_between_networks()
+{
+    if (this->isEmpty())
+    {
+        WARN_Fout("The netlist is empty in util.merge_nodes_between_networks!");
+        return 0;
+    }
+    if (this->properties.find(LAYERS) == this->properties.end())
+    {
+        INFO_Fout("The layers is empty in util.merge_nodes_between_networks, and now build the layers.");
+        if (!Util::path_balance(this))
+        {
+            WARN_Fout("The netlist is path-balanced in util.merge_nodes_between_networks!");
+        }
+    }
+    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(this->properties[LAYERS])->get_value();
+    size_t num_layer = layers.size();
+    vector<pair<int, int>> position(num_layer, {0, 0});
+    vector<Node *> all_node(num_layer, nullptr);
+    for (size_t i = 0; i < num_layer; ++i)
+    {
+        size_t num_node = layers[i].size();
+        for (size_t j = 0; j < num_node; ++j)
+        {
+            position[layers[i][j]->id] = {i, j};
+            all_node[layers[i][j]->id] = layers[i][j];
+        }
+    }
+    int reduce = 0;
+    for (size_t i = 1; i < num_layer - 1; ++i)
+    {
+        size_t num_node = layers[i].size();
+        for (size_t j = 0; j < num_node; ++j)
+        {
+            if (!layers[i][j] || layers[i][j]->ins.empty())
+            {
+                continue;
+            }
+            Roaring same_id;
+            bool flag = false;
+            size_t num_npi = layers[i][j]->ins.size();
+            for (size_t k = 0; k < num_npi; ++k)
+            {
+                if (layers[i][j]->ins[k]->type == _CLK)
+                {
+                    continue;
+                }
+                Roaring tmp;
+                for (auto &iout : layers[i][j]->ins[k]->outs)
+                {
+                    if (iout && iout->type == layers[i][j]->type)
+                    {
+                        if (iout->ins.size() != num_npi)
+                        {
+                            ERROR_Exit_Fout("The number of inputs of the same type of node is different in simplify.merge_nodes_between_networks");
+                        }
+                        tmp.add(iout->id);
+                    }
+                }
+                if (flag)
+                {
+                    same_id &= tmp;
+                }
+                else
+                {
+                    same_id = tmp;
+                    flag = true;
+                }
+            }
+            Roaring::const_iterator it = same_id.begin();
+            while (it != same_id.end())
+            {
+                if (all_node[it.i.current_value] && it.i.current_value != layers[i][j]->id)
+                {
+                    this->merge_node(layers[i][j], all_node[it.i.current_value]);
+                    all_node[it.i.current_value] = nullptr;
+                    layers[position[it.i.current_value].first][position[it.i.current_value].second] = nullptr;
+                    ++reduce;
+                }
+                ++it;
+            }
+        }
+    }
+    vector<Node *>().swap(all_node);
+    vector<pair<int, int>>().swap(position);
+    // reassign the id for all nodes
+    this->id_reassign();
+    std::cout << "The number of INV, BUF, and others reduction is " << reduce << std::endl;
+    return reduce;
 }

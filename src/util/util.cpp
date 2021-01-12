@@ -117,146 +117,22 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
         ++iter;
     }
     revised->map_POs.clear();
+    size_t num_gate = golden->get_num_gates();
     /** merge gates */
     for (auto gate : revised->gates)
     {
         if (gate)
         {
-            gate->id = golden->num_gate++;
+            gate->id = num_gate++;
             golden->gates.push_back(gate);
         }
     }
+    golden->update_num_gates();
     revised->gates.clear();
     delete revised;
     revised = nullptr;
     golden = nullptr;
     return miter;
-}
-
-void Util::clean_spl(Netlist *netlist, bool delete_dff)
-{
-    bool flag_spl = false, flag_dff = false;
-    size_t num_gate = netlist->gates.size();
-    for (size_t i = 0; i < num_gate; ++i)
-    {
-        if (netlist->gates[i]->type == SPL || netlist->gates[i]->type == SPL3 || (delete_dff && netlist->gates[i]->type == DFF))
-        {
-            // maintain the id
-            --num_gate;
-            if (netlist->gates[i]->type == DFF)
-            {
-                flag_dff = true;
-            }
-            else
-            {
-                flag_spl = true;
-            }
-            swap(netlist->gates[i]->id, netlist->gates[num_gate]->id);
-            swap(netlist->gates[i], netlist->gates[num_gate]);
-            netlist->delete_node(netlist->gates[i]);
-            netlist->gates[i] = nullptr;
-            netlist->gates.pop_back();
-        }
-    }
-    if (flag_spl)
-    {
-        netlist->properties[CLEAN_SPL] = make_shared<Field<bool>>(true);
-    }
-    if (flag_dff)
-    {
-        netlist->properties[CLEAN_DFF] = make_shared<Field<bool>>(true);
-    }
-}
-
-int Util::merge_nodes_between_networks(Netlist *netlist)
-{
-    if (netlist->isEmpty())
-    {
-        WARN_Fout("The netlist is empty in util.merge_nodes_between_networks!");
-        return 0;
-    }
-    if (netlist->properties.find(LAYERS) == netlist->properties.end())
-    {
-        INFO_Fout("The layers is empty in util.merge_nodes_between_networks, and now build the layers.");
-        if (!Util::path_balance(netlist))
-        {
-            WARN_Fout("The netlist is path-balanced in util.merge_nodes_between_networks!");
-        }
-    }
-    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(netlist->properties[LAYERS])->get_value();
-    size_t num_layer = layers.size();
-    vector<pair<int, int>> position(num_layer, {0, 0});
-    vector<Node *> all_node(num_layer, nullptr);
-    for (size_t i = 0; i < num_layer; ++i)
-    {
-        size_t num_node = layers[i].size();
-        for (size_t j = 0; j < num_node; ++j)
-        {
-            position[layers[i][j]->id] = {i, j};
-            all_node[layers[i][j]->id] = layers[i][j];
-        }
-    }
-    int reduce = 0;
-    for (size_t i = 1; i < num_layer - 1; ++i)
-    {
-        size_t num_node = layers[i].size();
-        for (size_t j = 0; j < num_node; ++j)
-        {
-            if (!layers[i][j] || layers[i][j]->ins.empty())
-            {
-                continue;
-            }
-            Roaring same_id;
-            bool flag = false;
-            size_t num_npi = layers[i][j]->ins.size();
-            for (size_t k = 0; k < num_npi; ++k)
-            {
-                if (layers[i][j]->ins[k]->type == _CLK)
-                {
-                    continue;
-                }
-                Roaring tmp;
-                for (auto &iout : layers[i][j]->ins[k]->outs)
-                {
-                    if (iout && iout->type == layers[i][j]->type)
-                    {
-                        if (iout->ins.size() != num_npi)
-                        {
-                            ERROR_Exit_Fout("The number of inputs of the same type of node is different in simplify.merge_nodes_between_networks");
-                        }
-                        tmp.add(iout->id);
-                    }
-                }
-                if (flag)
-                {
-                    same_id &= tmp;
-                }
-                else
-                {
-                    same_id = tmp;
-                    flag = true;
-                }
-            }
-            Roaring::const_iterator it = same_id.begin();
-            while (it != same_id.end())
-            {
-                if (all_node[it.i.current_value] && it.i.current_value != layers[i][j]->id)
-                {
-                    netlist->merge_node(layers[i][j], all_node[it.i.current_value]);
-                    all_node[it.i.current_value] = nullptr;
-                    layers[position[it.i.current_value].first][position[it.i.current_value].second] = nullptr;
-                    ++reduce;
-                }
-                ++it;
-            }
-        }
-    }
-    vector<Node *>().swap(all_node);
-    vector<pair<int, int>>().swap(position);
-    // reassign the id for all nodes
-    netlist->id_reassign();
-    std::cout << "The number of INV, BUF, and others reduction is " << reduce << std::endl;
-    return reduce;
 }
 
 void Util::cycle_break(Netlist *netlist)
@@ -437,7 +313,7 @@ void Util::cycle_break(Netlist *netlist)
         }
         else
         {
-            netlist->properties.insert(make_pair(CYCLE, make_shared<Field_V<pair<Node *, Node *>>>(move(reversed))));
+            netlist->properties.insert(make_pair(CYCLE, make_shared<Field_V<pair<Node *, Node *>>>(reversed)));
         }
     }
 }
@@ -548,7 +424,12 @@ bool Util::path_balance(Netlist *netlist)
         }
         groups[level[i]].emplace_back(netlist->gates[i]);
     }
-
+    vector<vector<Node *>> layers;
+    for (auto item : groups)
+    {
+        layers.emplace_back(item.second);
+    }
+    groups.clear();
     if (netlist->properties.find(LAYERS) != netlist->properties.end())
     {
         WARN_Fout("The netlist '" + netlist->name + "' has LAYERS property! in util.path_balance!");
@@ -557,14 +438,8 @@ bool Util::path_balance(Netlist *netlist)
     }
     else
     {
-        netlist->properties.insert(make_pair(LAYERS, make_shared<Field_2V<Node *>>()));
+        netlist->properties.insert(make_pair(LAYERS, make_shared<Field_2V<Node *>>(layers)));
     }
-    auto &layers = dynamic_pointer_cast<Field_2V<Node *>>(netlist->properties[LAYERS])->get_value();
-    for (auto item : groups)
-    {
-        layers.emplace_back(item.second);
-    }
-    groups.clear();
 
     return path_balanced;
 }
