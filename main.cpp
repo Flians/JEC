@@ -32,14 +32,13 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
 
     /* simplify the graph */
     startTime = clock();
-    vector<vector<Node *> > layers;
-    miter.path_balance(layers);
+    Util::path_balance(&miter);
     if (merge)
-        times[3] = miter.merge_nodes_between_networks(layers);
+        times[3] = Util::merge_nodes_between_networks(&miter);
     endTime = clock();
     times[1] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
     cout << "The simplify time is: " << times[1] << " S" << endl;
-
+    vector<vector<Node *> > &layers = dynamic_pointer_cast<Field_2V<Node*>>(miter.properties[LAYERS])->get_value();
     /* verify the miter */
     jec jec_(output);
     startTime = clock();

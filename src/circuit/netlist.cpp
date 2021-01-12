@@ -44,6 +44,11 @@ Netlist::~Netlist()
     cout << "The netlist is destroyed!" << endl;
 }
 
+bool Netlist::isEmpty()
+{
+    return this->gates.empty();
+}
+
 void Netlist::print_netlist()
 {
     vector<Node *>::iterator pi = this->gates.begin();
@@ -52,23 +57,6 @@ void Netlist::print_netlist()
     {
         cout << (*pi)->name << " " << GType_Str.at((*pi)->type) << " " << (*pi)->val << endl;
         ++pi;
-    }
-}
-
-void Netlist::clean_spl(bool delete_dff)
-{
-    for (size_t i = 0; i < this->num_gate; ++i)
-    {
-        if (this->gates[i]->type == SPL || this->gates[i]->type == SPL3 || (delete_dff && this->gates[i]->type == DFF))
-        {
-            // maintain the id
-            --this->num_gate;
-            swap(this->gates[i]->id, this->gates[this->num_gate]->id);
-            swap(this->gates[i], this->gates[this->num_gate]);
-            this->delete_node(this->gates[i]);
-            this->gates[i] = nullptr;
-            this->gates.pop_back();
-        }
     }
 }
 
@@ -446,280 +434,13 @@ void Netlist::id_reassign()
     vector<Node *>(this->gates).swap(this->gates);
 }
 
-void Netlist::cycle_break(vector<pair<Node *, Node *>> &reversed)
-{
-    vector<pair<Node *, Node *>>().swap(reversed);
-    /** indegree values and outdegree values for the nodes; mark for the nodes, inducing an ordering of the nodes. */
-    int indeg[this->num_gate] = {0}, outdeg[this->num_gate] = {0}, mark[this->num_gate] = {0};
-    /** list of source nodes and sink nodes. */
-    queue<Node *> sources, sinks;
-    /**
-     * Updates indegree and outdegree values of the neighbors of the given node,
-     * simulating its removal from the graph. the sources and sinks lists are
-     * also updated.
-     * 
-     * @param node node for which neighbors are updated
-     */
-    auto updateNeighbors = [&indeg, &outdeg, &sources, &sinks](const Node *node) {
-        for (Node *src : node->ins)
-        {
-            // exclude self-loops
-            if (node == src)
-            {
-                continue;
-            }
-            int index = src->id;
-            outdeg[index] -= 1;
-            if (outdeg[index] <= 0 && indeg[index] > 0)
-            {
-                sinks.emplace(src);
-            }
-        }
-        for (Node *tar : node->outs)
-        {
-            // exclude self-loops
-            if (node == tar)
-            {
-                continue;
-            }
-            int index = tar->id;
-            indeg[index] -= 1;
-            if (indeg[index] <= 0 && outdeg[index] > 0)
-            {
-                sources.emplace(tar);
-            }
-        }
-    };
-
-    // obtain the indegree and outdegree
-    for (auto node : this->gates)
-    {
-        indeg[node->id] = node->ins.size();
-        outdeg[node->id] = node->outs.size();
-        // collect sources and sinks
-        if (outdeg[node->id] == 0)
-        {
-            sinks.emplace(node);
-        }
-        else if (indeg[node->id] == 0)
-        {
-            sources.emplace(node);
-        }
-    }
-    // next rank values used for sinks and sources (from right and from left)
-    int nextRight = -1, nextLeft = 1;
-
-    // assign marks to all nodes
-    vector<Node *> maxNodes;
-    srand(time(0));
-    size_t unprocessedNodeCount = this->num_gate;
-
-    while (unprocessedNodeCount > 0)
-    {
-        // sinks are put to the right --> assign negative rank, which is later shifted to positive
-        while (!sinks.empty())
-        {
-            Node *sink = sinks.front();
-            sinks.pop();
-            mark[sink->id] = nextRight--;
-            updateNeighbors(sink);
-            unprocessedNodeCount--;
-        }
-
-        // sources are put to the left --> assign positive rank
-        while (!sources.empty())
-        {
-            Node *source = sources.front();
-            sources.pop();
-            mark[source->id] = nextLeft++;
-            updateNeighbors(source);
-            unprocessedNodeCount--;
-        }
-
-        // while there are unprocessed nodes left that are neither sinks nor sources...
-        if (unprocessedNodeCount > 0)
-        {
-            int maxOutflow = INT_MIN;
-
-            // find the set of unprocessed node (=> mark == 0), with the largest out flow
-            for (Node *node : this->gates)
-            {
-                if (mark[node->id] == 0)
-                {
-                    int outflow = outdeg[node->id] - indeg[node->id];
-                    if (outflow >= maxOutflow)
-                    {
-                        if (outflow > maxOutflow)
-                        {
-                            maxNodes.clear();
-                            maxOutflow = outflow;
-                        }
-                        maxNodes.emplace_back(node);
-                    }
-                }
-            }
-
-            // randomly select a node from the ones with maximal outflow and put it left
-            Node *maxNode = maxNodes[rand() % maxNodes.size()];
-            mark[maxNode->id] = nextLeft++;
-            updateNeighbors(maxNode);
-            unprocessedNodeCount--;
-        }
-    }
-
-    // shift negative ranks to positive; this applies to sinks of the graph
-    size_t shiftBase = this->num_gate + 1;
-    for (size_t index = 0; index < this->num_gate; index++)
-    {
-        if (mark[index] < 0)
-        {
-            mark[index] += shiftBase;
-        }
-    }
-
-    // reverse edges that point left
-    for (Node *node : this->gates)
-    {
-        // look at the node's outgoing edges
-        for (Node *tar : node->outs)
-        {
-            if (mark[node->id] > mark[tar->id])
-            {
-                Node *last = nullptr;
-                // no considering the splitters in the cycle
-                while (node->type == SPL || node->type == SPL3)
-                {
-                    if (node->ins.size() == 1)
-                    {
-                        last = node;
-                        node = node->ins[0];
-                    }
-                    else
-                    {
-                        WARN_Fout("The splitter in the cycle has no input!");
-                        last = nullptr;
-                        break;
-                    }
-                }
-                if (last == nullptr)
-                    continue;
-                reversed.emplace_back(make_pair(last, node));
-                // reverse the edge
-                last->outs.erase(find(last->outs.begin(), last->outs.end(), node));
-                node->ins.erase(find(node->ins.begin(), node->ins.end(), last));
-                last->ins.emplace_back(node);
-                node->outs.emplace_back(last);
-            }
-        }
-    }
-}
-
-bool Netlist::path_balance(vector<vector<Node *>> &layers)
-{
-    if (this->num_gate == 0)
-        return true;
-    double INTERVAL = 1.0 / this->num_gate;
-    double level[this->num_gate];
-    memset(level, -1, this->num_gate);
-    queue<Node *> bfs;
-    for (auto pi : this->map_PIs)
-    {
-        bfs.emplace(this->gates[pi.second]);
-        level[pi.second] = 0;
-    }
-    while (!bfs.empty())
-    {
-        Node *cur = bfs.front();
-        bfs.pop();
-        for (Node *tar : cur->outs)
-        {
-            if (level[tar->id] == -1 || level[cur->id] >= level[tar->id])
-            {
-                if (tar->containCLK())
-                {
-                    level[tar->id] = floor(level[cur->id]) + 1;
-                }
-                else
-                {
-                    level[tar->id] = level[cur->id] + INTERVAL;
-                }
-                bfs.push(tar);
-            }
-        }
-    }
-    double maxLL = 0;
-    for (auto po : this->map_POs)
-    {
-        maxLL = max(level[po.second], maxLL);
-        bfs.push(this->gates[po.second]);
-    }
-    while (!bfs.empty())
-    {
-        Node *cur = bfs.front();
-        bfs.pop();
-        for (Node *src : cur->ins)
-        {
-            if (level[src->id] == -1 || level[cur->id] <= level[src->id])
-            {
-                /*
-                if (!layeredGraph.getProperty(InternalProperties.CYCLIC))
-                    System.err.println("\nThere are some wrong in PathBalanceLayer.assignLayers");
-                */
-                if (src->containCLK())
-                {
-                    level[src->id] = floor(level[cur->id]) - (cur->containCLK() ? 1 : 0);
-                }
-                else
-                {
-                    level[src->id] = level[cur->id] - INTERVAL;
-                }
-            }
-            bfs.push(src);
-        }
-        if (cur->type == SPL || cur->type == SPL3)
-        {
-            double minChildLL = DBL_MAX;
-            for (auto tar : cur->outs)
-            {
-                minChildLL = min(minChildLL, level[tar->id]);
-            }
-            level[cur->id] = minChildLL - INTERVAL;
-        }
-    }
-    vector<vector<Node *>>().swap(layers);
-    map<double, vector<Node *>> groups;
-    bool path_balanced = true;
-    for (size_t i = 0; i < this->num_gate; ++i)
-    {
-        for (auto src : this->gates[i]->ins)
-        {
-            if (level[i] - level[src->id] > 1)
-            {
-                WARN_Fout("The path balance condition is not satisfied between node '" + src->name + "' and node '" + this->gates[i]->name + "'!");
-                path_balanced = false;
-            }
-        }
-        if (groups.find(level[i]) == groups.end())
-        {
-            groups.insert(make_pair(level[i], vector<Node *>()));
-        }
-        groups[level[i]].emplace_back(this->gates[i]);
-    }
-    for (auto item : groups)
-    {
-        layers.emplace_back(item.second);
-    }
-    groups.clear();
-    return path_balanced;
-}
-
 Node *Netlist::delete_node(Node *cur)
 {
     if (!cur)
         return nullptr;
     if (cur->ins.empty() && cur->outs.empty() && cur->type == WIRE)
     {
-        cout << "The wire '" << cur->name << "' is useless in netlist.delete_node!" << endl;
+        WARN_Fout("The wire '" + cur->name + "' is useless in netlist.delete_node!");
         delete cur;
         cur = nullptr;
         return nullptr;
@@ -727,7 +448,8 @@ Node *Netlist::delete_node(Node *cur)
     size_t num_ins = cur->ins.size();
     if (num_ins != 1 && !(cur->type != WIRE && num_ins == 2 && cur->ins[0]->type == _CLK))
     {
-        ERROR_Exit_Fout("The node '" + cur->name + "' have none or more one inputs in netlist.delete_node!");
+        WARN_Fout("The node '" + cur->name + "' have none or more one inputs in netlist.delete_node!");
+        return nullptr;
     }
     Node *tin = cur->ins.back();
     if (!cur->outs.empty())
@@ -769,12 +491,17 @@ void Netlist::merge_node(Node *node, Node *repeat)
 {
     if (!node || !repeat)
     {
-        cout << "There are some NULL node in netlist.merge_node!" << endl;
+        WARN_Fout("There is NULL in these two vectors in netlist.merge_node!");
         return;
     }
     if (node == repeat)
     {
-        cout << "Both nodes are the same in netlist.merge_node!" << endl;
+        WARN_Fout("The two nodes are the same in netlist.merge_node!");
+        return;
+    }
+    if (node->ins.size() != repeat->ins.size() || Util::vectors_intersection(node->ins, repeat->ins).size() != node->ins.size())
+    {
+        WARN_Fout("The two nodes do not have the same inputs, so they cannot be merged in netlist.merge_node!");
         return;
     }
     for (auto &out : repeat->outs)
@@ -805,86 +532,4 @@ void Netlist::merge_node(Node *node, Node *repeat)
     vector<Node *>().swap(repeat->outs);
     delete repeat;
     repeat = nullptr;
-}
-
-int Netlist::merge_nodes_between_networks(vector<vector<Node *>> &layers)
-{
-    if (layers.empty())
-    {
-        cout << "The layers is empty in simplify.reduce_repeat_nodes!" << endl;
-        return 0;
-    }
-    vector<pair<int, int>> position(init_id, {0, 0});
-    vector<Node *> all_node(init_id, nullptr);
-    size_t num_layer = layers.size();
-    for (size_t i = 0; i < num_layer; ++i)
-    {
-        size_t num_node = layers[i].size();
-        for (size_t j = 0; j < num_node; ++j)
-        {
-            position[layers[i][j]->id] = {i, j};
-            all_node[layers[i][j]->id] = layers[i][j];
-        }
-    }
-    int reduce = 0;
-    for (size_t i = 1; i < num_layer - 1; ++i)
-    {
-        size_t num_node = layers[i].size();
-        for (size_t j = 0; j < num_node; ++j)
-        {
-            if (!layers[i][j] || layers[i][j]->ins.empty())
-            {
-                continue;
-            }
-            Roaring same_id;
-            bool flag = false;
-            size_t num_npi = layers[i][j]->ins.size();
-            for (size_t k = 0; k < num_npi; ++k)
-            {
-                if (layers[i][j]->ins[k]->type == _CLK)
-                {
-                    continue;
-                }
-                Roaring tmp;
-                for (auto &iout : layers[i][j]->ins[k]->outs)
-                {
-                    if (iout && iout->type == layers[i][j]->type)
-                    {
-                        if (iout->ins.size() != num_npi)
-                        {
-                            ERROR_Exit_Fout("The number of inputs of the same type of node is different in simplify.merge_nodes_between_networks");
-                        }
-                        tmp.add(iout->id);
-                    }
-                }
-                if (flag)
-                {
-                    same_id &= tmp;
-                }
-                else
-                {
-                    same_id = tmp;
-                    flag = true;
-                }
-            }
-            Roaring::const_iterator it = same_id.begin();
-            while (it != same_id.end())
-            {
-                if (all_node[it.i.current_value] && it.i.current_value != layers[i][j]->id)
-                {
-                    this->merge_node(layers[i][j], all_node[it.i.current_value]);
-                    all_node[it.i.current_value] = nullptr;
-                    layers[position[it.i.current_value].first][position[it.i.current_value].second] = nullptr;
-                    ++reduce;
-                }
-                ++it;
-            }
-        }
-    }
-    vector<Node *>().swap(all_node);
-    vector<pair<int, int>>().swap(position);
-    // reassign the id for all nodes
-    this->id_reassign();
-    std::cout << "The number of INV, BUF, and others reduction is " << reduce << std::endl;
-    return reduce;
 }

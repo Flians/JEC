@@ -1,6 +1,8 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
 
+#include <memory>
+#include <algorithm>
 #include <roaring.hh>
 #include "circuit/node.h"
 #include "circuit/netlist.h"
@@ -19,6 +21,9 @@ private:
 public:
     /** remove duplicate nodes */
     static void unique_element_in_vector(vector<Node *> &v);
+
+    /** intersection of two vectors */
+    static vector<Node *> vectors_intersection(vector<Node *> v1,vector<Node *> v2);
 
     /** clean vector<*>, and release the space */
     template <typename T = Node>
@@ -50,6 +55,40 @@ public:
      * @return the miter
      */
     static Netlist *make_miter(Netlist *&golden, Netlist *&revised);
+
+    /** 
+     * delete all splitters, and set properties[CLEAN_SPL] = true.
+     * @param netlist the pointer of the netlist
+     * @param delete_dff if delete_dff is true, delete all DFFs, and set properties[CLEAN_DFF] = true.
+     */
+    static void clean_spl(Netlist *netlist, bool delete_dff = false);
+
+    /** 
+     * merge equivalent nodes 
+     * @param netlist the pointer of the netlist
+     * @return the number of nodes to be merged
+     */
+    static int merge_nodes_between_networks(Netlist *netlist);
+
+    /**
+     * break the cycles, and store the reversed edge into properties[CYCLE]
+     * @param netlist the pointer of the netlist
+     */
+    static void cycle_break(Netlist *netlist);
+
+    /**
+     * restore the cycles, and restore the reversed edge from properties[CYCLE]
+     * @param netlist the pointer of the netlist
+     */
+    static void cycle_restore(Netlist *netlist);
+
+    /**
+     * calculate the logic level of each node, and judge whether the netlist is path balanced
+     * store the layers group by the logic level into properties[LAYERS]
+     * @param netlist the pointer of the netlist
+     * @return whether the netlist is path balanced
+     */
+    static bool path_balance(Netlist *netlist);
 };
 
 #endif

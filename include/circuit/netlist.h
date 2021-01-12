@@ -8,10 +8,10 @@
 #include <cstdlib>
 #include "util/util.h"
 #include "util/libstring.h"
+#include "util/_properties.h"
 
-enum PROPERTY {
-    CYCLE,
-};
+enum PROPERTY;
+class FieldInterface;
 
 class Netlist
 {
@@ -21,7 +21,7 @@ public:
     vector<Node *> gates;
     std::unordered_map<std::string, int> map_PIs;
     std::unordered_map<std::string, int> map_POs;
-    std::unordered_map<PROPERTY, void*> properties;
+    std::unordered_map<PROPERTY, std::shared_ptr<FieldInterface>> properties;
 
 public:
     // make an empty netlist
@@ -35,34 +35,33 @@ public:
     ~Netlist();
 
     /**
+     * determine if the netlist is empty
+     */
+    bool isEmpty();
+
+    /**
      * print the netlist
      */
     void print_netlist();
-
-    /** 
-     * delete all splitters. 
-     * if delete_dff is true, delete all DFFs
-     */
-    void clean_spl(bool delete_dff = false);
 
     /** 
      * delete all useless nodes whose in-degree or out-degree is 0 except I/Os
      */
     void clean_useless_nodes();
 
-    void cycle_break(vector<pair<Node *, Node *>> &reversed);
-
     /**
-     *  calculate the logic level of each node, and judge whether the netlist is path balanced
-     * @return the layers group by the logic level
+     * delete the node whose in-degree = 1 except the clk input
+     * @return its non-clock parent node
      */
-    bool path_balance(vector<vector<Node *>> &layers);
-
-    /** 
-     * merge equivalent  nodes 
-     * @return the number of nodes to be merged
+    Node *delete_node(Node *node);
+    /**
+     * merge two nodes
      */
-    int merge_nodes_between_networks(vector<vector<Node *>> &layers);
+    void merge_node(Node *node, Node *repeat);
+    /**
+     * reassign id of each node, and assign ids to I/Os first
+     */
+    void id_reassign();
 
 private:
     /** parse a port of the Node */
@@ -75,19 +74,6 @@ private:
      * parse two netlist files, and make a miter for them
      */
     void make_miter(ifstream &golden, ifstream &revised);
-    /**
-     * reassign id of each node, and assign ids to I/Os first
-     */
-    void id_reassign();
-    /**
-     * delete the node whose in-degree = 1 except the clk input
-     * @return its non-clock parent node
-     */
-    Node *delete_node(Node *node);
-    /**
-     * merge two nodes
-     */
-    void merge_node(Node *node, Node *repeat);
 };
 
 #endif

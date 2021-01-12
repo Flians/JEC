@@ -93,5 +93,6 @@
     "C_Cpp.default.intelliSenseMode": "gcc-x64",
     "C_Cpp.default.cppStandard": "c++11",
     "C_Cpp.default.cStandard": "c99",
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "editor.formatOnSave": true,
 }
