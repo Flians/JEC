@@ -358,7 +358,7 @@ void Netlist::parse_netlist(ifstream &in, bool is_golden)
     in.seekg(0, std::ios::beg).read(&buffer[0], static_cast<std::streamsize>(buffer.size()));
     stringstream f_input;
     f_input.str(buffer);
-    this->parse_netlist(f_input);
+    this->parse_netlist(f_input, is_golden);
     buffer.clear();
     f_input.clear();
 }
@@ -373,7 +373,7 @@ void Netlist::make_miter(ifstream &golden, ifstream &revised)
         this->gates[po.second]->type = _EXOR;
     }
     vector<Node *>(this->gates).swap(this->gates);
-    this->num_gate = this->gates.size();
+    this->update_num_gates();
 }
 
 Node *Netlist::delete_node(Node *cur)
