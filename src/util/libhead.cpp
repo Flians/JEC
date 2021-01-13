@@ -1,11 +1,11 @@
-#include "libhead.h"
+#include "util/libhead.h"
 
 /* initial */
 size_t init_id = 0;
-std::unordered_map<string, GType> Str_GType = {
+const std::unordered_map<string, GType> Str_GType = {
     {"constant", _CONSTANT},
-    {"input", IN},
-    {"output", OUT},
+    {"input", _IN},
+    {"output", _OUT},
     {"wire", WIRE},
 
     {"jand", AND},
@@ -36,10 +36,10 @@ std::unordered_map<string, GType> Str_GType = {
     {"module", _MODULE},
     {"undefined", _UNDEFINED}};
 
-std::unordered_map<GType, string, EnumClassHash> GType_Str = {
+const std::unordered_map<GType, string, EnumClassHash> GType_Str = {
     {_CONSTANT, "constant"},
-    {IN, "input"},
-    {OUT, "output"},
+    {_IN, "input"},
+    {_OUT, "output"},
     {WIRE, "wire"},
     {AND, "and"},
     {NAND, "nand"},
@@ -60,7 +60,7 @@ std::unordered_map<GType, string, EnumClassHash> GType_Str = {
     {_MODULE, "module"},
     {_UNDEFINED, "undefined"}};
 
-std::unordered_map<Value, string, EnumClassHash> Const_Str = {
+const std::unordered_map<Value, string, EnumClassHash> Const_Str = {
     {L, "1'b0"},
     {H, "1'b1"},
     {X, "1'bx"}};

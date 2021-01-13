@@ -1,4 +1,4 @@
-#include "libfile.h"
+#include "util/libfile.h"
 
 bool Libfile::getAllFiles(const string &path, vector<string> &files)
 {
@@ -6,7 +6,7 @@ bool Libfile::getAllFiles(const string &path, vector<string> &files)
         return false;
     }
 
-#ifdef WIN32
+#ifdef WIN
 	long   hFile = 0;
 	struct _finddata_t fileinfo;
 	string p;
@@ -17,7 +17,7 @@ bool Libfile::getAllFiles(const string &path, vector<string> &files)
 			if ((fileinfo.attrib &  _A_SUBDIR))
 			{
 				if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
-					getFiles(p.assign(path).append("\\").append(fileinfo.name), files);
+					getAllFiles(p.assign(path).append("\\").append(fileinfo.name), files);
 			}
 			else
 			{

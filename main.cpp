@@ -1,8 +1,6 @@
-#include "include/ec/cec.h"
-#include "include/ec/jec.h"
-#include "include/ec/simplify.h"
-#include "include/util/parser.h"
-#include "include/util/libfile.h"
+#include "circuit/netlist.h"
+#include "ec/cec.h"
+#include "ec/jec.h"
 #include <iomanip>
 
 using namespace std;
@@ -25,22 +23,21 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
 {
     vector<double> times(4, 0.0);
     clock_t startTime, endTime;
-    /* parse Verilog files */
-    parser miter;
     startTime = clock();
-    miter.parse(golden, revise);
-    miter.clean_wires();
-    miter.clean_spl();
+    /* parse Verilog files */
+    Netlist miter(golden, revise);
     endTime = clock();
     times[0] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
     cout << "The parsing time is: " << times[0] << " S" << endl;
 
     /* simplify the graph */
-    simplify sim;
     startTime = clock();
-    sim.id_reassign_and_layered(miter.PIs, miter.POs);
+    if (!Util::path_balance(&miter))
+    {
+        WARN_Fout("The netlist '" + miter.name + "' is not path_balanced!");
+    }
     if (merge)
-        times[3] = sim.merge_nodes_between_networks();
+        times[3] = miter.merge_nodes_between_networks();
     endTime = clock();
     times[1] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
     cout << "The simplify time is: " << times[1] << " S" << endl;
@@ -50,22 +47,19 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
     startTime = clock();
     switch (smt)
     {
-    case _FSM:
-        jec_.evaluate_from_PIs_to_POs(sim.get_layers());
-        break;
+#ifndef WIN
     case _OPENSMT:
-#if __linux__ || __unix__
-        jec_.evaluate_opensmt(sim.get_layers(), incremental);
+        jec_.evaluate_opensmt(&miter, incremental);
         break;
-#endif
     case _CONE:
-#if __linux__ || __unix__
-        jec_.evaluate_min_cone(sim.get_layers());
+        jec_.evaluate_min_cone(&miter);
+        break;
+    case _CVC4:
+        jec_.evaluate_cvc4(&miter, incremental);
         break;
 #endif
     default:
-        jec_.evaluate_cvc4(sim.get_layers(), incremental);
-        break;
+        jec_.evaluate_from_PIs_to_POs(&miter);
     }
     endTime = clock();
     times[2] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
@@ -92,8 +86,7 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
         // "log2",
         "max",
         // "multiplier",
-        "sin"
-    };
+        "sin"};
     int patch = 100;
     size_t num_case = cases.size();
     vector<vector<double>> avg(num_case, vector<double>(4, 0.0));

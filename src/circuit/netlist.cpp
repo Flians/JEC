@@ -1,8 +1,8 @@
-#include "netlist.h"
+#include "circuit/netlist.h"
 
 Netlist::Netlist()
 {
-    this->name = GType_Str[_UNDEFINED];
+    this->name = GType_Str.at(_UNDEFINED);
     this->num_gate = 0;
 }
 
@@ -44,14 +44,6 @@ Netlist::~Netlist()
     cout << "The netlist is destroyed!" << endl;
 }
 
-void Netlist::clean_wires(std::unordered_map<std::string, Node *> &wires)
-{
-    for (auto &item : wires) {
-        Netlist::delete_node(item.second);
-    }
-    wires.clear();
-}
-
 void Netlist::parse_inport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires)
 {
     Node *port = nullptr;
@@ -68,17 +60,17 @@ void Netlist::parse_inport(Node *g, const string &item, const string &line, cons
         int index = item[3] - '0';
         if (index > 2)
             index = 2;
-        port = new Node(Const_Str[(Value)index], _CONSTANT, (Value)index);
+        port = new Node(Const_Str.at((Value)index), _CONSTANT, this->num_gate++, (Value)index);
         this->gates.emplace_back(port);
-        this->map_PIs[port->name] = port->id;
+        this->map_PIs.insert(make_pair(port->name, port->id));
     }
     else
     {
-        error_fout("There is a undefined input port '" + item + "' in netlist.parse_inport for " + line);
+        ERROR_Exit_Fout("There is a undefined input port '" + item + "' in netlist.parse_inport for " + line);
     }
     port->outs.emplace_back(g);
     g->ins.emplace_back(port);
-    if (port->type == CLK)
+    if (port->type == _CLK)
     {
         swap(g->ins.front(), g->ins.back());
     }
@@ -97,104 +89,10 @@ void Netlist::parse_outport(Node *g, const string &item, const string &line, con
     }
     else
     {
-        error_fout("There is a undefined output port '" + item + "' in netlist.parse_outport for " + line);
+        ERROR_Exit_Fout("There is a undefined output port '" + item + "' in netlist.parse_outport for " + line);
     }
     port->ins.emplace_back(g);
     g->outs.emplace_back(port);
-}
-
-Node *Netlist::delete_node(Node *cur)
-{
-    if (!cur)
-        return nullptr;
-    if (cur->ins.empty() && cur->outs.empty() && cur->type == WIRE)
-    {
-        // cout << cur->name << " Wire is useless in delete_node!" << endl;
-        delete cur;
-        cur = nullptr;
-        return nullptr;
-    }
-    size_t num_ins = cur->ins.size();
-    if (num_ins != 1 && !(num_ins == 2 && cur->ins[0]->type == CLK))
-    {
-        error_fout(cur->name + " Node have none or more one inputs in delete_node!");
-    }
-    Node *tin = num_ins == 2 ? cur->ins.back() : cur->ins.front();
-    if (!cur->outs.empty())
-    {
-        vector<Node *>::iterator it = cur->outs.begin();
-        vector<Node *>::iterator it_end = cur->outs.end();
-        while (it != it_end)
-        {
-            vector<Node *>::iterator temp_in = (*it)->ins.begin();
-            vector<Node *>::iterator temp_in_end = (*it)->ins.end();
-            bool flag = false;
-            while (temp_in != temp_in_end)
-            {
-                if (cur == (*temp_in))
-                {
-                    (*temp_in) = tin;
-                    flag = true;
-                }
-                ++temp_in;
-            }
-            if (flag)
-            {
-                tin->outs.emplace_back(*it);
-            }
-            else
-            {
-                error_fout("There are some wrong in" + cur->name);
-            }
-            ++it;
-        }
-        vector<Node *>().swap(cur->outs);
-    }
-    delete cur;
-    cur = nullptr;
-    return tin;
-}
-
-void Netlist::merge_node(Node *node, Node *repeat)
-{
-    if (!node || !repeat)
-    {
-        cout << "There are some NULL node in libhead.merge_node!" << endl;
-        return;
-    }
-    if (node == repeat)
-    {
-        cout << "Both nodes are the same in libhead.merge_node!" << endl;
-        return;
-    }
-    for (auto &out : repeat->outs)
-    {
-        // grandson.ins.push(son)
-        vector<Node *>::iterator temp_in = out->ins.begin();
-        vector<Node *>::iterator temp_in_end = out->ins.end();
-        bool flag = false;
-        while (temp_in != temp_in_end)
-        {
-            if (repeat == (*temp_in))
-            {
-                (*temp_in) = node;
-                flag = true;
-            }
-            ++temp_in;
-        }
-        if (flag)
-        {
-            // son.outs.push(grandson)
-            node->outs.emplace_back(out);
-        }
-        else
-        {
-            cout << "repeat can't be found in the inputs of repeat's outputs in libhead.merge_node!" << endl;
-        }
-    }
-    vector<Node *>().swap(repeat->outs);
-    delete repeat;
-    repeat = nullptr;
 }
 
 /** parse the netlist */
@@ -217,7 +115,9 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
             {
                 string tl;
                 if (!getline(in, tl))
-                    return;
+                {
+                    break;
+                }
                 line += tl;
             }
             continue;
@@ -227,7 +127,9 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
         {
             string tl;
             if (!getline(in, tl))
-                return;
+            {
+                break;
+            }
             line += tl;
         }
         string::const_iterator iterStart = line.begin();
@@ -246,7 +148,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                 int rp = item.find_last_of(']');
                 if (lp == -1 || rp == -1 || lp >= rp)
                 {
-                    error_fout("There are some troubles in netlist.cpp for multiple bits: " + line);
+                    ERROR_Exit_Fout("There are some troubles in netlist.parse_netlist for multiple bits: " + line);
                 }
                 bits_end = atoi(item.substr(lp + 1, mp - lp).c_str());
                 bits_begin = atoi(item.substr(mp + 1, rp - mp).c_str());
@@ -256,30 +158,32 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
             }
             if (Str_GType.find(item) != Str_GType.end())
             {
-                GType nt = Str_GType[item];
+                GType nt = Str_GType.at(item);
                 switch (nt)
                 {
                 case _MODULE:
                 {
-                    if (regex_search(iterStart, iterEnd, match, pattern)) 
+                    if (!regex_search(iterStart, iterEnd, match, pattern))
                     {
-                        item = match[0];
-                        iterStart = match[0].second;;
-                    } else
-                    {
-                        error_fout("There are some troubles in netlist.cpp for module: " + line);
+                        ERROR_Exit_Fout("There are some troubles in netlist.parse_netlist for MODULE: " + line);
                     }
-                    if (is_golden) {
+                    item = match[0];
+                    iterStart = match[0].second;
+                    if (is_golden)
+                    {
                         this->name = item;
-                    } else {
-                        this->name += "_miter_" + item;
+                    }
+                    else
+                    {
+                        this->name.append("_miter_").append(item);
                     }
                     // int io_num = count(iterStart, iterEnd, ',');
                     break;
                 }
-                case IN:
+                case _IN:
                 {
-                    if (!is_golden) continue;
+                    if (!is_golden)
+                        continue;
                     while (regex_search(iterStart, iterEnd, match, pattern))
                     {
                         item = match[0];
@@ -288,28 +192,29 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                this->gates.emplace_back(make_unique<Node>(item + "[" + to_string(i) + "]", IN, X, this->num_gate));
-                                this->map_PIs[this->gates.back()->name] = this->num_gate++;
+                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", _IN, this->num_gate));
+                                this->map_PIs.insert(make_pair(this->gates.back()->name, this->num_gate++));
                             }
                         }
                         else
                         {
-                            this->gates.emplace_back(make_unique<Node>(item, IN, X, this->num_gate));
-                            this->map_PIs[item] = this->num_gate++;
-                            if (item.find("clk") != string::npos) {
-                                
-                                this->gates.back()->type = CLK;
+                            this->gates.emplace_back(new Node(item, _IN, this->num_gate));
+                            this->map_PIs.insert(make_pair(this->gates.back()->name, this->num_gate++));
+                            if (item.find("clk") != string::npos)
+                            {
+                                this->gates.back()->type = _CLK;
                                 swap(this->map_PIs[item], this->map_PIs[this->gates.front()->name]);
                                 swap(this->gates.front()->id, this->gates.back()->id);
                                 swap(this->gates.front(), this->gates.back());
-                            }                            
+                            }
                         }
                     }
                     break;
                 }
-                case OUT:
+                case _OUT:
                 {
-                    if (!is_golden) continue;
+                    if (!is_golden)
+                        continue;
                     while (regex_search(iterStart, iterEnd, match, pattern))
                     {
                         item = match[0];
@@ -318,14 +223,14 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                this->gates.emplace_back(make_unique<Node>(item + "[" + to_string(i) + "]", _EXOR, X, this->num_gate));
-                                this->map_POs[this->gates.back()->name] = this->num_gate++;
+                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", _OUT, this->num_gate));
+                                this->map_POs.insert(make_pair(this->gates.back()->name, this->num_gate++));
                             }
                         }
                         else
                         {
-                            this->gates.emplace_back(make_unique<Node>(item, _EXOR, X, this->num_gate));
-                            this->map_POs[this->gates.back()->name] = this->num_gate++;
+                            this->gates.emplace_back(new Node(item, _OUT, this->num_gate));
+                            this->map_POs.insert(make_pair(this->gates.back()->name, this->num_gate++));
                         }
                     }
                     break;
@@ -341,36 +246,39 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
                                 string bitN = item + "[" + to_string(i) + "]";
-                                if (wires.find(bitN) != wires.end()) {
-                                    error_fout("The wire '" + bitN + "' is repeatedly defined in netlist.parse.netlist!");
+                                if (wires.find(bitN) != wires.end())
+                                {
+                                    ERROR_Exit_Fout("The wire '" + bitN + "' is repeatedly defined in netlist.parse_netlist!");
                                 }
-                                if (this->map_PIs.find(bitN) == this->map_PIs.end() && this->map_POs.find(bitN) == this->map_POs.end()) {
-                                    wires[bitN] = new Node(bitN, WIRE, X, this->num_gate++);
-                                } 
+                                if (this->map_PIs.find(bitN) == this->map_PIs.end() && this->map_POs.find(bitN) == this->map_POs.end())
+                                {
+                                    wires.insert(make_pair(bitN, new Node(bitN, WIRE)));
+                                }
                             }
                         }
                         else
                         {
-                            if (this->map_PIs.find(item) == this->map_PIs.end() && this->map_POs.find(item) == this->map_POs.end()) {
-                                if (wires.find(item) != wires.end()) {
-                                    error_fout("The wire '" + item + "' is repeatedly defined in netlist.parse.netlist!");
-                                }
-                                wires[item] = new Node(item, WIRE, X, this->num_gate++);
+                            if (wires.find(item) != wires.end())
+                            {
+                                ERROR_Exit_Fout("The wire '" + item + "' is repeatedly defined in netlist.parse_netlist!");
+                            }
+                            if (this->map_PIs.find(item) == this->map_PIs.end() && this->map_POs.find(item) == this->map_POs.end())
+                            {
+                                wires.insert(make_pair(item, new Node(item, WIRE)));
                             }
                         }
-                        
                     }
                     break;
                 }
                 default:
                 {
-                    Node *g = new Node();
-                    g->type = nt;
-                    if (regex_search(iterStart, iterEnd, match, pattern))
+                    if (!regex_search(iterStart, iterEnd, match, pattern))
                     {
-                        g->name = match[0];
-                        iterStart = match[0].second;
+                        ERROR_Exit_Fout("There are some troubles in netlist.parse_netlist for GATE definition: " + line);
                     }
+                    Node *g = new Node(match[0], nt, this->num_gate++);
+                    this->gates.emplace_back(g);
+                    iterStart = match[0].second;
                     // cout << "gate: " << g->name << endl;
                     int index_port = 0;
                     // ports: index_port = 0 -> output, index_port > 0 -> input
@@ -382,7 +290,10 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         if (item[0] == '.')
                         {
                             bool flag = Libstring::startsWith(item, ".dout");
-                            regex_search(iterStart, iterEnd, match, pattern);
+                            if (!regex_search(iterStart, iterEnd, match, pattern))
+                            {
+                                ERROR_Exit_Fout("There are some troubles in netlist.parse_netlist for PORT definition: " + line);
+                            }
                             item = match[0];
                             iterStart = match[0].second;
                             if (flag)
@@ -411,19 +322,34 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                     break;
                 }
                 }
-            } else {
-                error_fout("There key word '" + item + "' is unknown in parser.parse_verilog: " + line);
+            }
+            else
+            {
+                // read single module
+                if (item == "endmodule")
+                    break;
+                ERROR_Exit_Fout("There key word '" + item + "' is unknown in netlist.parse_netlist: " + line);
             }
         }
     }
-    this->clean_wires(wires);
+    // clean all wires
+    for (auto &item : wires)
+    {
+        if (item.second->outs.size() > 1)
+        {
+            cout << "The netlist '" << this->name << "' has multi fan-outs!" << endl;
+        }
+        this->delete_node(item.second);
+    }
+    wires.clear();
+    this->id_reassign();
 }
 
 void Netlist::parse_netlist(ifstream &in, bool is_golden)
 {
     if (!in.is_open())
     {
-        error_fout("The netlist can not be open!");
+        ERROR_Exit_Fout("The netlist can not be open!");
     }
     string buffer;
     // clear eof flag first
@@ -432,7 +358,7 @@ void Netlist::parse_netlist(ifstream &in, bool is_golden)
     in.seekg(0, std::ios::beg).read(&buffer[0], static_cast<std::streamsize>(buffer.size()));
     stringstream f_input;
     f_input.str(buffer);
-    this->parse_netlist(f_input);
+    this->parse_netlist(f_input, is_golden);
     buffer.clear();
     f_input.clear();
 }
@@ -441,5 +367,325 @@ void Netlist::make_miter(ifstream &golden, ifstream &revised)
 {
     this->parse_netlist(golden);
     this->parse_netlist(revised, false);
-    /** reassign id */
+    // change the outputs' type into _EXOR
+    for (auto po : this->map_POs)
+    {
+        this->gates[po.second]->type = _EXOR;
+    }
+    vector<Node *>(this->gates).swap(this->gates);
+    this->update_num_gates();
+}
+
+Node *Netlist::delete_node(Node *cur)
+{
+    if (!cur)
+        return nullptr;
+    if (cur->ins.empty() && cur->outs.empty() && cur->type == WIRE)
+    {
+        WARN_Fout("The wire '" + cur->name + "' is useless in netlist.delete_node!");
+        delete cur;
+        cur = nullptr;
+        return nullptr;
+    }
+    size_t num_ins = cur->ins.size();
+    if (num_ins != 1 && !(cur->type != WIRE && num_ins == 2 && cur->ins[0]->type == _CLK))
+    {
+        WARN_Fout("The node '" + cur->name + "' have none or more one inputs in netlist.delete_node!");
+        return nullptr;
+    }
+    Node *tin = cur->ins.back();
+    if (!cur->outs.empty())
+    {
+        vector<Node *>::iterator it = cur->outs.begin();
+        vector<Node *>::iterator it_end = cur->outs.end();
+        while (it != it_end)
+        {
+            vector<Node *>::iterator temp_in = (*it)->ins.begin();
+            vector<Node *>::iterator temp_in_end = (*it)->ins.end();
+            bool flag = false;
+            while (temp_in != temp_in_end)
+            {
+                if (cur == (*temp_in))
+                {
+                    (*temp_in) = tin;
+                    flag = true;
+                }
+                ++temp_in;
+            }
+            if (flag)
+            {
+                tin->outs.emplace_back(*it);
+            }
+            else
+            {
+                ERROR_Exit_Fout("There are some troubles in netlist.delete_node for the node: " + cur->name);
+            }
+            ++it;
+        }
+        vector<Node *>().swap(cur->outs);
+    }
+    delete cur;
+    cur = nullptr;
+    return tin;
+}
+
+bool Netlist::merge_node(Node *node, Node *repeat)
+{
+    if (!node || !repeat)
+    {
+        WARN_Fout("There is NULL in these two vectors in netlist.merge_node!");
+        return 0;
+    }
+    if (node == repeat)
+    {
+        WARN_Fout("The two nodes are the same in netlist.merge_node!");
+        return 0;
+    }
+    if (node->ins.size() != repeat->ins.size() || Util::vectors_intersection(node->ins, repeat->ins).size() != node->ins.size())
+    {
+        WARN_Fout("The two nodes do not have the same inputs, so they cannot be merged in netlist.merge_node!");
+        return 0;
+    }
+    for (auto &out : repeat->outs)
+    {
+        // grandson.ins.push(son)
+        vector<Node *>::iterator temp_in = out->ins.begin();
+        vector<Node *>::iterator temp_in_end = out->ins.end();
+        bool flag = false;
+        while (temp_in != temp_in_end)
+        {
+            if (repeat == (*temp_in))
+            {
+                (*temp_in) = node;
+                flag = true;
+            }
+            ++temp_in;
+        }
+        if (flag)
+        {
+            // son.outs.push(grandson)
+            node->outs.emplace_back(out);
+        }
+        else
+        {
+            WARN_Fout("The repeated node '" + repeat->name + "' can't be found in the inputs of it's outputs in netlist.merge_node!");
+        }
+    }
+    vector<Node *>().swap(repeat->outs);
+    delete repeat;
+    repeat = nullptr;
+    return 1;
+}
+
+size_t Netlist::get_num_gates()
+{
+    return this->num_gate;
+}
+
+void Netlist::update_num_gates()
+{
+    this->num_gate = this->gates.size();
+}
+
+bool Netlist::isEmpty()
+{
+    return this->gates.empty();
+}
+
+void Netlist::print_netlist()
+{
+    vector<Node *>::iterator pi = this->gates.begin();
+    vector<Node *>::iterator pi_end = this->gates.end();
+    while (pi != pi_end)
+    {
+        cout << (*pi)->name << " " << GType_Str.at((*pi)->type) << " " << (*pi)->val << endl;
+        ++pi;
+    }
+}
+
+void Netlist::id_reassign()
+{
+    if (this->isEmpty())
+    {
+        return;
+    }
+    sort(this->gates.begin(), this->gates.end(), [](Node *a, Node *b) {
+        if (a && b)
+        {
+            return a->type < b->type;
+        }
+        else
+        {
+            return a != nullptr;
+        }
+    });
+    this->map_PIs.clear();
+    this->map_POs.clear();
+    while (!this->gates.back())
+    {
+        --this->num_gate;
+        this->gates.pop_back();
+    }
+
+    for (size_t i = 0; i < this->num_gate; ++i)
+    {
+        if (this->gates[i])
+        {
+            this->gates[i]->id = i;
+            if (this->gates[i]->type <= _IN)
+            {
+                this->map_PIs[this->gates[i]->name] = i;
+            }
+            else if (this->gates[i]->type <= _OUT)
+            {
+                this->map_POs[this->gates[i]->name] = i;
+            }
+        }
+        else
+        {
+            this->gates[--this->num_gate]->id = i;
+            this->gates[i] = this->gates[this->num_gate];
+            this->gates.pop_back();
+        }
+    }
+    vector<Node *>(this->gates).swap(this->gates);
+}
+
+void Netlist::clean_useless_nodes()
+{
+}
+
+void Netlist::clean_spl(bool delete_dff)
+{
+    bool flag_spl = false, flag_dff = false;
+    for (size_t i = 0; i < num_gate; ++i)
+    {
+        if (this->gates[i]->type == SPL || this->gates[i]->type == SPL3 || (delete_dff && this->gates[i]->type == DFF))
+        {
+            // maintain the id
+            --num_gate;
+            if (this->gates[i]->type == DFF)
+            {
+                flag_dff = true;
+            }
+            else
+            {
+                flag_spl = true;
+            }
+            swap(this->gates[i]->id, this->gates[num_gate]->id);
+            swap(this->gates[i], this->gates[num_gate]);
+            this->delete_node(this->gates[i]);
+            this->gates[i] = nullptr;
+            this->gates.pop_back();
+        }
+    }
+    if (flag_spl)
+    {
+        this->properties[CLEAN_SPL] = make_shared<Field<bool>>(true);
+    }
+    if (flag_dff)
+    {
+        this->properties[CLEAN_DFF] = make_shared<Field<bool>>(true);
+    }
+}
+
+int Netlist::merge_nodes_between_networks()
+{
+    if (this->isEmpty())
+    {
+        WARN_Fout("The netlist is empty in util.merge_nodes_between_networks!");
+        return 0;
+    }
+    if (this->properties.find(LAYERS) == this->properties.end())
+    {
+        INFO_Fout("The layers is empty in util.merge_nodes_between_networks, and now build the layers.");
+        if (!Util::path_balance(this))
+        {
+            WARN_Fout("The netlist is path-balanced in util.merge_nodes_between_networks!");
+        }
+    }
+    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(this->properties[LAYERS])->get_value();
+    vector<pair<size_t, size_t>> position(this->num_gate, {0, 0});
+    size_t num_layer = layers.size();
+    for (size_t i = 0; i < num_layer; ++i)
+    {
+        size_t num_node = layers[i].size();
+        for (size_t j = 0; j < num_node; ++j)
+        {
+            position[layers[i][j]->id] = {i, j};
+        }
+    }
+    int reduce = 0;
+    for (size_t i = 1; i < num_layer - 1; ++i)
+    {
+        size_t num_node = layers[i].size();
+        for (size_t j = 0; j < num_node; ++j)
+        {
+            if (!layers[i][j] || layers[i][j]->ins.empty())
+            {
+                continue;
+            }
+            Roaring same_id;
+            bool flag = false;
+            size_t num_npi = layers[i][j]->ins.size();
+            for (size_t k = 0; k < num_npi; ++k)
+            {
+                if (layers[i][j]->ins[k]->type == _CLK)
+                {
+                    continue;
+                }
+                Roaring tmp;
+                for (auto &iout : layers[i][j]->ins[k]->outs)
+                {
+                    if (iout && iout->type == layers[i][j]->type && iout != layers[i][j])
+                    {
+                        if (iout->ins.size() != num_npi)
+                        {
+                            WARN_Fout("The number of inputs of the same type of node is different in netlist.merge_nodes_between_networks");
+                            continue;
+                        }
+                        tmp.add(iout->id);
+                    }
+                }
+                if (flag)
+                {
+                    same_id &= tmp;
+                }
+                else
+                {
+                    same_id = tmp;
+                    flag = true;
+                }
+            }
+            Roaring::const_iterator it = same_id.begin();
+            while (it != same_id.end())
+            {
+                if (this->gates[it.i.current_value])
+                {
+                    if (this->merge_node(layers[i][j], this->gates[it.i.current_value]))
+                    {
+                        this->gates[it.i.current_value] = nullptr;
+                        position[layers[position[it.i.current_value].first].back()->id].second = position[it.i.current_value].second;
+                        layers[position[it.i.current_value].first][position[it.i.current_value].second] = layers[position[it.i.current_value].first].back();
+                        layers[position[it.i.current_value].first].pop_back();
+                        if (position[it.i.current_value].first == i)
+                        {
+                            --num_node;
+                        }
+                        ++reduce;
+                    }
+                    else
+                    {
+                        WARN_Fout("The node '" + this->gates[it.i.current_value]->name + "' can be replaced by the node '" + layers[i][j]->name + "'!");
+                    }
+                }
+                ++it;
+            }
+        }
+    }
+    vector<pair<size_t, size_t>>().swap(position);
+    // reassign the id for all nodes
+    this->id_reassign();
+    std::cout << "The number of INV, BUF, and others reduction is " << reduce << std::endl;
+    return reduce;
 }

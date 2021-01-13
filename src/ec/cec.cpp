@@ -1,4 +1,4 @@
-#include "cec.h"
+#include "ec/cec.h"
 
 cec::cec(const string &path_output) : ec(path_output)
 {
@@ -43,7 +43,7 @@ void cec::evaluate_from_PIs_to_POs(vector<Node *> &PIs)
 {
     if (PIs.empty())
     {
-        error_fout("The vector PIs is empty!");
+        ERROR_Exit_Fout("The vector PIs is empty!");
     }
     if (assign_PIs_value(PIs, 0))
     {

@@ -56,10 +56,12 @@ class CVC4_PUBLIC BitVector
    * platforms (long is 32-bit when compiling 64-bit binaries on
    * Windows but 64-bit on Linux) and to prevent ambiguous overloads.
    */
+  #ifdef CVC4_NEED_INT64_T_OVERLOADS
   BitVector(unsigned size, uint64_t z) : d_size(size), d_value(z)
   {
     d_value = d_value.modByPow2(size);
   }
+  #endif /* CVC4_NEED_INT64_T_OVERLOADS */
 
   BitVector(unsigned size, const BitVector& q)
       : d_size(size), d_value(q.d_value)

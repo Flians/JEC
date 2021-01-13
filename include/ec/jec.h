@@ -3,13 +3,12 @@
 
 #include "ec.h"
 
-#if __linux__ || __unix__
-    #include "opensmt/opensmt2.h"
+#ifndef WIN
+#include <opensmt/opensmt2.h>
+#include <cvc4/cvc4.h>
 #endif
 
-#include "cvc4/cvc4.h"
-
-class jec : public ec
+class jec : virtual public ec
 {
 private:
     // assign values to the i-th element in the PIs
@@ -17,23 +16,25 @@ private:
     // Calculate all nodes according to PIs
     bool evaluate(vector<vector<Node *>> &layers);
     bool evaluate(const vector<Node *> &nodes);
-
+#ifndef WIN
     void build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRef> &record);
-    bool evaluate_opensmt(deque<Node*> &cone);
+    bool evaluate_opensmt(deque<Node *> &cone);
+#endif
+
 public:
     jec(const string &path_output);
     virtual ~jec();
     // evaluate from PIs to POs
-    void evaluate_from_PIs_to_POs(vector<vector<Node *>> &layers);
+    void evaluate_from_PIs_to_POs(Netlist *miter);
     // evaluate from POs to PIs
-    void evaluate_from_POs_to_PIs(vector<vector<Node *>> &layers);
-#if __linux__ || __unix__
+    void evaluate_from_POs_to_PIs(Netlist *miter);
+#ifndef WIN
     // evaluate by using opensmt
-    void evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental = false);
-    void evaluate_min_cone(vector<vector<Node *>> &layers);
-#endif
+    void evaluate_opensmt(Netlist *miter, bool incremental = false);
+    void evaluate_min_cone(Netlist *miter);
     // evaluate by using cvc4
-    void evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental = false);
+    void evaluate_cvc4(Netlist *miter, bool incremental = false);
+#endif
 };
 
 #endif

@@ -14,6 +14,12 @@
 #include <unordered_set>
 #include <memory>
 
+#include "_platform.h"
+
+#ifdef WIN
+#include <Windows.h>
+#endif
+
 #define enumtoCharArr(val) #val
 
 using namespace std;
@@ -32,9 +38,10 @@ struct EnumClassHash
 enum GType
 {
     _CONSTANT = 0,
-    IN,
-    OUT,
-    CLK,
+    _CLK,
+    _IN,
+    _EXOR, // connected to outputs
+    _OUT,
     WIRE,
     AND,
     NAND,
@@ -51,7 +58,6 @@ enum GType
     CB3,
     _HMUX, // _HMUX \U$1 ( .O(\282 ), .I0(1'b1), .I1(\277 ), .S(\281 ));
     _DC,   // _DC \n6_5[9] ( .O(\108 ), .C(\96 ), .D(\107 ));
-    _EXOR,
     _MODULE,
     _UNDEFINED,
     COUNT
@@ -65,9 +71,9 @@ enum Value
 };
 
 extern size_t init_id;
-extern std::unordered_map<string, GType> Str_GType;
-extern std::unordered_map<GType, string, EnumClassHash> GType_Str;
-extern std::unordered_map<Value, string, EnumClassHash> Const_Str;
+extern const std::unordered_map<string, GType> Str_GType;
+extern const std::unordered_map<GType, string, EnumClassHash> GType_Str;
+extern const std::unordered_map<Value, string, EnumClassHash> Const_Str;
 
 /* Global operator overload */
 // and
@@ -162,17 +168,45 @@ inline Value EXOR(const Value &A, const Value &B)
     }
 }
 
-template<typename T, typename... Ts>
-std::unique_ptr<T> make_unique(Ts&&... params)
+template <typename T, typename... Ts>
+std::unique_ptr<T> make_unique(Ts &&... params)
 {
     return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
 }
 
-// show error message
-inline void error_fout(string &&message)
+// show error message and exit
+inline void ERROR_Exit_Fout(string &&message)
 {
-    cerr << "Error: " << message << endl;
+    std::cerr << "ERROR: ";
+#ifdef WIN
+    SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED);
+    std::cerr << message;
+    SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+#else
+    std::cerr << "\033[31m" << message << "\033[0m";
+#endif
+    std::cerr << std::endl;
     exit(-1);
+}
+
+// show warning message
+inline void WARN_Fout(string &&message)
+{
+    std::cerr << "WARN: ";
+#ifdef WIN
+    SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN);
+    std::cerr << message;
+    SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+#else
+    std::cerr << "\033[33m" << message << "\033[0m";
+#endif
+    std::cerr << std::endl;
+}
+
+// show info message
+inline void INFO_Fout(string &&message)
+{
+    cerr << "INFO: " << message << endl;
 }
 
 #endif

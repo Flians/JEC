@@ -1,4 +1,4 @@
-#include "jec.h"
+#include "ec/jec.h"
 
 jec::jec(const string &path_output) : ec(path_output)
 {
@@ -41,7 +41,8 @@ bool jec::assign_PIs_value(vector<vector<Node *>> &layers, size_t i)
 
 bool jec::evaluate(vector<vector<Node *>> &layers)
 {
-    if (layers.empty()) {
+    if (layers.empty())
+    {
         return false;
     }
     size_t len = layers.size() - 1;
@@ -76,14 +77,16 @@ bool jec::evaluate(const vector<Node *> &nodes)
 }
 
 // evaluate from PIs to POs
-void jec::evaluate_from_PIs_to_POs(vector<vector<Node *>> &layers)
+void jec::evaluate_from_PIs_to_POs(Netlist *miter)
 {
-    if (layers.empty())
+    if (miter->isEmpty())
     {
-        error_fout("The vector layers is empty!");
+        WARN_Fout("The netlist '" + miter->name + "' is empty!");
+        return;
     }
+    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(miter->properties[LAYERS])->get_value();
     size_t index_beg = 0;
-    if (layers[0][0]->type == CLK)
+    if (layers[0][0]->type == _CLK)
         index_beg = 1;
     // layers[0][0] is clk
     if (assign_PIs_value(layers, index_beg))
@@ -93,19 +96,20 @@ void jec::evaluate_from_PIs_to_POs(vector<vector<Node *>> &layers)
 }
 
 // evaluate from POs to PIs
-void jec::evaluate_from_POs_to_PIs(vector<vector<Node *>> &layers)
+void jec::evaluate_from_POs_to_PIs(Netlist *miter)
 {
 }
 
-#if __linux__ || __unix__
+#ifndef WIN
 // evaluate from PIs to POs
-void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
+void jec::evaluate_opensmt(Netlist *miter, bool incremental)
 {
-    if (layers.empty())
+    if (miter->isEmpty())
     {
-        error_fout("The vector layers is empty!");
+        WARN_Fout("The netlist is empty!");
+        return;
     }
-
+    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(miter->properties[LAYERS])->get_value();
     auto config = std::unique_ptr<SMTConfig>(new SMTConfig());
     const char *msg;
     config->setOption(SMTConfig::o_incremental, SMTOption(incremental), msg);
@@ -113,7 +117,7 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
     MainSolver &mainSolver = osmt.getMainSolver();
     Logic &logic = osmt.getLogic();
 
-    vector<PTRef> nodes(init_id);
+    vector<PTRef> nodes(miter->get_num_gates());
     // layers[0][0] is clk
     for (auto &pi : layers[0])
     {
@@ -121,7 +125,7 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
         {
             nodes[pi->id] = pi->val == L ? logic.getTerm_false() : logic.getTerm_true();
         }
-        else if (pi->type != CLK)
+        else if (pi->type != _CLK)
         {
             nodes[pi->id] = logic.mkBoolVar(pi->name.c_str());
         }
@@ -135,12 +139,12 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
             // layers[i][j]->ins->at(0) is clk
             for (auto &npi : node->ins)
             {
-                if (npi->type != CLK)
+                if (npi->type != _CLK)
                     inputs.push(nodes[npi->id]);
             }
             if (inputs.size() == 0)
             {
-                error_fout("The inputs is empty! in jec.evaluate_opensmt!");
+                ERROR_Exit_Fout("The inputs is empty! in jec.evaluate_opensmt!");
             }
             PTRef res;
             switch (node->type)
@@ -204,7 +208,8 @@ void jec::evaluate_opensmt(vector<vector<Node *>> &layers, bool incremental)
         this->fout << "NEQ" << endl;
         for (auto &pi : layers[0])
         {
-            if (pi->type != CLK) {
+            if (pi->type != _CLK)
+            {
                 ValPair vp = mainSolver.getValue(nodes[pi->id]);
                 this->fout << logic.printTerm(vp.tr) << " " << vp.val << endl;
             }
@@ -232,9 +237,10 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
 {
     if (!cur)
     {
-        error_fout("The current node is NULL in jec.build_equation_dfs!");
+        WARN_Fout("The current node is NULL in jec.build_equation_dfs!");
+        return;
     }
-    if (record.find(cur) != record.end() || cur->type == CLK)
+    if (record.find(cur) != record.end() || cur->type == _CLK)
     {
         return;
     }
@@ -242,7 +248,7 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
     {
         record[cur] = cur->val == L ? logic.getTerm_false() : logic.getTerm_true();
     }
-    else if (cur->type == IN)
+    else if (cur->type == _IN)
     {
         record[cur] = logic.mkBoolVar(cur->name.c_str());
     }
@@ -252,14 +258,14 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
         for (auto &in : cur->ins)
         {
             build_equation_dfs(in, logic, record);
-            if (in->type != CLK)
+            if (in->type != _CLK)
             {
                 inputs.push(record[in]);
             }
         }
         if (inputs.size() == 0)
         {
-            error_fout("The inputs is empty! in jec.build_equation_dfs!");
+            WARN_Fout("The inputs is empty! in jec.build_equation_dfs!");
         }
         PTRef res;
         switch (cur->type)
@@ -293,7 +299,7 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
     }
 }
 
-bool jec::evaluate_opensmt(deque<Node*> &cone)
+bool jec::evaluate_opensmt(deque<Node *> &cone)
 {
     if (cone.empty())
     {
@@ -311,20 +317,23 @@ bool jec::evaluate_opensmt(deque<Node*> &cone)
     unordered_map<Node *, PTRef> nodes;
 
     sstat reslut;
-    int out_len =  cone.size();
+    int out_len = cone.size();
     while (out_len--)
     {
         Node *output = cone.back();
         cone.pop_back();
-        if (output->type != _EXOR) {
+        if (output->type != _EXOR)
+        {
             cone.emplace_front(output);
         }
         build_equation_dfs(output, logic, nodes);
         PTRef assert = logic.mkEq(logic.getTerm_true(), nodes[output]);
         mainSolver.push(assert);
         reslut = mainSolver.check();
-        if (reslut == s_True) {
-            if (output->type == _EXOR) {
+        if (reslut == s_True)
+        {
+            if (output->type == _EXOR)
+            {
                 return false;
             }
             mainSolver.pop();
@@ -332,29 +341,39 @@ bool jec::evaluate_opensmt(deque<Node*> &cone)
             mainSolver.push(assert);
             reslut = mainSolver.check();
             // mainSolver.printFramesAsQuery();
-            if (reslut == s_True) {
-                output->type = IN;
-            } else if (reslut == s_False) {
+            if (reslut == s_True)
+            {
+                output->type = _IN;
+            }
+            else if (reslut == s_False)
+            {
                 output->type = _CONSTANT;
                 output->val = H;
-            } else {
-                error_fout("The result2 is unknown in jec.evaluate_opensmt!");
             }
-        } else if (reslut == s_False) {
+            else
+            {
+                WARN_Fout("The result2 is unknown in jec.evaluate_opensmt!");
+            }
+        }
+        else if (reslut == s_False)
+        {
             output->type = _CONSTANT;
             output->val = L;
-        } else {
-            error_fout("The result is unknown in jec.evaluate_opensmt!");
+        }
+        else
+        {
+            WARN_Fout("The result is unknown in jec.evaluate_opensmt!");
         }
     }
     nodes.clear();
     return true;
 }
 
-void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
+void jec::evaluate_min_cone(Netlist *miter)
 {
     // <level, color>
-    vector<pair<size_t, int>> info(init_id, {0, 0});
+    vector<pair<size_t, int>> info(miter->get_num_gates(), {0, 0});
+    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(miter->properties[LAYERS])->get_value();
     size_t num_level = layers.size();
     for (size_t i = 0; i < num_level; ++i)
     {
@@ -366,25 +385,30 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
     }
     size_t num_pis = layers[0].size();
     // the max number of cones is the size of PIs.
-    vector<deque<Node*>> cones(num_pis);
+    vector<deque<Node *>> cones(num_pis);
     // init cones
     for (size_t i = 0; i < num_pis; ++i)
     {
         info[layers[0][i]->id].second = i;
-        if (layers[0][i]->type != CLK) {
+        if (layers[0][i]->type != _CLK)
+        {
             cones[i].emplace_back(layers[0][i]);
         }
     }
     int smt_id = 0;
     vector<size_t> exor_num(num_pis, 0);
-    for (size_t i = 1; i < num_level; ++i) {
-        for (size_t j = 0; j < num_pis; ++j) {
+    for (size_t i = 1; i < num_level; ++i)
+    {
+        for (size_t j = 0; j < num_pis; ++j)
+        {
             exor_num[j] = 0;
             int cur_len = cones[j].size();
-            while (cur_len--) {
+            while (cur_len--)
+            {
                 Node *cur = cones[j].front();
                 cones[j].pop_front();
-                if (info[cur->id].first >= i || cur->type == _EXOR) {
+                if (info[cur->id].first >= i || cur->type == _EXOR)
+                {
                     cones[j].emplace_back(cur);
                     if (cur->type == _EXOR)
                         ++exor_num[j];
@@ -392,25 +416,33 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                 }
                 for (auto &tout : cur->outs)
                 {
-                    if (info[tout->id].second == -1) {
+                    if (info[tout->id].second == -1)
+                    {
                         info[tout->id].second = j;
                         cones[j].emplace_back(tout);
                         if (tout->type == _EXOR)
                             ++exor_num[j];
-                    } else {
+                    }
+                    else
+                    {
                         size_t old_color = info[tout->id].second;
-                        if (old_color == j) {
+                        if (old_color == j)
+                        {
                             continue;
                         }
-                        while (!cones[old_color].empty()) {
+                        while (!cones[old_color].empty())
+                        {
                             Node *tmp = cones[old_color].front();
                             cones[old_color].pop_front();
                             info[tmp->id].second = j;
-                            if (info[tmp->id].first >= i || tmp->type == _EXOR) {
+                            if (info[tmp->id].first >= i || tmp->type == _EXOR)
+                            {
                                 cones[j].emplace_back(tmp);
                                 if (tmp->type == _EXOR)
                                     ++exor_num[j];
-                            } else {
+                            }
+                            else
+                            {
                                 cones[j].emplace_front(tmp);
                                 ++cur_len;
                             }
@@ -419,12 +451,15 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
                 }
             }
         }
-        for (size_t j = 0; j < num_pis; ++j) {
+        for (size_t j = 0; j < num_pis; ++j)
+        {
             size_t num_node = cones[j].size();
             // evaluate cur_cone
-            if (!cones[j].empty() && ((num_node == 1 && info[cones[j][0]->id].first == i) || exor_num[j] == num_node)) {
+            if (!cones[j].empty() && ((num_node == 1 && info[cones[j][0]->id].first == i) || exor_num[j] == num_node))
+            {
                 cout << ">>> The cone " << (smt_id++) << " is evaluated." << endl;
-                if (!evaluate_opensmt(cones[j])) {
+                if (!evaluate_opensmt(cones[j]))
+                {
                     cout << "The miter is not equivalent." << endl;
                     this->fout << "NEQ" << endl;
                     return;
@@ -433,19 +468,18 @@ void jec::evaluate_min_cone(vector<vector<Node *>> &layers)
         }
     }
     vector<pair<size_t, int>>().swap(info);
-    vector<deque<Node*>>().swap(cones);
+    vector<deque<Node *>>().swap(cones);
     vector<size_t>().swap(exor_num);
     cout << "The miter is equivalent." << endl;
     this->fout << "EQ" << endl;
 }
 
-#endif
-
-void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
+void jec::evaluate_cvc4(Netlist *miter, bool incremental)
 {
-    if (layers.empty())
+    if (miter->isEmpty())
     {
-        error_fout("The vector layers is empty!");
+        WARN_Fout("The netlist'" + miter->name + "' is empty!");
+        return;
     }
 
     CVC4::ExprManager em;
@@ -454,7 +488,8 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
     smt.setTimeLimit(1800000);
     CVC4::Type boolean = em.booleanType();
 
-    vector<CVC4::Expr> nodes(init_id);
+    vector<CVC4::Expr> nodes(miter->get_num_gates());
+    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(miter->properties[LAYERS])->get_value();
     // layers[0][0] is clk
     for (auto &pi : layers[0])
     {
@@ -462,7 +497,7 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
         {
             nodes[pi->id] = pi->val == L ? em.mkConst<bool>(false) : em.mkConst<bool>(true);
         }
-        else if (pi->type != CLK)
+        else if (pi->type != _CLK)
         {
             nodes[pi->id] = em.mkVar(pi->name.c_str(), boolean);
         }
@@ -476,12 +511,12 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
             // layers[i][j]->ins->at(0) is clk
             for (auto &npi : node->ins)
             {
-                if (npi->type != CLK)
+                if (npi->type != _CLK)
                     inputs.emplace_back(nodes[npi->id]);
             }
             if (inputs.size() == 0)
             {
-                error_fout("The inputs is empty! in jec.evaluate_opensmt!");
+                WARN_Fout("The inputs is empty! in jec.evaluate_opensmt!");
             }
             CVC4::Expr res;
             switch (node->type)
@@ -557,3 +592,5 @@ void jec::evaluate_cvc4(vector<vector<Node *>> &layers, bool incremental)
     }
     vector<CVC4::Expr>().swap(nodes);
 }
+
+#endif

@@ -1,4 +1,4 @@
-#include "node.h"
+#include "circuit/node.h"
 
 Node::~Node()
 {
@@ -33,11 +33,36 @@ Node::~Node()
     vector<Node *>().swap(this->outs);
 }
 
+bool Node::containCLK()
+{
+    switch (this->type)
+    {
+    case _CONSTANT:
+    case _IN:
+    case _OUT:
+    case AND:
+    case NAND:
+    case OR:
+    case NOR:
+    case XOR:
+    case XNOR:
+    case INV:
+    case BUF:
+    case DFF:
+    case _HMUX:
+    case _DC:
+    case _EXOR:
+        return true;
+    default:
+        return false;
+    }
+}
+
 Value Node::calculate()
 {
     vector<Node *>::iterator it_ = this->ins.begin();
     vector<Node *>::iterator it_end = this->ins.end();
-    if (it_ != it_end && (*it_)->type == CLK)
+    if (it_ != it_end && (*it_)->type == _CLK)
     {
         ++it_;
     }
@@ -112,12 +137,9 @@ Value Node::calculate()
 
 /** operator overload */
 // AND
-Node Node::operator&(const Node &B)
+Value Node::operator&(const Node &B)
 {
-    Node re;
-    re.val = this->val & B.val;
-    // cout << this->val << " AND " << B.val << " = " << re.val << endl;
-    return re;
+    return this->val & B.val;
 }
 Node &Node::operator&=(const Node &B)
 {
@@ -127,12 +149,9 @@ Node &Node::operator&=(const Node &B)
 }
 
 // OR
-Node Node::operator|(const Node &B)
+Value Node::operator|(const Node &B)
 {
-    Node re;
-    re.val = this->val | B.val;
-    // cout << this->val << " OR " << B.val << " = " << re.val << endl;
-    return re;
+    return this->val | B.val;
 }
 Node &Node::operator|=(const Node &B)
 {
@@ -142,12 +161,9 @@ Node &Node::operator|=(const Node &B)
 }
 
 // XOR
-Node Node::operator^(const Node &B)
+Value Node::operator^(const Node &B)
 {
-    Node re;
-    re.val = this->val ^ B.val;
-    // cout << this->val << " XOR " << B.val << " = " << re.val << endl;
-    return re;
+    return this->val ^ B.val;
 }
 Node &Node::operator^=(const Node &B)
 {
@@ -157,12 +173,9 @@ Node &Node::operator^=(const Node &B)
 }
 
 // not
-Node Node::operator~()
+Value Node::operator~()
 {
-    Node re;
-    re.val = ~this->val;
-    // cout << this->val << " not = " << re.val << endl;
-    return re;
+    return ~this->val;
 }
 
 // for find

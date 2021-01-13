@@ -17,7 +17,7 @@
                 "i",
                 "m"
             ],
-            "stopAtEntry": false,
+            "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
@@ -40,7 +40,10 @@
             "args": [
                 "./test/golden/gf.v",
                 "./test/revise/rf.v",
-                "./test/output/output.txt"
+                "./test/output/output.txt",
+                "OPENSMT",
+                "i",
+                "m"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -64,7 +67,10 @@
             "args": [
                 "./test/golden/gf.v",
                 "./test/revise/rf.v",
-                "./test/output/output.txt"
+                "./test/output/output.txt",
+                "OPENSMT",
+                "i",
+                "m"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
