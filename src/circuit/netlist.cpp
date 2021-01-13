@@ -595,9 +595,9 @@ int Netlist::merge_nodes_between_networks()
         }
     }
     vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(this->properties[LAYERS])->get_value();
+    vector<pair<int, int>> position(this->num_gate, {0, 0});
+    vector<Node *> all_node(this->num_gate, nullptr);
     size_t num_layer = layers.size();
-    vector<pair<int, int>> position(num_layer, {0, 0});
-    vector<Node *> all_node(num_layer, nullptr);
     for (size_t i = 0; i < num_layer; ++i)
     {
         size_t num_node = layers[i].size();
