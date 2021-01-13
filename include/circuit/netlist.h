@@ -94,7 +94,7 @@ private:
     /**
      * merge two nodes
      */
-    void merge_node(Node *node, Node *repeat);
+    bool merge_node(Node *node, Node *repeat);
 };
 
 #endif

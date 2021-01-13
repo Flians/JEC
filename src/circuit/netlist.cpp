@@ -429,22 +429,22 @@ Node *Netlist::delete_node(Node *cur)
     return tin;
 }
 
-void Netlist::merge_node(Node *node, Node *repeat)
+bool Netlist::merge_node(Node *node, Node *repeat)
 {
     if (!node || !repeat)
     {
         WARN_Fout("There is NULL in these two vectors in netlist.merge_node!");
-        return;
+        return 0;
     }
     if (node == repeat)
     {
         WARN_Fout("The two nodes are the same in netlist.merge_node!");
-        return;
+        return 0;
     }
     if (node->ins.size() != repeat->ins.size() || Util::vectors_intersection(node->ins, repeat->ins).size() != node->ins.size())
     {
         WARN_Fout("The two nodes do not have the same inputs, so they cannot be merged in netlist.merge_node!");
-        return;
+        return 0;
     }
     for (auto &out : repeat->outs)
     {
@@ -468,12 +468,13 @@ void Netlist::merge_node(Node *node, Node *repeat)
         }
         else
         {
-            cout << "repeat can't be found in the inputs of repeat's outputs in netlist.merge_node!" << endl;
+            WARN_Fout("The repeated node '" + repeat->name + "' can't be found in the inputs of it's outputs in netlist.merge_node!");
         }
     }
     vector<Node *>().swap(repeat->outs);
     delete repeat;
     repeat = nullptr;
+    return 1;
 }
 
 size_t Netlist::get_num_gates()
@@ -504,7 +505,10 @@ void Netlist::print_netlist()
 
 void Netlist::id_reassign()
 {
-    this->num_gate = this->gates.size();
+    if (this->isEmpty())
+    {
+        return;
+    }
     sort(this->gates.begin(), this->gates.end(), [](Node *a, Node *b) {
         if (a && b)
         {
@@ -517,6 +521,12 @@ void Netlist::id_reassign()
     });
     this->map_PIs.clear();
     this->map_POs.clear();
+    while (!this->gates.back())
+    {
+        --this->num_gate;
+        this->gates.pop_back();
+    }
+
     for (size_t i = 0; i < this->num_gate; ++i)
     {
         if (this->gates[i])
@@ -653,10 +663,14 @@ int Netlist::merge_nodes_between_networks()
             {
                 if (all_node[it.i.current_value] && it.i.current_value != layers[i][j]->id)
                 {
-                    this->merge_node(layers[i][j], all_node[it.i.current_value]);
-                    all_node[it.i.current_value] = nullptr;
-                    layers[position[it.i.current_value].first][position[it.i.current_value].second] = nullptr;
-                    ++reduce;
+                    if (this->merge_node(layers[i][j], all_node[it.i.current_value]))
+                    {
+                        this->gates[it.i.current_value] = nullptr;
+                        all_node[it.i.current_value] = nullptr;
+                        layers[position[it.i.current_value].first][position[it.i.current_value].second] = layers[position[it.i.current_value].first].back();
+                        layers[position[it.i.current_value].first].pop_back();
+                        ++reduce;
+                    }
                 }
                 ++it;
             }

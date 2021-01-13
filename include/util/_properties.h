@@ -4,10 +4,12 @@ class Node;
 
 enum PROPERTY
 {
-    CYCLE = 0,     // vector<pair<Node *, Node *>> source -> target
-    CLEAN_SPL = 1, // bool
-    CLEAN_DFF = 2, // bool
-    LAYERS = 3,    // vector<vector<Node*>>
+    CYCLE = 0,         // vector<pair<Node *, Node *>> source -> target
+    CLEAN_SPL = 1,     // bool
+    CLEAN_DFF = 2,     // bool
+    LAYERS = 3,        // vector<vector<Node*>>
+    PATH_BALANCED = 4, // bool
+    EQ = 5,            // bool
 };
 
 class FieldInterface

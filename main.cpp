@@ -32,8 +32,10 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
 
     /* simplify the graph */
     startTime = clock();
-    Util::path_balance(&miter);
-    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(miter.properties[LAYERS])->get_value();
+    if (!Util::path_balance(&miter))
+    {
+        WARN_Fout("The netlist '" + miter.name + "' is not path_balanced!");
+    }
     if (merge)
         times[3] = miter.merge_nodes_between_networks();
     endTime = clock();
@@ -47,17 +49,17 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
     {
 #ifndef WIN
     case _OPENSMT:
-        jec_.evaluate_opensmt(layers, incremental);
+        jec_.evaluate_opensmt(&miter, incremental);
         break;
     case _CONE:
-        jec_.evaluate_min_cone(layers);
+        jec_.evaluate_min_cone(&miter);
         break;
     case _CVC4:
-        jec_.evaluate_cvc4(layers, incremental);
+        jec_.evaluate_cvc4(&miter, incremental);
         break;
 #endif
     default:
-        jec_.evaluate_from_PIs_to_POs(layers);
+        jec_.evaluate_from_PIs_to_POs(&miter);
     }
     endTime = clock();
     times[2] = (double)(endTime - startTime) / CLOCKS_PER_SEC;

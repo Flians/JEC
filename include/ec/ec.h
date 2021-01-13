@@ -3,6 +3,7 @@
 
 #include "util/util.h"
 #include "util/libfile.h"
+#include "circuit/netlist.h"
 
 class ec
 {

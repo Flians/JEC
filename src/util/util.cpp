@@ -412,7 +412,7 @@ bool Util::path_balance(Netlist *netlist)
     {
         for (auto src : netlist->gates[i]->ins)
         {
-            if (level[i] - level[src->id] > 1)
+            if (level[i] - level[src->id] > 1 && src->type != _CLK)
             {
                 WARN_Fout("The path balance condition is not satisfied between node '" + src->name + "' and node '" + netlist->gates[i]->name + "'!");
                 path_balanced = false;
@@ -439,6 +439,10 @@ bool Util::path_balance(Netlist *netlist)
     else
     {
         netlist->properties.insert(make_pair(LAYERS, make_shared<Field_2V<Node *>>(layers)));
+    }
+    if (!path_balanced)
+    {
+        netlist->properties[PATH_BALANCED] = make_shared<Field<bool>>(false);
     }
 
     return path_balanced;

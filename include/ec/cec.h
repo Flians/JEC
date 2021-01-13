@@ -3,7 +3,7 @@
 
 #include "ec.h"
 
-class cec : public ec
+class cec : virtual public ec
 {
 private:
     // assign values to the i-th element in the PIs
