@@ -17,7 +17,7 @@
                 "i",
                 "m"
             ],
-            "stopAtEntry": false,
+            "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,

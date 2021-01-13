@@ -605,8 +605,7 @@ int Netlist::merge_nodes_between_networks()
         }
     }
     vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(this->properties[LAYERS])->get_value();
-    vector<pair<int, int>> position(this->num_gate, {0, 0});
-    vector<Node *> all_node(this->num_gate, nullptr);
+    vector<pair<size_t, size_t>> position(this->num_gate, {0, 0});
     size_t num_layer = layers.size();
     for (size_t i = 0; i < num_layer; ++i)
     {
@@ -614,7 +613,6 @@ int Netlist::merge_nodes_between_networks()
         for (size_t j = 0; j < num_node; ++j)
         {
             position[layers[i][j]->id] = {i, j};
-            all_node[layers[i][j]->id] = layers[i][j];
         }
     }
     int reduce = 0;
@@ -639,11 +637,12 @@ int Netlist::merge_nodes_between_networks()
                 Roaring tmp;
                 for (auto &iout : layers[i][j]->ins[k]->outs)
                 {
-                    if (iout && iout->type == layers[i][j]->type)
+                    if (iout && iout->type == layers[i][j]->type && iout != layers[i][j])
                     {
                         if (iout->ins.size() != num_npi)
                         {
-                            ERROR_Exit_Fout("The number of inputs of the same type of node is different in simplify.merge_nodes_between_networks");
+                            WARN_Fout("The number of inputs of the same type of node is different in netlist.merge_nodes_between_networks");
+                            continue;
                         }
                         tmp.add(iout->id);
                     }
@@ -661,23 +660,30 @@ int Netlist::merge_nodes_between_networks()
             Roaring::const_iterator it = same_id.begin();
             while (it != same_id.end())
             {
-                if (all_node[it.i.current_value] && it.i.current_value != layers[i][j]->id)
+                if (this->gates[it.i.current_value])
                 {
-                    if (this->merge_node(layers[i][j], all_node[it.i.current_value]))
+                    if (this->merge_node(layers[i][j], this->gates[it.i.current_value]))
                     {
                         this->gates[it.i.current_value] = nullptr;
-                        all_node[it.i.current_value] = nullptr;
+                        position[layers[position[it.i.current_value].first].back()->id].second = position[it.i.current_value].second;
                         layers[position[it.i.current_value].first][position[it.i.current_value].second] = layers[position[it.i.current_value].first].back();
                         layers[position[it.i.current_value].first].pop_back();
+                        if (position[it.i.current_value].first == i)
+                        {
+                            --num_node;
+                        }
                         ++reduce;
+                    }
+                    else
+                    {
+                        WARN_Fout("The node '" + this->gates[it.i.current_value]->name + "' can be replaced by the node '" + layers[i][j]->name + "'!");
                     }
                 }
                 ++it;
             }
         }
     }
-    vector<Node *>().swap(all_node);
-    vector<pair<int, int>>().swap(position);
+    vector<pair<size_t, size_t>>().swap(position);
     // reassign the id for all nodes
     this->id_reassign();
     std::cout << "The number of INV, BUF, and others reduction is " << reduce << std::endl;
