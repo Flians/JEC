@@ -4,13 +4,13 @@
 #include "_platform.h"
 
 #ifdef WIN
-    #include <io.h>
-    #include <direct.h>
+#include <io.h>
+#include <direct.h>
 #else
-    #include <unistd.h>
-    #include <dirent.h>
-    #include <sys/stat.h>
-    #include <sys/types.h>
+#include <unistd.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #endif
 
 #include <string>
@@ -21,11 +21,11 @@
 #define MAX_PATH_LEN 256
 
 #ifdef WIN
-    #define ACCESS(fileName, accessMode) _access(fileName, accessMode)
-    #define MKDIR(path) _mkdir(path)
+#define ACCESS(fileName, accessMode) _access(fileName, accessMode)
+#define MKDIR(path) _mkdir(path)
 #else
-    #define ACCESS(fileName, accessMode) access(fileName, accessMode)
-    #define MKDIR(path) mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
+#define ACCESS(fileName, accessMode) access(fileName, accessMode)
+#define MKDIR(path) mkdir(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
 #endif
 
 using namespace std;
