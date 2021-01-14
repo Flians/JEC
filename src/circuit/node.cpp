@@ -1,5 +1,63 @@
 #include "circuit/node.h"
 
+const std::unordered_map<string, GType> Str_GType = {
+    {"constant", _CONSTANT},
+    {"input", _PI},
+    {"output", _PO},
+    {"wire", WIRE},
+
+    {"jand", AND},
+    {"jnand", NAND},
+    {"jor", OR},
+    {"jnor", NOR},
+    {"jxor", XOR},
+    {"jxnor", XNOR},
+    {"jnot", INV},
+    {"jdff", DFF},
+    {"jspl", SPL},
+    {"jspl3", SPL3},
+    {"jcb", CB},
+    {"jcb3", CB3},
+
+    {"and", AND},
+    {"nand", NAND},
+    {"or", OR},
+    {"nor", NOR},
+    {"xor", XOR},
+    {"xnor", XNOR},
+    {"not", INV},
+    {"buf", BUF},
+    {"_HMUX", _HMUX},
+    {"_DC", _DC},
+
+    {"_EXOR", _EXOR},
+    {"module", _MODULE},
+    {"undefined", _UNDEFINED_G}};
+
+const std::unordered_map<GType, string, EnumClassHash> GType_Str = {
+    {_CONSTANT, "constant"},
+    {_PI, "input"},
+    {_PO, "output"},
+    {WIRE, "wire"},
+    {AND, "and"},
+    {NAND, "nand"},
+    {OR, "or"},
+    {NOR, "nor"},
+    {XOR, "xor"},
+    {XNOR, "xnor"},
+    {INV, "not"},
+    {BUF, "buf"},
+    {DFF, "jdff"},
+    {SPL, "jspl"},
+    {SPL3, "jspl3"},
+    {CB, "jcb"},
+    {CB3, "jcb3"},
+    {_HMUX, "_HMUX"},
+    {_DC, "_DC"},
+    {_EXOR, "_EXOR"},
+    {_MODULE, "module"},
+    {_UNDEFINED_G, "undefined"}};
+
 Node::~Node()
 {
     // cout << "~delete Node: " << this->name << endl;
@@ -38,8 +96,8 @@ bool Node::containCLK()
     switch (this->type)
     {
     case _CONSTANT:
-    case _IN:
-    case _OUT:
+    case _PI:
+    case _PO:
     case AND:
     case NAND:
     case OR:

@@ -2,7 +2,7 @@
 
 Netlist::Netlist()
 {
-    this->name = GType_Str.at(_UNDEFINED);
+    this->name = GType_Str.at(_UNDEFINED_G);
     this->num_gate = 0;
 }
 
@@ -180,7 +180,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                     // int io_num = count(iterStart, iterEnd, ',');
                     break;
                 }
-                case _IN:
+                case _PI:
                 {
                     if (!is_golden)
                         continue;
@@ -192,13 +192,13 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", _IN, this->num_gate));
+                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", _PI, this->num_gate));
                                 this->map_PIs.insert(make_pair(this->gates.back()->name, this->num_gate++));
                             }
                         }
                         else
                         {
-                            this->gates.emplace_back(new Node(item, _IN, this->num_gate));
+                            this->gates.emplace_back(new Node(item, _PI, this->num_gate));
                             this->map_PIs.insert(make_pair(this->gates.back()->name, this->num_gate++));
                             if (item.find("clk") != string::npos)
                             {
@@ -211,7 +211,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                     }
                     break;
                 }
-                case _OUT:
+                case _PO:
                 {
                     if (!is_golden)
                         continue;
@@ -223,13 +223,13 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", _OUT, this->num_gate));
+                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", _PO, this->num_gate));
                                 this->map_POs.insert(make_pair(this->gates.back()->name, this->num_gate++));
                             }
                         }
                         else
                         {
-                            this->gates.emplace_back(new Node(item, _OUT, this->num_gate));
+                            this->gates.emplace_back(new Node(item, _PO, this->num_gate));
                             this->map_POs.insert(make_pair(this->gates.back()->name, this->num_gate++));
                         }
                     }
@@ -532,11 +532,11 @@ void Netlist::id_reassign()
         if (this->gates[i])
         {
             this->gates[i]->id = i;
-            if (this->gates[i]->type <= _IN)
+            if (this->gates[i]->type <= _PI)
             {
                 this->map_PIs[this->gates[i]->name] = i;
             }
-            else if (this->gates[i]->type <= _OUT)
+            else if (this->gates[i]->type <= _PO)
             {
                 this->map_POs[this->gates[i]->name] = i;
             }

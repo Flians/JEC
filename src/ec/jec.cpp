@@ -248,7 +248,7 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
     {
         record[cur] = cur->val == L ? logic.getTerm_false() : logic.getTerm_true();
     }
-    else if (cur->type == _IN)
+    else if (cur->type == _PI)
     {
         record[cur] = logic.mkBoolVar(cur->name.c_str());
     }
@@ -343,7 +343,7 @@ bool jec::evaluate_opensmt(deque<Node *> &cone)
             // mainSolver.printFramesAsQuery();
             if (reslut == s_True)
             {
-                output->type = _IN;
+                output->type = _PI;
             }
             else if (reslut == s_False)
             {

@@ -13,7 +13,7 @@
 enum PROPERTY;
 class FieldInterface;
 
-class Netlist
+class Netlist : virtual public Point<>
 {
 public:
     string name;

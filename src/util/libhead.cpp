@@ -2,65 +2,104 @@
 
 /* initial */
 size_t init_id = 0;
-const std::unordered_map<string, GType> Str_GType = {
-    {"constant", _CONSTANT},
-    {"input", _IN},
-    {"output", _OUT},
-    {"wire", WIRE},
-
-    {"jand", AND},
-    {"jnand", NAND},
-    {"jor", OR},
-    {"jnor", NOR},
-    {"jxor", XOR},
-    {"jxnor", XNOR},
-    {"jnot", INV},
-    {"jdff", DFF},
-    {"jspl", SPL},
-    {"jspl3", SPL3},
-    {"jcb", CB},
-    {"jcb3", CB3},
-
-    {"and", AND},
-    {"nand", NAND},
-    {"or", OR},
-    {"nor", NOR},
-    {"xor", XOR},
-    {"xnor", XNOR},
-    {"not", INV},
-    {"buf", BUF},
-    {"_HMUX", _HMUX},
-    {"_DC", _DC},
-
-    {"_EXOR", _EXOR},
-    {"module", _MODULE},
-    {"undefined", _UNDEFINED}};
-
-const std::unordered_map<GType, string, EnumClassHash> GType_Str = {
-    {_CONSTANT, "constant"},
-    {_IN, "input"},
-    {_OUT, "output"},
-    {WIRE, "wire"},
-    {AND, "and"},
-    {NAND, "nand"},
-    {OR, "or"},
-    {NOR, "nor"},
-    {XOR, "xor"},
-    {XNOR, "xnor"},
-    {INV, "not"},
-    {BUF, "buf"},
-    {DFF, "jdff"},
-    {SPL, "jspl"},
-    {SPL3, "jspl3"},
-    {CB, "jcb"},
-    {CB3, "jcb3"},
-    {_HMUX, "_HMUX"},
-    {_DC, "_DC"},
-    {_EXOR, "_EXOR"},
-    {_MODULE, "module"},
-    {_UNDEFINED, "undefined"}};
 
 const std::unordered_map<Value, string, EnumClassHash> Const_Str = {
     {L, "1'b0"},
     {H, "1'b1"},
     {X, "1'bx"}};
+
+template <typename T>
+Point<T>::Point(const Point<T> &obj)
+{
+    if (this != &obj)
+    {
+        x = obj.x;
+        y = obj.y;
+    }
+}
+
+template <typename T>
+Point<T> &Point<T>::operator=(const Point<T> &obj)
+{
+    if (this == &obj)
+    {
+        x = obj.x;
+        y = obj.y;
+    }
+    return *this;
+};
+
+template <typename T>
+Point<T> Point<T>::operator+(const Point<T> &a)
+{
+    return Point<T>(x + a.x, y + a.y);
+}
+
+template <typename T>
+Point<T> Point<T>::operator-(const Point<T> &a)
+{
+    return Point<T>(x - a.x, y - a.y);
+}
+
+template <typename T>
+Point<T> &Point<T>::operator+=(const Point<T> &a)
+{
+    this->x += a.x;
+    this->y += a.y;
+    return *this;
+}
+
+template <typename T>
+Point<T> &Point<T>::operator-=(const Point<T> &a)
+{
+    this->x -= a.x;
+    this->y -= a.y;
+    return *this;
+}
+
+template <typename T>
+T Point<T>::getX()
+{
+    return this->x;
+}
+
+template <typename T>
+T Point<T>::getY()
+{
+    return this->y;
+}
+
+template <typename T>
+void Point<T>::setX(T _x)
+{
+    this->x = _x;
+}
+
+template <typename T>
+void Point<T>::setY(T _y)
+{
+    this->y = _y;
+}
+
+template <typename T>
+void Point<T>::set(T _x, T _y)
+{
+    this->x = _x;
+    this->y = _y;
+}
+
+/**
+ * @return the distance from point (0,0).
+ */
+template <typename T>
+T Point<T>::distance()
+{
+    return sqrt(x * x + y * y);
+}
+
+template <typename Q>
+ostream &operator<<(ostream &output, const Point<Q> &p)
+{
+    output << "(" << p.x << "," << p.y << ")" << endl;
+    return output;
+}

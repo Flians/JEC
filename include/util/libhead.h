@@ -34,35 +34,6 @@ struct EnumClassHash
     }
 };
 
-// all cell types
-enum GType
-{
-    _CONSTANT = 0,
-    _CLK,
-    _IN,
-    _EXOR, // connected to outputs
-    _OUT,
-    WIRE,
-    AND,
-    NAND,
-    OR,
-    NOR,
-    XOR,
-    XNOR,
-    INV,
-    BUF,
-    DFF,
-    SPL,
-    SPL3,
-    CB,
-    CB3,
-    _HMUX, // _HMUX \U$1 ( .O(\282 ), .I0(1'b1), .I1(\277 ), .S(\281 ));
-    _DC,   // _DC \n6_5[9] ( .O(\108 ), .C(\96 ), .D(\107 ));
-    _MODULE,
-    _UNDEFINED,
-    COUNT
-};
-
 enum Value
 {
     L = 0,
@@ -71,9 +42,36 @@ enum Value
 };
 
 extern size_t init_id;
-extern const std::unordered_map<string, GType> Str_GType;
-extern const std::unordered_map<GType, string, EnumClassHash> GType_Str;
 extern const std::unordered_map<Value, string, EnumClassHash> Const_Str;
+
+template <typename T = double>
+class Point
+{
+public:
+    Point(T _x = 0, T _y = 0) : x(_x), y(_y) {}
+    Point(const Point &obj);
+    Point &operator=(const Point &obj);
+    Point operator+(const Point &a);
+    Point operator-(const Point &a);
+    Point &operator+=(const Point &a);
+    Point &operator-=(const Point &a);
+    T getX();
+    T getY();
+    void setX(T _x);
+    void setY(T _y);
+    void set(T _x, T _y);
+    /**
+     * @return the distance from point (0,0).
+     */
+    T distance();
+
+    template <typename Q>
+    friend ostream &operator<<(ostream &output, const Point<Q> &p);
+
+protected:
+    T x;
+    T y;
+};
 
 /* Global operator overload */
 // and
