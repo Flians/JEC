@@ -58,6 +58,19 @@ Point<T> &Point<T>::operator-=(const Point<T> &a)
 }
 
 template <typename T>
+bool Point<T>::operator<(const Point<T> &p) const
+{
+    if (this->x == p.x)
+    {
+        return this->y < p.y;
+    }
+    else
+    {
+        return this->x < p.x;
+    }
+}
+
+template <typename T>
 T Point<T>::getX()
 {
     return this->x;

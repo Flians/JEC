@@ -9,18 +9,21 @@
 #include "util/util.h"
 #include "util/libstring.h"
 #include "util/_properties.h"
+#include "util/_map_property.h"
 
-enum PROPERTY;
+class PROPERTIES;
 class FieldInterface;
 
-class Netlist : virtual public Point<>
+class Netlist : virtual public MapProperty
 {
 public:
     string name;
     vector<Node *> gates;
     std::unordered_map<std::string, int> map_PIs;
     std::unordered_map<std::string, int> map_POs;
-    std::unordered_map<PROPERTIES, std::shared_ptr<FieldInterface>> properties;
+
+    Point<> position;
+    Point<> size;
 
 private:
     size_t num_gate;

@@ -84,7 +84,7 @@ void jec::evaluate_from_PIs_to_POs(Netlist *miter)
         WARN_Fout("The netlist '" + miter->name + "' is empty!");
         return;
     }
-    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(miter->properties[LAYERS])->get_value();
+    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field<vector<vector<Node *>>>>(miter->getProperty(PROPERTIES::LAYERS))->get_value();
     size_t index_beg = 0;
     if (layers[0][0]->type == _CLK)
         index_beg = 1;
@@ -109,7 +109,7 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
         WARN_Fout("The netlist is empty!");
         return;
     }
-    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(miter->properties[LAYERS])->get_value();
+    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field<vector<vector<Node *>>>>(miter->getProperty(PROPERTIES::LAYERS))->get_value();
     auto config = std::unique_ptr<SMTConfig>(new SMTConfig());
     const char *msg;
     config->setOption(SMTConfig::o_incremental, SMTOption(incremental), msg);
@@ -373,7 +373,7 @@ void jec::evaluate_min_cone(Netlist *miter)
 {
     // <level, color>
     vector<pair<size_t, int>> info(miter->get_num_gates(), {0, 0});
-    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(miter->properties[LAYERS])->get_value();
+    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field<vector<vector<Node *>>>>(miter->getProperty(PROPERTIES::LAYERS))->get_value();
     size_t num_level = layers.size();
     for (size_t i = 0; i < num_level; ++i)
     {
@@ -489,7 +489,7 @@ void jec::evaluate_cvc4(Netlist *miter, bool incremental)
     CVC4::Type boolean = em.booleanType();
 
     vector<CVC4::Expr> nodes(miter->get_num_gates());
-    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(miter->properties[LAYERS])->get_value();
+    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field<vector<vector<Node *>>>>(miter->getProperty(PROPERTIES::LAYERS))->get_value();
     // layers[0][0] is clk
     for (auto &pi : layers[0])
     {

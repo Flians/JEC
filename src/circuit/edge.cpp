@@ -4,7 +4,7 @@ Edge::~Edge()
 {
     this->src = nullptr;
     this->tar = nullptr;
-    vector<Point<>>().swap(this->bend);
+    vector<Point<>>().swap(this->bend_points);
 }
 
 ostream &operator<<(ostream &output, const Edge &e)

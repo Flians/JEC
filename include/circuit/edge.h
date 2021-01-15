@@ -3,10 +3,12 @@
 
 #include "util/libhead.h"
 #include "circuit/port.h"
+#include "util/_properties.h"
+#include "util/_map_property.h"
 
 class Port;
 
-class Edge
+class Edge : virtual public MapProperty
 {
 public:
     Port *src;
@@ -24,6 +26,7 @@ public:
      * @param layeredGraph
      *            the layered graph
      */
+    /*
     void reverse(final LGraph layeredGrap)
     {
         LPort oldSource = getSource();
@@ -70,6 +73,7 @@ public:
 
         bendPoints = KVectorChain.reverse(bendPoints);
     }
+    */
 
     friend ostream &operator<<(ostream &output, const Edge &p);
 };

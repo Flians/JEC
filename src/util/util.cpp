@@ -304,23 +304,16 @@ void Util::cycle_break(Netlist *netlist)
     }
     if (!reversed.empty())
     {
-        if (netlist->properties.find(CYCLE) != netlist->properties.end())
-        {
-            WARN_Fout("The netlist '" + netlist->name + "' has CYCLE property! in util.cycle_break!");
-            vector<pair<Node *, Node *>> &edges = dynamic_pointer_cast<Field_V<pair<Node *, Node *>>>(netlist->properties[CYCLE])->get_value();
-            edges.swap(reversed);
-            vector<pair<Node *, Node *>>().swap(reversed);
-        }
-        else
-        {
-            netlist->properties.insert(make_pair(CYCLE, make_shared<Field_V<pair<Node *, Node *>>>(reversed)));
-        }
+        vector<pair<Node *, Node *>> &reversed_edges = dynamic_pointer_cast<Field<vector<pair<Node *, Node *>>>>(netlist->getProperty(PROPERTIES::CYCLE))->get_value();
+        reversed_edges.insert(reversed_edges.end(), reversed.begin(), reversed.end());
     }
 }
 
 void Util::cycle_restore(Netlist *netlist)
 {
-    vector<pair<Node *, Node *>> &reversed = dynamic_pointer_cast<Field_V<pair<Node *, Node *>>>(netlist->properties[CYCLE])->get_value();
+    if (!netlist->hasProperty(PROPERTIES::CYCLE))
+        return;
+    vector<pair<Node *, Node *>> &reversed = dynamic_pointer_cast<Field<vector<pair<Node *, Node *>>>>(netlist->getProperty(PROPERTIES::CYCLE))->get_value();
     for (auto &item : reversed)
     {
         // restore the edge
@@ -330,7 +323,7 @@ void Util::cycle_restore(Netlist *netlist)
         item.second->ins.emplace_back(item.first);
     }
     vector<pair<Node *, Node *>>().swap(reversed);
-    netlist->properties.erase(netlist->properties.find(CYCLE));
+    netlist->removeProperty(PROPERTIES::CYCLE);
 }
 
 bool Util::path_balance(Netlist *netlist)
@@ -424,25 +417,15 @@ bool Util::path_balance(Netlist *netlist)
         }
         groups[level[i]].emplace_back(netlist->gates[i]);
     }
-    vector<vector<Node *>> layers;
+    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field<vector<vector<Node *>>>>(netlist->getProperty(PROPERTIES::LAYERS))->get_value();
     for (auto item : groups)
     {
         layers.emplace_back(item.second);
     }
     groups.clear();
-    if (netlist->properties.find(LAYERS) != netlist->properties.end())
-    {
-        WARN_Fout("The netlist '" + netlist->name + "' has LAYERS property! in util.path_balance!");
-        vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(netlist->properties[LAYERS])->get_value();
-        vector<vector<Node *>>().swap(layers);
-    }
-    else
-    {
-        netlist->properties.insert(make_pair(LAYERS, make_shared<Field_2V<Node *>>(layers)));
-    }
     if (!path_balanced)
     {
-        netlist->properties[PATH_BALANCED] = make_shared<Field<bool>>(false);
+        netlist->setProperty<bool>(PROPERTIES::PATH_BALANCED, false);
     }
 
     return path_balanced;

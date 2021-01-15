@@ -581,11 +581,11 @@ void Netlist::clean_spl(bool delete_dff)
     }
     if (flag_spl)
     {
-        this->properties[CLEAN_SPL] = make_shared<Field<bool>>(true);
+        this->setProperty<bool>(PROPERTIES::CLEAN_SPL, true);
     }
     if (flag_dff)
     {
-        this->properties[CLEAN_DFF] = make_shared<Field<bool>>(true);
+        this->setProperty<bool>(PROPERTIES::CLEAN_DFF, true);
     }
 }
 
@@ -596,7 +596,7 @@ int Netlist::merge_nodes_between_networks()
         WARN_Fout("The netlist is empty in util.merge_nodes_between_networks!");
         return 0;
     }
-    if (this->properties.find(LAYERS) == this->properties.end())
+    if (!this->hasProperty(PROPERTIES::LAYERS))
     {
         INFO_Fout("The layers is empty in util.merge_nodes_between_networks, and now build the layers.");
         if (!Util::path_balance(this))
@@ -604,7 +604,7 @@ int Netlist::merge_nodes_between_networks()
             WARN_Fout("The netlist is path-balanced in util.merge_nodes_between_networks!");
         }
     }
-    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field_2V<Node *>>(this->properties[LAYERS])->get_value();
+    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field<vector<vector<Node *>>>>(this->getProperty(PROPERTIES::LAYERS))->get_value();
     vector<pair<size_t, size_t>> position(this->num_gate, {0, 0});
     size_t num_layer = layers.size();
     for (size_t i = 0; i < num_layer; ++i)

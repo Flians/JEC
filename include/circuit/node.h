@@ -3,6 +3,8 @@
 
 #include "util/libhead.h"
 #include "util/libstring.h"
+#include "util/_properties.h"
+#include "util/_map_property.h"
 
 // all cell types
 enum GType
@@ -36,7 +38,9 @@ enum GType
 extern const std::unordered_map<string, GType> Str_GType;
 extern const std::unordered_map<GType, string, EnumClassHash> GType_Str;
 
-class Node : virtual public Point<> // position
+class PROPERTIES;
+
+class Node : virtual public MapProperty
 {
 public:
     // the name of the gate
@@ -49,7 +53,9 @@ public:
     Value val;
     vector<Node *> ins;
     vector<Node *> outs;
-    Point size;
+
+    Point<> position;
+    Point<> size;
 
 public:
     Node() : name(nullptr), type(_UNDEFINED_G), id(init_id++), val(X) {}

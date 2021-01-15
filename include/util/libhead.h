@@ -55,6 +55,8 @@ public:
     Point operator-(const Point &a);
     Point &operator+=(const Point &a);
     Point &operator-=(const Point &a);
+    bool operator<(const Point &p) const;
+
     T getX();
     T getY();
     void setX(T _x);
