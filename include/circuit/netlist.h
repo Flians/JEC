@@ -20,7 +20,7 @@ public:
     vector<Node *> gates;
     std::unordered_map<std::string, int> map_PIs;
     std::unordered_map<std::string, int> map_POs;
-    std::unordered_map<PROPERTY, std::shared_ptr<FieldInterface>> properties;
+    std::unordered_map<PROPERTIES, std::shared_ptr<FieldInterface>> properties;
 
 private:
     size_t num_gate;
