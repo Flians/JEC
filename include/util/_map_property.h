@@ -12,25 +12,36 @@ using namespace std;
 class PropertyInterface
 {
 protected:
+    const time_t id;
     /** name of this property. */
     const string name;
 
 public:
-    PropertyInterface(const string &_name) : name(_name){};
+    PropertyInterface(const string &_name) : id(time(nullptr)), name(_name){};
 
     virtual ~PropertyInterface() = default;
 
-    virtual const string &get_name()
+    /**
+     * @return the id of this property.
+     */
+    virtual const time_t &get_id() final
+    {
+        return this->id;
+    }
+    /**
+     * @return the name of this property.
+     */
+    virtual const string &get_name() final
     {
         return this->name;
     }
     virtual bool operator<(const PropertyInterface &p) const
     {
-        return this->name < p.name;
+        return this->name == p.name ? this->id < p.id : this->name < p.name;
     }
     virtual bool operator==(const PropertyInterface &p) const
     {
-        return this->name == p.name;
+        return this->name == p.name && this->id == p.id;
     }
 };
 
@@ -63,14 +74,6 @@ public:
     const T &get_default()
     {
         return this->default_val;
-    }
-
-    /**
-     * @return the name of this property.
-     */
-    const string &get_name()
-    {
-        return this->name;
     }
 };
 
@@ -107,8 +110,8 @@ namespace std
     public:
         size_t operator()(const PropertyInterface &key) const
         {
-            string _name = const_cast<PropertyInterface &>(key).get_name();
-            return hash<string>()(_name) ^ hash<long int>()(time(0));
+            PropertyInterface &_key = const_cast<PropertyInterface &>(key);
+            return hash<string>()(_key.get_name()) ^ hash<time_t>()(_key.get_id());
         }
     };
 }; // namespace std
@@ -145,12 +148,12 @@ public:
     template <typename T>
     std::shared_ptr<FieldInterface> getProperty(const Property<T> &property)
     {
-        auto _property = dynamic_cast<PropertyInterface &>(const_cast<Property<T> &>(property));
+        auto &_property = dynamic_cast<PropertyInterface &>(const_cast<Property<T> &>(property));
         if (!this->hasProperty<T>(property))
         {
             this->setProperty<T>(property, Field<T>(const_cast<Property<T> &>(property).get_default()));
         }
-        return properties[_property];
+        return this->properties[_property];
     }
 
     template <typename T>

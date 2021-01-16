@@ -6,7 +6,7 @@
 
 class Node;
 
-class PROPERTIES
+class PROPERTIES final
 {
 private:
     PROPERTIES();
