@@ -131,7 +131,7 @@ public:
      * if the value is null, remove the property.
      */
     template <typename T = bool>
-    void setProperty(const Property<T> &property, const Field<T> &value)
+    void setProperty(const Property<T> &property, const T &value)
     {
         this->properties[dynamic_cast<PropertyInterface &>(const_cast<Property<T> &>(property))] = dynamic_pointer_cast<FieldInterface>(make_shared<Field<T>>(value));
     }
@@ -148,12 +148,12 @@ public:
     template <typename T>
     std::shared_ptr<FieldInterface> getProperty(const Property<T> &property)
     {
-        auto &_property = dynamic_cast<PropertyInterface &>(const_cast<Property<T> &>(property));
+
         if (!this->hasProperty<T>(property))
         {
-            this->setProperty<T>(property, Field<T>(const_cast<Property<T> &>(property).get_default()));
+            this->setProperty<T>(property, const_cast<Property<T> &>(property).get_default());
         }
-        return this->properties[_property];
+        return this->properties[dynamic_cast<PropertyInterface &>(const_cast<Property<T> &>(property))];
     }
 
     template <typename T>
