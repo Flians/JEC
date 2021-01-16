@@ -361,8 +361,10 @@ bool Util::path_balance(Netlist *netlist)
         }
     }
     double maxLL = 0;
+    bool vis[num_gate] = {0};
     for (auto po : netlist->map_POs)
     {
+        vis[po.second] = 1;
         maxLL = max(level[po.second], maxLL);
         bfs.push(netlist->gates[po.second]);
     }
@@ -386,8 +388,13 @@ bool Util::path_balance(Netlist *netlist)
                 {
                     level[src->id] = level[cur->id] - INTERVAL;
                 }
+                bfs.push(src);
             }
-            bfs.push(src);
+            if (!vis[src->id])
+            {
+                vis[src->id] = 1;
+                bfs.push(src);
+            }
         }
         if (cur->type == SPL || cur->type == SPL3)
         {
