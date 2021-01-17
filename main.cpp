@@ -32,6 +32,7 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
 
     /* simplify the graph */
     startTime = clock();
+    miter.clean_spl(1);
     if (!Util::path_balance(&miter))
     {
         WARN_Fout("The netlist '" + miter.name + "' is not path_balanced!");
