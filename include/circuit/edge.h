@@ -11,7 +11,6 @@ class Port;
 class Edge : virtual public MapProperty
 {
 public:
-    string name;
     Port *src;
     Port *tar;
     vector<Point<>> bend_points;
@@ -20,6 +19,8 @@ public:
     Edge() : src(nullptr), tar(nullptr){};
     Edge(Port *_src, Port *_tar) : src(_src), tar(_tar){};
     ~Edge();
+
+    string get_name() const;
 
     /**
      * Reverses the edge, including its bend points. Add the CYCLE property for the netlist.
