@@ -526,8 +526,8 @@ void Netlist::id_reassign()
         --this->num_gate;
         this->gates.pop_back();
     }
-
-    for (size_t i = 0; i < this->num_gate; ++i)
+    size_t i = 0;
+    while (i < this->num_gate)
     {
         if (this->gates[i])
         {
@@ -540,6 +540,7 @@ void Netlist::id_reassign()
             {
                 this->map_POs[this->gates[i]->name] = i;
             }
+            ++i;
         }
         else
         {
@@ -558,12 +559,11 @@ void Netlist::clean_useless_nodes()
 void Netlist::clean_spl(bool delete_dff)
 {
     bool flag_spl = false, flag_dff = false;
-    for (size_t i = 0; i < num_gate; ++i)
+    size_t i = 0;
+    while (i < this->num_gate)
     {
         if (this->gates[i]->type == SPL || this->gates[i]->type == SPL3 || (delete_dff && this->gates[i]->type == DFF))
         {
-            // maintain the id
-            --num_gate;
             if (this->gates[i]->type == DFF)
             {
                 flag_dff = true;
@@ -572,18 +572,23 @@ void Netlist::clean_spl(bool delete_dff)
             {
                 flag_spl = true;
             }
-            swap(this->gates[i]->id, this->gates[num_gate]->id);
-            swap(this->gates[i], this->gates[num_gate]);
+            // maintain the id
+            --this->num_gate;
+            swap(this->gates[i]->id, this->gates[this->num_gate]->id);
             this->delete_node(this->gates[i]);
-            this->gates[i] = nullptr;
+            this->gates[i] = this->gates[this->num_gate];
             this->gates.pop_back();
+        }
+        else
+        {
+            ++i;
         }
     }
     if (flag_spl)
     {
         this->setProperty<bool>(PROPERTIES::CLEAN_SPL, true);
     }
-    if (flag_dff)
+    if (delete_dff && flag_dff)
     {
         this->setProperty<bool>(PROPERTIES::CLEAN_DFF, true);
     }
