@@ -304,7 +304,7 @@ void Util::cycle_break(Netlist *netlist)
     }
     if (!reversed.empty())
     {
-        vector<pair<Node *, Node *>> &reversed_edges = dynamic_pointer_cast<Field<vector<pair<Node *, Node *>>>>(netlist->getProperty(PROPERTIES::CYCLE))->get_value();
+        vector<pair<Node *, Node *>> &reversed_edges = netlist->getProperty(PROPERTIES::CYCLE);
         reversed_edges.insert(reversed_edges.end(), reversed.begin(), reversed.end());
     }
 }
@@ -313,7 +313,7 @@ void Util::cycle_restore(Netlist *netlist)
 {
     if (!netlist->hasProperty(PROPERTIES::CYCLE))
         return;
-    vector<pair<Node *, Node *>> &reversed = dynamic_pointer_cast<Field<vector<pair<Node *, Node *>>>>(netlist->getProperty(PROPERTIES::CYCLE))->get_value();
+    vector<pair<Node *, Node *>> &reversed = netlist->getProperty(PROPERTIES::CYCLE);
     for (auto &item : reversed)
     {
         // restore the edge
@@ -424,7 +424,7 @@ bool Util::path_balance(Netlist *netlist)
         }
         groups[level[i]].emplace_back(netlist->gates[i]);
     }
-    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field<vector<vector<Node *>>>>(netlist->getProperty(PROPERTIES::LAYERS))->get_value();
+    vector<vector<Node *>> &layers = netlist->getProperty(PROPERTIES::LAYERS);
     for (auto item : groups)
     {
         layers.emplace_back(item.second);

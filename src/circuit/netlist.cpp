@@ -604,7 +604,7 @@ int Netlist::merge_nodes_between_networks()
             WARN_Fout("The netlist is path-balanced in util.merge_nodes_between_networks!");
         }
     }
-    vector<vector<Node *>> &layers = dynamic_pointer_cast<Field<vector<vector<Node *>>>>(this->getProperty(PROPERTIES::LAYERS))->get_value();
+    vector<vector<Node *>> &layers = this->getProperty(PROPERTIES::LAYERS);
     vector<pair<size_t, size_t>> position(this->num_gate, {0, 0});
     size_t num_layer = layers.size();
     for (size_t i = 0; i < num_layer; ++i)

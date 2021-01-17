@@ -24,14 +24,14 @@ public:
     /**
      * @return the id of this property.
      */
-    virtual const time_t &get_id() final
+    virtual const time_t &get_id() const final
     {
         return this->id;
     }
     /**
      * @return the name of this property.
      */
-    virtual const string &get_name() final
+    virtual const string &get_name() const final
     {
         return this->name;
     }
@@ -71,7 +71,7 @@ public:
     /**
      * @return the default value of this property.
      */
-    const T &get_default()
+    const T &get_default() const
     {
         return this->default_val;
     }
@@ -94,7 +94,7 @@ private:
     T val;
 
 public:
-    Field() {}
+    Field() = default;
     Field(T val_) : val(val_){};
     T &get_value()
     {
@@ -128,42 +128,49 @@ public:
     virtual ~MapProperty() = default;
     /**
      * set the value of the property.
-     * if the value is null, remove the property.
+     * if the value is null, remove the property form this->properties.
      */
     template <typename T = bool>
     void setProperty(const Property<T> &property, const T &value)
     {
-        this->properties[dynamic_cast<PropertyInterface &>(const_cast<Property<T> &>(property))] = dynamic_pointer_cast<FieldInterface>(make_shared<Field<T>>(value));
+        this->properties[dynamic_cast<const PropertyInterface &>(property)] = dynamic_pointer_cast<FieldInterface>(make_shared<Field<T>>(value));
     }
-
+    /**
+     * remove the property form this->properties if it exists.
+     */
     template <typename T>
     void removeProperty(const Property<T> &property)
     {
         if (this->hasProperty<T>(property))
         {
-            this->properties.erase(dynamic_cast<PropertyInterface &>(const_cast<Property<T> &>(property)));
+            this->properties.erase(dynamic_cast<const PropertyInterface &>(property));
         }
     }
-
+    /**
+     * @return the value of the property.
+     * if the property does not exist, return it's default value.
+     */
     template <typename T>
-    std::shared_ptr<FieldInterface> getProperty(const Property<T> &property)
+    T &getProperty(const Property<T> &property)
     {
 
         if (!this->hasProperty<T>(property))
         {
-            this->setProperty<T>(property, const_cast<Property<T> &>(property).get_default());
+            this->setProperty<T>(property, property.get_default());
         }
-        return this->properties[dynamic_cast<PropertyInterface &>(const_cast<Property<T> &>(property))];
+        return dynamic_pointer_cast<Field<T>>(this->properties[dynamic_cast<const PropertyInterface &>(property)])->get_value();
     }
-
+    /**
+     * @return determine if the property exists in this->properties.
+     */
     template <typename T>
-    bool hasProperty(const Property<T> &property)
+    bool hasProperty(const Property<T> &property) const
     {
-        return this->properties.find(dynamic_cast<PropertyInterface &>(const_cast<Property<T> &>(property))) != this->properties.end();
+        return this->properties.find(dynamic_cast<const PropertyInterface &>(property)) != this->properties.end();
     }
 
     /**
-     * @return the property map, creating a new map if there hasn't been one so far.
+     * @return this->properties.
      */
     unordered_map<PropertyInterface, std::shared_ptr<FieldInterface>> &getProperties()
     {
