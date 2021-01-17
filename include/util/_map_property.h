@@ -95,7 +95,7 @@ private:
 
 public:
     Field() = default;
-    Field(T val_) : val(val_){};
+    Field(const T &val_) : val(val_){};
     T &get_value()
     {
         return val;
@@ -133,7 +133,14 @@ public:
     template <typename T = bool>
     void setProperty(const Property<T> &property, const T &value)
     {
-        this->properties[dynamic_cast<const PropertyInterface &>(property)] = dynamic_pointer_cast<FieldInterface>(make_shared<Field<T>>(value));
+        if (typeid(value) == typeid(nullptr))
+        {
+            this->removeProperty(property);
+        }
+        else
+        {
+            this->properties[dynamic_cast<const PropertyInterface &>(property)] = dynamic_pointer_cast<FieldInterface>(make_shared<Field<T>>(value));
+        }
     }
     /**
      * remove the property form this->properties if it exists.
@@ -158,7 +165,7 @@ public:
         {
             this->setProperty<T>(property, property.get_default());
         }
-        return dynamic_pointer_cast<Field<T>>(this->properties[dynamic_cast<const PropertyInterface &>(property)])->get_value();
+        return dynamic_pointer_cast<Field<T>>(this->properties.at(dynamic_cast<const PropertyInterface &>(property)))->get_value();
     }
     /**
      * @return determine if the property exists in this->properties.
