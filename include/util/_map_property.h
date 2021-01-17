@@ -118,8 +118,7 @@ namespace std
 
 class MapProperty
 {
-
-protected:
+private:
     /** map of property identifiers to their values. */
     unordered_map<PropertyInterface, std::shared_ptr<FieldInterface>> properties;
 

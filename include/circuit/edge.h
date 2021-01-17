@@ -11,6 +11,7 @@ class Port;
 class Edge : virtual public MapProperty
 {
 public:
+    string name;
     Port *src;
     Port *tar;
     vector<Point<>> bend_points;
