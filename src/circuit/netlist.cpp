@@ -105,27 +105,34 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
     while (!in.eof())
     {
         getline(in, line);
-        line = Libstring::trim(line);
-        // skip annotations and empty line
-        if (line.find("//") == 0 || line[0] == '`' || line.empty())
-            continue;
+        Libstring::trim(line);
         // /* ... */
         if (Libstring::startsWith(line, "/*"))
         {
-            while (line.find("*/") == line.npos)
+            size_t pos;
+            bool flag = false;
+            while ((pos = line.find("*/")) == line.npos)
             {
                 string tl;
                 if (in.eof())
                 {
+                    flag = true;
+                    WARN_Fout("The comment '/*' is not end with '*/' in netlist.parse_netlist. \nThe line: " + line);
                     break;
                 }
                 getline(in, tl);
                 line += tl;
             }
-            continue;
+            if (flag)
+                break;
+            line = line.substr(pos + 2);
+            Libstring::trim(line);
         }
+        // skip annotations and empty line
+        if (line.find("//") == 0 || line[0] == '`' || line.empty())
+            continue;
         // the wire is more than one line
-        while (line.find(';') == line.npos)
+        while (line.find(';') == line.npos && !Libstring::startsWith(line, "endmodule"))
         {
             string tl;
             if (in.eof())
