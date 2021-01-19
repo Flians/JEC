@@ -41,7 +41,7 @@ Netlist::~Netlist()
     Util::cleanVP(this->gates);
     this->map_PIs.clear();
     this->map_POs.clear();
-    cout << "The netlist is destroyed!" << endl;
+    INFO_Fout("The netlist is destroyed!");
 }
 
 void Netlist::parse_inport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires)
@@ -102,8 +102,9 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
     smatch match;
     regex pattern("[^ \f\n\r\t\v,;\()]+");
     std::unordered_map<std::string, Node *> wires;
-    while (getline(in, line))
+    while (!in.eof())
     {
+        getline(in, line);
         line = Libstring::trim(line);
         // skip annotations and empty line
         if (line.find("//") == 0 || line[0] == '`' || line.empty())
@@ -114,10 +115,11 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
             while (line.find("*/") == line.npos)
             {
                 string tl;
-                if (!getline(in, tl))
+                if (in.eof())
                 {
                     break;
                 }
+                getline(in, tl);
                 line += tl;
             }
             continue;
@@ -126,10 +128,11 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
         while (line.find(';') == line.npos)
         {
             string tl;
-            if (!getline(in, tl))
+            if (in.eof())
             {
                 break;
             }
+            getline(in, tl);
             line += tl;
         }
         string::const_iterator iterStart = line.begin();
@@ -337,7 +340,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
     {
         if (item.second->outs.size() > 1)
         {
-            cout << "The netlist '" << this->name << "' has multi fan-outs!" << endl;
+            WARN_Fout("The netlist '" + this->name + "' has multi fan-outs!");
         }
         this->delete_node(item.second);
     }
