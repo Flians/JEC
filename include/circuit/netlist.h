@@ -7,12 +7,10 @@
 #include <ctime>
 #include <cstdlib>
 #include "util/util.h"
+#include "util/_point.hpp"
 #include "util/libstring.h"
 #include "util/_properties.h"
-#include "util/_map_property.h"
-
-class PROPERTIES;
-class FieldInterface;
+#include "util/_map_property.hpp"
 
 class Netlist : virtual public MapProperty
 {

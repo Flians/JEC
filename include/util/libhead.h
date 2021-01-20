@@ -44,37 +44,6 @@ enum Value
 extern size_t init_id;
 extern const std::unordered_map<Value, string, EnumClassHash> Const_Str;
 
-template <typename T = double>
-class Point
-{
-public:
-    Point(T _x = 0, T _y = 0) : x(_x), y(_y) {}
-    Point(const Point &obj);
-    Point &operator=(const Point &obj);
-    Point operator+(const Point &a);
-    Point operator-(const Point &a);
-    Point &operator+=(const Point &a);
-    Point &operator-=(const Point &a);
-    bool operator<(const Point &p) const;
-
-    T getX();
-    T getY();
-    void setX(T _x);
-    void setY(T _y);
-    void set(T _x, T _y);
-    /**
-     * @return the distance from point (0,0).
-     */
-    T distance();
-
-    template <typename Q>
-    friend ostream &operator<<(ostream &output, const Point<Q> &p);
-
-protected:
-    T x;
-    T y;
-};
-
 /* Global operator overload */
 // and
 inline Value operator&(const Value &A, const Value &B)
@@ -169,7 +138,7 @@ inline Value EXOR(const Value &A, const Value &B)
 }
 
 template <typename T, typename... Ts>
-std::unique_ptr<T> make_unique(Ts &&... params)
+std::unique_ptr<T> make_unique(Ts &&...params)
 {
     return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
 }

@@ -1,10 +1,11 @@
 #ifndef _EDGE_H_
 #define _EDGE_H_
 
-#include "util/libhead.h"
 #include "circuit/port.h"
+#include "util/libhead.h"
+#include "util/_point.hpp"
 #include "util/_properties.h"
-#include "util/_map_property.h"
+#include "util/_map_property.hpp"
 
 class Port;
 
@@ -13,7 +14,7 @@ class Edge : virtual public MapProperty
 public:
     Port *src;
     Port *tar;
-    vector<Point<>> bend_points;
+    vector<Point<double>> bend_points;
 
 public:
     Edge() : src(nullptr), tar(nullptr){};
@@ -21,61 +22,25 @@ public:
     ~Edge();
 
     string get_name() const;
-
     /**
-     * Reverses the edge, including its bend points. Add the CYCLE property for the netlist.
+     * Sets the source port of this edge and adds itself to the port's out-edges. If the edge previously had another
+     * source, it is removed from the original port's out-edges.
      * 
-     * @param layeredGraph
-     *            the layered graph
+     * @param new_src the source port to set
      */
-    /*
-    void reverse(final LGraph layeredGrap)
-    {
-        LPort oldSource = getSource();
-        LPort oldTarget = getTarget();
-
-        setSource(null);
-        setTarget(null);
-        if (adaptPorts && oldTarget.getProperty(InternalProperties.INPUT_COLLECT))
-        {
-            setSource(
-                LGraphUtil.provideCollectorPort(layeredGraph, oldTarget.getNode(), PortType.OUTPUT, PortSide.EAST));
-        }
-        else
-        {
-            setSource(oldTarget);
-        }
-        if (adaptPorts && oldSource.getProperty(InternalProperties.OUTPUT_COLLECT))
-        {
-            setTarget(
-                LGraphUtil.provideCollectorPort(layeredGraph, oldSource.getNode(), PortType.INPUT, PortSide.WEST));
-        }
-        else
-        {
-            setTarget(oldSource);
-        }
-
-        // Switch end labels
-        for (LLabel label : labels)
-        {
-            EdgeLabelPlacement labelPlacement = label.getProperty(LayeredOptions.EDGE_LABELS_PLACEMENT);
-
-            if (labelPlacement == EdgeLabelPlacement.TAIL)
-            {
-                label.setProperty(LayeredOptions.EDGE_LABELS_PLACEMENT, EdgeLabelPlacement.HEAD);
-            }
-            else if (labelPlacement == EdgeLabelPlacement.HEAD)
-            {
-                label.setProperty(LayeredOptions.EDGE_LABELS_PLACEMENT, EdgeLabelPlacement.TAIL);
-            }
-        }
-
-        boolean reversed = getProperty(InternalProperties.REVERSED);
-        setProperty(InternalProperties.REVERSED, !reversed);
-
-        bendPoints = KVectorChain.reverse(bendPoints);
-    }
-    */
+    void set_source(Port *new_src);
+    /**
+     * Sets the target port of this edge and adds itself to the port's in-edges. If the edge previously had another
+     * target, it is removed from the original port's in-edges. 
+     * 
+     * @param new_tar the target port to set
+     */
+    void set_target(Port *new_tar);
+    /**
+     * reverses the edge, including its bend points.
+     * an edge that was marked as being reversed is then unmarked, and the other way around
+     */
+    void reverse();
 
     friend ostream &operator<<(ostream &output, const Edge &p);
 };

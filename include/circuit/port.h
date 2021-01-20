@@ -1,11 +1,12 @@
 #ifndef _PORT_H_
 #define _PORT_H_
 
-#include "util/libhead.h"
 #include "circuit/node.h"
 #include "circuit/edge.h"
+#include "util/libhead.h"
+#include "util/_point.hpp"
 #include "util/_properties.h"
-#include "util/_map_property.h"
+#include "util/_map_property.hpp"
 
 class Edge;
 
@@ -26,10 +27,11 @@ class Port : virtual public MapProperty
 public:
     string name;
     PType type;
+    size_t id;
     Node *own;
-    vector<Edge *> edges;
-
-    Point<> postion;
+    vector<Edge *> in_edges;
+    vector<Edge *> out_edges;
+    Point<> position;
 
 public:
     Port() : name(nullptr), type(_UNDEFINED_P), own(nullptr){};

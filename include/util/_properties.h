@@ -2,7 +2,7 @@
 #define _PROPERTIES_H_
 
 #include "circuit/node.h"
-#include "util/_map_property.h"
+#include "util/_map_property.hpp"
 
 class Node;
 
@@ -15,6 +15,7 @@ private:
     ~PROPERTIES();
 
 public:
+    const static Property<bool> REVERSED;
     const static Property<vector<pair<Node *, Node *>>> CYCLE; // reversed edges: vector<pair<Node *, Node *>> source -> target
     const static Property<bool> CLEAN_SPL;                     // bool
     const static Property<bool> CLEAN_DFF;                     // bool

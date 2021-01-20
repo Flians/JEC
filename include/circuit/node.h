@@ -2,9 +2,9 @@
 #define _NODE_H_
 
 #include "util/libhead.h"
+#include "util/_point.hpp"
 #include "util/libstring.h"
-#include "util/_properties.h"
-#include "util/_map_property.h"
+#include "util/_map_property.hpp"
 
 // all cell types
 enum GType
@@ -37,8 +37,6 @@ enum GType
 
 extern const std::unordered_map<string, GType> Str_GType;
 extern const std::unordered_map<GType, string, EnumClassHash> GType_Str;
-
-class PROPERTIES;
 
 class Node : virtual public MapProperty
 {

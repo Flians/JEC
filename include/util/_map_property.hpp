@@ -6,6 +6,7 @@
 #include <memory>
 #include <typeinfo>
 #include <unordered_map>
+#include <malloc.h>
 
 using namespace std;
 
@@ -120,11 +121,14 @@ class MapProperty
 {
 private:
     /** map of property identifiers to their values. */
-    unordered_map<PropertyInterface, std::shared_ptr<FieldInterface>> properties;
+    std::unordered_map<PropertyInterface, std::shared_ptr<FieldInterface>> properties;
 
 public:
     MapProperty() = default;
-    virtual ~MapProperty() = default;
+    virtual ~MapProperty()
+    {
+        this->removeAllProperties();
+    }
     /**
      * set the value of the property.
      * if the value is null, remove the property form this->properties.
@@ -181,6 +185,15 @@ public:
     unordered_map<PropertyInterface, std::shared_ptr<FieldInterface>> &getProperties()
     {
         return this->properties;
+    }
+
+    /**
+     * @return this->properties.
+     */
+    void removeAllProperties()
+    {
+        this->properties.clear();
+        malloc_trim(0);
     }
 };
 
