@@ -1,7 +1,6 @@
 #ifndef _EC_H_
 #define _EC_H_
 
-#include "util/util.h"
 #include "util/libfile.h"
 #include "circuit/netlist.h"
 

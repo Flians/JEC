@@ -6,6 +6,8 @@
 #include <climits>
 #include <ctime>
 #include <cstdlib>
+#include <roaring.hh>
+
 #include "util/util.h"
 #include "util/_point.hpp"
 #include "util/libstring.h"

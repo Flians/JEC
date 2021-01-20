@@ -1,4 +1,3 @@
-#include "circuit/netlist.h"
 #include "ec/cec.h"
 #include "ec/jec.h"
 #include <iomanip>
