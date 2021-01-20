@@ -427,7 +427,7 @@ void Netlist::make_miter(ifstream &golden, ifstream &revised)
     // change the outputs' type into _EXOR
     for (auto &po : this->map_POs)
     {
-        this->gates[po.second->id]->type = _EXOR;
+        po.second->type = _EXOR;
     }
     vector<Node *>(this->gates).swap(this->gates);
     this->update_num_gates();

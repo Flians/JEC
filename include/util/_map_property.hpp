@@ -186,7 +186,7 @@ public:
     /**
      * @return this->properties.
      */
-    unordered_map<PropertyInterface, std::shared_ptr<FieldInterface>> &getProperties()
+    std::unordered_map<PropertyInterface, std::shared_ptr<FieldInterface>> &getProperties()
     {
         return this->properties;
     }
