@@ -17,33 +17,54 @@ private:
     ~Libstring();
 
 public:
-    static string &ltrim(string &str);
-    static string &rtrim(string &str);
-    static string &trim(string &str);
+    static void ltrim(string &str);
+    static void rtrim(string &str);
+    static void trim(string &str);
+    static string ltrim_copy(string str);
+    static string rtrim_copy(string str);
+    static string trim_copy(string str);
     static void split(const string &str, vector<string> &ret_, const string &sep);
     static string replace(const string &str, const string &src, const string &dest);
     static int startsWith(const string &s, const string &sub);
     static int endsWith(const string &s, const string &sub);
 };
 
-inline string &Libstring::ltrim(string &str)
-{
-    string::iterator p = find_if(str.begin(), str.end(), not1(ptr_fun<int, int>(isspace)));
-    str.erase(str.begin(), p);
-    return str;
+// trim from start (in place)
+inline void Libstring::ltrim(std::string &s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }));
 }
 
-inline string &Libstring::rtrim(string &str)
-{
-    string::reverse_iterator p = find_if(str.rbegin(), str.rend(), not1(ptr_fun<int, int>(isspace)));
-    str.erase(p.base(), str.end());
-    return str;
+// trim from end (in place)
+inline void Libstring::rtrim(std::string &s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }).base(), s.end());
 }
 
-inline string &Libstring::trim(string &str)
-{
-    ltrim(rtrim(str));
-    return str;
+// trim from both ends (in place)
+inline void Libstring::trim(std::string &s) {
+    ltrim(s);
+    rtrim(s);
+}
+
+// trim from start (copying)
+inline std::string Libstring::ltrim_copy(std::string s) {
+    ltrim(s);
+    return s;
+}
+
+// trim from end (copying)
+inline std::string Libstring::rtrim_copy(std::string s) {
+    rtrim(s);
+    return s;
+}
+
+// trim from both ends (copying)
+inline std::string Libstring::trim_copy(std::string s) {
+    trim(s);
+    return s;
 }
 
 inline int Libstring::startsWith(const string &s, const string &sub)
