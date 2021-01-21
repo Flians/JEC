@@ -63,25 +63,54 @@ const std::unordered_map<GType, string, EnumClassHash> GType_Str = {
 Node::~Node()
 {
     // cout << "~delete Node: " << this->name << endl;
-    for (size_t i = 0, len = this->ins.size(); i < len; ++i)
+    for (auto &in : this->ins)
     {
-        auto &in = this->ins[i];
-        if (in)
+        if (in.second)
         {
-            in->outs.erase(std::remove(in->outs.begin(), in->outs.end(), this), in->outs.end());
+            delete in.second;
         }
     }
-    vector<Node *>().swap(this->ins);
+    this->ins.clear();
+    for (auto &out : this->outs)
+    {
+        if (out.second)
+        {
+            delete out.second;
+        }
+    }
+    this->outs.clear();
+}
 
-    for (size_t i = 0, len = this->outs.size(); i < len; ++i)
+std::unordered_set<Node *> Node::get_successors()
+{
+    std::unordered_set<Node *> successors;
+    for (auto &out : this->outs)
     {
-        auto &out = this->outs[i];
-        if (out)
+        if (out.second)
         {
-            out->ins.erase(std::remove(out->ins.begin(), out->ins.end(), this), out->ins.end());
+            for (auto &o_edge : out.second->out_edges)
+            {
+                successors.emplace(o_edge->get_target());
+            }
         }
     }
-    vector<Node *>().swap(this->outs);
+    return successors;
+}
+
+std::unordered_set<Node *> Node::get_predecessor()
+{
+    std::unordered_set<Node *> predecessors;
+    for (auto &in : this->ins)
+    {
+        if (in.second)
+        {
+            for (auto &i_edge : in.second->in_edges)
+            {
+                predecessors.emplace(i_edge->get_source());
+            }
+        }
+    }
+    return predecessors;
 }
 
 bool Node::containCLK()
@@ -111,17 +140,13 @@ bool Node::containCLK()
 
 Value Node::calculate()
 {
-    vector<Node *>::iterator it_ = this->ins.begin();
-    vector<Node *>::iterator it_end = this->ins.end();
-    if (it_ != it_end && (*it_)->type == _CLK)
-    {
-        ++it_;
-    }
+    std::unordered_set<Node *> predecessors = this->get_predecessor();
+    std::unordered_set<Node *>::iterator it_ = predecessors.begin();
+    std::unordered_set<Node *>::iterator it_end = predecessors.end();
     if (it_ == it_end)
     {
         return X;
     }
-    --it_end;
     Value res = (*it_)->val;
     switch (this->type)
     {
@@ -171,13 +196,16 @@ Value Node::calculate()
         break;
     case _HMUX:
         ++it_;
-        res = HMUX(res, (*it_)->val, (*(it_ + 1))->val);
+        res = HMUX((*this->ins["I0"]->in_edges.begin())->get_source()->val,
+                   (*this->ins["I1"]->in_edges.begin())->get_source()->val,
+                   (*this->ins["S"]->in_edges.begin())->get_source()->val);
         break;
     case _DC:
-        res = DC(res, (*(it_ + 1))->val);
+        res = DC((*this->ins["C"]->in_edges.begin())->get_source()->val,
+                 (*this->ins["D"]->in_edges.begin())->get_source()->val);
         break;
     case _EXOR:
-        res = EXOR(res, (*(it_ + 1))->val);
+        res = EXOR(res, (*(++it_))->val);
         break;
     default:
         break;

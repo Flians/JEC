@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <roaring.hh>
 
+#include "circuit/port.h"
 #include "util/util.h"
 #include "util/_point.hpp"
 #include "util/libstring.h"
@@ -19,6 +20,7 @@ class Netlist : virtual public MapProperty
 public:
     string name;
     vector<Node *> gates;
+    vector<Port *> ports;
     std::unordered_map<std::string, Node *> map_PIs;
     std::unordered_map<std::string, Node *> map_POs;
 

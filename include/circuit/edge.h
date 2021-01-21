@@ -22,6 +22,8 @@ public:
     ~Edge();
 
     string get_name() const;
+    Node *get_source() const;
+    Node *get_target() const;
     /**
      * Sets the source port of this edge and adds itself to the port's out-edges. If the edge previously had another
      * source, it is removed from the original port's out-edges.

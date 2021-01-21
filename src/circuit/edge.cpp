@@ -23,18 +23,32 @@ string Edge::get_name() const
     return name;
 }
 
+Node *Edge::get_source() const
+{
+    if (this->src)
+        return this->src->own;
+    return nullptr;
+}
+
+Node *Edge::get_target() const
+{
+    if (this->tar)
+        return this->tar->own;
+    return nullptr;
+}
+
 void Edge::set_source(Port *new_src)
 {
     if (!this->src)
     {
-        this->src->out_edges.erase(remove_if(this->src->out_edges.begin(), this->src->out_edges.end(), [this](Edge *x) { return x == this; }), this->src->out_edges.end());
+        this->src->out_edges.erase(this);
     }
 
     this->src = new_src;
 
     if (this->src)
     {
-        this->src->out_edges.emplace_back(this);
+        this->src->out_edges.emplace(this);
     }
 }
 
@@ -42,14 +56,14 @@ void Edge::set_target(Port *new_tar)
 {
     if (this->tar)
     {
-        this->tar->in_edges.erase(remove_if(this->tar->in_edges.begin(), this->tar->in_edges.end(), [this](Edge *x) { return x == this; }), this->tar->in_edges.end());
+        this->tar->in_edges.erase(this);
     }
 
     this->tar = new_tar;
 
     if (this->tar)
     {
-        this->tar->in_edges.emplace_back(this);
+        this->tar->in_edges.emplace(this);
     }
 }
 

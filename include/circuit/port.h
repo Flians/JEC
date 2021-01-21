@@ -1,6 +1,8 @@
 #ifndef _PORT_H_
 #define _PORT_H_
 
+#include <list>
+
 #include "circuit/node.h"
 #include "circuit/edge.h"
 #include "util/libhead.h"
@@ -9,6 +11,7 @@
 #include "util/_map_property.hpp"
 
 class Edge;
+class Node;
 
 // all port types
 enum PType
@@ -25,12 +28,12 @@ extern const std::unordered_map<PType, string, EnumClassHash> PType_Str;
 class Port : virtual public MapProperty
 {
 public:
-    string name;
+    std::string name;
     PType type;
-    size_t id;
+    std::size_t id;
     Node *own;
-    vector<Edge *> in_edges;
-    vector<Edge *> out_edges;
+    std::unordered_set<Edge *> in_edges;
+    std::unordered_set<Edge *> out_edges;
     Point<> position;
 
 public:

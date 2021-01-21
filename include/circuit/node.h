@@ -1,6 +1,7 @@
 #ifndef _NODE_H_
 #define _NODE_H_
 
+#include "circuit/port.h"
 #include "util/libhead.h"
 #include "util/_point.hpp"
 #include "util/libstring.h"
@@ -36,30 +37,35 @@ enum GType
     COUNT
 };
 
-extern const std::unordered_map<string, GType> Str_GType;
-extern const std::unordered_map<GType, string, EnumClassHash> GType_Str;
+extern const std::unordered_map<std::string, GType> Str_GType;
+extern const std::unordered_map<GType, std::string, EnumClassHash> GType_Str;
+
+class Port;
 
 class Node : virtual public MapProperty
 {
 public:
     // the name of the gate
-    string name;
+    std::string name;
     // the type of the gate
     GType type;
     // unique
     size_t id;
     // the value of the gate
     Value val;
-    vector<Node *> ins;
-    vector<Node *> outs;
+    std::unordered_map<std::string, Port *> ins;
+    std::unordered_map<std::string, Port *> outs;
 
     Point<> position;
     Point<> size;
 
 public:
     Node() : name(nullptr), type(_UNDEFINED_G), id(init_id++), val(X) {}
-    Node(const string &_name, const GType &_cell = WIRE, int _id = (init_id++), const Value &_val = X) : name(_name), type(_cell), id(_id), val(_val) {}
+    Node(const std::string &_name, const GType &_cell = WIRE, int _id = (init_id++), const Value &_val = X) : name(_name), type(_cell), id(_id), val(_val) {}
     ~Node();
+
+    std::unordered_set<Node *> get_successors();
+    std::unordered_set<Node *> get_predecessor();
 
     /** check if the node contains a clk input */
     bool containCLK();
