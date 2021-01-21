@@ -383,7 +383,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
             else
             {
                 // read single module
-                if (item == "endmodule")
+                if (Libstring::startsWith(item, "endmodule"))
                     break;
                 JERROR("There key word '" + item + "' is unknown in netlist.parse_netlist: " + line);
             }
