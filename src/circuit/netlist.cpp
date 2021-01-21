@@ -578,7 +578,8 @@ void Netlist::id_reassign()
             this->gates[this->num_gate] = nullptr;
         }
     }
-    this->gates.erase(this->gates.begin() + this->num_gate, this->gates.end());
+    // this->gates.erase(this->gates.begin() + this->num_gate, this->gates.end());
+    this->gates.resize(this->num_gate);
     vector<Node *>(this->gates).swap(this->gates);
 }
 

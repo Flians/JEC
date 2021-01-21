@@ -48,12 +48,26 @@ inline string &Libstring::trim(string &str)
 
 inline int Libstring::startsWith(const string &s, const string &sub)
 {
-    return s.find(sub) == 0 ? 1 : 0;
+    if (&s == &sub)
+        return true;
+    const typename basic_string<char>::size_type big_size = s.size();
+    const typename basic_string<char>::size_type small_size = sub.size();
+    const bool valid_ = (big_size >= small_size);
+    const bool starts_with_ = (s.compare(0, small_size, sub) == 0);
+    return valid_ and starts_with_;
+    // return s.find(sub) == 0 ? 1 : 0;
 }
 
 inline int Libstring::endsWith(const string &s, const string &sub)
 {
-    return s.rfind(sub) == (s.length() - sub.length()) ? 1 : 0;
+    if (&s == &sub)
+        return true;
+    const typename basic_string<char>::size_type big_size = s.size();
+    const typename basic_string<char>::size_type small_size = sub.size();
+    const bool valid_ = (big_size >= small_size);
+    const bool ends_with_ = (s.compare(big_size - small_size, small_size, sub) == 0);
+    return valid_ and ends_with_;
+    // return s.rfind(sub) == (s.length() - sub.length()) ? 1 : 0;
 }
 
 #endif
