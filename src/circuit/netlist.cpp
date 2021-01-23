@@ -38,18 +38,8 @@ Netlist::Netlist(ifstream &golden, ifstream &revised)
 
 Netlist::~Netlist()
 {
-    for (std::size_t i = 0; i < this->num_gate; ++i)
-    {
-        auto &cur = this->gates[i];
-        if (cur)
-        {
-            vector<Node *>().swap(cur->ins);
-            vector<Node *>().swap(cur->outs);
-            delete cur;
-        }
-    }
-    vector<Node *>().swap(this->gates);
-    // Util::cleanVP(this->gates);
+    Util::cleanVP(this->gates);
+    Util::cleanVP(this->ports);
     this->map_PIs.clear();
     this->map_POs.clear();
     JINFO("The netlist is destroyed!");
@@ -445,40 +435,34 @@ Node *Netlist::delete_node(Node *cur)
         cur = nullptr;
         return nullptr;
     }
-    if (num_ins != 1 && !(cur->type != WIRE && num_ins == 2 && cur->ins[0]->type == _CLK))
+    std::unordered_map<std::string, Port *> predecessors = cur->get_predecessors_port(false);
+    std::unordered_map<std::string, Port *>::iterator it_ = predecessors.begin();
+    std::unordered_map<std::string, Port *>::iterator it_end = predecessors.end();
+    size_t num_ins = predecessors.size();
+    if (num_ins != 1)
     {
         JWARN("The node '" + cur->name + "' have none or more one inputs in netlist.delete_node!");
         return nullptr;
     }
-    Node *tin = cur->ins.back();
-    if (num_outs > 0)
+    Port *tin = (*predecessors.begin()).second;
+    if (!cur->outs.empty())
     {
-        for (size_t i = 0; i < num_outs; ++i)
+        for (auto &out : cur->outs)
         {
-            auto &it = cur->outs[i];
-            bool flag = false;
-            for (size_t j = 0, len = it->ins.size(); j < len; ++j)
+            if (out.second)
             {
-                if (cur == it->ins[j])
+                std::unordered_set<Edge *> o_edges = out.second->out_edges;
+                for (auto &o_edge : o_edges)
                 {
-                    it->ins[j] = tin;
-                    flag = true;
+                    o_edge->set_source(tin);
                 }
             }
-            if (flag)
-            {
-                tin->outs.emplace_back(it);
-            }
-            else
-            {
-                JERROR("There are some troubles in netlist.delete_node for the node: " + cur->name);
-            }
         }
-        vector<Node *>().swap(cur->outs);
+        std::unordered_map<std::string, Port *>().swap(cur->outs);
     }
     delete cur;
     cur = nullptr;
-    return tin;
+    return tin ? tin->own : nullptr;
 }
 
 bool Netlist::merge_node(Node *node, Node *repeat)

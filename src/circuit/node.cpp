@@ -81,32 +81,80 @@ Node::~Node()
     this->outs.clear();
 }
 
-std::unordered_set<Node *> Node::get_successors()
+std::unordered_map<std::string, Node *> Node::get_successors() const
 {
-    std::unordered_set<Node *> successors;
+    std::unordered_map<std::string, Node *> successors;
     for (auto &out : this->outs)
     {
         if (out.second)
         {
             for (auto &o_edge : out.second->out_edges)
             {
-                successors.emplace(o_edge->get_target());
+                successors.emplace(out.first, o_edge->get_target());
             }
         }
     }
     return successors;
 }
 
-std::unordered_set<Node *> Node::get_predecessor()
+std::unordered_map<std::string, Port *> Node::get_successors_port() const
 {
-    std::unordered_set<Node *> predecessors;
+    std::unordered_map<std::string, Port *> successors;
+    for (auto &out : this->outs)
+    {
+        if (out.second)
+        {
+            for (auto &o_edge : out.second->out_edges)
+            {
+                successors.emplace(out.first, o_edge->tar);
+            }
+        }
+    }
+    return successors;
+}
+
+std::unordered_map<std::string, Node *> Node::get_predecessors(bool has_clk) const
+{
+    std::unordered_map<std::string, Node *> predecessors;
     for (auto &in : this->ins)
     {
         if (in.second)
         {
             for (auto &i_edge : in.second->in_edges)
             {
-                predecessors.emplace(i_edge->get_source());
+                Node *src = i_edge->get_source();
+                if (src)
+                {
+                    if (has_clk && src->type == _CLK)
+                    {
+                        continue;
+                    }
+                    predecessors.emplace(in.first, i_edge->get_source());
+                }
+            }
+        }
+    }
+    return predecessors;
+}
+
+std::unordered_map<std::string, Port *> Node::get_predecessors_port(bool has_clk = true) const
+{
+    std::unordered_map<std::string, Port *> predecessors;
+    for (auto &in : this->ins)
+    {
+        if (in.second)
+        {
+            for (auto &i_edge : in.second->in_edges)
+            {
+                Node *src = i_edge->get_source();
+                if (src)
+                {
+                    if (has_clk && src->type == _CLK)
+                    {
+                        continue;
+                    }
+                    predecessors.emplace(in.first, i_edge->src);
+                }
             }
         }
     }
@@ -140,52 +188,52 @@ bool Node::containCLK()
 
 Value Node::calculate()
 {
-    std::unordered_set<Node *> predecessors = this->get_predecessor();
-    std::unordered_set<Node *>::iterator it_ = predecessors.begin();
-    std::unordered_set<Node *>::iterator it_end = predecessors.end();
+    std::unordered_map<std::string, Node *> predecessors = this->get_predecessors(false);
+    std::unordered_map<std::string, Node *>::iterator it_ = predecessors.begin();
+    std::unordered_map<std::string, Node *>::iterator it_end = predecessors.end();
     if (it_ == it_end)
     {
         return X;
     }
-    Value res = (*it_)->val;
+    Value res = (*it_).second->val;
     switch (this->type)
     {
     case AND:
         while (it_ != it_end)
         {
-            res = res & (*(++it_))->val;
+            res = res & (*(++it_)).second->val;
         }
         break;
     case NAND:
         while (it_ != it_end)
         {
-            res = res & (*(++it_))->val;
+            res = res & (*(++it_)).second->val;
         }
         res = ~res;
         break;
     case OR:
         while (it_ != it_end)
         {
-            res = res | (*(++it_))->val;
+            res = res | (*(++it_)).second->val;
         }
         break;
     case NOR:
         while (it_ != it_end)
         {
-            res = res | (*(++it_))->val;
+            res = res | (*(++it_)).second->val;
         }
         res = ~res;
         break;
     case XOR:
         while (it_ != it_end)
         {
-            res = res ^ (*(++it_))->val;
+            res = res ^ (*(++it_)).second->val;
         }
         break;
     case XNOR:
         while (it_ != it_end)
         {
-            res = res ^ (*(++it_))->val;
+            res = res ^ (*(++it_)).second->val;
         }
         res = ~res;
         break;
@@ -195,17 +243,16 @@ Value Node::calculate()
     case BUF:
         break;
     case _HMUX:
-        ++it_;
-        res = HMUX((*this->ins["I0"]->in_edges.begin())->get_source()->val,
-                   (*this->ins["I1"]->in_edges.begin())->get_source()->val,
-                   (*this->ins["S"]->in_edges.begin())->get_source()->val);
+        res = HMUX((*(this->ins["I0"]->in_edges.begin()))->get_source()->val,
+                   (*(this->ins["I1"]->in_edges.begin()))->get_source()->val,
+                   (*(this->ins["S"]->in_edges.begin()))->get_source()->val);
         break;
     case _DC:
-        res = DC((*this->ins["C"]->in_edges.begin())->get_source()->val,
-                 (*this->ins["D"]->in_edges.begin())->get_source()->val);
+        res = DC((*(this->ins["C"]->in_edges.begin()))->get_source()->val,
+                 (*(this->ins["D"]->in_edges.begin()))->get_source()->val);
         break;
     case _EXOR:
-        res = EXOR(res, (*(++it_))->val);
+        res = EXOR(res, (*(++it_)).second->val);
         break;
     default:
         break;
