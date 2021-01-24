@@ -137,7 +137,7 @@ std::unordered_map<std::string, Node *> Node::get_predecessors(bool has_clk) con
     return predecessors;
 }
 
-std::unordered_map<std::string, Port *> Node::get_predecessors_port(bool has_clk = true) const
+std::unordered_map<std::string, Port *> Node::get_predecessors_port(bool has_clk) const
 {
     std::unordered_map<std::string, Port *> predecessors;
     for (auto &in : this->ins)

@@ -22,7 +22,42 @@ public:
     static void unique_element_in_vector(vector<Node *> &v);
 
     /** intersection of two vectors */
-    static vector<Node *> vectors_intersection(vector<Node *> v1, vector<Node *> v2);
+    template <typename T = Node *>
+    static vector<Node *> vectors_intersection(vector<T> v1, vector<T> v2)
+    {
+        vector<T> v;
+        sort(v1.begin(), v1.end());
+        sort(v2.begin(), v2.end());
+        set_intersection(v1.begin(), v1.end(), v2.begin(), v2.end(), back_inserter(v));
+        return v;
+    }
+    /** intersection of two maps */
+    template <typename T = Node *>
+    static std::unordered_map<std::string, T> map_intersection(std::unordered_map<std::string, T> v1, std::unordered_map<std::string, T> v2)
+    {
+        std::unordered_map<std::string, T> v;
+        for (auto &item : v1)
+        {
+            if (v2.find(item.first) != v2.end())
+            {
+                v.emplace(item);
+            }
+        }
+        return v;
+    }
+
+    template <typename T = Node *>
+    static bool contained(std::unordered_map<std::string, T> child_map, std::unordered_map<std::string, T> parent_map)
+    {
+        for (auto &item : child_map)
+        {
+            if (parent_map.find(item.first) == parent_map.end())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /** clean vector<*>, and release the space */
     template <typename T = Node>

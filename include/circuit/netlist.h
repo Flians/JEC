@@ -83,8 +83,8 @@ public:
 
 private:
     /** parse a port of the Node */
-    void parse_inport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires);
-    void parse_outport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires);
+    void parse_inport(Node *g, const string &name, const string &item, const string &line, const std::unordered_map<std::string, Port *> &wires);
+    void parse_outport(Node *g, const string &name, const string &item, const string &line, const std::unordered_map<std::string, Port *> &wires);
     /** parse the netlist file */
     void parse_netlist(stringstream &in, bool is_golden = true);
     void parse_netlist(ifstream &in, bool is_golden = true);

@@ -38,12 +38,15 @@ public:
 
 public:
     Port() : name(nullptr), type(_UNDEFINED_P), own(nullptr){};
-    Port(string _name, PType _type, Node *_own) : name(_name), type(_type), own(_own){};
+    Port(string _name, PType _type, Node *_own = nullptr) : name(_name), type(_type), own(_own){};
     Port(PType _type, Node *_own) : type(_type), own(_own)
     {
         this->name = PType_Str.at(_type);
     };
     ~Port();
+
+    void add_output(Port *tar);
+    void add_input(Port *src);
 };
 
 #endif

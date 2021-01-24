@@ -26,3 +26,23 @@ Port::~Port()
     this->out_edges.clear();
     this->own = nullptr;
 }
+
+void Port::add_output(Port *tar)
+{
+    Edge *e = new Edge(this, tar);
+    this->out_edges.emplace(e);
+    if (tar)
+    {
+        tar->in_edges.emplace(e);
+    }
+}
+
+void Port::add_input(Port *src)
+{
+    Edge *e = new Edge(src, this);
+    this->in_edges.emplace(e);
+    if (src)
+    {
+        src->out_edges.emplace(e);
+    }
+}

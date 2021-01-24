@@ -45,57 +45,55 @@ Netlist::~Netlist()
     JINFO("The netlist is destroyed!");
 }
 
-void Netlist::parse_inport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires)
+void Netlist::parse_inport(Node *g, const string &name, const string &item, const string &line, const std::unordered_map<std::string, Port *> &wires)
 {
-    Node *port = nullptr;
-    std::unordered_map<std::string, Node *>::const_iterator _find;
-    if ((_find = wires.find(item)) != wires.end())
+    Port *port = new Port(name, _IN);
+    std::unordered_map<std::string, Port *>::const_iterator _find_p;
+    std::unordered_map<std::string, Node *>::const_iterator _find_n;
+    if ((_find_p = wires.find(item)) != wires.end())
     {
-        port = _find->second;
+        _find_p->second->add_output(port);
     }
-    else if ((_find = map_PIs.find(item)) != map_PIs.end())
+    else if ((_find_n = map_PIs.find(item)) != map_PIs.end())
     {
-        port = _find->second;
+        _find_n->second->outs.begin()->second->add_output(port);
     }
     else if (item.length() == 4 && Libstring::startsWith(item, "1'b"))
     {
         int index = item[3] - '0';
         if (index > 2)
             index = 2;
-        port = new Node(Const_Str.at((Value)index), _CONSTANT, this->num_gate++, (Value)index);
-        this->gates.emplace_back(port);
-        this->map_PIs.emplace(port->name, port);
+        Node *const_PI = new Node(Const_Str.at((Value)index), _CONSTANT, this->num_gate++, (Value)index);
+        const_PI->outs.emplace(PType_Str.at(_OUT), new Port(_OUT, const_PI));
+        const_PI->outs.begin()->second->add_output(port);
+        this->gates.emplace_back(const_PI);
+        this->map_PIs.emplace(const_PI->name, const_PI);
     }
     else
     {
         JERROR("There is a undefined input port '" + item + "' in netlist.parse_inport for " + line);
     }
-    port->outs.emplace_back(g);
-    g->ins.emplace_back(port);
-    if (port->type == _CLK)
-    {
-        swap(g->ins.front(), g->ins.back());
-    }
+    g->ins.emplace(name, port);
 }
 
-void Netlist::parse_outport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires)
+void Netlist::parse_outport(Node *g, const string &name, const string &item, const string &line, const std::unordered_map<std::string, Port *> &wires)
 {
-    Node *port = nullptr;
-    std::unordered_map<std::string, Node *>::const_iterator _find;
-    if ((_find = wires.find(item)) != wires.end())
+    Port *port = new Port(name, _OUT);
+    std::unordered_map<std::string, Port *>::const_iterator _find_p;
+    std::unordered_map<std::string, Node *>::const_iterator _find_n;
+    if ((_find_p = wires.find(item)) != wires.end())
     {
-        port = _find->second;
+        _find_p->second->add_input(port);
     }
-    else if ((_find = this->map_POs.find(item)) != this->map_POs.end())
+    else if ((_find_n = this->map_POs.find(item)) != this->map_POs.end())
     {
-        port = _find->second;
+        _find_n->second->ins.begin()->second->add_input(port);
     }
     else
     {
         JERROR("There is a undefined output port '" + item + "' in netlist.parse_outport for " + line);
     }
-    port->ins.emplace_back(g);
-    g->outs.emplace_back(port);
+    g->outs.emplace(name, port);
 }
 
 /** parse the netlist */
@@ -236,7 +234,6 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                             if (item.find("clk") != string::npos)
                             {
                                 new_pi->type = _CLK;
-                                swap(this->map_PIs[item], this->map_PIs[new_pi->name]);
                                 swap(this->gates[0]->id, new_pi->id);
                                 swap(this->gates[0], this->gates[this->num_gate - 1]);
                             }
@@ -295,11 +292,11 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                                 string bitN = item + "[" + to_string(i) + "]";
                                 if (wires.find(bitN) != wires.end())
                                 {
-                                    JERROR("The wire '" + bitN + "' is repeatedly defined in netlist.parse_netlist!");
+                                    JWARN("The wire '", bitN, "' is repeatedly defined in netlist.parse_netlist!");
                                 }
                                 if (this->map_PIs.find(bitN) == this->map_PIs.end() && this->map_POs.find(bitN) == this->map_POs.end())
                                 {
-                                    wires.emplace(bitN, new Node(bitN, WIRE));
+                                    wires.emplace(bitN, new Port(bitN, _INOUT));
                                 }
                             }
                         }
@@ -307,11 +304,11 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             if (wires.find(item) != wires.end())
                             {
-                                JERROR("The wire '" + item + "' is repeatedly defined in netlist.parse_netlist!");
+                                JWARN("The wire '", item, "' is repeatedly defined in netlist.parse_netlist!");
                             }
                             if (this->map_PIs.find(item) == this->map_PIs.end() && this->map_POs.find(item) == this->map_POs.end())
                             {
-                                wires.emplace(item, new Node(item, WIRE));
+                                wires.emplace(item, new Port(item, _INOUT));
                             }
                         }
                     }
@@ -331,12 +328,12 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                     // ports: index_port = 0 -> output, index_port > 0 -> input
                     while (regex_search(iterStart, iterEnd, match, pattern))
                     {
-                        item = match[0];
+                        string port_name = match[0];
                         iterStart = match[0].second;
                         // cout << "port: ";
-                        if (item[0] == '.')
+                        if (port_name[0] == '.')
                         {
-                            bool flag = Libstring::startsWith(item, ".dout");
+                            bool flag = Libstring::startsWith(port_name, ".dout");
                             if (!regex_search(iterStart, iterEnd, match, pattern))
                             {
                                 JERROR("There are some troubles in netlist.parse_netlist for PORT definition: " + line);
@@ -345,22 +342,22 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                             iterStart = match[0].second;
                             if (flag)
                             {
-                                parse_outport(g, item, line, wires);
+                                parse_outport(g, port_name, item, line, wires);
                             }
                             else
                             {
-                                parse_inport(g, item, line, wires);
+                                parse_inport(g, port_name, item, line, wires);
                             }
                         }
                         else
                         {
                             if (index_port == 0 || (g->type == SPL && index_port < 2) || (g->type == SPL3 && index_port < 3))
                             {
-                                parse_outport(g, item, line, wires);
+                                parse_outport(g, PType_Str.at(_OUT), item, line, wires);
                             }
                             else
                             {
-                                parse_inport(g, item, line, wires);
+                                parse_inport(g, PType_Str.at(_OUT), item, line, wires);
                             }
                             ++index_port;
                         }
@@ -382,11 +379,20 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
     // clean all wires
     for (auto &item : wires)
     {
-        if (item.second->outs.size() > 1)
+        if (item.second->out_edges.size() > 1)
         {
             JWARN("The wire '" + item.second->name + "' in netlist '" + this->name + "' has multi fan-outs!");
         }
-        this->delete_node(item.second);
+        if (item.second->out_edges.size() > 1)
+        {
+            WARN_Fout("The wire '" + this->name + "' has multi fan-ins in netlist '" + this->name + "'.");
+        }
+        Port *parent = (*item.second->in_edges.begin())->src;
+        for (auto &o_edge : item.second->out_edges)
+        {
+            o_edge->set_source(parent);
+        }
+        delete item.second;
     }
     wires.clear();
 }
@@ -477,33 +483,34 @@ bool Netlist::merge_node(Node *node, Node *repeat)
         JWARN("The two nodes are the same in netlist.merge_node!");
         return 0;
     }
-    if (node->ins.size() != repeat->ins.size() || Util::vectors_intersection(node->ins, repeat->ins).size() != node->ins.size())
+    if (node->ins.size() != repeat->ins.size() || Util::contained(node->ins, repeat->ins))
     {
         JWARN("The two nodes do not have the same inputs, so they cannot be merged in netlist.merge_node!");
         return 0;
     }
-    for (size_t i = 0, len = repeat->outs.size(); i < len; ++i)
+    std::unordered_map<std::string, Port *> successors_port = repeat->get_successors_port();
+
+    for (auto &o_port : repeat->outs)
     {
-        auto &out = repeat->outs[i];
-        bool flag = false;
-        for (size_t j = 0, len2 = out->ins.size(); j < len2; ++j)
+        if (o_port.second)
         {
-            if (repeat == out->ins[j])
+            for (auto &o_edge : o_port.second->out_edges)
             {
-                out->ins[j] = node;
-                flag = true;
+                if (o_edge)
+                {
+                    if (node->outs.find(o_port.first) != node->outs.end())
+                    {
+                        o_edge->set_source(node->outs[o_port.first]);
+                    }
+                    else
+                    {
+                        JERROR("The output port '", o_port.first, "' of repeated node '", repeat->name, "' can't be found in the node '", node->name, "' in netlist.merge_node!");
+                    }
+                }
             }
         }
-        if (flag)
-        {
-            node->outs.emplace_back(out);
-        }
-        else
-        {
-            JWARN("The repeated node '" + repeat->name + "' can't be found in the inputs of it's outputs in netlist.merge_node!");
-        }
     }
-    vector<Node *>().swap(repeat->outs);
+    std::unordered_map<std::string, Port *>().swap(repeat->outs);
     delete repeat;
     repeat = nullptr;
     return 1;
@@ -658,25 +665,22 @@ int Netlist::merge_nodes_between_networks()
             }
             Roaring same_id;
             bool flag = false;
-            size_t num_npi = cur->ins.size();
-            for (size_t k = 0; k < num_npi; ++k)
+            std::unordered_map<std::string, Node *> predecessors = layers[i][j]->get_predecessors(false);
+            size_t num_npi = layers[i][j]->ins.size();
+            for (auto &parent : predecessors)
             {
-                auto &cur_in = cur->ins[k];
-                if (cur_in->type == _CLK)
-                {
-                    continue;
-                }
                 Roaring tmp;
-                for (auto &iout : cur_in->outs)
+                std::unordered_map<std::string, Node *> brothers = parent.second->get_successors();
+                for (auto &brother : brothers)
                 {
-                    if (iout && iout->type == cur_type && iout != cur)
+                    if (brother.second && brother.second->type == layers[i][j]->type && brother.second != layers[i][j])
                     {
-                        if (iout->ins.size() != num_npi)
+                        if (brother.second->ins.size() != num_npi)
                         {
-                            JWARN("The number of inputs of the same type of node is different in netlist.merge_nodes_between_networks");
+                            JWARN("'", layers[i][j]->name, "' and '", brother.first + "' Nodes of the same type have different numbers of inputs in netlist.merge_nodes_between_networks");
                             continue;
                         }
-                        tmp.add(iout->id);
+                        tmp.add(brother.second->id);
                     }
                 }
                 if (flag)

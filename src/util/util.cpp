@@ -19,15 +19,6 @@ void Util::unique_element_in_vector(vector<Node *> &v)
     }
 }
 
-vector<Node *> Util::vectors_intersection(vector<Node *> v1, vector<Node *> v2)
-{
-    vector<Node *> v;
-    sort(v1.begin(), v1.end());
-    sort(v2.begin(), v2.end());
-    set_intersection(v1.begin(), v1.end(), v2.begin(), v2.end(), back_inserter(v));
-    return v;
-}
-
 Node *Util::find_node_by_name(vector<Node *> &nodes, const string &name)
 {
     for (size_t i = 0, len = nodes.size(); i < len; ++i)
