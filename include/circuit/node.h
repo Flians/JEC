@@ -11,30 +11,30 @@
 enum GType
 {
     _CONSTANT = 0,
-    _CLK,
-    _PI,
-    _EXOR, // connected to outputs
-    _PO,
-    WIRE,
-    AND,
-    NAND,
-    OR,
-    NOR,
-    XOR,
-    XNOR,
-    INV,
-    BUF,
-    DFF,
-    SPL,
-    SPL3,
-    CB,
-    CB3,
-    _HMUX, // _HMUX \U$1 ( .O(\282 ), .I0(1'b1), .I1(\277 ), .S(\281 ));
-    _DC,   // _DC \n6_5[9] ( .O(\108 ), .C(\96 ), .D(\107 ));
-    _ANDF,
-    _MODULE,
-    _UNDEFINED_G,
-    COUNT
+    _CLK = 1,
+    _PI = 2,
+    _EXOR = 3, // connected to outputs
+    _PO = 4,
+    WIRE = 5,
+    AND = 6,
+    NAND = 7,
+    OR = 8,
+    NOR = 9,
+    XOR = 10,
+    XNOR = 11,
+    INV = 12,
+    BUF = 13,
+    DFF = 14,
+    SPL = 15,
+    SPL3 = 16,
+    CB = 17,
+    CB3 = 18,
+    _HMUX = 19, // _HMUX \U$1 ( .O(\282 ), .I0(1'b1), .I1(\277 ), .S(\281 ));
+    _DC = 20,   // _DC \n6_5[9] ( .O(\108 ), .C(\96 ), .D(\107 ));
+    _ANDF = 21,
+    _MODULE = 22,
+    _UNDEFINED_G = 23,
+    COUNT = 24
 };
 
 extern const std::unordered_map<std::string, GType> Str_GType;

@@ -37,6 +37,7 @@ const std::unordered_map<string, GType> Str_GType = {
 
 const std::unordered_map<GType, string, EnumClassHash> GType_Str = {
     {_CONSTANT, "constant"},
+    {_CLK, "input"},
     {_PI, "input"},
     {_PO, "output"},
     {WIRE, "wire"},
@@ -56,7 +57,7 @@ const std::unordered_map<GType, string, EnumClassHash> GType_Str = {
     {_HMUX, "_HMUX"},
     {_DC, "_DC"},
     {_ANDF, "andf"},
-    {_EXOR, "_EXOR"},
+    {_EXOR, "output"},
     {_MODULE, "module"},
     {_UNDEFINED_G, "undefined"}};
 
@@ -331,16 +332,24 @@ bool Node::operator<(const Node &B)
 
 ostream &operator<<(ostream &output, const Node &n)
 {
-
     output << GType_Str.at(n.type) << " " << n.name << "(";
     for (auto &in : n.ins)
     {
-        output << *in.second << endl;
+        output << *in.second << ", ";
     }
+    bool flag = 1;
     for (auto &out : n.outs)
     {
-        output << *out.second << endl;
+        if (flag)
+        {
+            flag = 0;
+        }
+        else
+        {
+            output << ", ";
+        }
+        output << *out.second;
     }
-    output << ");" << endl;
+    output << ");";
     return output;
 }

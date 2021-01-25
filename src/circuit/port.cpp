@@ -51,8 +51,29 @@ void Port::add_input(Port *src)
 
 ostream &operator<<(ostream &output, const Port &p)
 {
-
-    output << p.name << "("
-           << ")" << endl;
+    output << p.name << "(";
+    if (!p.in_edges.empty() && (*p.in_edges.begin())->src)
+    {
+        if ((*p.in_edges.begin())->src->own && (*p.in_edges.begin())->src->own->type <= _PO)
+        {
+            output << (*p.in_edges.begin())->src->own->name;
+        }
+        else
+        {
+            output << "n" << (*p.in_edges.begin())->src->id;
+        }
+    }
+    else
+    {
+        if (p.own && p.own->type <= _PO)
+        {
+            output << p.own->name;
+        }
+        else
+        {
+            output << "n" << p.id;
+        }
+    }
+    output << ")";
     return output;
 }

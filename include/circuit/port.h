@@ -30,19 +30,16 @@ class Port : virtual public MapProperty
 public:
     std::string name;
     PType type;
-    std::size_t id;
     Node *own;
+    std::size_t id;
     std::unordered_set<Edge *> in_edges;
     std::unordered_set<Edge *> out_edges;
     Point<> position;
 
 public:
     Port() : name(nullptr), type(_UNDEFINED_P), own(nullptr){};
-    Port(string _name, PType _type, Node *_own = nullptr) : name(_name), type(_type), own(_own){};
-    Port(PType _type, Node *_own) : type(_type), own(_own)
-    {
-        this->name = PType_Str.at(_type);
-    };
+    Port(const string &_name, const PType &_type, Node *_own = nullptr, std::size_t _id = 0) : name(_name), type(_type), own(_own), id(_id){};
+    Port(const PType &_type, Node *_own = nullptr, std::size_t _id = 0) : name(PType_Str.at(_type)), type(_type), own(_own), id(_id) {}
     ~Port();
 
     void add_output(Port *tar);

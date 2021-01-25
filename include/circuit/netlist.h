@@ -29,6 +29,7 @@ public:
 
 private:
     size_t num_gate;
+    size_t num_port;
 
 public:
     // make an empty netlist
@@ -48,6 +49,11 @@ public:
      */
     size_t get_num_gates();
     void update_num_gates();
+    /**
+     * @return the number of ports
+     */
+    size_t get_num_ports();
+    void update_num_ports();
 
     /**
      * determine if the netlist is empty

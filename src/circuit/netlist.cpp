@@ -4,12 +4,14 @@ Netlist::Netlist()
 {
     this->name = GType_Str.at(_UNDEFINED_G);
     this->num_gate = 0;
+    this->num_port = 0;
 }
 
 /** parse an netlist */
 Netlist::Netlist(const string &path_verilog)
 {
     this->num_gate = 0;
+    this->num_port = 0;
     ifstream netlist(path_verilog);
     this->parse_netlist(netlist);
     netlist.close();
@@ -17,6 +19,7 @@ Netlist::Netlist(const string &path_verilog)
 Netlist::Netlist(ifstream &in)
 {
     this->num_gate = 0;
+    this->num_port = 0;
     this->parse_netlist(in);
 }
 
@@ -24,6 +27,7 @@ Netlist::Netlist(ifstream &in)
 Netlist::Netlist(const string &path_golden, const string &path_revised)
 {
     this->num_gate = 0;
+    this->num_port = 0;
     ifstream golden(path_golden);
     ifstream revised(path_revised);
     this->make_miter(golden, revised);
@@ -33,6 +37,7 @@ Netlist::Netlist(const string &path_golden, const string &path_revised)
 Netlist::Netlist(ifstream &golden, ifstream &revised)
 {
     this->num_gate = 0;
+    this->num_port = 0;
     this->make_miter(golden, revised);
 }
 
@@ -47,7 +52,7 @@ Netlist::~Netlist()
 
 void Netlist::parse_inport(Node *g, const string &name, const string &item, const string &line, const std::unordered_map<std::string, Port *> &wires)
 {
-    Port *port = new Port(name, _IN, g);
+    Port *port = new Port(name, _IN, g, this->num_port++);
     std::unordered_map<std::string, Port *>::const_iterator _find_p;
     std::unordered_map<std::string, Node *>::const_iterator _find_n;
     if ((_find_p = wires.find(item)) != wires.end())
@@ -78,7 +83,7 @@ void Netlist::parse_inport(Node *g, const string &name, const string &item, cons
 
 void Netlist::parse_outport(Node *g, const string &name, const string &item, const string &line, const std::unordered_map<std::string, Port *> &wires)
 {
-    Port *port = new Port(name, _OUT, g);
+    Port *port = new Port(name, _OUT, g, this->num_port++);
     std::unordered_map<std::string, Port *>::const_iterator _find_p;
     std::unordered_map<std::string, Node *>::const_iterator _find_n;
     if ((_find_p = wires.find(item)) != wires.end())
@@ -222,7 +227,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
                                 Node *pi_new = new Node(item + "[" + to_string(i) + "]", _PI, this->num_gate++);
-                                pi_new->outs.emplace(PType_Str.at(_OUT), new Port(PType_Str.at(_OUT), _OUT, pi_new));
+                                pi_new->outs.emplace(PType_Str.at(_OUT), new Port(PType_Str.at(_OUT), _OUT, pi_new, this->num_port++));
                                 this->gates.emplace_back(pi_new);
                                 this->map_PIs.emplace(pi_new->name, pi_new);
                             }
@@ -230,7 +235,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         else
                         {
                             Node *new_pi = new Node(item, _PI, this->num_gate++);
-                            new_pi->outs.emplace(PType_Str.at(_OUT), new Port(PType_Str.at(_OUT), _OUT, new_pi));
+                            new_pi->outs.emplace(PType_Str.at(_OUT), new Port(PType_Str.at(_OUT), _OUT, new_pi, this->num_port++));
                             this->gates.emplace_back(new_pi);
                             this->map_PIs.emplace(new_pi->name, new_pi);
                             if (item.find("clk") != string::npos)
@@ -262,7 +267,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
                                 Node *new_po = new Node(item + "[" + to_string(i) + "]", _PO, this->num_gate++);
-                                new_po->ins.emplace(PType_Str.at(_IN), new Port(PType_Str.at(_IN), _IN, new_po));
+                                new_po->ins.emplace(PType_Str.at(_IN), new Port(PType_Str.at(_IN), _IN, new_po, this->num_port++));
                                 this->gates.emplace_back(new_po);
                                 this->map_POs.emplace(new_po->name, new_po);
                             }
@@ -270,7 +275,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         else
                         {
                             Node *new_po = new Node(item, _PO, this->num_gate++);
-                            new_po->ins.emplace(PType_Str.at(_IN), new Port(PType_Str.at(_IN), _IN, new_po));
+                            new_po->ins.emplace(PType_Str.at(_IN), new Port(PType_Str.at(_IN), _IN, new_po, this->num_port++));
                             this->gates.emplace_back(new_po);
                             this->map_POs.emplace(new_po->name, new_po);
                         }
@@ -440,8 +445,7 @@ Node *Netlist::delete_node(Node *cur)
 {
     if (!cur)
         return nullptr;
-    size_t num_ins = cur->ins.size(), num_outs = cur->outs.size();
-    if (num_ins == 0 && num_outs == 0 && cur->type == WIRE)
+    if (cur->ins.empty() && cur->outs.empty() && cur->type == WIRE)
     {
         JWARN("The wire '" + cur->name + "' is useless in netlist.delete_node!");
         delete cur;
@@ -537,6 +541,16 @@ void Netlist::update_num_gates()
     this->num_gate = this->gates.size();
 }
 
+size_t Netlist::get_num_ports()
+{
+    return this->num_port;
+}
+
+void Netlist::update_num_ports()
+{
+    this->num_port = this->ports.size();
+}
+
 bool Netlist::isEmpty()
 {
     return this->gates.empty();
@@ -560,6 +574,8 @@ void Netlist::id_reassign()
         return;
     }
     size_t i = 0;
+    this->ports.resize(this->num_port, nullptr);
+    this->num_port = 0;
     while (i < this->num_gate)
     {
         if (this->gates[i])
@@ -583,6 +599,8 @@ void Netlist::id_reassign()
     // this->gates.erase(this->gates.begin() + this->num_gate, this->gates.end());
     this->gates.resize(this->num_gate);
     vector<Node *>(this->gates).swap(this->gates);
+    this->ports.resize(this->num_port);
+    vector<Port *>(this->ports).swap(this->ports);
 }
 
 void Netlist::clean_useless_nodes()
@@ -760,7 +778,7 @@ ostream &operator<<(ostream &output, const Netlist &n)
         {
             flag = 0;
         }
-        output << "output reg " << po.first << "=0";
+        output << "output reg " << po.first << " = 0";
     }
     output << ");" << endl;
     for (size_t i = 0; i < n.num_gate; ++i)
@@ -776,9 +794,9 @@ ostream &operator<<(ostream &output, const Netlist &n)
     }
     for (auto &node : n.gates)
     {
-        if (node->type != _PI && node->type != _PO && node->type != _CONSTANT)
+        if (node->type != _CLK && node->type != _PI && node->type != _EXOR && node->type != _PO && node->type != _CONSTANT)
         {
-            output << *node << endl;
+            output << "    " << *node << endl;
         }
     }
     output << "endmodule" << endl;
