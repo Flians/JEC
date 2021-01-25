@@ -39,7 +39,7 @@ Node *Edge::get_target() const
 
 void Edge::set_source(Port *new_src)
 {
-    if (!this->src)
+    if (this->src)
     {
         this->src->out_edges.erase(this);
     }

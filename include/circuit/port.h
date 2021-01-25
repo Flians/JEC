@@ -47,6 +47,7 @@ public:
 
     void add_output(Port *tar);
     void add_input(Port *src);
+    friend ostream &operator<<(ostream &output, const Port &p);
 };
 
 #endif

@@ -92,6 +92,8 @@ public:
     bool operator==(const Node *B);
     // for sort
     bool operator<(const Node &B);
+
+    friend ostream &operator<<(ostream &output, const Node &p);
 };
 
 #endif
