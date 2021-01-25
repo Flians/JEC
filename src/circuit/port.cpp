@@ -48,3 +48,11 @@ void Port::add_input(Port *src)
         src->out_edges.emplace(e);
     }
 }
+
+ostream &operator<<(ostream &output, const Port &p)
+{
+
+    output << p.name << "("
+           << ")" << endl;
+    return output;
+}

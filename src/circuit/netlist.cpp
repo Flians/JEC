@@ -760,7 +760,7 @@ ostream &operator<<(ostream &output, const Netlist &n)
         {
             flag = 0;
         }
-        output << "output reg " << po.first << " = 0";
+        output << "output reg " << po.first << "=0";
     }
     output << ");" << endl;
     for (size_t i = 0; i < n.num_gate; ++i)
@@ -770,57 +770,15 @@ ostream &operator<<(ostream &output, const Netlist &n)
         {
             for (auto &out : node->outs)
             {
-                output << "    wire n" << node->id << "_" << out->id << ";" << endl;
+                output << "    wire n" << node->id << "_" << out.second->id << ";" << endl;
             }
         }
     }
     for (auto &node : n.gates)
     {
-        if (node->type != _CLK && node->type != _PI && node->type != _EXOR && node->type != _PO && node->type != _CONSTANT)
+        if (node->type != _PI && node->type != _PO && node->type != _CONSTANT)
         {
-            output << "    " << GType_Str.at(node->type) << " " << node->name << "(";
-            for (size_t i = 0, num_ins = node->ins.size(); i < num_ins; ++i)
-            {
-                if (node->ins[i]->type == _CLK)
-                {
-                    output << ".clk"
-                           << "(" << node->ins[i]->name
-                           << "), ";
-                }
-                else if (node->ins[i]->type == _PI || node->ins[i]->type == _CONSTANT)
-                {
-                    output << ".din" << (char)('a' + i - 1) << "(" << node->ins[i]->name
-                           << "), ";
-                }
-                else
-                {
-                    output << ".din" << (char)('a' + i - 1) << "(n" << node->ins[i]->id << "_" << node->id
-                           << "), ";
-                }
-            }
-            bool flag = 1;
-            for (size_t i = 0, num_outs = node->outs.size(); i < num_outs; ++i)
-            {
-                if (flag)
-                {
-                    flag = 0;
-                }
-                else
-                {
-                    output << ", ";
-                }
-                if (node->outs[i]->type == _EXOR || node->outs[i]->type == _PO)
-                {
-                    output << ".dout" << (char)('a' + i) << "(" << node->outs[i]->name
-                           << ")";
-                }
-                else
-                {
-                    output << ".dout" << (char)('a' + i) << "(n" << node->id << "_" << node->outs[i]->id
-                           << ")";
-                }
-            }
-            output << ");" << endl;
+            output << *node << endl;
         }
     }
     output << "endmodule" << endl;

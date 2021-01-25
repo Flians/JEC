@@ -328,3 +328,19 @@ bool Node::operator<(const Node &B)
         return this->id < B.id;
     }
 }
+
+ostream &operator<<(ostream &output, const Node &n)
+{
+
+    output << GType_Str.at(n.type) << " " << n.name << "(";
+    for (auto &in : n.ins)
+    {
+        output << *in.second << endl;
+    }
+    for (auto &out : n.outs)
+    {
+        output << *out.second << endl;
+    }
+    output << ");" << endl;
+    return output;
+}

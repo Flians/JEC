@@ -16,6 +16,7 @@ class Edge : virtual public MapProperty
 public:
     Port *src;
     Port *tar;
+    std::size_t id;
     vector<Point<double>> bend_points;
 
 public:

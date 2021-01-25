@@ -1,12 +1,28 @@
 cmake_minimum_required(VERSION 3.1)
 project(JEC VERSION 0.1.0)
 
+# Check platforms
+if (CMAKE_HOST_WIN32)
+    set(WINDOWS 1)
+    message("The enviriment is in windows.")
+elseif(CMAKE_HOST_APPLE)
+    set(MACOS 1)
+    message("The enviriment is in macos.")
+elseif(CMAKE_HOST_UNIX)
+    set(LINUX 1)
+    message("The enviriment is in linux.")
+endif()
+
 #set(CMAKE_BUILD_TYPE Debug)
 if (NOT CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE Release)
     SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall") 
 elseif (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
+    if (WINDOWS)
+        SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O2 -Wall -g -ggdb")
+    else()
+        SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
+    endif()
     # Analyze performance
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg")
@@ -21,18 +37,6 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_MACOSX_RPATH OFF)
-
-# Check platforms
-if (CMAKE_HOST_WIN32)
-    set(WINDOWS 1)
-    message("The enviriment is in windows.")
-elseif(CMAKE_HOST_APPLE)
-    set(MACOS 1)
-    message("The enviriment is in macos.")
-elseif(CMAKE_HOST_UNIX)
-    set(LINUX 1)
-    message("The enviriment is in linux.")
-endif()
 
 # add croaring
 add_library(croaring STATIC ${PROJECT_SOURCE_DIR}/dependencies/CRoaring/roaring.c)
