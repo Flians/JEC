@@ -66,21 +66,19 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
     // merge all inputs
     while (iter != iter_end)
     {
+        auto golden_pi = iter->second->outs.begin()->second;
         // cout << iter->first << endl;
         auto pi = revised->map_PIs.find(iter->first);
         if (pi == revised->map_PIs.end())
         {
             JERROR("The input '" + iter->first + "' in the golden Verilog does not exist in the revised Verilog!");
         }
-        for (size_t i = 0, len = pi->second->outs.size(); i < len; ++i)
+        for (auto &out : pi->second->outs)
         {
-            auto &it = pi->second->outs[i];
-            if (!replace_node_by_name(it->ins, iter->second))
+            for (auto &o_edge : out.second->out_edges)
             {
-                JERROR("There are some troubles in util.make_miter!");
+                o_edge->set_source(golden_pi);
             }
-            iter->second->outs.emplace_back(it);
-            ++it;
         }
         revised->gates[pi->second->id] = nullptr;
         delete pi->second;
@@ -92,6 +90,7 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
     iter_end = golden->map_POs.end();
     while (iter != iter_end)
     {
+        auto golden_po = iter->second->ins.begin()->second;
         // cout << iter->first << endl;
         auto po = revised->map_POs.find(iter->first);
         if (po == revised->map_POs.end())
@@ -99,11 +98,12 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
             JERROR("The output '" + po->first + "' in the golden Verilog does not exist in the revised Verilog!");
         }
         iter->second->type = _EXOR;
-        for (size_t i = 0, num_po_ins = po->second->ins.size(); i < num_po_ins; ++i)
+        for (auto &in : po->second->outs)
         {
-            auto &tg = po->second->ins[i];
-            iter->second->ins.emplace_back(tg);
-            tg->outs.emplace_back(iter->second);
+            for (auto &i_edge : in.second->in_edges)
+            {
+                i_edge->set_target(golden_po);
+            }
         }
         revised->gates[po->second->id] = nullptr;
         delete po->second;
@@ -131,8 +131,8 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
 
 void Util::cycle_break(Netlist *netlist)
 {
-    vector<pair<Node *, Node *>> reversed;
-    const size_t num_gate = netlist->get_num_gates();
+    vector<Edge *> reversed;
+    size_t num_gate = netlist->get_num_gates();
     /** indegree values and outdegree values for the nodes; mark for the nodes, inducing an ordering of the nodes. */
     int indeg[num_gate] = {0}, outdeg[num_gate] = {0}, mark[num_gate] = {0};
     /** list of source nodes and sink nodes. */
@@ -145,34 +145,34 @@ void Util::cycle_break(Netlist *netlist)
      * @param node node for which neighbors are updated
      */
     auto updateNeighbors = [&indeg, &outdeg, &mark, &sources, &sinks](const Node *node) {
-        for (size_t i = 0, num_node_ins = node->ins.size(); i < num_node_ins; ++i)
+        auto predecessors = node->get_predecessors();
+        for (auto &src : predecessors)
         {
-            auto &src = node->ins[i];
             // exclude self-loops
-            if (node == src || mark[src->id] != 0)
+            if (node == src.second || mark[src.second->id] != 0)
             {
                 continue;
             }
-            int index = src->id;
+            int index = src.second->id;
             outdeg[index] -= 1;
             if (outdeg[index] <= 0 && indeg[index] > 0)
             {
-                sinks.emplace(src);
+                sinks.emplace(src.second);
             }
         }
-        for (size_t i = 0, num_node_outs = node->outs.size(); i < num_node_outs; ++i)
+        auto successors = node->get_successors();
+        for (auto &tar : successors)
         {
-            auto &tar = node->outs[i];
             // exclude self-loops
-            if (node == tar || mark[tar->id] != 0)
+            if (node == tar.second || mark[tar.second->id] != 0)
             {
                 continue;
             }
-            int index = tar->id;
+            int index = tar.second->id;
             indeg[index] -= 1;
             if (indeg[index] <= 0 && outdeg[index] > 0)
             {
-                sources.emplace(tar);
+                sources.emplace(tar.second);
             }
         }
     };
@@ -264,81 +264,59 @@ void Util::cycle_break(Netlist *netlist)
             mark[index] += shiftBase;
         }
     }
-
     // reverse edges that point left
     for (size_t i = 0; i < num_gate; ++i)
     {
         auto &node = netlist->gates[i];
+        auto successors = node->get_successors();
         // look at the node's outgoing edges
-        for (size_t j = 0, num_node_outs = node->outs.size(); j < num_node_outs; ++j)
+        for (auto &tar : successors)
         {
-            Node *cur = node;
-            Node *next = cur->outs[j];
-            if (mark[cur->id] > mark[next->id])
+            if (mark[node->id] > mark[tar.second->id])
             {
+                Edge *last = nullptr;
+                Node *cur = node;
                 // no considering the splitters in the cycle
                 while (cur->type == SPL || cur->type == SPL3)
                 {
                     if (cur->ins.size() == 1)
                     {
-                        next = cur;
-                        cur = cur->ins[0];
+                        last = *node->ins.begin()->second->in_edges.begin();
+                        node = last->get_source();
                     }
                     else
                     {
-                        JWARN("The splitter in the cycle has no input!");
-                        next = nullptr;
+                        JWARN("The input number of splitter '" + node->name + "' in the cycle is not 1!");
+                        last = nullptr;
                         break;
                     }
                 }
-                if (next == nullptr)
+                if (last == nullptr)
                     continue;
-                if (cur == node)
-                {
-                    --num_node_outs;
-                    --j;
-                }
-                reversed.emplace_back(cur, next);
+                reversed.emplace_back(last);
                 // reverse the edge
-                auto _find = find(next->ins.begin(), next->ins.end(), cur);
-                if (_find != next->ins.end())
-                {
-                    next->ins.erase(_find);
-                }
-                _find = find(cur->outs.begin(), cur->outs.end(), next);
-                if (_find != cur->outs.end())
-                {
-                    cur->outs.erase(_find);
-                }
-                next->outs.emplace_back(cur);
-                cur->ins.emplace_back(next);
-                JINFO("The edge betweeen '" + cur->name + "' and '" + next->name + "' is reversed.");
+                last->reverse();
             }
         }
     }
     if (!reversed.empty())
     {
-        vector<pair<Node *, Node *>> &reversed_edges = netlist->getProperty(PROPERTIES::CYCLE);
+        vector<Edge *> &reversed_edges = netlist->getProperty(PROPERTIES::REVERSED);
         reversed_edges.insert(reversed_edges.end(), reversed.begin(), reversed.end());
     }
 }
 
 void Util::cycle_restore(Netlist *netlist)
 {
-    if (!netlist->hasProperty(PROPERTIES::CYCLE))
+    if (!netlist->hasProperty(PROPERTIES::REVERSED))
         return;
-    vector<pair<Node *, Node *>> &reversed = netlist->getProperty(PROPERTIES::CYCLE);
-    for (size_t i = 0, num_reversed = reversed.size(); i < num_reversed; ++i)
+    vector<Edge *> &reversed = netlist->getProperty(PROPERTIES::REVERSED);
+    for (auto &item : reversed)
     {
-        auto &item = reversed[i];
         // restore the edge
-        item.first->ins.erase(find(item.first->ins.begin(), item.first->ins.end(), item.second));
-        item.second->outs.erase(find(item.second->outs.begin(), item.second->outs.end(), item.first));
-        item.first->outs.emplace_back(item.second);
-        item.second->ins.emplace_back(item.first);
-        JINFO("The edge betweeen '" + item.first->name + "' and '" + item.second->name + "' is restored.");
+        item->reverse();
     }
-    vector<pair<Node *, Node *>>().swap(reversed);
+    vector<Edge *>().swap(reversed);
     netlist->removeProperty(PROPERTIES::CYCLE);
 }
 
@@ -365,20 +343,20 @@ bool Util::path_balance(Netlist *netlist)
         Node *cur = bfs.front();
         bfs.pop();
         maxLL = max(level[cur->id], maxLL);
-        for (size_t i = 0, num_cur_outs = cur->outs.size(); i < num_cur_outs; ++i)
+        auto successors = cur->get_successors();
+        for (auto &tar : successors)
         {
-            auto &tar = cur->outs[i];
-            if (level[tar->id] == -1 || level[cur->id] >= level[tar->id])
+            if (level[tar.second->id] == -1 || level[cur->id] >= level[tar.second->id])
             {
-                if (tar->containCLK())
+                if (tar.second->containCLK())
                 {
-                    level[tar->id] = floor(level[cur->id]) + 1;
+                    level[tar.second->id] = floor(level[cur->id]) + 1;
                 }
                 else
                 {
-                    level[tar->id] = level[cur->id] + INTERVAL;
+                    level[tar.second->id] = level[cur->id] + INTERVAL;
                 }
-                bfs.push(tar);
+                bfs.push(tar.second);
             }
         }
     }
@@ -399,31 +377,31 @@ bool Util::path_balance(Netlist *netlist)
             if (cur->type == SPL || cur->type == SPL3)
             {
                 double minChildLL = DBL_MAX;
-                for (size_t i = 0, num_cur_outs = cur->outs.size(); i < num_cur_outs; ++i)
+                for (auto tar : cur->outs)
                 {
-                    auto &tar = cur->outs[i];
-                    minChildLL = min(minChildLL, level[tar->id]);
+                    minChildLL = min(minChildLL, level[tar.second->id]);
                 }
                 level[cur->id] = minChildLL - INTERVAL;
             }
-            for (size_t i = 0, num_cur_ins = cur->ins.size(); i < num_cur_ins; ++i)
+            auto predecessors = cur->get_predecessors();
+            for (auto &src : predecessors)
             {
-                auto &src = cur->ins[i];
-                if (level[src->id] == -1 || level[cur->id] <= level[src->id])
+                if (level[src.second->id] == -1 || level[cur->id] <= level[src.second->id])
                 {
-                    if (src->containCLK())
+                    if (src.second->containCLK())
                     {
-                        level[src->id] = floor(level[cur->id]) - (cur->containCLK() ? 1 : 0);
+                        level[src.second->id] = floor(level[cur->id]) - (cur->containCLK() ? 1 : 0);
                     }
                     else
                     {
-                        level[src->id] = level[cur->id] - INTERVAL;
+                        level[src.second->id] = level[cur->id] - INTERVAL;
                     }
-                    bfs.emplace(src);
+                    bfs.emplace(src.second);
                 }
-                else if (!vis[src->id])
+                else if (!vis[src.second->id])
                 {
-                    bfs.emplace(src);
+                    vis[src.second->id] = 1;
+                    bfs.emplace(src.second);
                 }
             }
         }
@@ -433,12 +411,12 @@ bool Util::path_balance(Netlist *netlist)
     for (size_t i = 0; i < num_gate; ++i)
     {
         auto &cur = netlist->gates[i];
-        for (size_t i = 0, num_cur_ins = cur->ins.size(); i < num_cur_ins; ++i)
+        auto predecessors = cur->get_predecessors();
+        for (auto src : predecessors)
         {
-            auto &src = cur->ins[i];
-            if (level[i] - level[src->id] > 1 && src->type != _CLK && (cur->type != _EXOR || cur->type != _PO))
+            if (level[i] - level[src.second->id] > 1 && src.second->type != _CLK && (cur->type != _EXOR || cur->type != _PO))
             {
-                JWARN("The path balance condition is not satisfied between node '" + src->name + "' and node '" + cur->name + "'!");
+                JWARN("The path balance condition is not satisfied between node '", src.second->name, "' and node '", cur->name, "'!");
                 path_balanced = false;
             }
         }

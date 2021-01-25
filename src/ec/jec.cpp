@@ -117,11 +117,11 @@ void jec::create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &ex
             auto &node = layer[j];
             vec<PTRef> inputs;
             // layers[i][j]->ins->at(0) is clk
-            for (size_t k = 0, num_node_ins = node->ins.size(); k < num_node_ins; ++k)
+            auto predecessors = node->get_predecessors(false);
+            for (auto &npi : predecessors)
             {
-                auto &npi = node->ins[k];
-                if (npi->type != _CLK)
-                    inputs.push(exprs[npi->id]);
+                if (npi.second->type != _CLK)
+                    inputs.push(exprs[npi.second->id]);
             }
             if (inputs.size() == 0 && node->type > _PI)
             {
@@ -320,19 +320,19 @@ void jec::evaluate_min_cone(Netlist *miter)
                         ++exor_num[j];
                     continue;
                 }
-                for (size_t k = 0, num_cur_outs = cur->outs.size(); k < num_cur_outs; ++k)
+                auto successors = cur->get_successors();
+                for (auto &tout : successors)
                 {
-                    auto &tout = cur->outs[k];
-                    if (info[tout->id].second == -1)
+                    if (info[tout.second->id].second == -1)
                     {
-                        info[tout->id].second = j;
-                        cur_cone.emplace_back(tout);
-                        if (tout->type == _EXOR)
+                        info[tout.second->id].second = j;
+                        cones[j].emplace_back(tout.second);
+                        if (tout.second->type == _EXOR)
                             ++exor_num[j];
                     }
                     else
                     {
-                        size_t old_color = info[tout->id].second;
+                        size_t old_color = info[tout.second->id].second;
                         if (old_color == j)
                         {
                             continue;
@@ -444,11 +444,11 @@ void jec::evaluate_cvc4(Netlist *miter, bool incremental)
             auto &node = layers[i][j];
             vector<CVC4::Expr> inputs;
             // layers[i][j]->ins->at(0) is clk
-            for (size_t k = 0, num_node_ins = node->ins.size(); k < num_node_ins; ++k)
+            auto predecessors = node->get_predecessors(false);
+            for (auto &npi : predecessors)
             {
-                auto &npi = node->ins[k];
-                if (npi->type != _CLK)
-                    inputs.emplace_back(nodes[npi->id]);
+                if (npi.second->type != _CLK)
+                    inputs.emplace_back(nodes[npi.second->id]);
             }
             if (inputs.size() == 0)
             {

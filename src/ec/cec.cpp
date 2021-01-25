@@ -64,20 +64,22 @@ bool cec::evaluate(const vector<Node *> &nodes)
     bool visited[init_id] = {0};
     while (len > 0)
     {
-        while (len--) {
-            Node* cur = qu.front();
+        while (len--)
+        {
+            Node *cur = qu.front();
             qu.pop();
             cur->calculate();
             visited[cur->id] = 1;
-            for (auto &out : cur->outs)
+            std::unordered_map<std::string, Node *> successors = cur->get_successors();
+            for (auto &out : successors)
             {
                 if (!visited[cur->id])
                 {
-                    if (out->type == _EXOR && out->val == H)
+                    if (out.second->type == _EXOR && out.second->val == H)
                     {
                         return false;
                     }
-                    qu.push(out);
+                    qu.push(out.second);
                 }
             }
         }
@@ -86,6 +88,6 @@ bool cec::evaluate(const vector<Node *> &nodes)
     return true;
 }
 
-void cec::evaluate_from_POs_to_PIs(vector<Node *> &POs) {
-    
+void cec::evaluate_from_POs_to_PIs(vector<Node *> &POs)
+{
 }

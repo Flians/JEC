@@ -73,8 +73,8 @@ void Edge::reverse()
     this->set_source(this->tar);
     this->set_target(old_src);
 
-    bool reversed = this->getProperty(PROPERTIES::REVERSED);
-    this->setProperty(PROPERTIES::REVERSED, !reversed);
+    bool reversed = this->getProperty(PROPERTIES::CYCLE);
+    this->setProperty(PROPERTIES::CYCLE, !reversed);
 
     std::reverse(this->bend_points.begin(), this->bend_points.end());
 }

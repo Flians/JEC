@@ -2,12 +2,14 @@
 #define _EDGE_H_
 
 #include "circuit/port.h"
+#include "circuit/node.h"
 #include "util/libhead.h"
 #include "util/_point.hpp"
 #include "util/_properties.h"
 #include "util/_map_property.hpp"
 
 class Port;
+class Node;
 
 class Edge : virtual public MapProperty
 {

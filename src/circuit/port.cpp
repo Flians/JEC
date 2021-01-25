@@ -14,14 +14,16 @@ const std::unordered_map<PType, string, EnumClassHash> PType_Str = {
 
 Port::~Port()
 {
-    for (auto &in : this->in_edges)
+    std::size_t in_size = this->in_edges.size();
+    while ((in_size--) > 0)
     {
-        delete in;
+        delete *this->in_edges.begin();
     }
     this->in_edges.clear();
-    for (auto &out : this->out_edges)
+    std::size_t out_size = this->out_edges.size();
+    while ((out_size--) > 0)
     {
-        delete out;
+        delete *this->out_edges.begin();
     }
     this->out_edges.clear();
     this->own = nullptr;

@@ -125,7 +125,7 @@ std::unordered_map<std::string, Node *> Node::get_predecessors(bool has_clk) con
                 Node *src = i_edge->get_source();
                 if (src)
                 {
-                    if (has_clk && src->type == _CLK)
+                    if (!has_clk && src->type == _CLK)
                     {
                         continue;
                     }
@@ -149,7 +149,7 @@ std::unordered_map<std::string, Port *> Node::get_predecessors_port(bool has_clk
                 Node *src = i_edge->get_source();
                 if (src)
                 {
-                    if (has_clk && src->type == _CLK)
+                    if (!has_clk && src->type == _CLK)
                     {
                         continue;
                     }

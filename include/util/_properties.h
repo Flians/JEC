@@ -5,6 +5,7 @@
 #include "util/_map_property.hpp"
 
 class Node;
+class Edge;
 
 class PROPERTIES final
 {
@@ -15,13 +16,13 @@ private:
     ~PROPERTIES();
 
 public:
-    const static Property<bool> REVERSED;
-    const static Property<vector<pair<Node *, Node *>>> CYCLE; // reversed edges: vector<pair<Node *, Node *>> source -> target
-    const static Property<bool> CLEAN_SPL;                     // bool
-    const static Property<bool> CLEAN_DFF;                     // bool
-    const static Property<vector<vector<Node *>>> LAYERS;      // vector<vector<Node*>>
-    const static Property<bool> PATH_BALANCED;                 // bool
-    const static Property<bool> EQ;                            // bool
+    const static Property<bool> CYCLE;
+    const static Property<vector<Edge *>> REVERSED;       // reversed edges: vector<pair<Node *, Node *>> source -> target
+    const static Property<bool> CLEAN_SPL;                // bool
+    const static Property<bool> CLEAN_DFF;                // bool
+    const static Property<vector<vector<Node *>>> LAYERS; // vector<vector<Node*>>
+    const static Property<bool> PATH_BALANCED;            // bool
+    const static Property<bool> EQ;                       // bool
 };
 
 #endif
