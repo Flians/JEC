@@ -53,6 +53,7 @@ Netlist::~Netlist()
 void Netlist::parse_inport(Node *g, const string &name, const string &item, const string &line, const std::unordered_map<std::string, Port *> &wires)
 {
     Port *port = new Port(name, _IN, g, this->num_port++);
+    this->ports.emplace_back(port);
     std::unordered_map<std::string, Port *>::const_iterator _find_p;
     std::unordered_map<std::string, Node *>::const_iterator _find_n;
     if ((_find_p = wires.find(item)) != wires.end())
@@ -69,9 +70,11 @@ void Netlist::parse_inport(Node *g, const string &name, const string &item, cons
         if (index > 2)
             index = 2;
         Node *const_PI = new Node(Const_Str.at((Value)index), _CONSTANT, this->num_gate++, (Value)index);
-        const_PI->outs.emplace(PType_Str.at(_OUT), new Port(_OUT, const_PI));
-        const_PI->outs.begin()->second->add_output(port);
         this->gates.emplace_back(const_PI);
+        Port *port_ = new Port(_OUT, const_PI, this->num_port++);
+        this->ports.emplace_back(port_);
+        const_PI->outs.emplace(port_->name, port_);
+        port_->add_output(port);
         this->map_PIs.emplace(const_PI->name, const_PI);
     }
     else
@@ -84,6 +87,7 @@ void Netlist::parse_inport(Node *g, const string &name, const string &item, cons
 void Netlist::parse_outport(Node *g, const string &name, const string &item, const string &line, const std::unordered_map<std::string, Port *> &wires)
 {
     Port *port = new Port(name, _OUT, g, this->num_port++);
+    this->ports.emplace_back(port);
     std::unordered_map<std::string, Port *>::const_iterator _find_p;
     std::unordered_map<std::string, Node *>::const_iterator _find_n;
     if ((_find_p = wires.find(item)) != wires.end())
@@ -226,23 +230,27 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                Node *pi_new = new Node(item + "[" + to_string(i) + "]", _PI, this->num_gate++);
-                                pi_new->outs.emplace(PType_Str.at(_OUT), new Port(PType_Str.at(_OUT), _OUT, pi_new, this->num_port++));
-                                this->gates.emplace_back(pi_new);
-                                this->map_PIs.emplace(pi_new->name, pi_new);
+                                Node *node_ = new Node(item + "[" + to_string(i) + "]", _PI, this->num_gate++);
+                                this->gates.emplace_back(node_);
+                                Port *port_ = new Port(_OUT, node_, this->num_port++);
+                                this->ports.emplace_back(port_);
+                                node_->outs.emplace(port_->name, port_);
+                                this->map_PIs.emplace(node_->name, node_);
                             }
                         }
                         else
                         {
-                            Node *new_pi = new Node(item, _PI, this->num_gate++);
-                            new_pi->outs.emplace(PType_Str.at(_OUT), new Port(PType_Str.at(_OUT), _OUT, new_pi, this->num_port++));
-                            this->gates.emplace_back(new_pi);
-                            this->map_PIs.emplace(new_pi->name, new_pi);
+                            Node *node_ = new Node(item, _PI, this->num_gate++);
+                            this->gates.emplace_back(node_);
+                            Port *port_ = new Port(_OUT, node_, this->num_port++);
+                            this->ports.emplace_back(port_);
+                            node_->outs.emplace(port_->name, port_);
+                            this->map_PIs.emplace(node_->name, node_);
                             if (item.find("clk") != string::npos)
                             {
-                                new_pi->type = _CLK;
-                                swap(this->gates[0]->id, new_pi->id);
-                                swap(this->gates[0], this->gates[this->num_gate - 1]);
+                                node_->type = _CLK;
+                                swap(this->gates.front()->id, node_->id);
+                                swap(this->gates.front(), this->gates.back());
                             }
                         }
                     }
@@ -266,18 +274,22 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                Node *new_po = new Node(item + "[" + to_string(i) + "]", _PO, this->num_gate++);
-                                new_po->ins.emplace(PType_Str.at(_IN), new Port(PType_Str.at(_IN), _IN, new_po, this->num_port++));
-                                this->gates.emplace_back(new_po);
-                                this->map_POs.emplace(new_po->name, new_po);
+                                Node *node_ = new Node(item + "[" + to_string(i) + "]", _PO, this->num_gate++);
+                                this->gates.emplace_back(node_);
+                                Port *port_ = new Port(_IN, node_, this->num_port++);
+                                this->ports.emplace_back(port_);
+                                node_->ins.emplace(port_->name, port_);
+                                this->map_POs.emplace(node_->name, node_);
                             }
                         }
                         else
                         {
-                            Node *new_po = new Node(item, _PO, this->num_gate++);
-                            new_po->ins.emplace(PType_Str.at(_IN), new Port(PType_Str.at(_IN), _IN, new_po, this->num_port++));
-                            this->gates.emplace_back(new_po);
-                            this->map_POs.emplace(new_po->name, new_po);
+                            Node *node_ = new Node(item, _PO, this->num_gate++);
+                            this->gates.emplace_back(node_);
+                            Port *port_ = new Port(_IN, node_, this->num_port++);
+                            this->ports.emplace_back(port_);
+                            node_->ins.emplace(port_->name, port_);
+                            this->map_POs.emplace(node_->name, node_);
                         }
                     }
                     break;
@@ -423,7 +435,6 @@ void Netlist::parse_netlist(ifstream &in, bool is_golden)
     stringstream f_input;
     f_input.str(buffer);
     this->parse_netlist(f_input, is_golden);
-    this->id_reassign();
     buffer.clear();
     f_input.clear();
 }
