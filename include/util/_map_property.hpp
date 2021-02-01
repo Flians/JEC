@@ -97,6 +97,7 @@ private:
 public:
     Field() = default;
     Field(const T &val_) : val(val_){};
+    ~Field() = default;
     T &get_value()
     {
         return val;

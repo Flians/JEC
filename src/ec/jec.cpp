@@ -385,7 +385,7 @@ void jec::evaluate_min_cone(Netlist *miter)
     }
     size_t num_pis = layers[0].size();
     // the max number of cones is the size of PIs.
-    vector<deque<Node *>> cones(num_pis);
+    vector<deque<Node *>> cones(num_pis, deque<Node *>());
     // init cones
     for (size_t i = 0; i < num_pis; ++i)
     {

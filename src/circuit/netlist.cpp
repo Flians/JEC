@@ -522,23 +522,8 @@ void Netlist::id_reassign()
     {
         return;
     }
-    sort(this->gates.begin(), this->gates.end(), [](Node *a, Node *b) {
-        if (a && b)
-        {
-            return a->type < b->type;
-        }
-        else
-        {
-            return a != nullptr;
-        }
-    });
     this->map_PIs.clear();
     this->map_POs.clear();
-    while (!this->gates.back())
-    {
-        --this->num_gate;
-        this->gates.pop_back();
-    }
     size_t i = 0;
     while (i < this->num_gate)
     {
@@ -557,11 +542,16 @@ void Netlist::id_reassign()
         }
         else
         {
-            this->gates[--this->num_gate]->id = i;
+            while (this->num_gate > i && !this->gates[--this->num_gate]);
+            if (this->num_gate == i) {
+                break;
+            }
+            this->gates[this->num_gate]->id = i;
             this->gates[i] = this->gates[this->num_gate];
-            this->gates.pop_back();
+            this->gates[this->num_gate] = nullptr;
         }
     }
+    this->gates.erase(this->gates.begin() + this->num_gate, this->gates.end());
     vector<Node *>(this->gates).swap(this->gates);
 }
 
