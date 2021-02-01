@@ -168,7 +168,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
             }
             if (Str_GType.find(item) != Str_GType.end())
             {
-                GType nt = Str_GType.at(item);
+                const GType &nt = Str_GType.at(item);
                 switch (nt)
                 {
                 case _MODULE:
@@ -202,20 +202,22 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", _PI, this->num_gate));
-                                this->map_PIs.insert(make_pair(this->gates.back()->name, this->num_gate++));
+                                Node *pi_new = new Node(item + "[" + to_string(i) + "]", _PI, this->num_gate);
+                                this->gates.emplace_back(pi_new);
+                                this->map_PIs.insert(make_pair(pi_new->name, this->num_gate++));
                             }
                         }
                         else
                         {
-                            this->gates.emplace_back(new Node(item, _PI, this->num_gate));
-                            this->map_PIs.insert(make_pair(this->gates.back()->name, this->num_gate++));
+                            Node *new_pi = new Node(item, _PI, this->num_gate);
+                            this->gates.emplace_back(new_pi);
+                            this->map_PIs.insert(make_pair(new_pi->name, this->num_gate++));
                             if (item.find("clk") != string::npos)
                             {
-                                this->gates.back()->type = _CLK;
-                                swap(this->map_PIs[item], this->map_PIs[this->gates.front()->name]);
-                                swap(this->gates.front()->id, this->gates.back()->id);
-                                swap(this->gates.front(), this->gates.back());
+                                new_pi->type = _CLK;
+                                swap(this->map_PIs[item], this->map_PIs[new_pi->name]);
+                                swap(this->gates[0]->id, new_pi->id);
+                                swap(this->gates[0], new_pi);
                             }
                         }
                     }
@@ -233,14 +235,16 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                this->gates.emplace_back(new Node(item + "[" + to_string(i) + "]", _PO, this->num_gate));
-                                this->map_POs.insert(make_pair(this->gates.back()->name, this->num_gate++));
+                                Node *new_po = new Node(item + "[" + to_string(i) + "]", _PO, this->num_gate);
+                                this->gates.emplace_back(new_po);
+                                this->map_POs.insert(make_pair(new_po->name, this->num_gate++));
                             }
                         }
                         else
                         {
-                            this->gates.emplace_back(new Node(item, _PO, this->num_gate));
-                            this->map_POs.insert(make_pair(this->gates.back()->name, this->num_gate++));
+                            Node *new_po = new Node(item, _PO, this->num_gate);
+                            this->gates.emplace_back(new_po);
+                            this->map_POs.insert(make_pair(new_po->name, this->num_gate++));
                         }
                     }
                     break;
@@ -352,7 +356,6 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
         this->delete_node(item.second);
     }
     wires.clear();
-    this->id_reassign();
 }
 
 void Netlist::parse_netlist(ifstream &in, bool is_golden)
