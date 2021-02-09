@@ -152,9 +152,10 @@ public:
     template <typename T>
     void removeProperty(const Property<T> &property)
     {
-        if (this->hasProperty<T>(property))
+        auto _find = this->properties.find(dynamic_cast<const PropertyInterface &>(property));
+        if (_find != this->properties.end())
         {
-            this->properties.erase(dynamic_cast<const PropertyInterface &>(property));
+            this->properties.erase(_find);
         }
     }
     /**
@@ -164,12 +165,13 @@ public:
     template <typename T>
     T &getProperty(const Property<T> &property)
     {
-
-        if (!this->hasProperty<T>(property))
+        auto _find = this->properties.find(dynamic_cast<const PropertyInterface &>(property));
+        if (_find == this->properties.end())
         {
             this->setProperty<T>(property, property.get_default());
+            _find = this->properties.find(dynamic_cast<const PropertyInterface &>(property));
         }
-        return dynamic_pointer_cast<Field<T>>(this->properties.at(dynamic_cast<const PropertyInterface &>(property)))->get_value();
+        return dynamic_pointer_cast<Field<T>>(_find->second)->get_value();
     }
     /**
      * @return determine if the property exists in this->properties.
@@ -194,7 +196,9 @@ public:
     void removeAllProperties()
     {
         this->properties.clear();
+#ifndef WIN
         malloc_trim(0);
+#endif
     }
 };
 

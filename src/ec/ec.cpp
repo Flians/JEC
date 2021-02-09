@@ -7,7 +7,7 @@ ec::ec(const string &path_output)
     {
         if (Libfile::createDirectory(path_output) == -1)
         {
-            ERROR_Exit_Fout("The output file can not be open!");
+            JERROR("The output file can not be open!");
         }
         this->fout.open(path_output, ios::out);
     }
@@ -17,7 +17,7 @@ ec::~ec()
 {
     this->fout.flush();
     this->fout.close();
-    cout << "The ec is destroyed!" << endl;
+    JINFO("The ec is destroyed!");
 }
 
 size_t ec::merge_cone(int cur_color, Cone &cur_cone, Cone &other_cone, vector<pair<size_t, int>> &info)

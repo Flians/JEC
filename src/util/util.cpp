@@ -67,7 +67,7 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
     Netlist *miter = golden;
     if (golden->map_PIs.size() != revised->map_PIs.size() || golden->map_POs.size() != revised->map_POs.size())
     {
-        ERROR_Exit_Fout("The golden Verilog has a different number of PIs and POs than the revised Verilog!");
+        JERROR("The golden Verilog has a different number of PIs and POs than the revised Verilog!");
     }
     auto iter = golden->map_PIs.begin(), iter_end = golden->map_PIs.end();
     // merge all inputs
@@ -77,7 +77,7 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
         auto pi = revised->map_PIs.find(iter->first);
         if (pi == revised->map_PIs.end())
         {
-            ERROR_Exit_Fout("The input '" + iter->first + "' in the golden Verilog does not exist in the revised Verilog!");
+            JERROR("The input '" + iter->first + "' in the golden Verilog does not exist in the revised Verilog!");
         }
         vector<Node *>::iterator it = revised->gates[pi->second]->outs.begin();
         vector<Node *>::iterator it_end = revised->gates[pi->second]->outs.end();
@@ -85,7 +85,7 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
         {
             if (!replace_node_by_name((*it)->ins, golden->gates[iter->second]))
             {
-                ERROR_Exit_Fout("There are some troubles in util.make_miter!");
+                JERROR("There are some troubles in util.make_miter!");
             }
             golden->gates[iter->second]->outs.emplace_back(*it);
             ++it;
@@ -104,7 +104,7 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
         auto po = revised->map_POs.find(iter->first);
         if (po == revised->map_POs.end())
         {
-            ERROR_Exit_Fout("The output '" + po->first + "' in the golden Verilog does not exist in the revised Verilog!");
+            JERROR("The output '" + po->first + "' in the golden Verilog does not exist in the revised Verilog!");
         }
         golden->gates[iter->second]->type = _EXOR;
         for (auto &tg : revised->gates[po->second]->ins)
@@ -286,7 +286,7 @@ void Util::cycle_break(Netlist *netlist)
                     }
                     else
                     {
-                        WARN_Fout("The splitter in the cycle has no input!");
+                        JWARN("The splitter in the cycle has no input!");
                         last = nullptr;
                         break;
                     }
@@ -414,7 +414,7 @@ bool Util::path_balance(Netlist *netlist)
         {
             if (level[i] - level[src->id] > 1 && src->type != _CLK)
             {
-                WARN_Fout("The path balance condition is not satisfied between node '" + src->name + "' and node '" + netlist->gates[i]->name + "'!");
+                JWARN("The path balance condition is not satisfied between node '" + src->name + "' and node '" + netlist->gates[i]->name + "'!");
                 path_balanced = false;
             }
         }
@@ -434,6 +434,5 @@ bool Util::path_balance(Netlist *netlist)
     {
         netlist->setProperty<bool>(PROPERTIES::PATH_BALANCED, false);
     }
-
     return path_balanced;
 }

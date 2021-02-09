@@ -144,7 +144,7 @@ std::unique_ptr<T> make_unique(Ts &&...params)
 }
 
 // show error message and exit
-inline void ERROR_Exit_Fout(string &&message)
+inline void JERROR(string &&message)
 {
     std::cerr << "ERROR: ";
 #ifdef WIN
@@ -159,7 +159,7 @@ inline void ERROR_Exit_Fout(string &&message)
 }
 
 // show warning message
-inline void WARN_Fout(string &&message)
+inline void JWARN(string &&message)
 {
     std::cerr << "WARN: ";
 #ifdef WIN
@@ -173,9 +173,9 @@ inline void WARN_Fout(string &&message)
 }
 
 // show info message
-inline void INFO_Fout(string &&message)
+inline void JINFO(string &&message)
 {
-    cerr << "INFO: " << message << endl;
+    std::cerr << "INFO: " << message << endl;
 }
 
 #endif

@@ -63,7 +63,7 @@ Node::~Node()
     // cout << "~delete Node: " << this->name << endl;
     for (auto &in : this->ins)
     {
-        if (in && !in->outs.empty())
+        if (in)
         {
             vector<Node *>::iterator temp = find(in->outs.begin(), in->outs.end(), this);
             if (temp != in->outs.end())
@@ -79,7 +79,7 @@ Node::~Node()
 
     for (auto &out : this->outs)
     {
-        if (out && !out->ins.empty())
+        if (out)
         {
             vector<Node *>::iterator temp = find(out->ins.begin(), out->ins.end(), this);
             if (temp != out->ins.end())

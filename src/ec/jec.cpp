@@ -81,7 +81,7 @@ void jec::evaluate_from_PIs_to_POs(Netlist *miter)
 {
     if (miter->isEmpty())
     {
-        WARN_Fout("The netlist '" + miter->name + "' is empty!");
+        JWARN("The netlist '" + miter->name + "' is empty!");
         return;
     }
     vector<vector<Node *>> &layers = miter->getProperty(PROPERTIES::LAYERS);
@@ -106,7 +106,7 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
 {
     if (miter->isEmpty())
     {
-        WARN_Fout("The netlist is empty!");
+        JWARN("The netlist is empty!");
         return;
     }
     vector<vector<Node *>> &layers = miter->getProperty(PROPERTIES::LAYERS);
@@ -144,7 +144,7 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
             }
             if (inputs.size() == 0)
             {
-                ERROR_Exit_Fout("The inputs is empty! in jec.evaluate_opensmt!");
+                JERROR("The inputs is empty! in jec.evaluate_opensmt!");
             }
             PTRef res;
             switch (node->type)
@@ -237,7 +237,7 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
 {
     if (!cur)
     {
-        WARN_Fout("The current node is NULL in jec.build_equation_dfs!");
+        JWARN("The current node is NULL in jec.build_equation_dfs!");
         return;
     }
     if (record.find(cur) != record.end() || cur->type == _CLK)
@@ -265,7 +265,7 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
         }
         if (inputs.size() == 0)
         {
-            WARN_Fout("The inputs is empty! in jec.build_equation_dfs!");
+            JWARN("The inputs is empty! in jec.build_equation_dfs!");
         }
         PTRef res;
         switch (cur->type)
@@ -352,7 +352,7 @@ bool jec::evaluate_opensmt(deque<Node *> &cone)
             }
             else
             {
-                WARN_Fout("The result2 is unknown in jec.evaluate_opensmt!");
+                JWARN("The result2 is unknown in jec.evaluate_opensmt!");
             }
         }
         else if (reslut == s_False)
@@ -362,7 +362,7 @@ bool jec::evaluate_opensmt(deque<Node *> &cone)
         }
         else
         {
-            WARN_Fout("The result is unknown in jec.evaluate_opensmt!");
+            JWARN("The result is unknown in jec.evaluate_opensmt!");
         }
     }
     nodes.clear();
@@ -385,10 +385,11 @@ void jec::evaluate_min_cone(Netlist *miter)
     }
     size_t num_pis = layers[0].size();
     // the max number of cones is the size of PIs.
-    vector<deque<Node *>> cones(num_pis, deque<Node *>());
+    vector<deque<Node *>> cones(num_pis);
     // init cones
     for (size_t i = 0; i < num_pis; ++i)
     {
+        cout << layers[0][i]->id << " " << layers[0][i]->name << endl;
         info[layers[0][i]->id].second = i;
         if (layers[0][i]->type != _CLK)
         {
@@ -478,7 +479,7 @@ void jec::evaluate_cvc4(Netlist *miter, bool incremental)
 {
     if (miter->isEmpty())
     {
-        WARN_Fout("The netlist'" + miter->name + "' is empty!");
+        JWARN("The netlist'" + miter->name + "' is empty!");
         return;
     }
 
@@ -516,7 +517,7 @@ void jec::evaluate_cvc4(Netlist *miter, bool incremental)
             }
             if (inputs.size() == 0)
             {
-                WARN_Fout("The inputs is empty! in jec.evaluate_opensmt!");
+                JWARN("The inputs is empty! in jec.evaluate_opensmt!");
             }
             CVC4::Expr res;
             switch (node->type)
