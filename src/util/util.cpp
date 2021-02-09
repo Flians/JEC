@@ -368,61 +368,69 @@ bool Util::path_balance(Netlist *netlist)
         maxLL = max(level[po.second], maxLL);
         bfs.push(netlist->gates[po.second]);
     }
-    while (!bfs.empty())
+
+    bool has_cycle = netlist->hasProperty(PROPERTIES::CYCLE);
+    if (has_cycle)
     {
-        Node *cur = bfs.front();
-        bfs.pop();
-        for (Node *src : cur->ins)
+        while (!bfs.empty())
         {
-            if (level[src->id] == -1 || level[cur->id] <= level[src->id])
+            Node *cur = bfs.front();
+            bfs.pop();
+            vis[cur->id] = 1;
+            if (cur->type == SPL || cur->type == SPL3)
             {
-                /*
-                if (!layeredGraph.getProperty(InternalProperties.CYCLIC))
-                    System.err.println("\nThere are some wrong in PathBalanceLayer.assignLayers");
-                */
-                if (src->containCLK())
+                double minChildLL = DBL_MAX;
+                for (auto tar : cur->outs)
                 {
-                    level[src->id] = floor(level[cur->id]) - (cur->containCLK() ? 1 : 0);
+                    minChildLL = min(minChildLL, level[tar->id]);
                 }
-                else
+                level[cur->id] = minChildLL - INTERVAL;
+            }
+            for (Node *src : cur->ins)
+            {
+                if (level[src->id] == -1 || level[cur->id] <= level[src->id])
                 {
-                    level[src->id] = level[cur->id] - INTERVAL;
+                    if (src->containCLK())
+                    {
+                        level[src->id] = floor(level[cur->id]) - (cur->containCLK() ? 1 : 0);
+                    }
+                    else
+                    {
+                        level[src->id] = level[cur->id] - INTERVAL;
+                    }
+                    bfs.push(src);
                 }
-                bfs.push(src);
+                else if (!vis[src->id])
+                {
+                    bfs.push(src);
+                }
             }
-            if (!vis[src->id])
-            {
-                vis[src->id] = 1;
-                bfs.push(src);
-            }
-        }
-        if (cur->type == SPL || cur->type == SPL3)
-        {
-            double minChildLL = DBL_MAX;
-            for (auto tar : cur->outs)
-            {
-                minChildLL = min(minChildLL, level[tar->id]);
-            }
-            level[cur->id] = minChildLL - INTERVAL;
         }
     }
-    map<double, vector<Node *>> groups;
+    std::map<double, vector<Node *>> groups;
     bool path_balanced = true;
     for (size_t i = 0; i < num_gate; ++i)
     {
-        for (auto src : netlist->gates[i]->ins)
+        auto cur = netlist->gates[i];
+        for (auto src : cur->ins)
         {
             if (level[i] - level[src->id] > 1 && src->type != _CLK)
             {
-                JWARN("The path balance condition is not satisfied between node '" + src->name + "' and node '" + netlist->gates[i]->name + "'!");
+                JWARN("The path balance condition is not satisfied between node '" + src->name + "' and node '" + cur->name + "'!");
                 path_balanced = false;
             }
         }
-        if (groups.find(level[i]) == groups.end())
+        auto _find = groups.find(level[i]);
+        if (_find == groups.end())
         {
-            groups.insert(make_pair(level[i], vector<Node *>()));
+            auto item = vector<Node *>();
+            item.emplace_back(cur);
+            groups.emplace(level[i], item);
         }
-        groups[level[i]].emplace_back(netlist->gates[i]);
+        else
+        {
+            _find->second.emplace_back(cur);
+        }
     }
     vector<vector<Node *>> &layers = netlist->getProperty(PROPERTIES::LAYERS);
     for (auto item : groups)

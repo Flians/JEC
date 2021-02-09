@@ -35,7 +35,7 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
     miter.clean_spl(1);
     if (!Util::path_balance(&miter))
     {
-        WARN_Fout("The netlist '" + miter.name + "' is not path_balanced!");
+        JWARN("The netlist '" + miter.name + "' is not path_balanced!");
     }
     if (merge)
         times[3] = miter.merge_nodes_between_networks();
@@ -88,7 +88,7 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
         "max",
         // "multiplier",
         "sin"};
-    int patch = 100;
+    int patch = 1;
     size_t num_case = cases.size();
     vector<vector<double>> avg(num_case, vector<double>(4, 0.0));
     for (int i = 0; i < patch; ++i)
