@@ -17,8 +17,8 @@ class Netlist : virtual public MapProperty
 public:
     string name;
     vector<Node *> gates;
-    std::unordered_map<std::string, int> map_PIs;
-    std::unordered_map<std::string, int> map_POs;
+    std::unordered_map<std::string, Node *> map_PIs;
+    std::unordered_map<std::string, Node *> map_POs;
 
     Point<> position;
     Point<> size;

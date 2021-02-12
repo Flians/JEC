@@ -389,7 +389,6 @@ void jec::evaluate_min_cone(Netlist *miter)
     // init cones
     for (size_t i = 0; i < num_pis; ++i)
     {
-        cout << layers[0][i]->id << " " << layers[0][i]->name << endl;
         info[layers[0][i]->id].second = i;
         if (layers[0][i]->type != _CLK)
         {

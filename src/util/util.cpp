@@ -79,19 +79,19 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
         {
             JERROR("The input '" + iter->first + "' in the golden Verilog does not exist in the revised Verilog!");
         }
-        vector<Node *>::iterator it = revised->gates[pi->second]->outs.begin();
-        vector<Node *>::iterator it_end = revised->gates[pi->second]->outs.end();
+        vector<Node *>::iterator it = pi->second->outs.begin();
+        vector<Node *>::iterator it_end = pi->second->outs.end();
         while (it != it_end)
         {
-            if (!replace_node_by_name((*it)->ins, golden->gates[iter->second]))
+            if (!replace_node_by_name((*it)->ins, iter->second))
             {
                 JERROR("There are some troubles in util.make_miter!");
             }
-            golden->gates[iter->second]->outs.emplace_back(*it);
+            iter->second->outs.emplace_back(*it);
             ++it;
         }
-        delete revised->gates[pi->second];
-        revised->gates[pi->second] = nullptr;
+        revised->gates[pi->second->id] = nullptr;
+        delete pi->second;
         ++iter;
     }
     revised->map_PIs.clear();
@@ -106,14 +106,14 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
         {
             JERROR("The output '" + po->first + "' in the golden Verilog does not exist in the revised Verilog!");
         }
-        golden->gates[iter->second]->type = _EXOR;
-        for (auto &tg : revised->gates[po->second]->ins)
+        iter->second->type = _EXOR;
+        for (auto &tg : po->second->ins)
         {
-            golden->gates[iter->second]->ins.emplace_back(tg);
-            tg->outs.emplace_back(golden->gates[iter->second]);
+            iter->second->ins.emplace_back(tg);
+            tg->outs.emplace_back(iter->second);
         }
-        delete revised->gates[po->second];
-        revised->gates[po->second] = nullptr;
+        revised->gates[po->second->id] = nullptr;
+        delete po->second;
         ++iter;
     }
     revised->map_POs.clear();
@@ -337,8 +337,8 @@ bool Util::path_balance(Netlist *netlist)
     queue<Node *> bfs;
     for (auto pi : netlist->map_PIs)
     {
-        bfs.emplace(netlist->gates[pi.second]);
-        level[pi.second] = 0;
+        bfs.emplace(pi.second);
+        level[pi.second->id] = 0;
     }
     while (!bfs.empty())
     {
@@ -364,9 +364,10 @@ bool Util::path_balance(Netlist *netlist)
     bool vis[num_gate] = {0};
     for (auto po : netlist->map_POs)
     {
-        vis[po.second] = 1;
-        maxLL = max(level[po.second], maxLL);
-        bfs.push(netlist->gates[po.second]);
+        auto po_id = po.second->id;
+        vis[po_id] = 1;
+        maxLL = max(level[po_id], maxLL);
+        bfs.push(po.second);
     }
 
     bool has_cycle = netlist->hasProperty(PROPERTIES::CYCLE);

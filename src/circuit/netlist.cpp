@@ -53,7 +53,7 @@ void Netlist::parse_inport(Node *g, const string &item, const string &line, cons
     }
     else if (map_PIs.find(item) != map_PIs.end())
     {
-        port = this->gates[this->map_PIs[item]];
+        port = this->gates[this->map_PIs[item]->id];
     }
     else if (item.length() == 4 && Libstring::startsWith(item, "1'b"))
     {
@@ -62,7 +62,7 @@ void Netlist::parse_inport(Node *g, const string &item, const string &line, cons
             index = 2;
         port = new Node(Const_Str.at((Value)index), _CONSTANT, this->num_gate++, (Value)index);
         this->gates.emplace_back(port);
-        this->map_PIs.insert(make_pair(port->name, port->id));
+        this->map_PIs.insert(make_pair(port->name, port));
     }
     else
     {
@@ -85,7 +85,7 @@ void Netlist::parse_outport(Node *g, const string &item, const string &line, con
     }
     else if (this->map_POs.find(item) != this->map_POs.end())
     {
-        port = this->gates[this->map_POs[item]];
+        port = this->gates[this->map_POs[item]->id];
     }
     else
     {
@@ -202,16 +202,16 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                Node *pi_new = new Node(item + "[" + to_string(i) + "]", _PI, this->num_gate);
+                                Node *pi_new = new Node(item + "[" + to_string(i) + "]", _PI, this->num_gate++);
                                 this->gates.emplace_back(pi_new);
-                                this->map_PIs.insert(make_pair(pi_new->name, this->num_gate++));
+                                this->map_PIs.emplace(pi_new->name, pi_new);
                             }
                         }
                         else
                         {
-                            Node *new_pi = new Node(item, _PI, this->num_gate);
+                            Node *new_pi = new Node(item, _PI, this->num_gate++);
                             this->gates.emplace_back(new_pi);
-                            this->map_PIs.insert(make_pair(new_pi->name, this->num_gate++));
+                            this->map_PIs.emplace(new_pi->name, new_pi);
                             if (item.find("clk") != string::npos)
                             {
                                 new_pi->type = _CLK;
@@ -235,16 +235,16 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
-                                Node *new_po = new Node(item + "[" + to_string(i) + "]", _PO, this->num_gate);
+                                Node *new_po = new Node(item + "[" + to_string(i) + "]", _PO, this->num_gate++);
                                 this->gates.emplace_back(new_po);
-                                this->map_POs.insert(make_pair(new_po->name, this->num_gate++));
+                                this->map_POs.emplace(new_po->name, new_po);
                             }
                         }
                         else
                         {
-                            Node *new_po = new Node(item, _PO, this->num_gate);
+                            Node *new_po = new Node(item, _PO, this->num_gate++);
                             this->gates.emplace_back(new_po);
-                            this->map_POs.insert(make_pair(new_po->name, this->num_gate++));
+                            this->map_POs.emplace(new_po->name, new_po);
                         }
                     }
                     break;
@@ -383,7 +383,7 @@ void Netlist::make_miter(ifstream &golden, ifstream &revised)
     // change the outputs' type into _EXOR
     for (auto po : this->map_POs)
     {
-        this->gates[po.second]->type = _EXOR;
+        this->gates[po.second->id]->type = _EXOR;
     }
     vector<Node *>(this->gates).swap(this->gates);
     this->update_num_gates();
@@ -530,14 +530,6 @@ void Netlist::id_reassign()
         if (this->gates[i])
         {
             this->gates[i]->id = i;
-            if (this->gates[i]->type <= _PI)
-            {
-                this->map_PIs[this->gates[i]->name] = i;
-            }
-            else if (this->gates[i]->type <= _PO)
-            {
-                this->map_POs[this->gates[i]->name] = i;
-            }
             ++i;
         }
         else
@@ -632,23 +624,26 @@ int Netlist::merge_nodes_between_networks()
         size_t num_node = layers[i].size();
         for (size_t j = 0; j < num_node; ++j)
         {
-            if (!layers[i][j] || layers[i][j]->ins.empty())
+            auto cur = layers[i][j];
+            auto cur_type = cur->type;
+            if (!cur || cur->ins.empty())
             {
                 continue;
             }
             Roaring same_id;
             bool flag = false;
-            size_t num_npi = layers[i][j]->ins.size();
+            size_t num_npi = cur->ins.size();
             for (size_t k = 0; k < num_npi; ++k)
             {
-                if (layers[i][j]->ins[k]->type == _CLK)
+                auto cur_in = cur->ins[k];
+                if (cur_in->type == _CLK)
                 {
                     continue;
                 }
                 Roaring tmp;
-                for (auto &iout : layers[i][j]->ins[k]->outs)
+                for (auto &iout : cur_in->outs)
                 {
-                    if (iout && iout->type == layers[i][j]->type && iout != layers[i][j])
+                    if (iout && iout->type == cur_type && iout != cur)
                     {
                         if (iout->ins.size() != num_npi)
                         {
@@ -671,15 +666,16 @@ int Netlist::merge_nodes_between_networks()
             Roaring::const_iterator it = same_id.begin();
             while (it != same_id.end())
             {
-                if (this->gates[it.i.current_value])
+                auto eq_id = it.i.current_value;
+                if (this->gates[eq_id])
                 {
-                    if (this->merge_node(layers[i][j], this->gates[it.i.current_value]))
+                    if (this->merge_node(cur, this->gates[eq_id]))
                     {
-                        this->gates[it.i.current_value] = nullptr;
-                        position[layers[position[it.i.current_value].first].back()->id].second = position[it.i.current_value].second;
-                        layers[position[it.i.current_value].first][position[it.i.current_value].second] = layers[position[it.i.current_value].first].back();
-                        layers[position[it.i.current_value].first].pop_back();
-                        if (position[it.i.current_value].first == i)
+                        this->gates[eq_id] = nullptr;
+                        position[layers[position[eq_id].first].back()->id].second = position[eq_id].second;
+                        layers[position[eq_id].first][position[eq_id].second] = layers[position[eq_id].first].back();
+                        layers[position[eq_id].first].pop_back();
+                        if (position[eq_id].first == i)
                         {
                             --num_node;
                         }
@@ -687,7 +683,7 @@ int Netlist::merge_nodes_between_networks()
                     }
                     else
                     {
-                        JWARN("The node '" + this->gates[it.i.current_value]->name + "' can be replaced by the node '" + layers[i][j]->name + "'!");
+                        JWARN("The node '" + this->gates[eq_id]->name + "' can be replaced by the node '" + layers[i][j]->name + "'!");
                     }
                 }
                 ++it;
