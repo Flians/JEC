@@ -119,7 +119,7 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
     revised->map_POs.clear();
     size_t num_gate = golden->get_num_gates();
     /** merge gates */
-    for (auto gate : revised->gates)
+    for (auto &gate : revised->gates)
     {
         if (gate)
         {
@@ -182,7 +182,7 @@ void Util::cycle_break(Netlist *netlist)
     };
 
     // obtain the indegree and outdegree
-    for (auto node : netlist->gates)
+    for (auto &node : netlist->gates)
     {
         indeg[node->id] = node->ins.size();
         outdeg[node->id] = node->outs.size();
@@ -335,7 +335,7 @@ bool Util::path_balance(Netlist *netlist)
     double level[num_gate];
     std::fill_n(level, num_gate, -1.0);
     queue<Node *> bfs;
-    for (auto pi : netlist->map_PIs)
+    for (auto &pi : netlist->map_PIs)
     {
         bfs.emplace(pi.second);
         level[pi.second->id] = 0;
@@ -362,12 +362,12 @@ bool Util::path_balance(Netlist *netlist)
     }
     double maxLL = 0;
     bool vis[num_gate] = {0};
-    for (auto po : netlist->map_POs)
+    for (auto &po : netlist->map_POs)
     {
-        auto po_id = po.second->id;
+        auto &po_id = po.second->id;
         vis[po_id] = 1;
         maxLL = max(level[po_id], maxLL);
-        bfs.push(po.second);
+        bfs.emplace(po.second);
     }
 
     bool has_cycle = netlist->hasProperty(PROPERTIES::CYCLE);
@@ -381,7 +381,7 @@ bool Util::path_balance(Netlist *netlist)
             if (cur->type == SPL || cur->type == SPL3)
             {
                 double minChildLL = DBL_MAX;
-                for (auto tar : cur->outs)
+                for (auto &tar : cur->outs)
                 {
                     minChildLL = min(minChildLL, level[tar->id]);
                 }
@@ -399,11 +399,11 @@ bool Util::path_balance(Netlist *netlist)
                     {
                         level[src->id] = level[cur->id] - INTERVAL;
                     }
-                    bfs.push(src);
+                    bfs.emplace(src);
                 }
                 else if (!vis[src->id])
                 {
-                    bfs.push(src);
+                    bfs.emplace(src);
                 }
             }
         }
@@ -412,12 +412,12 @@ bool Util::path_balance(Netlist *netlist)
     bool path_balanced = true;
     for (size_t i = 0; i < num_gate; ++i)
     {
-        auto cur = netlist->gates[i];
-        for (auto src : cur->ins)
+        auto &cur = netlist->gates[i];
+        for (auto &src : cur->ins)
         {
             if (level[i] - level[src->id] > 1 && src->type != _CLK)
             {
-                JWARN("The path balance condition is not satisfied between node '" + src->name + "' and node '" + cur->name + "'!");
+                // JWARN("The path balance condition is not satisfied between node '" + src->name + "' and node '" + cur->name + "'!");
                 path_balanced = false;
             }
         }
@@ -434,7 +434,7 @@ bool Util::path_balance(Netlist *netlist)
         }
     }
     vector<vector<Node *>> &layers = netlist->getProperty(PROPERTIES::LAYERS);
-    for (auto item : groups)
+    for (auto &item : groups)
     {
         layers.emplace_back(item.second);
     }

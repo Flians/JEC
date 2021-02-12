@@ -381,7 +381,7 @@ void Netlist::make_miter(ifstream &golden, ifstream &revised)
     this->parse_netlist(golden);
     this->parse_netlist(revised, false);
     // change the outputs' type into _EXOR
-    for (auto po : this->map_POs)
+    for (auto &po : this->map_POs)
     {
         this->gates[po.second->id]->type = _EXOR;
     }
@@ -559,9 +559,10 @@ void Netlist::clean_spl(bool delete_dff)
     size_t i = 0;
     while (i < this->num_gate)
     {
-        if (this->gates[i]->type == SPL || this->gates[i]->type == SPL3 || (delete_dff && this->gates[i]->type == DFF))
+        auto &cur = this->gates[i];
+        if (cur->type == SPL || cur->type == SPL3 || (delete_dff && cur->type == DFF))
         {
-            if (this->gates[i]->type == DFF)
+            if (cur->type == DFF)
             {
                 flag_dff = true;
             }
@@ -571,9 +572,9 @@ void Netlist::clean_spl(bool delete_dff)
             }
             // maintain the id
             --this->num_gate;
-            swap(this->gates[i]->id, this->gates[this->num_gate]->id);
-            this->delete_node(this->gates[i]);
-            this->gates[i] = this->gates[this->num_gate];
+            this->gates[this->num_gate]->id = cur->id;
+            this->delete_node(cur);
+            cur = this->gates[this->num_gate];
             this->gates.pop_back();
         }
         else
@@ -624,8 +625,8 @@ int Netlist::merge_nodes_between_networks()
         size_t num_node = layers[i].size();
         for (size_t j = 0; j < num_node; ++j)
         {
-            auto cur = layers[i][j];
-            auto cur_type = cur->type;
+            auto &cur = layers[i][j];
+            auto &cur_type = cur->type;
             if (!cur || cur->ins.empty())
             {
                 continue;
@@ -635,7 +636,7 @@ int Netlist::merge_nodes_between_networks()
             size_t num_npi = cur->ins.size();
             for (size_t k = 0; k < num_npi; ++k)
             {
-                auto cur_in = cur->ins[k];
+                auto &cur_in = cur->ins[k];
                 if (cur_in->type == _CLK)
                 {
                     continue;
@@ -666,7 +667,7 @@ int Netlist::merge_nodes_between_networks()
             Roaring::const_iterator it = same_id.begin();
             while (it != same_id.end())
             {
-                auto eq_id = it.i.current_value;
+                auto &eq_id = it.i.current_value;
                 if (this->gates[eq_id])
                 {
                     if (this->merge_node(cur, this->gates[eq_id]))
@@ -693,6 +694,6 @@ int Netlist::merge_nodes_between_networks()
     vector<pair<size_t, size_t>>().swap(position);
     // reassign the id for all nodes
     this->id_reassign();
-    JINFO("The number of INV, BUF, and others reduction is " + reduce);
+    JINFO("The number of INV, BUF, and others reduction is " + std::to_string(reduce));
     return reduce;
 }

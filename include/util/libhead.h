@@ -175,7 +175,7 @@ inline void JWARN(string &&message)
 // show info message
 inline void JINFO(string &&message)
 {
-    std::cerr << "INFO: " << message << endl;
+    std::cerr << "INFO: " << message << std::endl;
 }
 
 #endif
