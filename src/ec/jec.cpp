@@ -169,7 +169,7 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
             case WIRE:
             case SPL:
             case SPL3:
-                cout << node->name << endl;
+                // cout << node->name << endl;
             default:
                 res = inputs[0];
                 break;
@@ -200,11 +200,11 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
                 break;
         }
     }
-    cout << "The prover is opensmt." << endl;
+    JINFO("The prover is opensmt.");
 
     if (reslut == s_True)
     {
-        cout << "The miter is not equivalent." << endl;
+        JWARN("The miter is not equivalent.");
         this->fout << "NEQ" << endl;
         for (auto &pi : layers[0])
         {
@@ -217,17 +217,17 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
     }
     else if (reslut == s_False)
     {
-        cout << "The miter is equivalent." << endl;
+        JWARN("The miter is equivalent.");
         this->fout << "EQ" << endl;
     }
     else if (reslut == s_Undef)
     {
-        cout << "The miter is unknown." << endl;
+        JWARN("The miter is unknown.");
         this->fout << "unknown" << endl;
     }
     else
     {
-        cout << "The miter is error." << endl;
+        JWARN("The miter is error.");
         this->fout << "error" << endl;
     }
     vector<PTRef>().swap(nodes);
@@ -290,7 +290,7 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
         case WIRE:
         case SPL:
         case SPL3:
-            cout << "RG " << cur->name << endl;
+            // cout << "RG " << cur->name << endl;
         default:
             res = inputs[0];
             break;

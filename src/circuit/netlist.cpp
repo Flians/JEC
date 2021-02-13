@@ -47,13 +47,14 @@ Netlist::~Netlist()
 void Netlist::parse_inport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires)
 {
     Node *port = nullptr;
-    if (wires.find(item) != wires.end())
+    std::unordered_map<std::string, Node *>::const_iterator _find;
+    if ((_find = wires.find(item)) != wires.end())
     {
-        port = wires.at(item);
+        port = _find->second;
     }
-    else if (map_PIs.find(item) != map_PIs.end())
+    else if ((_find = map_PIs.find(item)) != map_PIs.end())
     {
-        port = this->gates[this->map_PIs[item]->id];
+        port = _find->second;
     }
     else if (item.length() == 4 && Libstring::startsWith(item, "1'b"))
     {
@@ -62,7 +63,7 @@ void Netlist::parse_inport(Node *g, const string &item, const string &line, cons
             index = 2;
         port = new Node(Const_Str.at((Value)index), _CONSTANT, this->num_gate++, (Value)index);
         this->gates.emplace_back(port);
-        this->map_PIs.insert(make_pair(port->name, port));
+        this->map_PIs.emplace(port->name, port);
     }
     else
     {
@@ -79,13 +80,14 @@ void Netlist::parse_inport(Node *g, const string &item, const string &line, cons
 void Netlist::parse_outport(Node *g, const string &item, const string &line, const std::unordered_map<std::string, Node *> &wires)
 {
     Node *port = nullptr;
-    if (wires.find(item) != wires.end())
+    std::unordered_map<std::string, Node *>::const_iterator _find;
+    if ((_find = wires.find(item)) != wires.end())
     {
-        port = wires.at(item);
+        port = _find->second;
     }
-    else if (this->map_POs.find(item) != this->map_POs.end())
+    else if ((_find = this->map_POs.find(item)) != this->map_POs.end())
     {
-        port = this->gates[this->map_POs[item]->id];
+        port = _find->second;
     }
     else
     {
@@ -100,7 +102,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
 {
     string line;
     smatch match;
-    regex pattern("[^ \f\n\r\t\v,;\()]+");
+    regex pattern("[^ \f\n\r\t\v,;\\()]+");
     std::unordered_map<std::string, Node *> wires;
     while (!in.eof())
     {
@@ -266,7 +268,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                                 }
                                 if (this->map_PIs.find(bitN) == this->map_PIs.end() && this->map_POs.find(bitN) == this->map_POs.end())
                                 {
-                                    wires.insert(make_pair(bitN, new Node(bitN, WIRE)));
+                                    wires.emplace(bitN, new Node(bitN, WIRE));
                                 }
                             }
                         }
@@ -278,7 +280,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                             }
                             if (this->map_PIs.find(item) == this->map_PIs.end() && this->map_POs.find(item) == this->map_POs.end())
                             {
-                                wires.insert(make_pair(item, new Node(item, WIRE)));
+                                wires.emplace(item, new Node(item, WIRE));
                             }
                         }
                     }
@@ -575,13 +577,14 @@ void Netlist::clean_spl(bool delete_dff)
             this->gates[this->num_gate]->id = cur->id;
             this->delete_node(cur);
             cur = this->gates[this->num_gate];
-            this->gates.pop_back();
         }
         else
         {
             ++i;
         }
     }
+    this->gates.erase(this->gates.begin() + this->num_gate, this->gates.end());
+    vector<Node *>(this->gates).swap(this->gates);
     if (flag_spl)
     {
         this->setProperty<bool>(PROPERTIES::CLEAN_SPL, true);
@@ -605,6 +608,10 @@ int Netlist::merge_nodes_between_networks()
         if (!Util::path_balance(this))
         {
             JWARN("The netlist '" + this->name + "' is path-balanced in util.merge_nodes_between_networks!");
+        }
+        else
+        {
+            JWARN("The netlist '" + this->name + "' is path_balanced in util.merge_nodes_between_networks!");
         }
     }
     vector<vector<Node *>> &layers = this->getProperty(PROPERTIES::LAYERS);

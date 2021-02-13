@@ -65,14 +65,7 @@ Node::~Node()
     {
         if (in)
         {
-            vector<Node *>::iterator temp = find(in->outs.begin(), in->outs.end(), this);
-            if (temp != in->outs.end())
-            {
-                // in->outs.erase(temp);
-                *temp = in->outs.back();
-                in->outs.back() = nullptr;
-                in->outs.pop_back();
-            }
+            in->outs.erase(std::remove(in->outs.begin(), in->outs.end(), this), in->outs.end());
         }
     }
     vector<Node *>().swap(this->ins);
@@ -81,11 +74,7 @@ Node::~Node()
     {
         if (out)
         {
-            vector<Node *>::iterator temp = find(out->ins.begin(), out->ins.end(), this);
-            if (temp != out->ins.end())
-            {
-                out->ins.erase(temp);
-            }
+            out->ins.erase(std::remove(out->ins.begin(), out->ins.end(), this), out->ins.end());
         }
     }
     vector<Node *>().swap(this->outs);

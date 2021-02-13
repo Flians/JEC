@@ -22,26 +22,38 @@ std::unordered_map<string, SMT> Str_SMT = {
 vector<double> workflow(const char *golden, const char *revise, const char *output, SMT smt, bool incremental = false, bool merge = true)
 {
     vector<double> times(4, 0.0);
-    clock_t startTime, endTime;
+    clock_t startTime, endTime, tmp;
     startTime = clock();
     /* parse Verilog files */
     Netlist miter(golden, revise);
     endTime = clock();
     times[0] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
-    cout << "The parsing time is: " << times[0] << " S" << endl;
+    JINFO("The parsing time is: " + std::to_string(times[0]) + " S");
 
     /* simplify the graph */
     startTime = clock();
-    miter.clean_spl(1);
+
+    // miter.clean_spl(1);
+    tmp = clock();
+    cout << "The cleaning time is: " << (double)(tmp - startTime) / CLOCKS_PER_SEC << " S" << endl;
     if (!Util::path_balance(&miter))
     {
         JWARN("The netlist '" + miter.name + "' is not path_balanced!");
     }
+    else
+    {
+        JWARN("The netlist '" + miter.name + "' is path_balanced!");
+    }
+    cout << "The path balancing time is: " << (double)(clock() - tmp) / CLOCKS_PER_SEC << " S" << endl;
+    tmp = clock();
     if (merge)
+    {
         times[3] = miter.merge_nodes_between_networks();
+        cout << "The merging time is: " << (double)(clock() - tmp) / CLOCKS_PER_SEC << " S" << endl;
+    }
     endTime = clock();
     times[1] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
-    cout << "The simplify time is: " << times[1] << " S" << endl;
+    JINFO("The simplify time is: " + std::to_string(times[1]) + " S");
 
     /* verify the miter */
     jec jec_(output);
@@ -64,7 +76,7 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
     }
     endTime = clock();
     times[2] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
-    cout << "The simulating time is: " << times[2] << " S" << endl;
+    JINFO("The simulating time is: " + std::to_string(times[2]) + " S");
     return times;
 }
 

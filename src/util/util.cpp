@@ -330,7 +330,7 @@ bool Util::path_balance(Netlist *netlist)
 {
     if (netlist->isEmpty())
         return true;
-    size_t num_gate = netlist->gates.size();
+    size_t num_gate = netlist->get_num_gates();
     double INTERVAL = 1.0 / num_gate;
     double level[num_gate];
     std::fill_n(level, num_gate, -1.0);
@@ -344,7 +344,7 @@ bool Util::path_balance(Netlist *netlist)
     {
         Node *cur = bfs.front();
         bfs.pop();
-        for (Node *tar : cur->outs)
+        for (auto &tar : cur->outs)
         {
             if (level[tar->id] == -1 || level[cur->id] >= level[tar->id])
             {
@@ -439,9 +439,6 @@ bool Util::path_balance(Netlist *netlist)
         layers.emplace_back(item.second);
     }
     groups.clear();
-    if (!path_balanced)
-    {
-        netlist->setProperty<bool>(PROPERTIES::PATH_BALANCED, false);
-    }
+    netlist->setProperty<bool>(PROPERTIES::PATH_BALANCED, path_balanced);
     return path_balanced;
 }
