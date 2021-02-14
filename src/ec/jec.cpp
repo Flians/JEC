@@ -106,6 +106,11 @@ void jec::evaluate_from_POs_to_PIs(Netlist *miter)
 
 void jec::create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &exprs)
 {
+    if (miter->isEmpty())
+    {
+        JWARN("The netlist is empty!");
+        return;
+    }
     vector<vector<Node *>> &layers = miter->getProperty(PROPERTIES::LAYERS);
     exprs.resize(miter->get_num_gates(), logic.getTerm_false());
     // layers[0][0] is clk

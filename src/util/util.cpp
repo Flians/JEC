@@ -416,7 +416,7 @@ bool Util::path_balance(Netlist *netlist)
         {
             if (level[i] - level[src.second->id] > 1 && src.second->type != _CLK && (cur->type != _EXOR || cur->type != _PO))
             {
-                JWARN("The path balance condition is not satisfied between node '", src.second->name, "' and node '", cur->name, "'!");
+                JWARN("The path balance condition is not satisfied between node '" + src.second->name + "' and node '" + cur->name + "'!");
                 path_balanced = false;
             }
         }

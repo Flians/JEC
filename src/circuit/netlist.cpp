@@ -698,26 +698,25 @@ int Netlist::merge_nodes_between_networks()
         for (size_t j = 0; j < num_node; ++j)
         {
             auto &cur = layers[i][j];
-            auto &cur_type = cur->type;
             if (!cur || cur->ins.empty())
             {
                 continue;
             }
             Roaring same_id;
             bool flag = false;
-            std::unordered_map<std::string, Node *> predecessors = layers[i][j]->get_predecessors(false);
-            size_t num_npi = layers[i][j]->ins.size();
+            std::unordered_map<std::string, Node *> predecessors = cur->get_predecessors(false);
+            size_t num_npi = cur->ins.size();
             for (auto &parent : predecessors)
             {
                 Roaring tmp;
                 std::unordered_map<std::string, Node *> brothers = parent.second->get_successors();
                 for (auto &brother : brothers)
                 {
-                    if (brother.second && brother.second->type == layers[i][j]->type && brother.second != layers[i][j])
+                    if (brother.second && brother.second->type == cur->type && brother.second != cur)
                     {
                         if (brother.second->ins.size() != num_npi)
                         {
-                            JWARN("'", layers[i][j]->name, "' and '", brother.first + "' Nodes of the same type have different numbers of inputs in netlist.merge_nodes_between_networks");
+                            JWARN("'", cur->name, "' and '", brother.first + "' Nodes of the same type have different numbers of inputs in netlist.merge_nodes_between_networks");
                             continue;
                         }
                         tmp.add(brother.second->id);
@@ -753,7 +752,7 @@ int Netlist::merge_nodes_between_networks()
                     }
                     else
                     {
-                        JWARN("The node '" + this->gates[eq_id]->name + "' can be replaced by the node '" + layers[i][j]->name + "'!");
+                        JWARN("The node '" + this->gates[eq_id]->name + "' can be replaced by the node '" + cur->name + "'!");
                     }
                 }
                 ++it;

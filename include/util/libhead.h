@@ -146,7 +146,7 @@ inline Value ANDF(const Value &A, const Value &B, Value &O)
 }
 
 template <typename T, typename... Ts>
-std::unique_ptr<T> make_unique(Ts &&... params)
+std::unique_ptr<T> make_unique(Ts &&...params)
 {
     return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
 }
@@ -165,7 +165,7 @@ template <size_t I = 0, typename FuncT, typename Tuple>
 
 // show error messages and exit
 template <typename... Args>
-inline void JERROR(const Args &... messages)
+inline void JERROR(const Args &...messages)
 {
     std::cerr << "ERROR: ";
     auto a = std::forward_as_tuple(messages...);
@@ -184,7 +184,7 @@ inline void JERROR(const Args &... messages)
 
 // show warning messages
 template <typename... Args>
-inline void JWARN(const Args &... messages)
+inline void JWARN(const Args &...messages)
 {
     std::cerr << "WARN: ";
     auto a = std::forward_as_tuple(messages...);
@@ -202,7 +202,7 @@ inline void JWARN(const Args &... messages)
 
 // show info messages
 template <typename... Args>
-inline void JINFO(const Args &... messages)
+inline void JINFO(const Args &...messages)
 {
     std::cerr << "INFO: ";
     auto a = std::forward_as_tuple(messages...);
