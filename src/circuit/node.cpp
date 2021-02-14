@@ -82,41 +82,41 @@ Node::~Node()
     this->outs.clear();
 }
 
-std::unordered_map<std::string, Node *> Node::get_successors() const
+std::vector<Node *> Node::get_successors() const
 {
-    std::unordered_map<std::string, Node *> successors;
+    std::vector<Node *> successors;
     for (auto &out : this->outs)
     {
         if (out.second)
         {
             for (auto &o_edge : out.second->out_edges)
             {
-                successors.emplace(out.first, o_edge->get_target());
+                successors.emplace_back(o_edge->get_target());
             }
         }
     }
     return successors;
 }
 
-std::unordered_map<std::string, Port *> Node::get_successors_port() const
+std::vector<Port *> Node::get_successors_port() const
 {
-    std::unordered_map<std::string, Port *> successors;
+    std::vector<Port *> successors;
     for (auto &out : this->outs)
     {
         if (out.second)
         {
             for (auto &o_edge : out.second->out_edges)
             {
-                successors.emplace(out.first, o_edge->tar);
+                successors.emplace_back(o_edge->tar);
             }
         }
     }
     return successors;
 }
 
-std::unordered_map<std::string, Node *> Node::get_predecessors(bool has_clk) const
+std::vector<Node *> Node::get_predecessors(bool has_clk) const
 {
-    std::unordered_map<std::string, Node *> predecessors;
+    std::vector<Node *> predecessors;
     for (auto &in : this->ins)
     {
         if (in.second)
@@ -130,7 +130,7 @@ std::unordered_map<std::string, Node *> Node::get_predecessors(bool has_clk) con
                     {
                         continue;
                     }
-                    predecessors.emplace(in.first, i_edge->get_source());
+                    predecessors.emplace_back(i_edge->get_source());
                 }
             }
         }
@@ -138,9 +138,9 @@ std::unordered_map<std::string, Node *> Node::get_predecessors(bool has_clk) con
     return predecessors;
 }
 
-std::unordered_map<std::string, Port *> Node::get_predecessors_port(bool has_clk) const
+std::vector<Port *> Node::get_predecessors_port(bool has_clk) const
 {
-    std::unordered_map<std::string, Port *> predecessors;
+    std::vector<Port *> predecessors;
     for (auto &in : this->ins)
     {
         if (in.second)
@@ -154,7 +154,7 @@ std::unordered_map<std::string, Port *> Node::get_predecessors_port(bool has_clk
                     {
                         continue;
                     }
-                    predecessors.emplace(in.first, i_edge->src);
+                    predecessors.emplace_back(i_edge->src);
                 }
             }
         }
@@ -189,52 +189,52 @@ bool Node::containCLK()
 
 Value Node::calculate()
 {
-    std::unordered_map<std::string, Node *> predecessors = this->get_predecessors(false);
-    std::unordered_map<std::string, Node *>::iterator it_ = predecessors.begin();
-    std::unordered_map<std::string, Node *>::iterator it_end = predecessors.end();
+    std::vector<Node *> predecessors = this->get_predecessors(false);
+    std::vector<Node *>::iterator it_ = predecessors.begin();
+    std::vector<Node *>::iterator it_end = predecessors.end();
     if (it_ == it_end)
     {
         return X;
     }
-    Value res = (*it_).second->val;
+    Value res = (*it_)->val;
     switch (this->type)
     {
     case AND:
         while (it_ != it_end)
         {
-            res = res & (*(++it_)).second->val;
+            res = res & (*(++it_))->val;
         }
         break;
     case NAND:
         while (it_ != it_end)
         {
-            res = res & (*(++it_)).second->val;
+            res = res & (*(++it_))->val;
         }
         res = ~res;
         break;
     case OR:
         while (it_ != it_end)
         {
-            res = res | (*(++it_)).second->val;
+            res = res | (*(++it_))->val;
         }
         break;
     case NOR:
         while (it_ != it_end)
         {
-            res = res | (*(++it_)).second->val;
+            res = res | (*(++it_))->val;
         }
         res = ~res;
         break;
     case XOR:
         while (it_ != it_end)
         {
-            res = res ^ (*(++it_)).second->val;
+            res = res ^ (*(++it_))->val;
         }
         break;
     case XNOR:
         while (it_ != it_end)
         {
-            res = res ^ (*(++it_)).second->val;
+            res = res ^ (*(++it_))->val;
         }
         res = ~res;
         break;
@@ -253,7 +253,7 @@ Value Node::calculate()
                  (*(this->ins["D"]->in_edges.begin()))->get_source()->val);
         break;
     case _EXOR:
-        res = EXOR(res, (*(++it_)).second->val);
+        res = EXOR(res, (*(++it_))->val);
         break;
     default:
         break;

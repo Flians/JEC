@@ -463,14 +463,14 @@ Node *Netlist::delete_node(Node *cur)
         cur = nullptr;
         return nullptr;
     }
-    std::unordered_map<std::string, Port *> predecessors = cur->get_predecessors_port(false);
+    std::vector<Port *> predecessors = cur->get_predecessors_port(false);
     size_t num_ins = predecessors.size();
     if (num_ins != 1)
     {
         JWARN("The node '" + cur->name + "' have none or more one inputs in netlist.delete_node!");
         return nullptr;
     }
-    Port *tin = predecessors.begin()->second;
+    Port *tin = *predecessors.begin();
     if (!cur->outs.empty())
     {
         for (auto &out : cur->outs)
@@ -508,7 +508,7 @@ bool Netlist::merge_node(Node *node, Node *repeat)
         JWARN("The two nodes do not have the same inputs, so they cannot be merged in netlist.merge_node!");
         return 0;
     }
-    std::unordered_map<std::string, Port *> successors_port = repeat->get_successors_port();
+    std::vector<Port *> successors_port = repeat->get_successors_port();
 
     for (auto &o_port : repeat->outs)
     {
@@ -704,22 +704,22 @@ int Netlist::merge_nodes_between_networks()
             }
             Roaring same_id;
             bool flag = false;
-            std::unordered_map<std::string, Node *> predecessors = cur->get_predecessors(false);
+            std::vector<Node *> predecessors = cur->get_predecessors(false);
             size_t num_npi = cur->ins.size();
             for (auto &parent : predecessors)
             {
                 Roaring tmp;
-                std::unordered_map<std::string, Node *> brothers = parent.second->get_successors();
+                std::vector<Node *> brothers = parent->get_successors();
                 for (auto &brother : brothers)
                 {
-                    if (brother.second && brother.second->type == cur->type && brother.second != cur)
+                    if (brother && brother->type == cur->type && brother != cur)
                     {
-                        if (brother.second->ins.size() != num_npi)
+                        if (brother->ins.size() != num_npi)
                         {
-                            JWARN("'", cur->name, "' and '", brother.first + "' Nodes of the same type have different numbers of inputs in netlist.merge_nodes_between_networks");
+                            JWARN("'", cur->name, "' and '", brother->name + "' Nodes of the same type have different numbers of inputs in netlist.merge_nodes_between_networks");
                             continue;
                         }
-                        tmp.add(brother.second->id);
+                        tmp.add(brother->id);
                     }
                 }
                 if (flag)

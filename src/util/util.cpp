@@ -149,30 +149,30 @@ void Util::cycle_break(Netlist *netlist)
         for (auto &src : predecessors)
         {
             // exclude self-loops
-            if (node == src.second || mark[src.second->id] != 0)
+            if (node == src || mark[src->id] != 0)
             {
                 continue;
             }
-            int index = src.second->id;
+            int index = src->id;
             outdeg[index] -= 1;
             if (outdeg[index] <= 0 && indeg[index] > 0)
             {
-                sinks.emplace(src.second);
+                sinks.emplace(src);
             }
         }
         auto successors = node->get_successors();
         for (auto &tar : successors)
         {
             // exclude self-loops
-            if (node == tar.second || mark[tar.second->id] != 0)
+            if (node == tar || mark[tar->id] != 0)
             {
                 continue;
             }
-            int index = tar.second->id;
+            int index = tar->id;
             indeg[index] -= 1;
             if (indeg[index] <= 0 && outdeg[index] > 0)
             {
-                sources.emplace(tar.second);
+                sources.emplace(tar);
             }
         }
     };
@@ -272,7 +272,7 @@ void Util::cycle_break(Netlist *netlist)
         // look at the node's outgoing edges
         for (auto &tar : successors)
         {
-            if (mark[node->id] > mark[tar.second->id])
+            if (mark[node->id] > mark[tar->id])
             {
                 Edge *last = nullptr;
                 Node *cur = node;
@@ -346,17 +346,17 @@ bool Util::path_balance(Netlist *netlist)
         auto successors = cur->get_successors();
         for (auto &tar : successors)
         {
-            if (level[tar.second->id] == -1 || level[cur->id] >= level[tar.second->id])
+            if (level[tar->id] == -1 || level[cur->id] >= level[tar->id])
             {
-                if (tar.second->containCLK())
+                if (tar->containCLK())
                 {
-                    level[tar.second->id] = floor(level[cur->id]) + 1;
+                    level[tar->id] = floor(level[cur->id]) + 1;
                 }
                 else
                 {
-                    level[tar.second->id] = level[cur->id] + INTERVAL;
+                    level[tar->id] = level[cur->id] + INTERVAL;
                 }
-                bfs.push(tar.second);
+                bfs.push(tar);
             }
         }
     }
@@ -386,22 +386,22 @@ bool Util::path_balance(Netlist *netlist)
             auto predecessors = cur->get_predecessors();
             for (auto &src : predecessors)
             {
-                if (level[src.second->id] == -1 || level[cur->id] <= level[src.second->id])
+                if (level[src->id] == -1 || level[cur->id] <= level[src->id])
                 {
-                    if (src.second->containCLK())
+                    if (src->containCLK())
                     {
-                        level[src.second->id] = floor(level[cur->id]) - (cur->containCLK() ? 1 : 0);
+                        level[src->id] = floor(level[cur->id]) - (cur->containCLK() ? 1 : 0);
                     }
                     else
                     {
-                        level[src.second->id] = level[cur->id] - INTERVAL;
+                        level[src->id] = level[cur->id] - INTERVAL;
                     }
-                    bfs.emplace(src.second);
+                    bfs.emplace(src);
                 }
-                else if (!vis[src.second->id])
+                else if (!vis[src->id])
                 {
-                    vis[src.second->id] = 1;
-                    bfs.emplace(src.second);
+                    vis[src->id] = 1;
+                    bfs.emplace(src);
                 }
             }
         }
@@ -414,9 +414,9 @@ bool Util::path_balance(Netlist *netlist)
         auto predecessors = cur->get_predecessors();
         for (auto src : predecessors)
         {
-            if (level[i] - level[src.second->id] > 1 && src.second->type != _CLK && (cur->type != _EXOR || cur->type != _PO))
+            if (level[i] - level[src->id] > 1 && src->type != _CLK && (cur->type != _EXOR || cur->type != _PO))
             {
-                JWARN("The path balance condition is not satisfied between node '" + src.second->name + "' and node '" + cur->name + "'!");
+                JWARN("The path balance condition is not satisfied between node '" + src->name + "' and node '" + cur->name + "'!");
                 path_balanced = false;
             }
         }

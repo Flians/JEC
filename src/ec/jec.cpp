@@ -125,8 +125,8 @@ void jec::create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &ex
             auto predecessors = node->get_predecessors(false);
             for (auto &npi : predecessors)
             {
-                if (npi.second->type != _CLK)
-                    inputs.push(exprs[npi.second->id]);
+                if (npi->type != _CLK)
+                    inputs.push(exprs[npi->id]);
             }
             if (inputs.size() == 0 && node->type > _PI)
             {
@@ -328,16 +328,16 @@ void jec::evaluate_min_cone(Netlist *miter)
                 auto successors = cur->get_successors();
                 for (auto &tout : successors)
                 {
-                    if (info[tout.second->id].second == -1)
+                    if (info[tout->id].second == -1)
                     {
-                        info[tout.second->id].second = j;
-                        cones[j].emplace_back(tout.second);
-                        if (tout.second->type == _EXOR)
+                        info[tout->id].second = j;
+                        cones[j].emplace_back(tout);
+                        if (tout->type == _EXOR)
                             ++exor_num[j];
                     }
                     else
                     {
-                        size_t old_color = info[tout.second->id].second;
+                        size_t old_color = info[tout->id].second;
                         if (old_color == j)
                         {
                             continue;
@@ -452,8 +452,8 @@ void jec::evaluate_cvc4(Netlist *miter, bool incremental)
             auto predecessors = node->get_predecessors(false);
             for (auto &npi : predecessors)
             {
-                if (npi.second->type != _CLK)
-                    inputs.emplace_back(nodes[npi.second->id]);
+                if (npi->type != _CLK)
+                    inputs.emplace_back(nodes[npi->id]);
             }
             if (inputs.size() == 0)
             {

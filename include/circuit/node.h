@@ -64,10 +64,10 @@ public:
     Node(const std::string &_name, const GType &_cell = WIRE, int _id = (init_id++), const Value &_val = X) : name(_name), type(_cell), id(_id), val(_val) {}
     ~Node();
 
-    std::unordered_map<std::string, Node *> get_successors() const;
-    std::unordered_map<std::string, Port *> get_successors_port() const;
-    std::unordered_map<std::string, Node *> get_predecessors(bool has_clk = true) const;
-    std::unordered_map<std::string, Port *> get_predecessors_port(bool has_clk = true) const;
+    std::vector<Node *> get_successors() const;
+    std::vector<Port *> get_successors_port() const;
+    std::vector<Node *> get_predecessors(bool has_clk = true) const;
+    std::vector<Port *> get_predecessors_port(bool has_clk = true) const;
 
     /** check if the node contains a clk input */
     bool containCLK();

@@ -70,16 +70,16 @@ bool cec::evaluate(const vector<Node *> &nodes)
             qu.pop();
             cur->calculate();
             visited[cur->id] = 1;
-            std::unordered_map<std::string, Node *> successors = cur->get_successors();
+            std::vector<Node *> successors = cur->get_successors();
             for (auto &out : successors)
             {
                 if (!visited[cur->id])
                 {
-                    if (out.second->type == _EXOR && out.second->val == H)
+                    if (out->type == _EXOR && out->val == H)
                     {
                         return false;
                     }
-                    qu.push(out.second);
+                    qu.push(out);
                 }
             }
         }
