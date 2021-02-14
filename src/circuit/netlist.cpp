@@ -102,7 +102,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
 {
     string line;
     smatch match;
-    regex pattern("[^ \f\n\r\t\v,;\\()]+");
+    regex pattern("[^\\s,\\();]+");
     string::const_iterator iterStart, iterEnd;
     auto parse_bits = [&line, &match, &pattern, &iterStart, &iterEnd](std::string &item, int &bits_begin, int &bits_end) {
         string::size_type mp = item.find_last_of(':');
@@ -175,12 +175,11 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
         iterStart = line.begin();
         iterEnd = line.end();
         int bits_begin = -1, bits_end = -1;
-        bool has_bits = false;
         if (regex_search(iterStart, iterEnd, match, pattern))
         {
             string item = match[0];
             iterStart = match[0].second;
-            // cout << item << endl;
+            cerr << item << endl;
             if (Str_GType.find(item) != Str_GType.end())
             {
                 const GType &nt = Str_GType.at(item);
@@ -209,14 +208,16 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                 {
                     if (!is_golden)
                         continue;
+                    bool has_bits = false, flag_first = true;
                     while (regex_search(iterStart, iterEnd, match, pattern))
                     {
                         item = match[0];
                         iterStart = match[0].second;
-                        if (!has_bits)
+                        if (!has_bits && flag_first)
                         {
                             has_bits = parse_bits(item, bits_begin, bits_end);
                         }
+                        flag_first = false;
                         if (has_bits)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
@@ -246,14 +247,16 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                 {
                     if (!is_golden)
                         continue;
+                    bool has_bits = false, flag_first = true;
                     while (regex_search(iterStart, iterEnd, match, pattern))
                     {
                         item = match[0];
                         iterStart = match[0].second;
-                        if (!has_bits)
+                        if (!has_bits && flag_first)
                         {
                             has_bits = parse_bits(item, bits_begin, bits_end);
                         }
+                        flag_first = false;
                         if (has_bits)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
@@ -274,14 +277,16 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                 }
                 case WIRE:
                 {
+                    bool has_bits = false, flag_first = true;
                     while (regex_search(iterStart, iterEnd, match, pattern))
                     {
                         item = match[0];
                         iterStart = match[0].second;
-                        if (!has_bits)
+                        if (!has_bits && flag_first)
                         {
                             has_bits = parse_bits(item, bits_begin, bits_end);
                         }
+                        flag_first = false;
                         if (has_bits)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
@@ -420,14 +425,14 @@ Node *Netlist::delete_node(Node *cur)
 {
     if (!cur)
         return nullptr;
-    if (cur->ins.empty() && cur->outs.empty() && cur->type == WIRE)
+    size_t num_ins = cur->ins.size(), num_outs = cur->outs.size();
+    if (num_ins == 0 && num_outs == 0 && cur->type == WIRE)
     {
         JWARN("The wire '" + cur->name + "' is useless in netlist.delete_node!");
         delete cur;
         cur = nullptr;
         return nullptr;
     }
-    size_t num_ins = cur->ins.size();
     if (num_ins != 1 && !(cur->type != WIRE && num_ins == 2 && cur->ins[0]->type == _CLK))
     {
         JWARN("The node '" + cur->name + "' have none or more one inputs in netlist.delete_node!");

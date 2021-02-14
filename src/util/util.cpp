@@ -337,7 +337,10 @@ bool Util::path_balance(Netlist *netlist)
     queue<Node *> bfs;
     for (auto &pi : netlist->map_PIs)
     {
-        bfs.emplace(pi.second);
+        if (pi.second->type != _CLK)
+        {
+            bfs.emplace(pi.second);
+        }
         level[pi.second->id] = 0;
     }
     while (!bfs.empty())
@@ -361,18 +364,16 @@ bool Util::path_balance(Netlist *netlist)
         }
     }
     double maxLL = 0;
-    bool vis[num_gate] = {0};
     for (auto &po : netlist->map_POs)
     {
-        auto &po_id = po.second->id;
-        vis[po_id] = 1;
-        maxLL = max(level[po_id], maxLL);
+        maxLL = max(level[po.second->id], maxLL);
         bfs.emplace(po.second);
     }
 
     bool has_cycle = netlist->hasProperty(PROPERTIES::CYCLE);
     if (has_cycle)
     {
+        bool vis[num_gate] = {0};
         while (!bfs.empty())
         {
             Node *cur = bfs.front();
