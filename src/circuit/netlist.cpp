@@ -103,6 +103,34 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
     string line;
     smatch match;
     regex pattern("[^ \f\n\r\t\v,;\\()]+");
+    string::const_iterator iterStart, iterEnd;
+    auto parse_bits = [&line, &match, &pattern, &iterStart, &iterEnd](std::string &item, int &bits_begin, int &bits_end) {
+        string::size_type mp = item.find_last_of(':');
+        if (mp != item.npos)
+        {
+            string::size_type lp = item.find_last_of('[');
+            string::size_type rp = item.find_last_of(']');
+            if (lp == item.npos || rp == item.npos || lp >= rp)
+            {
+                JERROR("There are some troubles in netlist.parse_netlist for multiple bits: " + line);
+            }
+            bits_end = atoi(item.substr(lp + 1, mp - lp).c_str());
+            bits_begin = atoi(item.substr(mp + 1, rp - mp).c_str());
+            if (bits_begin > bits_end)
+                swap(bits_begin, bits_end);
+            if (regex_search(iterStart, iterEnd, match, pattern))
+            {
+                item = match[0];
+                iterStart = match[0].second;
+            }
+            else
+            {
+                JERROR("There are some troubles in netlist.parse_netlist for input: " + line);
+            }
+            return true;
+        }
+        return false;
+    };
     std::unordered_map<std::string, Node *> wires;
     while (!in.eof())
     {
@@ -144,30 +172,14 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
             getline(in, tl);
             line += tl;
         }
-        string::const_iterator iterStart = line.begin();
-        string::const_iterator iterEnd = line.end();
-        int bits_begin = -1;
-        int bits_end = -1;
+        iterStart = line.begin();
+        iterEnd = line.end();
+        int bits_begin = -1, bits_end = -1;
         if (regex_search(iterStart, iterEnd, match, pattern))
         {
             string item = match[0];
             iterStart = match[0].second;
             // cout << item << endl;
-            int mp = item.find_last_of(':');
-            if (mp != -1)
-            {
-                int lp = item.find_last_of('[');
-                int rp = item.find_last_of(']');
-                if (lp == -1 || rp == -1 || lp >= rp)
-                {
-                    JERROR("There are some troubles in netlist.parse_netlist for multiple bits: " + line);
-                }
-                bits_end = atoi(item.substr(lp + 1, mp - lp).c_str());
-                bits_begin = atoi(item.substr(mp + 1, rp - mp).c_str());
-                if (bits_begin > bits_end)
-                    swap(bits_begin, bits_end);
-                item = item.substr(0, lp);
-            }
             if (Str_GType.find(item) != Str_GType.end())
             {
                 const GType &nt = Str_GType.at(item);
@@ -200,6 +212,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                     {
                         item = match[0];
                         iterStart = match[0].second;
+                        parse_bits(item, bits_begin, bits_end);
                         if (bits_begin > 0)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
@@ -233,6 +246,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                     {
                         item = match[0];
                         iterStart = match[0].second;
+                        parse_bits(item, bits_begin, bits_end);
                         if (bits_begin > 0)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
@@ -257,6 +271,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                     {
                         item = match[0];
                         iterStart = match[0].second;
+                        parse_bits(item, bits_begin, bits_end);
                         if (bits_begin >= 0)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)

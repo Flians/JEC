@@ -10,9 +10,9 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/JEC",
             "args": [
-                "./test/golden/gf_c880.v",
-                "./test/revise/rf_c880.v",
-                "./test/output/output_c880.txt",
+                "./test/golden/gf_max.v",
+                "./test/revise/rf_max.v",
+                "./test/output/output_max.txt",
                 "CONE",
                 "i",
                 "m"
