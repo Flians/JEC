@@ -1,28 +1,8 @@
 // Benchmark "top" written by ABC on Thu May 28 22:00:27 2020
 
-module gf_log2 ( 
-    \a[0] , \a[1] , \a[2] , \a[3] , \a[4] , \a[5] , \a[6] , \a[7] , \a[8] ,
-    \a[9] , \a[10] , \a[11] , \a[12] , \a[13] , \a[14] , \a[15] , \a[16] ,
-    \a[17] , \a[18] , \a[19] , \a[20] , \a[21] , \a[22] , \a[23] , \a[24] ,
-    \a[25] , \a[26] , \a[27] , \a[28] , \a[29] , \a[30] , \a[31] ,
-    \result[0] , \result[1] , \result[2] , \result[3] , \result[4] ,
-    \result[5] , \result[6] , \result[7] , \result[8] , \result[9] ,
-    \result[10] , \result[11] , \result[12] , \result[13] , \result[14] ,
-    \result[15] , \result[16] , \result[17] , \result[18] , \result[19] ,
-    \result[20] , \result[21] , \result[22] , \result[23] , \result[24] ,
-    \result[25] , \result[26] , \result[27] , \result[28] , \result[29] ,
-    \result[30] , \result[31]   );
-  input  \a[0] , \a[1] , \a[2] , \a[3] , \a[4] , \a[5] , \a[6] , \a[7] ,
-    \a[8] , \a[9] , \a[10] , \a[11] , \a[12] , \a[13] , \a[14] , \a[15] ,
-    \a[16] , \a[17] , \a[18] , \a[19] , \a[20] , \a[21] , \a[22] , \a[23] ,
-    \a[24] , \a[25] , \a[26] , \a[27] , \a[28] , \a[29] , \a[30] , \a[31] ;
-  output \result[0] , \result[1] , \result[2] , \result[3] , \result[4] ,
-    \result[5] , \result[6] , \result[7] , \result[8] , \result[9] ,
-    \result[10] , \result[11] , \result[12] , \result[13] , \result[14] ,
-    \result[15] , \result[16] , \result[17] , \result[18] , \result[19] ,
-    \result[20] , \result[21] , \result[22] , \result[23] , \result[24] ,
-    \result[25] , \result[26] , \result[27] , \result[28] , \result[29] ,
-    \result[30] , \result[31] ;
+module gf_log2 (a, result);
+  input [31:0] a;
+  output [31:0] result;
   wire n64, n65, n66, n67, n68, n69, n70, n71, n72, n73, n74, n75, n76, n77,
     n78, n79, n80, n81, n82, n83, n84, n85, n86, n87, n88, n89, n90, n91,
     n92, n93, n94, n95, n96, n97, n98, n99, n100, n101, n102, n103, n104,
@@ -2999,68 +2979,68 @@ module gf_log2 (
     n28094, n28095, n28096, n28097, n28098, n28099, n28100, n28101, n28102,
     n28103, n28104, n28105, n28106, n28107, n28108, n28109, n28110, n28111,
     n28112, n28113, n28114, n28115, n28116;
-  jxor g00000(.dina(\a[27] ), .dinb(\a[26] ), .dout(n64));
-  jnot g00001(.din(\a[23] ), .dout(n65));
-  jxor g00002(.dina(\a[24] ), .dinb(n65), .dout(n66));
+  jxor g00000(.dina(a[27] ), .dinb(a[26] ), .dout(n64));
+  jnot g00001(.din(a[23] ), .dout(n65));
+  jxor g00002(.dina(a[24] ), .dinb(n65), .dout(n66));
   jnot g00003(.din(n66), .dout(n67));
-  jnot g00004(.din(\a[25] ), .dout(n68));
-  jxor g00005(.dina(\a[26] ), .dinb(n68), .dout(n69));
+  jnot g00004(.din(a[25] ), .dout(n68));
+  jxor g00005(.dina(a[26] ), .dinb(n68), .dout(n69));
   jnot g00006(.din(n69), .dout(n70));
   jand g00007(.dina(n70), .dinb(n67), .dout(n71));
-  jnot g00008(.din(\a[27] ), .dout(n72));
-  jand g00009(.dina(\a[28] ), .dinb(n72), .dout(n73));
-  jnot g00010(.din(\a[30] ), .dout(n74));
-  jand g00011(.dina(n74), .dinb(\a[29] ), .dout(n75));
+  jnot g00008(.din(a[27] ), .dout(n72));
+  jand g00009(.dina(a[28] ), .dinb(n72), .dout(n73));
+  jnot g00010(.din(a[30] ), .dout(n74));
+  jand g00011(.dina(n74), .dinb(a[29] ), .dout(n75));
   jand g00012(.dina(n75), .dinb(n73), .dout(n76));
-  jnot g00013(.din(\a[26] ), .dout(n77));
-  jand g00014(.dina(n77), .dinb(\a[23] ), .dout(n78));
-  jand g00015(.dina(\a[25] ), .dinb(\a[24] ), .dout(n79));
+  jnot g00013(.din(a[26] ), .dout(n77));
+  jand g00014(.dina(n77), .dinb(a[23] ), .dout(n78));
+  jand g00015(.dina(a[25] ), .dinb(a[24] ), .dout(n79));
   jand g00016(.dina(n79), .dinb(n78), .dout(n80));
   jand g00017(.dina(n80), .dinb(n76), .dout(n81));
   jnot g00018(.din(n81), .dout(n82));
-  jnot g00019(.din(\a[24] ), .dout(n83));
-  jand g00020(.dina(\a[25] ), .dinb(n83), .dout(n84));
+  jnot g00019(.din(a[24] ), .dout(n83));
+  jand g00020(.dina(a[25] ), .dinb(n83), .dout(n84));
   jand g00021(.dina(n77), .dinb(n65), .dout(n85));
   jand g00022(.dina(n85), .dinb(n84), .dout(n86));
-  jnot g00023(.din(\a[28] ), .dout(n87));
+  jnot g00023(.din(a[28] ), .dout(n87));
   jand g00024(.dina(n87), .dinb(n72), .dout(n88));
-  jand g00025(.dina(\a[30] ), .dinb(\a[29] ), .dout(n89));
+  jand g00025(.dina(a[30] ), .dinb(a[29] ), .dout(n89));
   jand g00026(.dina(n89), .dinb(n88), .dout(n90));
   jand g00027(.dina(n90), .dinb(n86), .dout(n91));
   jnot g00028(.din(n91), .dout(n92));
-  jnot g00029(.din(\a[29] ), .dout(n93));
-  jand g00030(.dina(\a[30] ), .dinb(n93), .dout(n94));
-  jand g00031(.dina(\a[28] ), .dinb(\a[27] ), .dout(n95));
+  jnot g00029(.din(a[29] ), .dout(n93));
+  jand g00030(.dina(a[30] ), .dinb(n93), .dout(n94));
+  jand g00031(.dina(a[28] ), .dinb(a[27] ), .dout(n95));
   jand g00032(.dina(n95), .dinb(n94), .dout(n96));
-  jand g00033(.dina(\a[26] ), .dinb(n65), .dout(n97));
+  jand g00033(.dina(a[26] ), .dinb(n65), .dout(n97));
   jand g00034(.dina(n97), .dinb(n79), .dout(n98));
   jand g00035(.dina(n98), .dinb(n96), .dout(n99));
   jnot g00036(.din(n99), .dout(n100));
   jand g00037(.dina(n100), .dinb(n92), .dout(n101));
   jor  g00038(.dina(n68), .dinb(n83), .dout(n102));
-  jor  g00039(.dina(n77), .dinb(\a[23] ), .dout(n103));
+  jor  g00039(.dina(n77), .dinb(a[23] ), .dout(n103));
   jor  g00040(.dina(n103), .dinb(n102), .dout(n104));
   jor  g00041(.dina(n87), .dinb(n72), .dout(n105));
-  jor  g00042(.dina(\a[30] ), .dinb(\a[29] ), .dout(n106));
+  jor  g00042(.dina(a[30] ), .dinb(a[29] ), .dout(n106));
   jor  g00043(.dina(n106), .dinb(n105), .dout(n107));
   jor  g00044(.dina(n107), .dinb(n104), .dout(n108));
   jand g00045(.dina(n108), .dinb(n101), .dout(n109));
   jand g00046(.dina(n109), .dinb(n82), .dout(n110));
-  jand g00047(.dina(n68), .dinb(\a[24] ), .dout(n111));
+  jand g00047(.dina(n68), .dinb(a[24] ), .dout(n111));
   jand g00048(.dina(n111), .dinb(n97), .dout(n112));
   jand g00049(.dina(n112), .dinb(n76), .dout(n113));
   jnot g00050(.din(n113), .dout(n114));
-  jor  g00051(.dina(n87), .dinb(\a[27] ), .dout(n115));
-  jor  g00052(.dina(\a[30] ), .dinb(n93), .dout(n116));
+  jor  g00051(.dina(n87), .dinb(a[27] ), .dout(n115));
+  jor  g00052(.dina(a[30] ), .dinb(n93), .dout(n116));
   jor  g00053(.dina(n116), .dinb(n115), .dout(n117));
-  jor  g00054(.dina(\a[26] ), .dinb(n65), .dout(n118));
-  jor  g00055(.dina(\a[25] ), .dinb(n83), .dout(n119));
+  jor  g00054(.dina(a[26] ), .dinb(n65), .dout(n118));
+  jor  g00055(.dina(a[25] ), .dinb(n83), .dout(n119));
   jor  g00056(.dina(n119), .dinb(n118), .dout(n120));
   jor  g00057(.dina(n120), .dinb(n117), .dout(n121));
   jand g00058(.dina(n121), .dinb(n114), .dout(n122));
   jand g00059(.dina(n122), .dinb(n110), .dout(n123));
   jnot g00060(.din(n123), .dout(n124));
-  jand g00061(.dina(n87), .dinb(\a[27] ), .dout(n125));
+  jand g00061(.dina(n87), .dinb(a[27] ), .dout(n125));
   jand g00062(.dina(n125), .dinb(n89), .dout(n126));
   jand g00063(.dina(n68), .dinb(n83), .dout(n127));
   jand g00064(.dina(n127), .dinb(n85), .dout(n128));
@@ -3089,7 +3069,7 @@ module gf_log2 (
   jor  g00087(.dina(n150), .dinb(n148), .dout(n151));
   jand g00088(.dina(n139), .dinb(n76), .dout(n152));
   jand g00089(.dina(n142), .dinb(n88), .dout(n153));
-  jand g00090(.dina(\a[26] ), .dinb(\a[23] ), .dout(n154));
+  jand g00090(.dina(a[26] ), .dinb(a[23] ), .dout(n154));
   jand g00091(.dina(n154), .dinb(n127), .dout(n155));
   jand g00092(.dina(n155), .dinb(n153), .dout(n156));
   jor  g00093(.dina(n156), .dinb(n152), .dout(n157));
@@ -3196,13 +3176,13 @@ module gf_log2 (
   jor  g00194(.dina(n257), .dinb(n235), .dout(n258));
   jor  g00195(.dina(n258), .dinb(n225), .dout(n259));
   jor  g00196(.dina(n259), .dinb(n193), .dout(n260));
-  jor  g00197(.dina(n68), .dinb(\a[24] ), .dout(n261));
-  jor  g00198(.dina(\a[26] ), .dinb(\a[23] ), .dout(n262));
+  jor  g00197(.dina(n68), .dinb(a[24] ), .dout(n261));
+  jor  g00198(.dina(a[26] ), .dinb(a[23] ), .dout(n262));
   jor  g00199(.dina(n262), .dinb(n261), .dout(n263));
   jor  g00200(.dina(n74), .dinb(n93), .dout(n264));
   jor  g00201(.dina(n105), .dinb(n264), .dout(n265));
   jor  g00202(.dina(n265), .dinb(n263), .dout(n266));
-  jor  g00203(.dina(n74), .dinb(\a[29] ), .dout(n267));
+  jor  g00203(.dina(n74), .dinb(a[29] ), .dout(n267));
   jor  g00204(.dina(n105), .dinb(n267), .dout(n268));
   jor  g00205(.dina(n262), .dinb(n102), .dout(n269));
   jor  g00206(.dina(n269), .dinb(n268), .dout(n270));
@@ -3256,7 +3236,7 @@ module gf_log2 (
   jor  g00254(.dina(n317), .dinb(n292), .dout(n318));
   jand g00255(.dina(n149), .dinb(n139), .dout(n319));
   jnot g00256(.din(n319), .dout(n320));
-  jor  g00257(.dina(\a[28] ), .dinb(n72), .dout(n321));
+  jor  g00257(.dina(a[28] ), .dinb(n72), .dout(n321));
   jor  g00258(.dina(n321), .dinb(n116), .dout(n322));
   jor  g00259(.dina(n77), .dinb(n65), .dout(n323));
   jor  g00260(.dina(n323), .dinb(n119), .dout(n324));
@@ -3342,9 +3322,9 @@ module gf_log2 (
   jor  g00340(.dina(n403), .dinb(n402), .dout(n404));
   jor  g00341(.dina(n404), .dinb(n401), .dout(n405));
   jor  g00342(.dina(n405), .dinb(n394), .dout(n406));
-  jor  g00343(.dina(\a[25] ), .dinb(\a[24] ), .dout(n407));
+  jor  g00343(.dina(a[25] ), .dinb(a[24] ), .dout(n407));
   jor  g00344(.dina(n407), .dinb(n262), .dout(n408));
-  jor  g00345(.dina(\a[28] ), .dinb(\a[27] ), .dout(n409));
+  jor  g00345(.dina(a[28] ), .dinb(a[27] ), .dout(n409));
   jor  g00346(.dina(n106), .dinb(n409), .dout(n410));
   jor  g00347(.dina(n410), .dinb(n408), .dout(n411));
   jnot g00348(.din(n411), .dout(n412));
@@ -3665,7 +3645,7 @@ module gf_log2 (
   jxor g00663(.dina(n726), .dinb(n438), .dout(n727));
   jnot g00664(.din(n727), .dout(n728));
   jand g00665(.dina(n728), .dinb(n71), .dout(n729));
-  jxor g00666(.dina(\a[25] ), .dinb(\a[24] ), .dout(n730));
+  jxor g00666(.dina(a[25] ), .dinb(a[24] ), .dout(n730));
   jand g00667(.dina(n730), .dinb(n66), .dout(n731));
   jand g00668(.dina(n731), .dinb(n438), .dout(n732));
   jand g00669(.dina(n144), .dinb(n96), .dout(n733));
@@ -3739,8 +3719,8 @@ module gf_log2 (
   jnot g00737(.din(n800), .dout(n801));
   jor  g00738(.dina(n801), .dinb(n77), .dout(n802));
   jxor g00739(.dina(n802), .dinb(n799), .dout(n803));
-  jxor g00740(.dina(\a[21] ), .dinb(\a[20] ), .dout(n804));
-  jxor g00741(.dina(\a[23] ), .dinb(\a[22] ), .dout(n805));
+  jxor g00740(.dina(a[21] ), .dinb(a[20] ), .dout(n804));
+  jxor g00741(.dina(a[23] ), .dinb(a[22] ), .dout(n805));
   jand g00742(.dina(n805), .dinb(n804), .dout(n806));
   jnot g00743(.din(n806), .dout(n807));
   jor  g00744(.dina(n265), .dinb(n439), .dout(n808));
@@ -4546,7 +4526,7 @@ module gf_log2 (
   jxor g01544(.dina(n1607), .dinb(n1392), .dout(n1608));
   jor  g01545(.dina(n1608), .dinb(n807), .dout(n1609));
   jnot g01546(.din(n804), .dout(n1610));
-  jxor g01547(.dina(\a[22] ), .dinb(\a[21] ), .dout(n1611));
+  jxor g01547(.dina(a[22] ), .dinb(a[21] ), .dout(n1611));
   jand g01548(.dina(n1611), .dinb(n1610), .dout(n1612));
   jnot g01549(.din(n1612), .dout(n1613));
   jor  g01550(.dina(n1613), .dinb(n1448), .dout(n1614));
@@ -4560,7 +4540,7 @@ module gf_log2 (
   jor  g01558(.dina(n1621), .dinb(n1606), .dout(n1622));
   jand g01559(.dina(n1622), .dinb(n1619), .dout(n1623));
   jand g01560(.dina(n1623), .dinb(n1609), .dout(n1624));
-  jxor g01561(.dina(n1624), .dinb(\a[23] ), .dout(n1625));
+  jxor g01561(.dina(n1624), .dinb(a[23] ), .dout(n1625));
   jor  g01562(.dina(n1625), .dinb(n803), .dout(n1626));
   jand g01563(.dina(n806), .dinb(n728), .dout(n1627));
   jand g01564(.dina(n1612), .dinb(n438), .dout(n1628));
@@ -4570,7 +4550,7 @@ module gf_log2 (
   jnot g01568(.din(n1631), .dout(n1632));
   jand g01569(.dina(n804), .dinb(n438), .dout(n1633));
   jnot g01570(.din(n1633), .dout(n1634));
-  jand g01571(.dina(n1634), .dinb(\a[23] ), .dout(n1635));
+  jand g01571(.dina(n1634), .dinb(a[23] ), .dout(n1635));
   jand g01572(.dina(n1635), .dinb(n1632), .dout(n1636));
   jand g01573(.dina(n795), .dinb(n1388), .dout(n1637));
   jxor g01574(.dina(n1255), .dinb(n1637), .dout(n1638));
@@ -4599,7 +4579,7 @@ module gf_log2 (
   jor  g01597(.dina(n1617), .dinb(n726), .dout(n1661));
   jand g01598(.dina(n1661), .dinb(n1660), .dout(n1662));
   jand g01599(.dina(n1662), .dinb(n1657), .dout(n1663));
-  jxor g01600(.dina(n1663), .dinb(\a[23] ), .dout(n1664));
+  jxor g01600(.dina(n1663), .dinb(a[23] ), .dout(n1664));
   jor  g01601(.dina(n1664), .dinb(n1653), .dout(n1665));
   jand g01602(.dina(n1665), .dinb(n1651), .dout(n1666));
   jnot g01603(.din(n1666), .dout(n1667));
@@ -4747,13 +4727,13 @@ module gf_log2 (
   jor  g01745(.dina(n1808), .dinb(n1801), .dout(n1809));
   jor  g01746(.dina(n800), .dinb(n77), .dout(n1810));
   jor  g01747(.dina(n1810), .dinb(n799), .dout(n1811));
-  jand g01748(.dina(n1811), .dinb(\a[26] ), .dout(n1812));
+  jand g01748(.dina(n1811), .dinb(a[26] ), .dout(n1812));
   jxor g01749(.dina(n1812), .dinb(n1809), .dout(n1813));
   jxor g01750(.dina(n1813), .dinb(n1800), .dout(n1814));
   jxor g01751(.dina(n1814), .dinb(n1672), .dout(n1815));
   jnot g01752(.din(n1815), .dout(n1816));
-  jxor g01753(.dina(\a[18] ), .dinb(\a[17] ), .dout(n1817));
-  jxor g01754(.dina(\a[20] ), .dinb(\a[19] ), .dout(n1818));
+  jxor g01753(.dina(a[18] ), .dinb(a[17] ), .dout(n1817));
+  jxor g01754(.dina(a[20] ), .dinb(a[19] ), .dout(n1818));
   jand g01755(.dina(n1818), .dinb(n1817), .dout(n1819));
   jnot g01756(.din(n1819), .dout(n1820));
   jand g01757(.dina(n537), .dinb(n988), .dout(n1821));
@@ -5114,7 +5094,7 @@ module gf_log2 (
   jxor g02112(.dina(n2175), .dinb(n2076), .dout(n2176));
   jor  g02113(.dina(n2176), .dinb(n1820), .dout(n2177));
   jnot g02114(.din(n1817), .dout(n2178));
-  jxor g02115(.dina(\a[19] ), .dinb(\a[18] ), .dout(n2179));
+  jxor g02115(.dina(a[19] ), .dinb(a[18] ), .dout(n2179));
   jand g02116(.dina(n2179), .dinb(n2178), .dout(n2180));
   jnot g02117(.din(n2180), .dout(n2181));
   jor  g02118(.dina(n2181), .dinb(n1954), .dout(n2182));
@@ -5128,10 +5108,10 @@ module gf_log2 (
   jor  g02126(.dina(n2189), .dinb(n2174), .dout(n2190));
   jand g02127(.dina(n2190), .dinb(n2188), .dout(n2191));
   jand g02128(.dina(n2191), .dinb(n2177), .dout(n2192));
-  jxor g02129(.dina(n2192), .dinb(\a[20] ), .dout(n2193));
+  jxor g02129(.dina(n2192), .dinb(a[20] ), .dout(n2193));
   jor  g02130(.dina(n2193), .dinb(n1816), .dout(n2194));
   jxor g02131(.dina(n1668), .dinb(n1667), .dout(n2195));
-  jnot g02132(.din(\a[20] ), .dout(n2196));
+  jnot g02132(.din(a[20] ), .dout(n2196));
   jxor g02133(.dina(n2073), .dinb(n2072), .dout(n2197));
   jor  g02134(.dina(n2197), .dinb(n1820), .dout(n2198));
   jor  g02135(.dina(n2186), .dinb(n1790), .dout(n2199));
@@ -5164,7 +5144,7 @@ module gf_log2 (
   jor  g02162(.dina(n1636), .dinb(n65), .dout(n2226));
   jxor g02163(.dina(n2226), .dinb(n1648), .dout(n2227));
   jand g02164(.dina(n2227), .dinb(n2225), .dout(n2228));
-  jand g02165(.dina(n1633), .dinb(\a[23] ), .dout(n2229));
+  jand g02165(.dina(n1633), .dinb(a[23] ), .dout(n2229));
   jxor g02166(.dina(n2229), .dinb(n1631), .dout(n2230));
   jnot g02167(.din(n2230), .dout(n2231));
   jor  g02168(.dina(n1820), .dinb(n1608), .dout(n2232));
@@ -5174,7 +5154,7 @@ module gf_log2 (
   jor  g02172(.dina(n2189), .dinb(n1606), .dout(n2236));
   jand g02173(.dina(n2236), .dinb(n2235), .dout(n2237));
   jand g02174(.dina(n2237), .dinb(n2232), .dout(n2238));
-  jxor g02175(.dina(n2238), .dinb(\a[20] ), .dout(n2239));
+  jxor g02175(.dina(n2238), .dinb(a[20] ), .dout(n2239));
   jor  g02176(.dina(n2239), .dinb(n2231), .dout(n2240));
   jand g02177(.dina(n1819), .dinb(n728), .dout(n2241));
   jand g02178(.dina(n2180), .dinb(n438), .dout(n2242));
@@ -5185,7 +5165,7 @@ module gf_log2 (
   jnot g02183(.din(n2246), .dout(n2247));
   jand g02184(.dina(n1817), .dinb(n438), .dout(n2248));
   jnot g02185(.din(n2248), .dout(n2249));
-  jand g02186(.dina(n2249), .dinb(\a[20] ), .dout(n2250));
+  jand g02186(.dina(n2249), .dinb(a[20] ), .dout(n2250));
   jand g02187(.dina(n2250), .dinb(n2247), .dout(n2251));
   jand g02188(.dina(n1819), .dinb(n1639), .dout(n2252));
   jand g02189(.dina(n2180), .dinb(n795), .dout(n2253));
@@ -5207,7 +5187,7 @@ module gf_log2 (
   jor  g02205(.dina(n2189), .dinb(n1448), .dout(n2269));
   jand g02206(.dina(n2269), .dinb(n2268), .dout(n2270));
   jand g02207(.dina(n2270), .dinb(n2265), .dout(n2271));
-  jxor g02208(.dina(n2271), .dinb(\a[20] ), .dout(n2272));
+  jxor g02208(.dina(n2271), .dinb(a[20] ), .dout(n2272));
   jor  g02209(.dina(n2272), .dinb(n2264), .dout(n2273));
   jand g02210(.dina(n2273), .dinb(n2262), .dout(n2274));
   jnot g02211(.din(n2274), .dout(n2275));
@@ -5248,7 +5228,7 @@ module gf_log2 (
   jor  g02246(.dina(n1448), .dinb(n2309), .dout(n2310));
   jand g02247(.dina(n2310), .dinb(n2308), .dout(n2311));
   jand g02248(.dina(n2311), .dinb(n2304), .dout(n2312));
-  jxor g02249(.dina(n2312), .dinb(\a[26] ), .dout(n2313));
+  jxor g02249(.dina(n2312), .dinb(a[26] ), .dout(n2313));
   jxor g02250(.dina(n2313), .dinb(n2302), .dout(n2314));
   jor  g02251(.dina(n2208), .dinb(n807), .dout(n2315));
   jor  g02252(.dina(n1790), .dinb(n1613), .dout(n2316));
@@ -5376,7 +5356,7 @@ module gf_log2 (
   jxor g02374(.dina(n2437), .dinb(n2196), .dout(n2438));
   jxor g02375(.dina(n2438), .dinb(n2324), .dout(n2439));
   jxor g02376(.dina(n2439), .dinb(n2294), .dout(n2440));
-  jnot g02377(.din(\a[17] ), .dout(n2441));
+  jnot g02377(.din(a[17] ), .dout(n2441));
   jand g02378(.dina(n351), .dinb(n100), .dout(n2442));
   jand g02379(.dina(n2442), .dinb(n1096), .dout(n2443));
   jand g02380(.dina(n1846), .dinb(n654), .dout(n2444));
@@ -5676,13 +5656,13 @@ module gf_log2 (
   jand g02674(.dina(n2737), .dinb(n2679), .dout(n2738));
   jxor g02675(.dina(n2738), .dinb(n2553), .dout(n2739));
   jxor g02676(.dina(n2739), .dinb(n2648), .dout(n2740));
-  jxor g02677(.dina(\a[15] ), .dinb(\a[14] ), .dout(n2741));
-  jxor g02678(.dina(\a[17] ), .dinb(\a[16] ), .dout(n2742));
+  jxor g02677(.dina(a[15] ), .dinb(a[14] ), .dout(n2741));
+  jxor g02678(.dina(a[17] ), .dinb(a[16] ), .dout(n2742));
   jand g02679(.dina(n2742), .dinb(n2741), .dout(n2743));
   jnot g02680(.din(n2743), .dout(n2744));
   jor  g02681(.dina(n2744), .dinb(n2740), .dout(n2745));
   jnot g02682(.din(n2741), .dout(n2746));
-  jxor g02683(.dina(\a[16] ), .dinb(\a[15] ), .dout(n2747));
+  jxor g02683(.dina(a[16] ), .dinb(a[15] ), .dout(n2747));
   jand g02684(.dina(n2747), .dinb(n2746), .dout(n2748));
   jnot g02685(.din(n2748), .dout(n2749));
   jor  g02686(.dina(n2749), .dinb(n2553), .dout(n2750));
@@ -5710,7 +5690,7 @@ module gf_log2 (
   jand g02708(.dina(n2771), .dinb(n2770), .dout(n2772));
   jand g02709(.dina(n2772), .dinb(n2769), .dout(n2773));
   jand g02710(.dina(n2773), .dinb(n2767), .dout(n2774));
-  jxor g02711(.dina(n2774), .dinb(\a[17] ), .dout(n2775));
+  jxor g02711(.dina(n2774), .dinb(a[17] ), .dout(n2775));
   jor  g02712(.dina(n2775), .dinb(n2766), .dout(n2776));
   jxor g02713(.dina(n2287), .dinb(n2286), .dout(n2777));
   jnot g02714(.din(n2777), .dout(n2778));
@@ -5722,7 +5702,7 @@ module gf_log2 (
   jor  g02720(.dina(n2758), .dinb(n2174), .dout(n2784));
   jand g02721(.dina(n2784), .dinb(n2783), .dout(n2785));
   jand g02722(.dina(n2785), .dinb(n2780), .dout(n2786));
-  jxor g02723(.dina(n2786), .dinb(\a[17] ), .dout(n2787));
+  jxor g02723(.dina(n2786), .dinb(a[17] ), .dout(n2787));
   jor  g02724(.dina(n2787), .dinb(n2778), .dout(n2788));
   jxor g02725(.dina(n2284), .dinb(n2283), .dout(n2789));
   jor  g02726(.dina(n2744), .dinb(n2430), .dout(n2790));
@@ -5743,7 +5723,7 @@ module gf_log2 (
   jor  g02741(.dina(n2753), .dinb(n2174), .dout(n2805));
   jand g02742(.dina(n2805), .dinb(n2804), .dout(n2806));
   jand g02743(.dina(n2806), .dinb(n2801), .dout(n2807));
-  jxor g02744(.dina(n2807), .dinb(\a[17] ), .dout(n2808));
+  jxor g02744(.dina(n2807), .dinb(a[17] ), .dout(n2808));
   jor  g02745(.dina(n2808), .dinb(n2800), .dout(n2809));
   jxor g02746(.dina(n2276), .dinb(n2275), .dout(n2810));
   jor  g02747(.dina(n2744), .dinb(n2197), .dout(n2811));
@@ -5772,12 +5752,12 @@ module gf_log2 (
   jand g02770(.dina(n2833), .dinb(n2832), .dout(n2834));
   jand g02771(.dina(n2834), .dinb(n2831), .dout(n2835));
   jand g02772(.dina(n2835), .dinb(n2830), .dout(n2836));
-  jxor g02773(.dina(n2836), .dinb(\a[17] ), .dout(n2837));
+  jxor g02773(.dina(n2836), .dinb(a[17] ), .dout(n2837));
   jnot g02774(.din(n2837), .dout(n2838));
   jor  g02775(.dina(n2251), .dinb(n2196), .dout(n2839));
   jxor g02776(.dina(n2839), .dinb(n2259), .dout(n2840));
   jand g02777(.dina(n2840), .dinb(n2838), .dout(n2841));
-  jand g02778(.dina(n2248), .dinb(\a[20] ), .dout(n2842));
+  jand g02778(.dina(n2248), .dinb(a[20] ), .dout(n2842));
   jxor g02779(.dina(n2842), .dinb(n2246), .dout(n2843));
   jnot g02780(.din(n2843), .dout(n2844));
   jor  g02781(.dina(n2744), .dinb(n1608), .dout(n2845));
@@ -5787,7 +5767,7 @@ module gf_log2 (
   jor  g02785(.dina(n2753), .dinb(n1606), .dout(n2849));
   jand g02786(.dina(n2849), .dinb(n2848), .dout(n2850));
   jand g02787(.dina(n2850), .dinb(n2845), .dout(n2851));
-  jxor g02788(.dina(n2851), .dinb(\a[17] ), .dout(n2852));
+  jxor g02788(.dina(n2851), .dinb(a[17] ), .dout(n2852));
   jor  g02789(.dina(n2852), .dinb(n2844), .dout(n2853));
   jand g02790(.dina(n2743), .dinb(n728), .dout(n2854));
   jand g02791(.dina(n2748), .dinb(n438), .dout(n2855));
@@ -5797,7 +5777,7 @@ module gf_log2 (
   jnot g02795(.din(n2858), .dout(n2859));
   jand g02796(.dina(n2741), .dinb(n438), .dout(n2860));
   jnot g02797(.din(n2860), .dout(n2861));
-  jand g02798(.dina(n2861), .dinb(\a[17] ), .dout(n2862));
+  jand g02798(.dina(n2861), .dinb(a[17] ), .dout(n2862));
   jand g02799(.dina(n2862), .dinb(n2859), .dout(n2863));
   jand g02800(.dina(n2743), .dinb(n1639), .dout(n2864));
   jand g02801(.dina(n2748), .dinb(n795), .dout(n2865));
@@ -5819,7 +5799,7 @@ module gf_log2 (
   jor  g02817(.dina(n2758), .dinb(n726), .dout(n2881));
   jand g02818(.dina(n2881), .dinb(n2880), .dout(n2882));
   jand g02819(.dina(n2882), .dinb(n2877), .dout(n2883));
-  jxor g02820(.dina(n2883), .dinb(\a[17] ), .dout(n2884));
+  jxor g02820(.dina(n2883), .dinb(a[17] ), .dout(n2884));
   jor  g02821(.dina(n2884), .dinb(n2876), .dout(n2885));
   jand g02822(.dina(n2885), .dinb(n2874), .dout(n2886));
   jnot g02823(.din(n2886), .dout(n2887));
@@ -5870,11 +5850,11 @@ module gf_log2 (
   jor  g02868(.dina(n2313), .dinb(n2302), .dout(n2932));
   jand g02869(.dina(n2932), .dinb(n2931), .dout(n2933));
   jnot g02870(.din(n2933), .dout(n2934));
-  jxor g02871(.dina(\a[29] ), .dinb(\a[28] ), .dout(n2935));
+  jxor g02871(.dina(a[29] ), .dinb(a[28] ), .dout(n2935));
   jand g02872(.dina(n2935), .dinb(n64), .dout(n2936));
   jand g02873(.dina(n2936), .dinb(n728), .dout(n2937));
   jnot g02874(.din(n64), .dout(n2938));
-  jxor g02875(.dina(\a[28] ), .dinb(\a[27] ), .dout(n2939));
+  jxor g02875(.dina(a[28] ), .dinb(a[27] ), .dout(n2939));
   jand g02876(.dina(n2939), .dinb(n2938), .dout(n2940));
   jand g02877(.dina(n2940), .dinb(n438), .dout(n2941));
   jnot g02878(.din(n2935), .dout(n2942));
@@ -5891,7 +5871,7 @@ module gf_log2 (
   jor  g02889(.dina(n1606), .dinb(n2309), .dout(n2953));
   jand g02890(.dina(n2953), .dinb(n2952), .dout(n2954));
   jand g02891(.dina(n2954), .dinb(n2949), .dout(n2955));
-  jxor g02892(.dina(n2955), .dinb(\a[26] ), .dout(n2956));
+  jxor g02892(.dina(n2955), .dinb(a[26] ), .dout(n2956));
   jxor g02893(.dina(n2956), .dinb(n2948), .dout(n2957));
   jxor g02894(.dina(n2957), .dinb(n2934), .dout(n2958));
   jor  g02895(.dina(n2197), .dinb(n807), .dout(n2959));
@@ -5912,7 +5892,7 @@ module gf_log2 (
   jor  g02910(.dina(n2186), .dinb(n2174), .dout(n2974));
   jand g02911(.dina(n2974), .dinb(n2973), .dout(n2975));
   jand g02912(.dina(n2975), .dinb(n2970), .dout(n2976));
-  jxor g02913(.dina(n2976), .dinb(\a[20] ), .dout(n2977));
+  jxor g02913(.dina(n2976), .dinb(a[20] ), .dout(n2977));
   jxor g02914(.dina(n2977), .dinb(n2969), .dout(n2978));
   jxor g02915(.dina(n2978), .dinb(n2925), .dout(n2979));
   jnot g02916(.din(n2979), .dout(n2980));
@@ -6023,7 +6003,7 @@ module gf_log2 (
   jand g03021(.dina(n3084), .dinb(n3083), .dout(n3085));
   jand g03022(.dina(n3085), .dinb(n3082), .dout(n3086));
   jand g03023(.dina(n3086), .dinb(n3073), .dout(n3087));
-  jxor g03024(.dina(n3087), .dinb(\a[17] ), .dout(n3088));
+  jxor g03024(.dina(n3087), .dinb(a[17] ), .dout(n3088));
   jxor g03025(.dina(n3088), .dinb(n2980), .dout(n3089));
   jxor g03026(.dina(n3089), .dinb(n2922), .dout(n3090));
   jnot g03027(.din(n3090), .dout(n3091));
@@ -6139,10 +6119,10 @@ module gf_log2 (
   jand g03137(.dina(n3200), .dinb(n3190), .dout(n3201));
   jand g03138(.dina(n3201), .dinb(n3159), .dout(n3202));
   jand g03139(.dina(n3202), .dinb(n3141), .dout(n3203));
-  jxor g03140(.dina(\a[14] ), .dinb(\a[13] ), .dout(n3204));
-  jxor g03141(.dina(\a[12] ), .dinb(\a[11] ), .dout(n3205));
+  jxor g03140(.dina(a[14] ), .dinb(a[13] ), .dout(n3204));
+  jxor g03141(.dina(a[12] ), .dinb(a[11] ), .dout(n3205));
   jnot g03142(.din(n3205), .dout(n3206));
-  jxor g03143(.dina(\a[13] ), .dinb(\a[12] ), .dout(n3207));
+  jxor g03143(.dina(a[13] ), .dinb(a[12] ), .dout(n3207));
   jnot g03144(.din(n3207), .dout(n3208));
   jand g03145(.dina(n3208), .dinb(n3206), .dout(n3209));
   jand g03146(.dina(n3209), .dinb(n3204), .dout(n3210));
@@ -6369,7 +6349,7 @@ module gf_log2 (
   jand g03367(.dina(n3430), .dinb(n3427), .dout(n3431));
   jand g03368(.dina(n3431), .dinb(n3425), .dout(n3432));
   jand g03369(.dina(n3432), .dinb(n3212), .dout(n3433));
-  jxor g03370(.dina(n3433), .dinb(\a[14] ), .dout(n3434));
+  jxor g03370(.dina(n3433), .dinb(a[14] ), .dout(n3434));
   jor  g03371(.dina(n3434), .dinb(n3091), .dout(n3435));
   jnot g03372(.din(n3435), .dout(n3436));
   jxor g03373(.dina(n2920), .dinb(n2919), .dout(n3437));
@@ -6382,7 +6362,7 @@ module gf_log2 (
   jand g03380(.dina(n3443), .dinb(n3442), .dout(n3444));
   jand g03381(.dina(n3444), .dinb(n3441), .dout(n3445));
   jand g03382(.dina(n3445), .dinb(n3439), .dout(n3446));
-  jxor g03383(.dina(n3446), .dinb(\a[14] ), .dout(n3447));
+  jxor g03383(.dina(n3446), .dinb(a[14] ), .dout(n3447));
   jor  g03384(.dina(n3447), .dinb(n3438), .dout(n3448));
   jxor g03385(.dina(n2915), .dinb(n2914), .dout(n3449));
   jnot g03386(.din(n3449), .dout(n3450));
@@ -6394,7 +6374,7 @@ module gf_log2 (
   jor  g03392(.dina(n3426), .dinb(n3203), .dout(n3456));
   jand g03393(.dina(n3456), .dinb(n3455), .dout(n3457));
   jand g03394(.dina(n3457), .dinb(n3452), .dout(n3458));
-  jxor g03395(.dina(n3458), .dinb(\a[14] ), .dout(n3459));
+  jxor g03395(.dina(n3458), .dinb(a[14] ), .dout(n3459));
   jor  g03396(.dina(n3459), .dinb(n3450), .dout(n3460));
   jxor g03397(.dina(n2910), .dinb(n2909), .dout(n3461));
   jnot g03398(.din(n3461), .dout(n3462));
@@ -6405,10 +6385,10 @@ module gf_log2 (
   jand g03403(.dina(n3466), .dinb(n3465), .dout(n3467));
   jand g03404(.dina(n3467), .dinb(n3464), .dout(n3468));
   jand g03405(.dina(n3468), .dinb(n3463), .dout(n3469));
-  jxor g03406(.dina(n3469), .dinb(\a[14] ), .dout(n3470));
+  jxor g03406(.dina(n3469), .dinb(a[14] ), .dout(n3470));
   jor  g03407(.dina(n3470), .dinb(n3462), .dout(n3471));
   jxor g03408(.dina(n2907), .dinb(n2906), .dout(n3472));
-  jnot g03409(.din(\a[14] ), .dout(n3473));
+  jnot g03409(.din(a[14] ), .dout(n3473));
   jor  g03410(.dina(n3424), .dinb(n2740), .dout(n3474));
   jor  g03411(.dina(n3429), .dinb(n2553), .dout(n3475));
   jor  g03412(.dina(n3211), .dinb(n2629), .dout(n3476));
@@ -6437,7 +6417,7 @@ module gf_log2 (
   jor  g03435(.dina(n3211), .dinb(n2174), .dout(n3499));
   jand g03436(.dina(n3499), .dinb(n3498), .dout(n3500));
   jand g03437(.dina(n3500), .dinb(n3495), .dout(n3501));
-  jxor g03438(.dina(n3501), .dinb(\a[14] ), .dout(n3502));
+  jxor g03438(.dina(n3501), .dinb(a[14] ), .dout(n3502));
   jor  g03439(.dina(n3502), .dinb(n3494), .dout(n3503));
   jxor g03440(.dina(n2896), .dinb(n2895), .dout(n3504));
   jor  g03441(.dina(n3424), .dinb(n2430), .dout(n3505));
@@ -6490,7 +6470,7 @@ module gf_log2 (
   jor  g03488(.dina(n2863), .dinb(n2441), .dout(n3552));
   jxor g03489(.dina(n3552), .dinb(n2871), .dout(n3553));
   jand g03490(.dina(n3553), .dinb(n3551), .dout(n3554));
-  jand g03491(.dina(n2860), .dinb(\a[17] ), .dout(n3555));
+  jand g03491(.dina(n2860), .dinb(a[17] ), .dout(n3555));
   jxor g03492(.dina(n3555), .dinb(n2858), .dout(n3556));
   jnot g03493(.din(n3556), .dout(n3557));
   jor  g03494(.dina(n3424), .dinb(n1608), .dout(n3558));
@@ -6500,7 +6480,7 @@ module gf_log2 (
   jor  g03498(.dina(n3426), .dinb(n1606), .dout(n3562));
   jand g03499(.dina(n3562), .dinb(n3561), .dout(n3563));
   jand g03500(.dina(n3563), .dinb(n3558), .dout(n3564));
-  jxor g03501(.dina(n3564), .dinb(\a[14] ), .dout(n3565));
+  jxor g03501(.dina(n3564), .dinb(a[14] ), .dout(n3565));
   jor  g03502(.dina(n3565), .dinb(n3557), .dout(n3566));
   jand g03503(.dina(n3423), .dinb(n728), .dout(n3567));
   jand g03504(.dina(n3428), .dinb(n438), .dout(n3568));
@@ -6511,7 +6491,7 @@ module gf_log2 (
   jnot g03509(.din(n3572), .dout(n3573));
   jand g03510(.dina(n3205), .dinb(n438), .dout(n3574));
   jnot g03511(.din(n3574), .dout(n3575));
-  jand g03512(.dina(n3575), .dinb(\a[14] ), .dout(n3576));
+  jand g03512(.dina(n3575), .dinb(a[14] ), .dout(n3576));
   jand g03513(.dina(n3576), .dinb(n3573), .dout(n3577));
   jand g03514(.dina(n3423), .dinb(n1639), .dout(n3578));
   jand g03515(.dina(n3428), .dinb(n795), .dout(n3579));
@@ -6533,7 +6513,7 @@ module gf_log2 (
   jor  g03531(.dina(n3211), .dinb(n726), .dout(n3595));
   jand g03532(.dina(n3595), .dinb(n3594), .dout(n3596));
   jand g03533(.dina(n3596), .dinb(n3591), .dout(n3597));
-  jxor g03534(.dina(n3597), .dinb(\a[14] ), .dout(n3598));
+  jxor g03534(.dina(n3597), .dinb(a[14] ), .dout(n3598));
   jor  g03535(.dina(n3598), .dinb(n3590), .dout(n3599));
   jand g03536(.dina(n3599), .dinb(n3588), .dout(n3600));
   jnot g03537(.din(n3600), .dout(n3601));
@@ -6611,7 +6591,7 @@ module gf_log2 (
   jand g03609(.dina(n3672), .dinb(n3671), .dout(n3673));
   jand g03610(.dina(n3673), .dinb(n3670), .dout(n3674));
   jand g03611(.dina(n3674), .dinb(n3669), .dout(n3675));
-  jxor g03612(.dina(n3675), .dinb(\a[26] ), .dout(n3676));
+  jxor g03612(.dina(n3675), .dinb(a[26] ), .dout(n3676));
   jnot g03613(.din(n3676), .dout(n3677));
   jand g03614(.dina(n2936), .dinb(n1639), .dout(n3678));
   jand g03615(.dina(n2940), .dinb(n795), .dout(n3679));
@@ -6624,10 +6604,10 @@ module gf_log2 (
   jor  g03622(.dina(n3685), .dinb(n3681), .dout(n3686));
   jor  g03623(.dina(n3686), .dinb(n3678), .dout(n3687));
   jnot g03624(.din(n2946), .dout(n3688));
-  jand g03625(.dina(n2299), .dinb(\a[29] ), .dout(n3689));
+  jand g03625(.dina(n2299), .dinb(a[29] ), .dout(n3689));
   jand g03626(.dina(n3689), .dinb(n3688), .dout(n3690));
   jnot g03627(.din(n3690), .dout(n3691));
-  jand g03628(.dina(n3691), .dinb(\a[29] ), .dout(n3692));
+  jand g03628(.dina(n3691), .dinb(a[29] ), .dout(n3692));
   jxor g03629(.dina(n3692), .dinb(n3687), .dout(n3693));
   jxor g03630(.dina(n3693), .dinb(n3677), .dout(n3694));
   jxor g03631(.dina(n3694), .dinb(n3668), .dout(n3695));
@@ -6639,7 +6619,7 @@ module gf_log2 (
   jand g03637(.dina(n3700), .dinb(n3699), .dout(n3701));
   jand g03638(.dina(n3701), .dinb(n3698), .dout(n3702));
   jand g03639(.dina(n3702), .dinb(n3697), .dout(n3703));
-  jxor g03640(.dina(n3703), .dinb(\a[23] ), .dout(n3704));
+  jxor g03640(.dina(n3703), .dinb(a[23] ), .dout(n3704));
   jxor g03641(.dina(n3704), .dinb(n3696), .dout(n3705));
   jxor g03642(.dina(n3705), .dinb(n3663), .dout(n3706));
   jor  g03643(.dina(n2768), .dinb(n1820), .dout(n3707));
@@ -6660,7 +6640,7 @@ module gf_log2 (
   jor  g03658(.dina(n3203), .dinb(n2753), .dout(n3722));
   jand g03659(.dina(n3722), .dinb(n3721), .dout(n3723));
   jand g03660(.dina(n3723), .dinb(n3718), .dout(n3724));
-  jxor g03661(.dina(n3724), .dinb(\a[17] ), .dout(n3725));
+  jxor g03661(.dina(n3724), .dinb(a[17] ), .dout(n3725));
   jxor g03662(.dina(n3725), .dinb(n3717), .dout(n3726));
   jxor g03663(.dina(n3726), .dinb(n3655), .dout(n3727));
   jnot g03664(.din(n3727), .dout(n3728));
@@ -6732,7 +6712,7 @@ module gf_log2 (
   jor  g03730(.dina(n3787), .dinb(n3426), .dout(n3794));
   jand g03731(.dina(n3794), .dinb(n3793), .dout(n3795));
   jand g03732(.dina(n3795), .dinb(n3790), .dout(n3796));
-  jxor g03733(.dina(n3796), .dinb(\a[14] ), .dout(n3797));
+  jxor g03733(.dina(n3796), .dinb(a[14] ), .dout(n3797));
   jxor g03734(.dina(n3797), .dinb(n3728), .dout(n3798));
   jxor g03735(.dina(n3798), .dinb(n3650), .dout(n3799));
   jnot g03736(.din(n3799), .dout(n3800));
@@ -6799,10 +6779,10 @@ module gf_log2 (
   jand g03797(.dina(n3860), .dinb(n3846), .dout(n3861));
   jand g03798(.dina(n3861), .dinb(n2679), .dout(n3862));
   jand g03799(.dina(n3862), .dinb(n3826), .dout(n3863));
-  jxor g03800(.dina(\a[11] ), .dinb(\a[10] ), .dout(n3864));
-  jxor g03801(.dina(\a[9] ), .dinb(\a[8] ), .dout(n3865));
+  jxor g03800(.dina(a[11] ), .dinb(a[10] ), .dout(n3864));
+  jxor g03801(.dina(a[9] ), .dinb(a[8] ), .dout(n3865));
   jnot g03802(.din(n3865), .dout(n3866));
-  jxor g03803(.dina(\a[10] ), .dinb(\a[9] ), .dout(n3867));
+  jxor g03803(.dina(a[10] ), .dinb(a[9] ), .dout(n3867));
   jnot g03804(.din(n3867), .dout(n3868));
   jand g03805(.dina(n3868), .dinb(n3866), .dout(n3869));
   jand g03806(.dina(n3869), .dinb(n3864), .dout(n3870));
@@ -6968,7 +6948,7 @@ module gf_log2 (
   jand g03966(.dina(n4029), .dinb(n4026), .dout(n4030));
   jand g03967(.dina(n4030), .dinb(n4024), .dout(n4031));
   jand g03968(.dina(n4031), .dinb(n3872), .dout(n4032));
-  jxor g03969(.dina(n4032), .dinb(\a[11] ), .dout(n4033));
+  jxor g03969(.dina(n4032), .dinb(a[11] ), .dout(n4033));
   jor  g03970(.dina(n4033), .dinb(n3800), .dout(n4034));
   jnot g03971(.din(n4034), .dout(n4035));
   jxor g03972(.dina(n3648), .dinb(n3647), .dout(n4036));
@@ -6981,11 +6961,11 @@ module gf_log2 (
   jor  g03979(.dina(n3871), .dinb(n3787), .dout(n4043));
   jand g03980(.dina(n4043), .dinb(n4042), .dout(n4044));
   jand g03981(.dina(n4044), .dinb(n4039), .dout(n4045));
-  jxor g03982(.dina(n4045), .dinb(\a[11] ), .dout(n4046));
+  jxor g03982(.dina(n4045), .dinb(a[11] ), .dout(n4046));
   jor  g03983(.dina(n4046), .dinb(n4037), .dout(n4047));
   jnot g03984(.din(n4047), .dout(n4048));
   jxor g03985(.dina(n3643), .dinb(n3642), .dout(n4049));
-  jnot g03986(.din(\a[11] ), .dout(n4050));
+  jnot g03986(.din(a[11] ), .dout(n4050));
   jxor g03987(.dina(n3941), .dinb(n3940), .dout(n4051));
   jor  g03988(.dina(n4051), .dinb(n4023), .dout(n4052));
   jor  g03989(.dina(n4028), .dinb(n3787), .dout(n4053));
@@ -7005,7 +6985,7 @@ module gf_log2 (
   jor  g04003(.dina(n4025), .dinb(n3787), .dout(n4067));
   jand g04004(.dina(n4067), .dinb(n4066), .dout(n4068));
   jand g04005(.dina(n4068), .dinb(n4063), .dout(n4069));
-  jxor g04006(.dina(n4069), .dinb(\a[11] ), .dout(n4070));
+  jxor g04006(.dina(n4069), .dinb(a[11] ), .dout(n4070));
   jor  g04007(.dina(n4070), .dinb(n4062), .dout(n4071));
   jnot g04008(.din(n4071), .dout(n4072));
   jxor g04009(.dina(n3633), .dinb(n3632), .dout(n4073));
@@ -7017,7 +6997,7 @@ module gf_log2 (
   jand g04015(.dina(n4078), .dinb(n4077), .dout(n4079));
   jand g04016(.dina(n4079), .dinb(n4076), .dout(n4080));
   jand g04017(.dina(n4080), .dinb(n4075), .dout(n4081));
-  jxor g04018(.dina(n4081), .dinb(\a[11] ), .dout(n4082));
+  jxor g04018(.dina(n4081), .dinb(a[11] ), .dout(n4082));
   jor  g04019(.dina(n4082), .dinb(n4074), .dout(n4083));
   jnot g04020(.din(n4083), .dout(n4084));
   jxor g04021(.dina(n3630), .dinb(n3629), .dout(n4085));
@@ -7039,7 +7019,7 @@ module gf_log2 (
   jor  g04037(.dina(n4025), .dinb(n3203), .dout(n4101));
   jand g04038(.dina(n4101), .dinb(n4100), .dout(n4102));
   jand g04039(.dina(n4102), .dinb(n4097), .dout(n4103));
-  jxor g04040(.dina(n4103), .dinb(\a[11] ), .dout(n4104));
+  jxor g04040(.dina(n4103), .dinb(a[11] ), .dout(n4104));
   jor  g04041(.dina(n4104), .dinb(n4096), .dout(n4105));
   jnot g04042(.din(n4105), .dout(n4106));
   jxor g04043(.dina(n3622), .dinb(n3621), .dout(n4107));
@@ -7051,7 +7031,7 @@ module gf_log2 (
   jor  g04049(.dina(n4025), .dinb(n3072), .dout(n4113));
   jand g04050(.dina(n4113), .dinb(n4112), .dout(n4114));
   jand g04051(.dina(n4114), .dinb(n4109), .dout(n4115));
-  jxor g04052(.dina(n4115), .dinb(\a[11] ), .dout(n4116));
+  jxor g04052(.dina(n4115), .dinb(a[11] ), .dout(n4116));
   jor  g04053(.dina(n4116), .dinb(n4108), .dout(n4117));
   jxor g04054(.dina(n3619), .dinb(n3618), .dout(n4118));
   jnot g04055(.din(n4118), .dout(n4119));
@@ -7062,7 +7042,7 @@ module gf_log2 (
   jor  g04060(.dina(n4025), .dinb(n2738), .dout(n4124));
   jand g04061(.dina(n4124), .dinb(n4123), .dout(n4125));
   jand g04062(.dina(n4125), .dinb(n4120), .dout(n4126));
-  jxor g04063(.dina(n4126), .dinb(\a[11] ), .dout(n4127));
+  jxor g04063(.dina(n4126), .dinb(a[11] ), .dout(n4127));
   jor  g04064(.dina(n4127), .dinb(n4119), .dout(n4128));
   jxor g04065(.dina(n3616), .dinb(n3615), .dout(n4129));
   jor  g04066(.dina(n4023), .dinb(n2768), .dout(n4130));
@@ -7106,7 +7086,7 @@ module gf_log2 (
   jor  g04104(.dina(n4025), .dinb(n2174), .dout(n4168));
   jand g04105(.dina(n4168), .dinb(n4167), .dout(n4169));
   jand g04106(.dina(n4169), .dinb(n4164), .dout(n4170));
-  jxor g04107(.dina(n4170), .dinb(\a[11] ), .dout(n4171));
+  jxor g04107(.dina(n4170), .dinb(a[11] ), .dout(n4171));
   jor  g04108(.dina(n4171), .dinb(n4163), .dout(n4172));
   jxor g04109(.dina(n3602), .dinb(n3601), .dout(n4173));
   jnot g04110(.din(n4173), .dout(n4174));
@@ -7117,7 +7097,7 @@ module gf_log2 (
   jand g04115(.dina(n4178), .dinb(n4177), .dout(n4179));
   jand g04116(.dina(n4179), .dinb(n4176), .dout(n4180));
   jand g04117(.dina(n4180), .dinb(n4175), .dout(n4181));
-  jxor g04118(.dina(n4181), .dinb(\a[11] ), .dout(n4182));
+  jxor g04118(.dina(n4181), .dinb(a[11] ), .dout(n4182));
   jor  g04119(.dina(n4182), .dinb(n4174), .dout(n4183));
   jxor g04120(.dina(n3598), .dinb(n3590), .dout(n4184));
   jor  g04121(.dina(n4023), .dinb(n2208), .dout(n4185));
@@ -7136,12 +7116,12 @@ module gf_log2 (
   jand g04134(.dina(n4197), .dinb(n4196), .dout(n4198));
   jand g04135(.dina(n4198), .dinb(n4195), .dout(n4199));
   jand g04136(.dina(n4199), .dinb(n4194), .dout(n4200));
-  jxor g04137(.dina(n4200), .dinb(\a[11] ), .dout(n4201));
+  jxor g04137(.dina(n4200), .dinb(a[11] ), .dout(n4201));
   jnot g04138(.din(n4201), .dout(n4202));
   jor  g04139(.dina(n3577), .dinb(n3473), .dout(n4203));
   jxor g04140(.dina(n4203), .dinb(n3585), .dout(n4204));
   jand g04141(.dina(n4204), .dinb(n4202), .dout(n4205));
-  jand g04142(.dina(n3574), .dinb(\a[14] ), .dout(n4206));
+  jand g04142(.dina(n3574), .dinb(a[14] ), .dout(n4206));
   jxor g04143(.dina(n4206), .dinb(n3572), .dout(n4207));
   jnot g04144(.din(n4207), .dout(n4208));
   jor  g04145(.dina(n4023), .dinb(n1608), .dout(n4209));
@@ -7151,7 +7131,7 @@ module gf_log2 (
   jor  g04149(.dina(n4025), .dinb(n1606), .dout(n4213));
   jand g04150(.dina(n4213), .dinb(n4212), .dout(n4214));
   jand g04151(.dina(n4214), .dinb(n4209), .dout(n4215));
-  jxor g04152(.dina(n4215), .dinb(\a[11] ), .dout(n4216));
+  jxor g04152(.dina(n4215), .dinb(a[11] ), .dout(n4216));
   jor  g04153(.dina(n4216), .dinb(n4208), .dout(n4217));
   jand g04154(.dina(n4022), .dinb(n728), .dout(n4218));
   jand g04155(.dina(n4027), .dinb(n438), .dout(n4219));
@@ -7162,7 +7142,7 @@ module gf_log2 (
   jnot g04160(.din(n4223), .dout(n4224));
   jand g04161(.dina(n3865), .dinb(n438), .dout(n4225));
   jnot g04162(.din(n4225), .dout(n4226));
-  jand g04163(.dina(n4226), .dinb(\a[11] ), .dout(n4227));
+  jand g04163(.dina(n4226), .dinb(a[11] ), .dout(n4227));
   jand g04164(.dina(n4227), .dinb(n4224), .dout(n4228));
   jand g04165(.dina(n4022), .dinb(n1639), .dout(n4229));
   jand g04166(.dina(n4027), .dinb(n795), .dout(n4230));
@@ -7184,7 +7164,7 @@ module gf_log2 (
   jor  g04182(.dina(n4025), .dinb(n1448), .dout(n4246));
   jand g04183(.dina(n4246), .dinb(n4245), .dout(n4247));
   jand g04184(.dina(n4247), .dinb(n4242), .dout(n4248));
-  jxor g04185(.dina(n4248), .dinb(\a[11] ), .dout(n4249));
+  jxor g04185(.dina(n4248), .dinb(a[11] ), .dout(n4249));
   jor  g04186(.dina(n4249), .dinb(n4241), .dout(n4250));
   jand g04187(.dina(n4250), .dinb(n4239), .dout(n4251));
   jnot g04188(.din(n4251), .dout(n4252));
@@ -7272,7 +7252,7 @@ module gf_log2 (
   jand g04270(.dina(n3693), .dinb(n3677), .dout(n4334));
   jand g04271(.dina(n3694), .dinb(n3668), .dout(n4335));
   jor  g04272(.dina(n4335), .dinb(n4334), .dout(n4336));
-  jxor g04273(.dina(\a[30] ), .dinb(n93), .dout(n4337));
+  jxor g04273(.dina(a[30] ), .dinb(n93), .dout(n4337));
   jnot g04274(.din(n4337), .dout(n4338));
   jand g04275(.dina(n4338), .dinb(n438), .dout(n4339));
   jor  g04276(.dina(n3691), .dinb(n3687), .dout(n4340));
@@ -7328,7 +7308,7 @@ module gf_log2 (
   jor  g04326(.dina(n3072), .dinb(n2758), .dout(n4390));
   jand g04327(.dina(n4390), .dinb(n4389), .dout(n4391));
   jand g04328(.dina(n4391), .dinb(n4386), .dout(n4392));
-  jxor g04329(.dina(n4392), .dinb(\a[17] ), .dout(n4393));
+  jxor g04329(.dina(n4392), .dinb(a[17] ), .dout(n4393));
   jxor g04330(.dina(n4393), .dinb(n4385), .dout(n4394));
   jxor g04331(.dina(n4394), .dinb(n4325), .dout(n4395));
   jor  g04332(.dina(n4051), .dinb(n3424), .dout(n4396));
@@ -7624,13 +7604,13 @@ module gf_log2 (
   jand g04622(.dina(n4685), .dinb(n4628), .dout(n4686));
   jxor g04623(.dina(n4686), .dinb(n4526), .dout(n4687));
   jxor g04624(.dina(n4687), .dinb(n4615), .dout(n4688));
-  jxor g04625(.dina(\a[6] ), .dinb(\a[5] ), .dout(n4689));
-  jxor g04626(.dina(\a[8] ), .dinb(\a[7] ), .dout(n4690));
+  jxor g04625(.dina(a[6] ), .dinb(a[5] ), .dout(n4689));
+  jxor g04626(.dina(a[8] ), .dinb(a[7] ), .dout(n4690));
   jand g04627(.dina(n4690), .dinb(n4689), .dout(n4691));
   jnot g04628(.din(n4691), .dout(n4692));
   jor  g04629(.dina(n4692), .dinb(n4688), .dout(n4693));
   jnot g04630(.din(n4689), .dout(n4694));
-  jxor g04631(.dina(\a[7] ), .dinb(\a[6] ), .dout(n4695));
+  jxor g04631(.dina(a[7] ), .dinb(a[6] ), .dout(n4695));
   jand g04632(.dina(n4695), .dinb(n4694), .dout(n4696));
   jnot g04633(.din(n4696), .dout(n4697));
   jor  g04634(.dina(n4697), .dinb(n4526), .dout(n4698));
@@ -7644,11 +7624,11 @@ module gf_log2 (
   jor  g04642(.dina(n4705), .dinb(n4686), .dout(n4706));
   jand g04643(.dina(n4706), .dinb(n4704), .dout(n4707));
   jand g04644(.dina(n4707), .dinb(n4693), .dout(n4708));
-  jxor g04645(.dina(n4708), .dinb(\a[8] ), .dout(n4709));
+  jxor g04645(.dina(n4708), .dinb(a[8] ), .dout(n4709));
   jor  g04646(.dina(n4709), .dinb(n4484), .dout(n4710));
   jnot g04647(.din(n4710), .dout(n4711));
   jxor g04648(.dina(n4314), .dinb(n4312), .dout(n4712));
-  jnot g04649(.din(\a[8] ), .dout(n4713));
+  jnot g04649(.din(a[8] ), .dout(n4713));
   jxor g04650(.dina(n4612), .dinb(n4611), .dout(n4714));
   jor  g04651(.dina(n4714), .dinb(n4692), .dout(n4715));
   jor  g04652(.dina(n4697), .dinb(n4596), .dout(n4716));
@@ -7680,7 +7660,7 @@ module gf_log2 (
   jor  g04678(.dina(n4705), .dinb(n4471), .dout(n4742));
   jand g04679(.dina(n4742), .dinb(n4741), .dout(n4743));
   jand g04680(.dina(n4743), .dinb(n4738), .dout(n4744));
-  jxor g04681(.dina(n4744), .dinb(\a[8] ), .dout(n4745));
+  jxor g04681(.dina(n4744), .dinb(a[8] ), .dout(n4745));
   jor  g04682(.dina(n4745), .dinb(n4737), .dout(n4746));
   jnot g04683(.din(n4746), .dout(n4747));
   jxor g04684(.dina(n4303), .dinb(n4302), .dout(n4748));
@@ -7702,7 +7682,7 @@ module gf_log2 (
   jor  g04700(.dina(n4702), .dinb(n3787), .dout(n4764));
   jand g04701(.dina(n4764), .dinb(n4763), .dout(n4765));
   jand g04702(.dina(n4765), .dinb(n4760), .dout(n4766));
-  jxor g04703(.dina(n4766), .dinb(\a[8] ), .dout(n4767));
+  jxor g04703(.dina(n4766), .dinb(a[8] ), .dout(n4767));
   jor  g04704(.dina(n4767), .dinb(n4759), .dout(n4768));
   jnot g04705(.din(n4768), .dout(n4769));
   jxor g04706(.dina(n4297), .dinb(n4296), .dout(n4770));
@@ -7723,7 +7703,7 @@ module gf_log2 (
   jor  g04721(.dina(n4705), .dinb(n3787), .dout(n4785));
   jand g04722(.dina(n4785), .dinb(n4784), .dout(n4786));
   jand g04723(.dina(n4786), .dinb(n4781), .dout(n4787));
-  jxor g04724(.dina(n4787), .dinb(\a[8] ), .dout(n4788));
+  jxor g04724(.dina(n4787), .dinb(a[8] ), .dout(n4788));
   jor  g04725(.dina(n4788), .dinb(n4780), .dout(n4789));
   jnot g04726(.din(n4789), .dout(n4790));
   jxor g04727(.dina(n4290), .dinb(n4288), .dout(n4791));
@@ -7735,7 +7715,7 @@ module gf_log2 (
   jand g04733(.dina(n4796), .dinb(n4795), .dout(n4797));
   jand g04734(.dina(n4797), .dinb(n4794), .dout(n4798));
   jand g04735(.dina(n4798), .dinb(n4793), .dout(n4799));
-  jxor g04736(.dina(n4799), .dinb(\a[8] ), .dout(n4800));
+  jxor g04736(.dina(n4799), .dinb(a[8] ), .dout(n4800));
   jor  g04737(.dina(n4800), .dinb(n4792), .dout(n4801));
   jnot g04738(.din(n4801), .dout(n4802));
   jxor g04739(.dina(n4286), .dinb(n4284), .dout(n4803));
@@ -7747,7 +7727,7 @@ module gf_log2 (
   jor  g04745(.dina(n4702), .dinb(n3072), .dout(n4809));
   jand g04746(.dina(n4809), .dinb(n4808), .dout(n4810));
   jand g04747(.dina(n4810), .dinb(n4805), .dout(n4811));
-  jxor g04748(.dina(n4811), .dinb(\a[8] ), .dout(n4812));
+  jxor g04748(.dina(n4811), .dinb(a[8] ), .dout(n4812));
   jor  g04749(.dina(n4812), .dinb(n4804), .dout(n4813));
   jnot g04750(.din(n4813), .dout(n4814));
   jxor g04751(.dina(n4282), .dinb(n4280), .dout(n4815));
@@ -7759,7 +7739,7 @@ module gf_log2 (
   jor  g04757(.dina(n4702), .dinb(n2738), .dout(n4821));
   jand g04758(.dina(n4821), .dinb(n4820), .dout(n4822));
   jand g04759(.dina(n4822), .dinb(n4817), .dout(n4823));
-  jxor g04760(.dina(n4823), .dinb(\a[8] ), .dout(n4824));
+  jxor g04760(.dina(n4823), .dinb(a[8] ), .dout(n4824));
   jor  g04761(.dina(n4824), .dinb(n4816), .dout(n4825));
   jnot g04762(.din(n4825), .dout(n4826));
   jxor g04763(.dina(n4278), .dinb(n4276), .dout(n4827));
@@ -7771,7 +7751,7 @@ module gf_log2 (
   jor  g04769(.dina(n4705), .dinb(n3072), .dout(n4833));
   jand g04770(.dina(n4833), .dinb(n4832), .dout(n4834));
   jand g04771(.dina(n4834), .dinb(n4829), .dout(n4835));
-  jxor g04772(.dina(n4835), .dinb(\a[8] ), .dout(n4836));
+  jxor g04772(.dina(n4835), .dinb(a[8] ), .dout(n4836));
   jor  g04773(.dina(n4836), .dinb(n4828), .dout(n4837));
   jnot g04774(.din(n4837), .dout(n4838));
   jxor g04775(.dina(n4274), .dinb(n4272), .dout(n4839));
@@ -7804,7 +7784,7 @@ module gf_log2 (
   jor  g04802(.dina(n4702), .dinb(n2174), .dout(n4866));
   jand g04803(.dina(n4866), .dinb(n4865), .dout(n4867));
   jand g04804(.dina(n4867), .dinb(n4862), .dout(n4868));
-  jxor g04805(.dina(n4868), .dinb(\a[8] ), .dout(n4869));
+  jxor g04805(.dina(n4868), .dinb(a[8] ), .dout(n4869));
   jor  g04806(.dina(n4869), .dinb(n4861), .dout(n4870));
   jxor g04807(.dina(n4261), .dinb(n4260), .dout(n4871));
   jor  g04808(.dina(n4692), .dinb(n2430), .dout(n4872));
@@ -7837,7 +7817,7 @@ module gf_log2 (
   jand g04835(.dina(n4898), .dinb(n4897), .dout(n4899));
   jand g04836(.dina(n4899), .dinb(n4896), .dout(n4900));
   jand g04837(.dina(n4900), .dinb(n4895), .dout(n4901));
-  jxor g04838(.dina(n4901), .dinb(\a[8] ), .dout(n4902));
+  jxor g04838(.dina(n4901), .dinb(a[8] ), .dout(n4902));
   jor  g04839(.dina(n4902), .dinb(n4894), .dout(n4903));
   jxor g04840(.dina(n4249), .dinb(n4241), .dout(n4904));
   jor  g04841(.dina(n4692), .dinb(n2208), .dout(n4905));
@@ -7857,13 +7837,13 @@ module gf_log2 (
   jand g04855(.dina(n4918), .dinb(n4917), .dout(n4919));
   jand g04856(.dina(n4919), .dinb(n4916), .dout(n4920));
   jand g04857(.dina(n4920), .dinb(n4915), .dout(n4921));
-  jxor g04858(.dina(n4921), .dinb(\a[8] ), .dout(n4922));
+  jxor g04858(.dina(n4921), .dinb(a[8] ), .dout(n4922));
   jnot g04859(.din(n4922), .dout(n4923));
   jor  g04860(.dina(n4228), .dinb(n4050), .dout(n4924));
   jxor g04861(.dina(n4924), .dinb(n4236), .dout(n4925));
   jand g04862(.dina(n4925), .dinb(n4923), .dout(n4926));
   jnot g04863(.din(n4926), .dout(n4927));
-  jand g04864(.dina(n4225), .dinb(\a[11] ), .dout(n4928));
+  jand g04864(.dina(n4225), .dinb(a[11] ), .dout(n4928));
   jxor g04865(.dina(n4928), .dinb(n4223), .dout(n4929));
   jnot g04866(.din(n4929), .dout(n4930));
   jor  g04867(.dina(n4692), .dinb(n1608), .dout(n4931));
@@ -7873,7 +7853,7 @@ module gf_log2 (
   jor  g04871(.dina(n4705), .dinb(n1606), .dout(n4935));
   jand g04872(.dina(n4935), .dinb(n4934), .dout(n4936));
   jand g04873(.dina(n4936), .dinb(n4931), .dout(n4937));
-  jxor g04874(.dina(n4937), .dinb(\a[8] ), .dout(n4938));
+  jxor g04874(.dina(n4937), .dinb(a[8] ), .dout(n4938));
   jor  g04875(.dina(n4938), .dinb(n4930), .dout(n4939));
   jand g04876(.dina(n4691), .dinb(n728), .dout(n4940));
   jnot g04877(.din(n4705), .dout(n4941));
@@ -7884,7 +7864,7 @@ module gf_log2 (
   jnot g04882(.din(n4945), .dout(n4946));
   jand g04883(.dina(n4689), .dinb(n438), .dout(n4947));
   jnot g04884(.din(n4947), .dout(n4948));
-  jand g04885(.dina(n4948), .dinb(\a[8] ), .dout(n4949));
+  jand g04885(.dina(n4948), .dinb(a[8] ), .dout(n4949));
   jand g04886(.dina(n4949), .dinb(n4946), .dout(n4950));
   jand g04887(.dina(n4691), .dinb(n1639), .dout(n4951));
   jand g04888(.dina(n4696), .dinb(n795), .dout(n4952));
@@ -7906,7 +7886,7 @@ module gf_log2 (
   jor  g04904(.dina(n4705), .dinb(n1448), .dout(n4968));
   jand g04905(.dina(n4968), .dinb(n4967), .dout(n4969));
   jand g04906(.dina(n4969), .dinb(n4964), .dout(n4970));
-  jxor g04907(.dina(n4970), .dinb(\a[8] ), .dout(n4971));
+  jxor g04907(.dina(n4970), .dinb(a[8] ), .dout(n4971));
   jor  g04908(.dina(n4971), .dinb(n4963), .dout(n4972));
   jand g04909(.dina(n4972), .dinb(n4961), .dout(n4973));
   jnot g04910(.din(n4973), .dout(n4974));
@@ -8011,11 +7991,11 @@ module gf_log2 (
   jand g05009(.dina(n4341), .dinb(n4339), .dout(n5073));
   jand g05010(.dina(n4353), .dinb(n4342), .dout(n5074));
   jor  g05011(.dina(n5074), .dinb(n5073), .dout(n5075));
-  jand g05012(.dina(n4338), .dinb(\a[31] ), .dout(n5076));
+  jand g05012(.dina(n4338), .dinb(a[31] ), .dout(n5076));
   jand g05013(.dina(n5076), .dinb(n728), .dout(n5077));
-  jnot g05014(.din(\a[31] ), .dout(n5078));
+  jnot g05014(.din(a[31] ), .dout(n5078));
   jand g05015(.dina(n264), .dinb(n5078), .dout(n5079));
-  jand g05016(.dina(n106), .dinb(\a[31] ), .dout(n5080));
+  jand g05016(.dina(n106), .dinb(a[31] ), .dout(n5080));
   jor  g05017(.dina(n5080), .dinb(n5079), .dout(n5081));
   jnot g05018(.din(n5081), .dout(n5082));
   jand g05019(.dina(n5082), .dinb(n438), .dout(n5083));
@@ -8031,7 +8011,7 @@ module gf_log2 (
   jor  g05029(.dina(n4348), .dinb(n1606), .dout(n5093));
   jand g05030(.dina(n5093), .dinb(n5092), .dout(n5094));
   jand g05031(.dina(n5094), .dinb(n5089), .dout(n5095));
-  jxor g05032(.dina(n5095), .dinb(\a[29] ), .dout(n5096));
+  jxor g05032(.dina(n5095), .dinb(a[29] ), .dout(n5096));
   jxor g05033(.dina(n5096), .dinb(n5088), .dout(n5097));
   jxor g05034(.dina(n5097), .dinb(n5075), .dout(n5098));
   jnot g05035(.din(n5098), .dout(n5099));
@@ -8042,7 +8022,7 @@ module gf_log2 (
   jand g05040(.dina(n5103), .dinb(n5102), .dout(n5104));
   jand g05041(.dina(n5104), .dinb(n5101), .dout(n5105));
   jand g05042(.dina(n5105), .dinb(n5100), .dout(n5106));
-  jxor g05043(.dina(n5106), .dinb(\a[26] ), .dout(n5107));
+  jxor g05043(.dina(n5106), .dinb(a[26] ), .dout(n5107));
   jxor g05044(.dina(n5107), .dinb(n5099), .dout(n5108));
   jxor g05045(.dina(n5108), .dinb(n5072), .dout(n5109));
   jnot g05046(.din(n5109), .dout(n5110));
@@ -8053,7 +8033,7 @@ module gf_log2 (
   jor  g05051(.dina(n2174), .dinb(n1617), .dout(n5115));
   jand g05052(.dina(n5115), .dinb(n5114), .dout(n5116));
   jand g05053(.dina(n5116), .dinb(n5111), .dout(n5117));
-  jxor g05054(.dina(n5117), .dinb(\a[23] ), .dout(n5118));
+  jxor g05054(.dina(n5117), .dinb(a[23] ), .dout(n5118));
   jxor g05055(.dina(n5118), .dinb(n5110), .dout(n5119));
   jxor g05056(.dina(n5119), .dinb(n5069), .dout(n5120));
   jor  g05057(.dina(n3081), .dinb(n1820), .dout(n5121));
@@ -8074,7 +8054,7 @@ module gf_log2 (
   jand g05072(.dina(n5135), .dinb(n5134), .dout(n5136));
   jand g05073(.dina(n5136), .dinb(n5133), .dout(n5137));
   jand g05074(.dina(n5137), .dinb(n5132), .dout(n5138));
-  jxor g05075(.dina(n5138), .dinb(\a[17] ), .dout(n5139));
+  jxor g05075(.dina(n5138), .dinb(a[17] ), .dout(n5139));
   jxor g05076(.dina(n5139), .dinb(n5131), .dout(n5140));
   jxor g05077(.dina(n5140), .dinb(n5063), .dout(n5141));
   jor  g05078(.dina(n4038), .dinb(n3424), .dout(n5142));
@@ -8084,7 +8064,7 @@ module gf_log2 (
   jor  g05082(.dina(n3787), .dinb(n3211), .dout(n5146));
   jand g05083(.dina(n5146), .dinb(n5145), .dout(n5147));
   jand g05084(.dina(n5147), .dinb(n5142), .dout(n5148));
-  jxor g05085(.dina(n5148), .dinb(\a[14] ), .dout(n5149));
+  jxor g05085(.dina(n5148), .dinb(a[14] ), .dout(n5149));
   jxor g05086(.dina(n5149), .dinb(n5141), .dout(n5150));
   jxor g05087(.dina(n5150), .dinb(n5058), .dout(n5151));
   jor  g05088(.dina(n4726), .dinb(n4023), .dout(n5152));
@@ -8212,9 +8192,9 @@ module gf_log2 (
   jxor g05210(.dina(n5273), .dinb(n4713), .dout(n5274));
   jxor g05211(.dina(n5274), .dinb(n5162), .dout(n5275));
   jxor g05212(.dina(n5275), .dinb(n5052), .dout(n5276));
-  jnot g05213(.din(\a[5] ), .dout(n5277));
-  jxor g05214(.dina(\a[5] ), .dinb(\a[4] ), .dout(n5278));
-  jxor g05215(.dina(\a[3] ), .dinb(\a[2] ), .dout(n5279));
+  jnot g05213(.din(a[5] ), .dout(n5277));
+  jxor g05214(.dina(a[5] ), .dinb(a[4] ), .dout(n5278));
+  jxor g05215(.dina(a[3] ), .dinb(a[2] ), .dout(n5279));
   jand g05216(.dina(n5279), .dinb(n5278), .dout(n5280));
   jnot g05217(.din(n5280), .dout(n5281));
   jand g05218(.dina(n1315), .dinb(n266), .dout(n5282));
@@ -8465,7 +8445,7 @@ module gf_log2 (
   jxor g05463(.dina(n5526), .dinb(n5441), .dout(n5527));
   jor  g05464(.dina(n5527), .dinb(n5281), .dout(n5528));
   jnot g05465(.din(n5279), .dout(n5529));
-  jxor g05466(.dina(\a[4] ), .dinb(\a[3] ), .dout(n5530));
+  jxor g05466(.dina(a[4] ), .dinb(a[3] ), .dout(n5530));
   jand g05467(.dina(n5530), .dinb(n5529), .dout(n5531));
   jnot g05468(.din(n5531), .dout(n5532));
   jor  g05469(.dina(n5532), .dinb(n5364), .dout(n5533));
@@ -8492,7 +8472,7 @@ module gf_log2 (
   jor  g05490(.dina(n5539), .dinb(n5364), .dout(n5554));
   jand g05491(.dina(n5554), .dinb(n5553), .dout(n5555));
   jand g05492(.dina(n5555), .dinb(n5550), .dout(n5556));
-  jxor g05493(.dina(n5556), .dinb(\a[5] ), .dout(n5557));
+  jxor g05493(.dina(n5556), .dinb(a[5] ), .dout(n5557));
   jor  g05494(.dina(n5557), .dinb(n5548), .dout(n5558));
   jxor g05495(.dina(n5047), .dinb(n5046), .dout(n5559));
   jxor g05496(.dina(n5434), .dinb(n5433), .dout(n5560));
@@ -8524,7 +8504,7 @@ module gf_log2 (
   jor  g05522(.dina(n5537), .dinb(n4596), .dout(n5586));
   jand g05523(.dina(n5586), .dinb(n5585), .dout(n5587));
   jand g05524(.dina(n5587), .dinb(n5582), .dout(n5588));
-  jxor g05525(.dina(n5588), .dinb(\a[5] ), .dout(n5589));
+  jxor g05525(.dina(n5588), .dinb(a[5] ), .dout(n5589));
   jor  g05526(.dina(n5589), .dinb(n5581), .dout(n5590));
   jnot g05527(.din(n5590), .dout(n5591));
   jxor g05528(.dina(n5036), .dinb(n5035), .dout(n5592));
@@ -8577,7 +8557,7 @@ module gf_log2 (
   jor  g05575(.dina(n5537), .dinb(n3787), .dout(n5639));
   jand g05576(.dina(n5639), .dinb(n5638), .dout(n5640));
   jand g05577(.dina(n5640), .dinb(n5635), .dout(n5641));
-  jxor g05578(.dina(n5641), .dinb(\a[5] ), .dout(n5642));
+  jxor g05578(.dina(n5641), .dinb(a[5] ), .dout(n5642));
   jor  g05579(.dina(n5642), .dinb(n5634), .dout(n5643));
   jnot g05580(.din(n5643), .dout(n5644));
   jxor g05581(.dina(n5020), .dinb(n5018), .dout(n5645));
@@ -8599,7 +8579,7 @@ module gf_log2 (
   jor  g05597(.dina(n5539), .dinb(n3787), .dout(n5661));
   jand g05598(.dina(n5661), .dinb(n5660), .dout(n5662));
   jand g05599(.dina(n5662), .dinb(n5657), .dout(n5663));
-  jxor g05600(.dina(n5663), .dinb(\a[5] ), .dout(n5664));
+  jxor g05600(.dina(n5663), .dinb(a[5] ), .dout(n5664));
   jor  g05601(.dina(n5664), .dinb(n5656), .dout(n5665));
   jnot g05602(.din(n5665), .dout(n5666));
   jxor g05603(.dina(n5012), .dinb(n5010), .dout(n5667));
@@ -8611,7 +8591,7 @@ module gf_log2 (
   jand g05609(.dina(n5672), .dinb(n5671), .dout(n5673));
   jand g05610(.dina(n5673), .dinb(n5670), .dout(n5674));
   jand g05611(.dina(n5674), .dinb(n5669), .dout(n5675));
-  jxor g05612(.dina(n5675), .dinb(\a[5] ), .dout(n5676));
+  jxor g05612(.dina(n5675), .dinb(a[5] ), .dout(n5676));
   jor  g05613(.dina(n5676), .dinb(n5668), .dout(n5677));
   jnot g05614(.din(n5677), .dout(n5678));
   jxor g05615(.dina(n5008), .dinb(n5006), .dout(n5679));
@@ -8622,7 +8602,7 @@ module gf_log2 (
   jor  g05620(.dina(n5537), .dinb(n3072), .dout(n5684));
   jand g05621(.dina(n5684), .dinb(n5683), .dout(n5685));
   jand g05622(.dina(n5685), .dinb(n5680), .dout(n5686));
-  jxor g05623(.dina(n5686), .dinb(\a[5] ), .dout(n5687));
+  jxor g05623(.dina(n5686), .dinb(a[5] ), .dout(n5687));
   jor  g05624(.dina(n5687), .dinb(n5679), .dout(n5688));
   jxor g05625(.dina(n5004), .dinb(n5002), .dout(n5689));
   jnot g05626(.din(n5689), .dout(n5690));
@@ -8633,7 +8613,7 @@ module gf_log2 (
   jor  g05631(.dina(n5539), .dinb(n3203), .dout(n5695));
   jand g05632(.dina(n5695), .dinb(n5694), .dout(n5696));
   jand g05633(.dina(n5696), .dinb(n5691), .dout(n5697));
-  jxor g05634(.dina(n5697), .dinb(\a[5] ), .dout(n5698));
+  jxor g05634(.dina(n5697), .dinb(a[5] ), .dout(n5698));
   jor  g05635(.dina(n5698), .dinb(n5690), .dout(n5699));
   jxor g05636(.dina(n5000), .dinb(n4998), .dout(n5700));
   jor  g05637(.dina(n5281), .dinb(n3081), .dout(n5701));
@@ -8677,7 +8657,7 @@ module gf_log2 (
   jand g05675(.dina(n5738), .dinb(n5737), .dout(n5739));
   jand g05676(.dina(n5739), .dinb(n5736), .dout(n5740));
   jand g05677(.dina(n5740), .dinb(n5735), .dout(n5741));
-  jxor g05678(.dina(n5741), .dinb(\a[5] ), .dout(n5742));
+  jxor g05678(.dina(n5741), .dinb(a[5] ), .dout(n5742));
   jor  g05679(.dina(n5742), .dinb(n5734), .dout(n5743));
   jxor g05680(.dina(n4984), .dinb(n4982), .dout(n5744));
   jor  g05681(.dina(n5281), .dinb(n2430), .dout(n5745));
@@ -8699,7 +8679,7 @@ module gf_log2 (
   jor  g05697(.dina(n5539), .dinb(n2174), .dout(n5761));
   jand g05698(.dina(n5761), .dinb(n5760), .dout(n5762));
   jand g05699(.dina(n5762), .dinb(n5757), .dout(n5763));
-  jxor g05700(.dina(n5763), .dinb(\a[5] ), .dout(n5764));
+  jxor g05700(.dina(n5763), .dinb(a[5] ), .dout(n5764));
   jor  g05701(.dina(n5764), .dinb(n5756), .dout(n5765));
   jxor g05702(.dina(n4975), .dinb(n4974), .dout(n5766));
   jor  g05703(.dina(n5281), .dinb(n2197), .dout(n5767));
@@ -8721,7 +8701,7 @@ module gf_log2 (
   jor  g05719(.dina(n5537), .dinb(n1606), .dout(n5783));
   jand g05720(.dina(n5783), .dinb(n5782), .dout(n5784));
   jand g05721(.dina(n5784), .dinb(n5779), .dout(n5785));
-  jxor g05722(.dina(n5785), .dinb(\a[5] ), .dout(n5786));
+  jxor g05722(.dina(n5785), .dinb(a[5] ), .dout(n5786));
   jor  g05723(.dina(n5786), .dinb(n5778), .dout(n5787));
   jor  g05724(.dina(n5281), .dinb(n1792), .dout(n5788));
   jor  g05725(.dina(n5539), .dinb(n1790), .dout(n5789));
@@ -8735,7 +8715,7 @@ module gf_log2 (
   jxor g05733(.dina(n5796), .dinb(n4958), .dout(n5797));
   jand g05734(.dina(n5797), .dinb(n5795), .dout(n5798));
   jnot g05735(.din(n5798), .dout(n5799));
-  jand g05736(.dina(n4947), .dinb(\a[8] ), .dout(n5800));
+  jand g05736(.dina(n4947), .dinb(a[8] ), .dout(n5800));
   jxor g05737(.dina(n5800), .dinb(n4945), .dout(n5801));
   jnot g05738(.din(n5801), .dout(n5802));
   jor  g05739(.dina(n5281), .dinb(n1608), .dout(n5803));
@@ -8745,7 +8725,7 @@ module gf_log2 (
   jor  g05743(.dina(n5539), .dinb(n1606), .dout(n5807));
   jand g05744(.dina(n5807), .dinb(n5806), .dout(n5808));
   jand g05745(.dina(n5808), .dinb(n5803), .dout(n5809));
-  jxor g05746(.dina(n5809), .dinb(\a[5] ), .dout(n5810));
+  jxor g05746(.dina(n5809), .dinb(a[5] ), .dout(n5810));
   jor  g05747(.dina(n5810), .dinb(n5802), .dout(n5811));
   jor  g05748(.dina(n5281), .dinb(n727), .dout(n5812));
   jand g05749(.dina(n5531), .dinb(n438), .dout(n5813));
@@ -8756,7 +8736,7 @@ module gf_log2 (
   jand g05754(.dina(n5817), .dinb(n5812), .dout(n5818));
   jand g05755(.dina(n5279), .dinb(n438), .dout(n5819));
   jnot g05756(.din(n5819), .dout(n5820));
-  jand g05757(.dina(n5820), .dinb(\a[5] ), .dout(n5821));
+  jand g05757(.dina(n5820), .dinb(a[5] ), .dout(n5821));
   jand g05758(.dina(n5821), .dinb(n5818), .dout(n5822));
   jand g05759(.dina(n5280), .dinb(n1639), .dout(n5823));
   jand g05760(.dina(n5531), .dinb(n795), .dout(n5824));
@@ -8778,7 +8758,7 @@ module gf_log2 (
   jor  g05776(.dina(n5537), .dinb(n726), .dout(n5840));
   jand g05777(.dina(n5840), .dinb(n5839), .dout(n5841));
   jand g05778(.dina(n5841), .dinb(n5836), .dout(n5842));
-  jxor g05779(.dina(n5842), .dinb(\a[5] ), .dout(n5843));
+  jxor g05779(.dina(n5842), .dinb(a[5] ), .dout(n5843));
   jor  g05780(.dina(n5843), .dinb(n5835), .dout(n5844));
   jand g05781(.dina(n5844), .dinb(n5833), .dout(n5845));
   jxor g05782(.dina(n5810), .dinb(n5802), .dout(n5846));
@@ -8985,7 +8965,7 @@ module gf_log2 (
   jand g05983(.dina(n6046), .dinb(n6008), .dout(n6047));
   jnot g05984(.din(n6047), .dout(n6048));
   jand g05985(.dina(n5076), .dinb(n1639), .dout(n6049));
-  jand g05986(.dina(n89), .dinb(\a[31] ), .dout(n6050));
+  jand g05986(.dina(n89), .dinb(a[31] ), .dout(n6050));
   jand g05987(.dina(n6050), .dinb(n438), .dout(n6051));
   jor  g05988(.dina(n6051), .dinb(n6049), .dout(n6052));
   jand g05989(.dina(n5084), .dinb(n1175), .dout(n6053));
@@ -9031,7 +9011,7 @@ module gf_log2 (
   jor  g06029(.dina(n2738), .dinb(n2186), .dout(n6093));
   jand g06030(.dina(n6093), .dinb(n6092), .dout(n6094));
   jand g06031(.dina(n6094), .dinb(n6089), .dout(n6095));
-  jxor g06032(.dina(n6095), .dinb(\a[20] ), .dout(n6096));
+  jxor g06032(.dina(n6095), .dinb(a[20] ), .dout(n6096));
   jxor g06033(.dina(n6096), .dinb(n6088), .dout(n6097));
   jxor g06034(.dina(n6097), .dinb(n5956), .dout(n6098));
   jnot g06035(.din(n6098), .dout(n6099));
@@ -9042,7 +9022,7 @@ module gf_log2 (
   jor  g06040(.dina(n3787), .dinb(n2753), .dout(n6104));
   jand g06041(.dina(n6104), .dinb(n6103), .dout(n6105));
   jand g06042(.dina(n6105), .dinb(n6100), .dout(n6106));
-  jxor g06043(.dina(n6106), .dinb(\a[17] ), .dout(n6107));
+  jxor g06043(.dina(n6106), .dinb(a[17] ), .dout(n6107));
   jxor g06044(.dina(n6107), .dinb(n6099), .dout(n6108));
   jxor g06045(.dina(n6108), .dinb(n5953), .dout(n6109));
   jor  g06046(.dina(n4021), .dinb(n3424), .dout(n6110));
@@ -9150,11 +9130,11 @@ module gf_log2 (
   jor  g06148(.dina(n5537), .dinb(n5364), .dout(n6212));
   jand g06149(.dina(n6212), .dinb(n6211), .dout(n6213));
   jand g06150(.dina(n6213), .dinb(n6208), .dout(n6214));
-  jxor g06151(.dina(n6214), .dinb(\a[5] ), .dout(n6215));
+  jxor g06151(.dina(n6214), .dinb(a[5] ), .dout(n6215));
   jxor g06152(.dina(n6215), .dinb(n6139), .dout(n6216));
   jnot g06153(.din(n6216), .dout(n6217));
   jxor g06154(.dina(n6217), .dinb(n5936), .dout(n6218));
-  jnot g06155(.din(\a[2] ), .dout(n6219));
+  jnot g06155(.din(a[2] ), .dout(n6219));
   jand g06156(.dina(n440), .dinb(n452), .dout(n6220));
   jand g06157(.dina(n1038), .dinb(n537), .dout(n6221));
   jand g06158(.dina(n3743), .dinb(n1237), .dout(n6222));
@@ -9427,21 +9407,21 @@ module gf_log2 (
   jand g06425(.dina(n6488), .dinb(n6454), .dout(n6489));
   jxor g06426(.dina(n6489), .dinb(n6297), .dout(n6490));
   jxor g06427(.dina(n6490), .dinb(n6409), .dout(n6491));
-  jnot g06428(.din(\a[1] ), .dout(n6492));
-  jxor g06429(.dina(\a[2] ), .dinb(n6492), .dout(n6493));
+  jnot g06428(.din(a[1] ), .dout(n6492));
+  jxor g06429(.dina(a[2] ), .dinb(n6492), .dout(n6493));
   jnot g06430(.din(n6493), .dout(n6494));
-  jand g06431(.dina(n6494), .dinb(\a[0] ), .dout(n6495));
+  jand g06431(.dina(n6494), .dinb(a[0] ), .dout(n6495));
   jnot g06432(.din(n6495), .dout(n6496));
   jor  g06433(.dina(n6496), .dinb(n6491), .dout(n6497));
-  jnot g06434(.din(\a[0] ), .dout(n6498));
+  jnot g06434(.din(a[0] ), .dout(n6498));
   jand g06435(.dina(n6492), .dinb(n6498), .dout(n6499));
-  jand g06436(.dina(n6499), .dinb(\a[2] ), .dout(n6500));
+  jand g06436(.dina(n6499), .dinb(a[2] ), .dout(n6500));
   jnot g06437(.din(n6500), .dout(n6501));
   jor  g06438(.dina(n6501), .dinb(n6390), .dout(n6502));
-  jand g06439(.dina(n6493), .dinb(\a[0] ), .dout(n6503));
+  jand g06439(.dina(n6493), .dinb(a[0] ), .dout(n6503));
   jnot g06440(.din(n6503), .dout(n6504));
   jor  g06441(.dina(n6504), .dinb(n6489), .dout(n6505));
-  jand g06442(.dina(\a[1] ), .dinb(n6498), .dout(n6506));
+  jand g06442(.dina(a[1] ), .dinb(n6498), .dout(n6506));
   jnot g06443(.din(n6506), .dout(n6507));
   jor  g06444(.dina(n6507), .dinb(n6297), .dout(n6508));
   jand g06445(.dina(n6508), .dinb(n6505), .dout(n6509));
@@ -9462,7 +9442,7 @@ module gf_log2 (
   jxor g06460(.dina(n6523), .dinb(n6219), .dout(n6524));
   jand g06461(.dina(n6524), .dinb(n6515), .dout(n6525));
   jnot g06462(.din(n6525), .dout(n6526));
-  jxor g06463(.dina(n6523), .dinb(\a[2] ), .dout(n6527));
+  jxor g06463(.dina(n6523), .dinb(a[2] ), .dout(n6527));
   jand g06464(.dina(n6527), .dinb(n6514), .dout(n6528));
   jxor g06465(.dina(n5926), .dinb(n5925), .dout(n6529));
   jor  g06466(.dina(n6496), .dinb(n6207), .dout(n6530));
@@ -9476,7 +9456,7 @@ module gf_log2 (
   jand g06474(.dina(n6537), .dinb(n6529), .dout(n6538));
   jnot g06475(.din(n6538), .dout(n6539));
   jnot g06476(.din(n6529), .dout(n6540));
-  jxor g06477(.dina(n6536), .dinb(\a[2] ), .dout(n6541));
+  jxor g06477(.dina(n6536), .dinb(a[2] ), .dout(n6541));
   jand g06478(.dina(n6541), .dinb(n6540), .dout(n6542));
   jxor g06479(.dina(n5923), .dinb(n5922), .dout(n6543));
   jor  g06480(.dina(n6496), .dinb(n5527), .dout(n6544));
@@ -9490,7 +9470,7 @@ module gf_log2 (
   jand g06488(.dina(n6551), .dinb(n6543), .dout(n6552));
   jnot g06489(.din(n6552), .dout(n6553));
   jnot g06490(.din(n6543), .dout(n6554));
-  jxor g06491(.dina(n6550), .dinb(\a[2] ), .dout(n6555));
+  jxor g06491(.dina(n6550), .dinb(a[2] ), .dout(n6555));
   jand g06492(.dina(n6555), .dinb(n6554), .dout(n6556));
   jxor g06493(.dina(n5920), .dinb(n5919), .dout(n6557));
   jor  g06494(.dina(n6496), .dinb(n5549), .dout(n6558));
@@ -9504,7 +9484,7 @@ module gf_log2 (
   jand g06502(.dina(n6565), .dinb(n6557), .dout(n6566));
   jnot g06503(.din(n6566), .dout(n6567));
   jnot g06504(.din(n6557), .dout(n6568));
-  jxor g06505(.dina(n6564), .dinb(\a[2] ), .dout(n6569));
+  jxor g06505(.dina(n6564), .dinb(a[2] ), .dout(n6569));
   jand g06506(.dina(n6569), .dinb(n6568), .dout(n6570));
   jxor g06507(.dina(n5917), .dinb(n5916), .dout(n6571));
   jor  g06508(.dina(n6496), .dinb(n5560), .dout(n6572));
@@ -9518,7 +9498,7 @@ module gf_log2 (
   jand g06516(.dina(n6579), .dinb(n6571), .dout(n6580));
   jnot g06517(.din(n6580), .dout(n6581));
   jnot g06518(.din(n6571), .dout(n6582));
-  jxor g06519(.dina(n6578), .dinb(\a[2] ), .dout(n6583));
+  jxor g06519(.dina(n6578), .dinb(a[2] ), .dout(n6583));
   jand g06520(.dina(n6583), .dinb(n6582), .dout(n6584));
   jxor g06521(.dina(n5914), .dinb(n5912), .dout(n6585));
   jor  g06522(.dina(n6496), .dinb(n5266), .dout(n6586));
@@ -9532,7 +9512,7 @@ module gf_log2 (
   jand g06530(.dina(n6593), .dinb(n6585), .dout(n6594));
   jnot g06531(.din(n6594), .dout(n6595));
   jnot g06532(.din(n6585), .dout(n6596));
-  jxor g06533(.dina(n6592), .dinb(\a[2] ), .dout(n6597));
+  jxor g06533(.dina(n6592), .dinb(a[2] ), .dout(n6597));
   jand g06534(.dina(n6597), .dinb(n6596), .dout(n6598));
   jxor g06535(.dina(n5910), .dinb(n5909), .dout(n6599));
   jor  g06536(.dina(n6496), .dinb(n4688), .dout(n6600));
@@ -9546,7 +9526,7 @@ module gf_log2 (
   jand g06544(.dina(n6607), .dinb(n6599), .dout(n6608));
   jnot g06545(.din(n6608), .dout(n6609));
   jnot g06546(.din(n6599), .dout(n6610));
-  jxor g06547(.dina(n6606), .dinb(\a[2] ), .dout(n6611));
+  jxor g06547(.dina(n6606), .dinb(a[2] ), .dout(n6611));
   jand g06548(.dina(n6611), .dinb(n6610), .dout(n6612));
   jnot g06549(.din(n5907), .dout(n6613));
   jxor g06550(.dina(n6613), .dinb(n5906), .dout(n6614));
@@ -9557,7 +9537,7 @@ module gf_log2 (
   jor  g06555(.dina(n6501), .dinb(n4471), .dout(n6619));
   jand g06556(.dina(n6619), .dinb(n6618), .dout(n6620));
   jand g06557(.dina(n6620), .dinb(n6615), .dout(n6621));
-  jxor g06558(.dina(n6621), .dinb(\a[2] ), .dout(n6622));
+  jxor g06558(.dina(n6621), .dinb(a[2] ), .dout(n6622));
   jand g06559(.dina(n6622), .dinb(n6614), .dout(n6623));
   jxor g06560(.dina(n5898), .dinb(n5897), .dout(n6624));
   jnot g06561(.din(n6624), .dout(n6625));
@@ -9573,7 +9553,7 @@ module gf_log2 (
   jand g06571(.dina(n6634), .dinb(n6626), .dout(n6635));
   jnot g06572(.din(n6635), .dout(n6636));
   jnot g06573(.din(n6626), .dout(n6637));
-  jxor g06574(.dina(n6633), .dinb(\a[2] ), .dout(n6638));
+  jxor g06574(.dina(n6633), .dinb(a[2] ), .dout(n6638));
   jand g06575(.dina(n6638), .dinb(n6637), .dout(n6639));
   jxor g06576(.dina(n5891), .dinb(n5889), .dout(n6640));
   jor  g06577(.dina(n6496), .dinb(n4051), .dout(n6641));
@@ -9587,7 +9567,7 @@ module gf_log2 (
   jand g06585(.dina(n6648), .dinb(n6640), .dout(n6649));
   jnot g06586(.din(n6649), .dout(n6650));
   jnot g06587(.din(n6640), .dout(n6651));
-  jxor g06588(.dina(n6647), .dinb(\a[2] ), .dout(n6652));
+  jxor g06588(.dina(n6647), .dinb(a[2] ), .dout(n6652));
   jand g06589(.dina(n6652), .dinb(n6651), .dout(n6653));
   jxor g06590(.dina(n5887), .dinb(n5885), .dout(n6654));
   jor  g06591(.dina(n6496), .dinb(n3789), .dout(n6655));
@@ -9601,7 +9581,7 @@ module gf_log2 (
   jand g06599(.dina(n6662), .dinb(n6654), .dout(n6663));
   jnot g06600(.din(n6663), .dout(n6664));
   jnot g06601(.din(n6654), .dout(n6665));
-  jxor g06602(.dina(n6661), .dinb(\a[2] ), .dout(n6666));
+  jxor g06602(.dina(n6661), .dinb(a[2] ), .dout(n6666));
   jand g06603(.dina(n6666), .dinb(n6665), .dout(n6667));
   jxor g06604(.dina(n5883), .dinb(n5881), .dout(n6668));
   jnot g06605(.din(n6668), .dout(n6669));
@@ -9611,7 +9591,7 @@ module gf_log2 (
   jor  g06609(.dina(n6672), .dinb(n6671), .dout(n6673));
   jnot g06610(.din(n6673), .dout(n6674));
   jand g06611(.dina(n6674), .dinb(n6670), .dout(n6675));
-  jor  g06612(.dina(n6675), .dinb(\a[2] ), .dout(n6676));
+  jor  g06612(.dina(n6675), .dinb(a[2] ), .dout(n6676));
   jxor g06613(.dina(n1255), .dinb(n1448), .dout(n6677));
   jand g06614(.dina(n1655), .dinb(n6677), .dout(n6678));
   jor  g06615(.dina(n6678), .dinb(n1176), .dout(n6679));
@@ -9657,7 +9637,7 @@ module gf_log2 (
   jand g06655(.dina(n6718), .dinb(n6717), .dout(n6719));
   jand g06656(.dina(n6719), .dinb(n6716), .dout(n6720));
   jand g06657(.dina(n6720), .dinb(n6715), .dout(n6721));
-  jxor g06658(.dina(n6721), .dinb(\a[2] ), .dout(n6722));
+  jxor g06658(.dina(n6721), .dinb(a[2] ), .dout(n6722));
   jor  g06659(.dina(n6722), .dinb(n6714), .dout(n6723));
   jand g06660(.dina(n6722), .dinb(n6714), .dout(n6724));
   jxor g06661(.dina(n5875), .dinb(n5873), .dout(n6725));
@@ -9669,7 +9649,7 @@ module gf_log2 (
   jor  g06667(.dina(n6501), .dinb(n2738), .dout(n6731));
   jand g06668(.dina(n6731), .dinb(n6730), .dout(n6732));
   jand g06669(.dina(n6732), .dinb(n6727), .dout(n6733));
-  jxor g06670(.dina(n6733), .dinb(\a[2] ), .dout(n6734));
+  jxor g06670(.dina(n6733), .dinb(a[2] ), .dout(n6734));
   jand g06671(.dina(n6734), .dinb(n6726), .dout(n6735));
   jor  g06672(.dina(n6734), .dinb(n6726), .dout(n6736));
   jxor g06673(.dina(n5871), .dinb(n5869), .dout(n6737));
@@ -9684,7 +9664,7 @@ module gf_log2 (
   jand g06682(.dina(n6745), .dinb(n6737), .dout(n6746));
   jnot g06683(.din(n6746), .dout(n6747));
   jnot g06684(.din(n6737), .dout(n6748));
-  jxor g06685(.dina(n6744), .dinb(\a[2] ), .dout(n6749));
+  jxor g06685(.dina(n6744), .dinb(a[2] ), .dout(n6749));
   jand g06686(.dina(n6749), .dinb(n6748), .dout(n6750));
   jxor g06687(.dina(n5867), .dinb(n5865), .dout(n6751));
   jor  g06688(.dina(n6496), .dinb(n2740), .dout(n6752));
@@ -9698,7 +9678,7 @@ module gf_log2 (
   jand g06696(.dina(n6759), .dinb(n6751), .dout(n6760));
   jnot g06697(.din(n6760), .dout(n6761));
   jnot g06698(.din(n6751), .dout(n6762));
-  jxor g06699(.dina(n6758), .dinb(\a[2] ), .dout(n6763));
+  jxor g06699(.dina(n6758), .dinb(a[2] ), .dout(n6763));
   jand g06700(.dina(n6763), .dinb(n6762), .dout(n6764));
   jxor g06701(.dina(n5863), .dinb(n5861), .dout(n6765));
   jor  g06702(.dina(n6496), .dinb(n2768), .dout(n6766));
@@ -9712,7 +9692,7 @@ module gf_log2 (
   jand g06710(.dina(n6773), .dinb(n6765), .dout(n6774));
   jnot g06711(.din(n6774), .dout(n6775));
   jnot g06712(.din(n6765), .dout(n6776));
-  jxor g06713(.dina(n6772), .dinb(\a[2] ), .dout(n6777));
+  jxor g06713(.dina(n6772), .dinb(a[2] ), .dout(n6777));
   jand g06714(.dina(n6777), .dinb(n6776), .dout(n6778));
   jxor g06715(.dina(n5859), .dinb(n5857), .dout(n6779));
   jor  g06716(.dina(n6496), .dinb(n2779), .dout(n6780));
@@ -9726,7 +9706,7 @@ module gf_log2 (
   jand g06724(.dina(n6787), .dinb(n6779), .dout(n6788));
   jnot g06725(.din(n6788), .dout(n6789));
   jnot g06726(.din(n6779), .dout(n6790));
-  jxor g06727(.dina(n6786), .dinb(\a[2] ), .dout(n6791));
+  jxor g06727(.dina(n6786), .dinb(a[2] ), .dout(n6791));
   jand g06728(.dina(n6791), .dinb(n6790), .dout(n6792));
   jor  g06729(.dina(n6496), .dinb(n2430), .dout(n6793));
   jor  g06730(.dina(n6507), .dinb(n2174), .dout(n6794));
@@ -9739,7 +9719,7 @@ module gf_log2 (
   jxor g06737(.dina(n5855), .dinb(n5853), .dout(n6801));
   jand g06738(.dina(n6801), .dinb(n6800), .dout(n6802));
   jnot g06739(.din(n6802), .dout(n6803));
-  jxor g06740(.dina(n6799), .dinb(\a[2] ), .dout(n6804));
+  jxor g06740(.dina(n6799), .dinb(a[2] ), .dout(n6804));
   jnot g06741(.din(n6801), .dout(n6805));
   jand g06742(.dina(n6805), .dinb(n6804), .dout(n6806));
   jor  g06743(.dina(n6496), .dinb(n2176), .dout(n6807));
@@ -9753,7 +9733,7 @@ module gf_log2 (
   jxor g06751(.dina(n5851), .dinb(n5849), .dout(n6815));
   jand g06752(.dina(n6815), .dinb(n6814), .dout(n6816));
   jnot g06753(.din(n6816), .dout(n6817));
-  jxor g06754(.dina(n6813), .dinb(\a[2] ), .dout(n6818));
+  jxor g06754(.dina(n6813), .dinb(a[2] ), .dout(n6818));
   jnot g06755(.din(n6815), .dout(n6819));
   jand g06756(.dina(n6819), .dinb(n6818), .dout(n6820));
   jxor g06757(.dina(n5847), .dinb(n5845), .dout(n6821));
@@ -9768,7 +9748,7 @@ module gf_log2 (
   jand g06766(.dina(n6829), .dinb(n6821), .dout(n6830));
   jnot g06767(.din(n6830), .dout(n6831));
   jnot g06768(.din(n6821), .dout(n6832));
-  jxor g06769(.dina(n6828), .dinb(\a[2] ), .dout(n6833));
+  jxor g06769(.dina(n6828), .dinb(a[2] ), .dout(n6833));
   jand g06770(.dina(n6833), .dinb(n6832), .dout(n6834));
   jxor g06771(.dina(n5843), .dinb(n5835), .dout(n6835));
   jnot g06772(.din(n6835), .dout(n6836));
@@ -9779,7 +9759,7 @@ module gf_log2 (
   jand g06777(.dina(n6840), .dinb(n6839), .dout(n6841));
   jand g06778(.dina(n6841), .dinb(n6838), .dout(n6842));
   jand g06779(.dina(n6842), .dinb(n6837), .dout(n6843));
-  jxor g06780(.dina(n6843), .dinb(\a[2] ), .dout(n6844));
+  jxor g06780(.dina(n6843), .dinb(a[2] ), .dout(n6844));
   jor  g06781(.dina(n6844), .dinb(n6836), .dout(n6845));
   jor  g06782(.dina(n6496), .dinb(n1792), .dout(n6846));
   jor  g06783(.dina(n6504), .dinb(n1790), .dout(n6847));
@@ -9790,19 +9770,19 @@ module gf_log2 (
   jand g06788(.dina(n6851), .dinb(n6846), .dout(n6852));
   jxor g06789(.dina(n6852), .dinb(n6219), .dout(n6853));
   jnot g06790(.din(n6853), .dout(n6854));
-  jand g06791(.dina(\a[2] ), .dinb(\a[1] ), .dout(n6855));
+  jand g06791(.dina(a[2] ), .dinb(a[1] ), .dout(n6855));
   jor  g06792(.dina(n6855), .dinb(n6506), .dout(n6856));
   jand g06793(.dina(n6856), .dinb(n795), .dout(n6857));
   jnot g06794(.din(n6857), .dout(n6858));
-  jand g06795(.dina(\a[2] ), .dinb(n6492), .dout(n6859));
-  jand g06796(.dina(n6859), .dinb(\a[0] ), .dout(n6860));
+  jand g06795(.dina(a[2] ), .dinb(n6492), .dout(n6859));
+  jand g06796(.dina(n6859), .dinb(a[0] ), .dout(n6860));
   jnot g06797(.din(n6860), .dout(n6861));
   jand g06798(.dina(n6861), .dinb(n6504), .dout(n6862));
   jor  g06799(.dina(n6862), .dinb(n1255), .dout(n6863));
   jand g06800(.dina(n6863), .dinb(n6858), .dout(n6864));
   jor  g06801(.dina(n6861), .dinb(n726), .dout(n6865));
   jand g06802(.dina(n6865), .dinb(n1388), .dout(n6866));
-  jand g06803(.dina(n6866), .dinb(\a[2] ), .dout(n6867));
+  jand g06803(.dina(n6866), .dinb(a[2] ), .dout(n6867));
   jand g06804(.dina(n6867), .dinb(n6864), .dout(n6868));
   jnot g06805(.din(n6863), .dout(n6871));
   jor  g06806(.dina(n6871), .dinb(n6857), .dout(n6872));
@@ -9818,9 +9798,9 @@ module gf_log2 (
   jor  g06816(.dina(n6504), .dinb(n1448), .dout(n6882));
   jand g06817(.dina(n6882), .dinb(n6881), .dout(n6883));
   jand g06818(.dina(n6883), .dinb(n6878), .dout(n6884));
-  jxor g06819(.dina(n6884), .dinb(\a[2] ), .dout(n6885));
+  jxor g06819(.dina(n6884), .dinb(a[2] ), .dout(n6885));
   jor  g06820(.dina(n6885), .dinb(n6877), .dout(n6886));
-  jand g06821(.dina(n5819), .dinb(\a[5] ), .dout(n6888));
+  jand g06821(.dina(n5819), .dinb(a[5] ), .dout(n6888));
   jxor g06822(.dina(n6888), .dinb(n5818), .dout(n6889));
   jor  g06823(.dina(n6889), .dinb(n6886), .dout(n6890));
   jand g06824(.dina(n6889), .dinb(n6886), .dout(n6891));
@@ -9831,11 +9811,11 @@ module gf_log2 (
   jand g06829(.dina(n6895), .dinb(n6894), .dout(n6896));
   jand g06830(.dina(n6896), .dinb(n6893), .dout(n6897));
   jand g06831(.dina(n6897), .dinb(n6892), .dout(n6898));
-  jxor g06832(.dina(n6898), .dinb(\a[2] ), .dout(n6899));
+  jxor g06832(.dina(n6898), .dinb(a[2] ), .dout(n6899));
   jor  g06833(.dina(n6899), .dinb(n6891), .dout(n6900));
   jand g06834(.dina(n6900), .dinb(n6890), .dout(n6901));
   jnot g06835(.din(n5822), .dout(n6902));
-  jand g06836(.dina(n6902), .dinb(\a[5] ), .dout(n6903));
+  jand g06836(.dina(n6902), .dinb(a[5] ), .dout(n6903));
   jxor g06837(.dina(n6903), .dinb(n5829), .dout(n6904));
   jnot g06838(.din(n6904), .dout(n6905));
   jor  g06839(.dina(n6905), .dinb(n6901), .dout(n6906));
@@ -9880,7 +9860,7 @@ module gf_log2 (
   jor  g06878(.dina(n6507), .dinb(n3929), .dout(n6945));
   jand g06879(.dina(n6945), .dinb(n6944), .dout(n6946));
   jand g06880(.dina(n6946), .dinb(n6941), .dout(n6947));
-  jxor g06881(.dina(n6947), .dinb(\a[2] ), .dout(n6948));
+  jxor g06881(.dina(n6947), .dinb(a[2] ), .dout(n6948));
   jand g06882(.dina(n6948), .dinb(n6940), .dout(n6949));
   jor  g06883(.dina(n6949), .dinb(n6939), .dout(n6950));
   jxor g06884(.dina(n5901), .dinb(n5900), .dout(n6951));
@@ -9939,7 +9919,7 @@ module gf_log2 (
   jand g06937(.dina(n7003), .dinb(n7002), .dout(n7004));
   jand g06938(.dina(n7004), .dinb(n7001), .dout(n7005));
   jand g06939(.dina(n7005), .dinb(n7000), .dout(n7006));
-  jxor g06940(.dina(n7006), .dinb(\a[2] ), .dout(n7007));
+  jxor g06940(.dina(n7006), .dinb(a[2] ), .dout(n7007));
   jand g06941(.dina(n7007), .dinb(n6998), .dout(n7008));
   jor  g06942(.dina(n7008), .dinb(n6997), .dout(n7009));
   jnot g06943(.din(n5558), .dout(n7010));
@@ -10084,7 +10064,7 @@ module gf_log2 (
   jor  g07082(.dina(n2738), .dinb(n1621), .dout(n7149));
   jand g07083(.dina(n7149), .dinb(n7148), .dout(n7150));
   jand g07084(.dina(n7150), .dinb(n7145), .dout(n7151));
-  jxor g07085(.dina(n7151), .dinb(\a[23] ), .dout(n7152));
+  jxor g07085(.dina(n7151), .dinb(a[23] ), .dout(n7152));
   jxor g07086(.dina(n7152), .dinb(n7144), .dout(n7153));
   jxor g07087(.dina(n7153), .dinb(n7054), .dout(n7154));
   jnot g07088(.din(n7154), .dout(n7155));
@@ -10095,7 +10075,7 @@ module gf_log2 (
   jor  g07093(.dina(n3072), .dinb(n2186), .dout(n7160));
   jand g07094(.dina(n7160), .dinb(n7159), .dout(n7161));
   jand g07095(.dina(n7161), .dinb(n7156), .dout(n7162));
-  jxor g07096(.dina(n7162), .dinb(\a[20] ), .dout(n7163));
+  jxor g07096(.dina(n7162), .dinb(a[20] ), .dout(n7163));
   jxor g07097(.dina(n7163), .dinb(n7155), .dout(n7164));
   jxor g07098(.dina(n7164), .dinb(n7051), .dout(n7165));
   jor  g07099(.dina(n4051), .dinb(n2744), .dout(n7166));
@@ -10115,7 +10095,7 @@ module gf_log2 (
   jor  g07113(.dina(n4471), .dinb(n3426), .dout(n7180));
   jand g07114(.dina(n7180), .dinb(n7179), .dout(n7181));
   jand g07115(.dina(n7181), .dinb(n7176), .dout(n7182));
-  jxor g07116(.dina(n7182), .dinb(\a[14] ), .dout(n7183));
+  jxor g07116(.dina(n7182), .dinb(a[14] ), .dout(n7183));
   jxor g07117(.dina(n7183), .dinb(n7175), .dout(n7184));
   jnot g07118(.din(n7184), .dout(n7185));
   jxor g07119(.dina(n7185), .dinb(n7042), .dout(n7186));
@@ -10137,7 +10117,7 @@ module gf_log2 (
   jor  g07135(.dina(n5364), .dinb(n4705), .dout(n7202));
   jand g07136(.dina(n7202), .dinb(n7201), .dout(n7203));
   jand g07137(.dina(n7203), .dinb(n7198), .dout(n7204));
-  jxor g07138(.dina(n7204), .dinb(\a[8] ), .dout(n7205));
+  jxor g07138(.dina(n7204), .dinb(a[8] ), .dout(n7205));
   jxor g07139(.dina(n7205), .dinb(n7197), .dout(n7206));
   jxor g07140(.dina(n7206), .dinb(n7036), .dout(n7207));
   jor  g07141(.dina(n6516), .dinb(n5281), .dout(n7208));
@@ -10243,7 +10223,7 @@ module gf_log2 (
   jor  g07241(.dina(n6507), .dinb(n6489), .dout(n7308));
   jand g07242(.dina(n7308), .dinb(n7307), .dout(n7309));
   jand g07243(.dina(n7309), .dinb(n7304), .dout(n7310));
-  jxor g07244(.dina(n7310), .dinb(\a[2] ), .dout(n7311));
+  jxor g07244(.dina(n7310), .dinb(a[2] ), .dout(n7311));
   jxor g07245(.dina(n7311), .dinb(n7217), .dout(n7312));
   jxor g07246(.dina(n7312), .dinb(n7028), .dout(n7313));
   jxor g07247(.dina(n7313), .dinb(n7021), .dout(n7314));
@@ -10256,7 +10236,7 @@ module gf_log2 (
   jnot g07254(.din(n7320), .dout(n7321));
   jand g07255(.dina(n7019), .dinb(n804), .dout(n7322));
   jnot g07256(.din(n7322), .dout(n7323));
-  jand g07257(.dina(n7323), .dinb(\a[23] ), .dout(n7324));
+  jand g07257(.dina(n7323), .dinb(a[23] ), .dout(n7324));
   jand g07258(.dina(n7324), .dinb(n7321), .dout(n7325));
   jand g07259(.dina(n7313), .dinb(n7021), .dout(n7326));
   jor  g07260(.dina(n6216), .dinb(n5936), .dout(n7327));
@@ -10483,7 +10463,7 @@ module gf_log2 (
   jand g07481(.dina(n7548), .dinb(n7547), .dout(n7549));
   jand g07482(.dina(n7549), .dinb(n7546), .dout(n7550));
   jand g07483(.dina(n7550), .dinb(n7545), .dout(n7551));
-  jxor g07484(.dina(n7551), .dinb(\a[26] ), .dout(n7552));
+  jxor g07484(.dina(n7551), .dinb(a[26] ), .dout(n7552));
   jxor g07485(.dina(n7552), .dinb(n7544), .dout(n7553));
   jxor g07486(.dina(n7553), .dinb(n7476), .dout(n7554));
   jnot g07487(.din(n7554), .dout(n7555));
@@ -10494,7 +10474,7 @@ module gf_log2 (
   jor  g07492(.dina(n3072), .dinb(n1621), .dout(n7560));
   jand g07493(.dina(n7560), .dinb(n7559), .dout(n7561));
   jand g07494(.dina(n7561), .dinb(n7556), .dout(n7562));
-  jxor g07495(.dina(n7562), .dinb(\a[23] ), .dout(n7563));
+  jxor g07495(.dina(n7562), .dinb(a[23] ), .dout(n7563));
   jxor g07496(.dina(n7563), .dinb(n7555), .dout(n7564));
   jxor g07497(.dina(n7564), .dinb(n7473), .dout(n7565));
   jnot g07498(.din(n7565), .dout(n7566));
@@ -10505,7 +10485,7 @@ module gf_log2 (
   jand g07503(.dina(n7570), .dinb(n7569), .dout(n7571));
   jand g07504(.dina(n7571), .dinb(n7568), .dout(n7572));
   jand g07505(.dina(n7572), .dinb(n7567), .dout(n7573));
-  jxor g07506(.dina(n7573), .dinb(\a[20] ), .dout(n7574));
+  jxor g07506(.dina(n7573), .dinb(a[20] ), .dout(n7574));
   jxor g07507(.dina(n7574), .dinb(n7566), .dout(n7575));
   jxor g07508(.dina(n7575), .dinb(n7468), .dout(n7576));
   jnot g07509(.din(n7576), .dout(n7577));
@@ -10516,7 +10496,7 @@ module gf_log2 (
   jor  g07514(.dina(n3787), .dinb(n2758), .dout(n7582));
   jand g07515(.dina(n7582), .dinb(n7581), .dout(n7583));
   jand g07516(.dina(n7583), .dinb(n7578), .dout(n7584));
-  jxor g07517(.dina(n7584), .dinb(\a[17] ), .dout(n7585));
+  jxor g07517(.dina(n7584), .dinb(a[17] ), .dout(n7585));
   jxor g07518(.dina(n7585), .dinb(n7577), .dout(n7586));
   jxor g07519(.dina(n7586), .dinb(n7463), .dout(n7587));
   jor  g07520(.dina(n4726), .dinb(n3424), .dout(n7588));
@@ -10546,7 +10526,7 @@ module gf_log2 (
   jor  g07544(.dina(n5422), .dinb(n4702), .dout(n7612));
   jand g07545(.dina(n7612), .dinb(n7611), .dout(n7613));
   jand g07546(.dina(n7613), .dinb(n7608), .dout(n7614));
-  jxor g07547(.dina(n7614), .dinb(\a[8] ), .dout(n7615));
+  jxor g07547(.dina(n7614), .dinb(a[8] ), .dout(n7615));
   jnot g07548(.din(n7615), .dout(n7616));
   jxor g07549(.dina(n7616), .dinb(n7607), .dout(n7617));
   jxor g07550(.dina(n7617), .dinb(n7452), .dout(n7618));
@@ -10621,7 +10601,7 @@ module gf_log2 (
   jor  g07619(.dina(n6501), .dinb(n6489), .dout(n7687));
   jand g07620(.dina(n7687), .dinb(n7686), .dout(n7688));
   jand g07621(.dina(n7688), .dinb(n7683), .dout(n7689));
-  jxor g07622(.dina(n7689), .dinb(\a[2] ), .dout(n7690));
+  jxor g07622(.dina(n7689), .dinb(a[2] ), .dout(n7690));
   jxor g07623(.dina(n7690), .dinb(n7628), .dout(n7691));
   jxor g07624(.dina(n7691), .dinb(n7443), .dout(n7692));
   jxor g07625(.dina(n7692), .dinb(n7326), .dout(n7693));
@@ -10800,7 +10780,7 @@ module gf_log2 (
   jor  g07798(.dina(n3203), .dinb(n1621), .dout(n7866));
   jand g07799(.dina(n7866), .dinb(n7865), .dout(n7867));
   jand g07800(.dina(n7867), .dinb(n7862), .dout(n7868));
-  jxor g07801(.dina(n7868), .dinb(\a[23] ), .dout(n7869));
+  jxor g07801(.dina(n7868), .dinb(a[23] ), .dout(n7869));
   jxor g07802(.dina(n7869), .dinb(n7861), .dout(n7870));
   jxor g07803(.dina(n7870), .dinb(n7741), .dout(n7871));
   jnot g07804(.din(n7871), .dout(n7872));
@@ -10811,7 +10791,7 @@ module gf_log2 (
   jor  g07809(.dina(n3787), .dinb(n2189), .dout(n7877));
   jand g07810(.dina(n7877), .dinb(n7876), .dout(n7878));
   jand g07811(.dina(n7878), .dinb(n7873), .dout(n7879));
-  jxor g07812(.dina(n7879), .dinb(\a[20] ), .dout(n7880));
+  jxor g07812(.dina(n7879), .dinb(a[20] ), .dout(n7880));
   jxor g07813(.dina(n7880), .dinb(n7872), .dout(n7881));
   jxor g07814(.dina(n7881), .dinb(n7736), .dout(n7882));
   jnot g07815(.din(n7882), .dout(n7883));
@@ -10822,7 +10802,7 @@ module gf_log2 (
   jand g07820(.dina(n7887), .dinb(n7886), .dout(n7888));
   jand g07821(.dina(n7888), .dinb(n7885), .dout(n7889));
   jand g07822(.dina(n7889), .dinb(n7884), .dout(n7890));
-  jxor g07823(.dina(n7890), .dinb(\a[17] ), .dout(n7891));
+  jxor g07823(.dina(n7890), .dinb(a[17] ), .dout(n7891));
   jxor g07824(.dina(n7891), .dinb(n7883), .dout(n7892));
   jxor g07825(.dina(n7892), .dinb(n7731), .dout(n7893));
   jor  g07826(.dina(n4714), .dinb(n3424), .dout(n7894));
@@ -10863,7 +10843,7 @@ module gf_log2 (
   jor  g07861(.dina(n6489), .dinb(n5539), .dout(n7929));
   jand g07862(.dina(n7929), .dinb(n7928), .dout(n7930));
   jand g07863(.dina(n7930), .dinb(n7925), .dout(n7931));
-  jxor g07864(.dina(n7931), .dinb(\a[5] ), .dout(n7932));
+  jxor g07864(.dina(n7931), .dinb(a[5] ), .dout(n7932));
   jxor g07865(.dina(n7932), .dinb(n7924), .dout(n7933));
   jxor g07866(.dina(n7933), .dinb(n7715), .dout(n7934));
   jnot g07867(.din(n7680), .dout(n7935));
@@ -10940,7 +10920,7 @@ module gf_log2 (
   jor  g07938(.dina(n8005), .dinb(n8004), .dout(n8006));
   jnot g07939(.din(n8006), .dout(n8007));
   jand g07940(.dina(n8007), .dinb(n8003), .dout(n8008));
-  jor  g07941(.dina(n8008), .dinb(\a[2] ), .dout(n8009));
+  jor  g07941(.dina(n8008), .dinb(a[2] ), .dout(n8009));
   jnot g07942(.din(n7936), .dout(n8010));
   jnot g07943(.din(n7681), .dout(n8011));
   jor  g07944(.dina(n8011), .dinb(n7634), .dout(n8012));
@@ -11110,7 +11090,7 @@ module gf_log2 (
   jor  g08108(.dina(n2738), .dinb(n2309), .dout(n8176));
   jand g08109(.dina(n8176), .dinb(n8175), .dout(n8177));
   jand g08110(.dina(n8177), .dinb(n8172), .dout(n8178));
-  jxor g08111(.dina(n8178), .dinb(\a[26] ), .dout(n8179));
+  jxor g08111(.dina(n8178), .dinb(a[26] ), .dout(n8179));
   jxor g08112(.dina(n8179), .dinb(n8171), .dout(n8180));
   jxor g08113(.dina(n8180), .dinb(n8091), .dout(n8181));
   jnot g08114(.din(n8181), .dout(n8182));
@@ -11121,7 +11101,7 @@ module gf_log2 (
   jor  g08119(.dina(n3072), .dinb(n1617), .dout(n8187));
   jand g08120(.dina(n8187), .dinb(n8186), .dout(n8188));
   jand g08121(.dina(n8188), .dinb(n8183), .dout(n8189));
-  jxor g08122(.dina(n8189), .dinb(\a[23] ), .dout(n8190));
+  jxor g08122(.dina(n8189), .dinb(a[23] ), .dout(n8190));
   jxor g08123(.dina(n8190), .dinb(n8182), .dout(n8191));
   jxor g08124(.dina(n8191), .dinb(n8088), .dout(n8192));
   jor  g08125(.dina(n4051), .dinb(n1820), .dout(n8193));
@@ -11151,7 +11131,7 @@ module gf_log2 (
   jor  g08149(.dina(n4686), .dinb(n3426), .dout(n8217));
   jand g08150(.dina(n8217), .dinb(n8216), .dout(n8218));
   jand g08151(.dina(n8218), .dinb(n8213), .dout(n8219));
-  jxor g08152(.dina(n8219), .dinb(\a[14] ), .dout(n8220));
+  jxor g08152(.dina(n8219), .dinb(a[14] ), .dout(n8220));
   jxor g08153(.dina(n8220), .dinb(n8212), .dout(n8221));
   jxor g08154(.dina(n8221), .dinb(n8074), .dout(n8222));
   jor  g08155(.dina(n5549), .dinb(n4023), .dout(n8223));
@@ -11161,7 +11141,7 @@ module gf_log2 (
   jor  g08159(.dina(n5364), .dinb(n4025), .dout(n8227));
   jand g08160(.dina(n8227), .dinb(n8226), .dout(n8228));
   jand g08161(.dina(n8228), .dinb(n8223), .dout(n8229));
-  jxor g08162(.dina(n8229), .dinb(\a[11] ), .dout(n8230));
+  jxor g08162(.dina(n8229), .dinb(a[11] ), .dout(n8230));
   jxor g08163(.dina(n8230), .dinb(n8222), .dout(n8231));
   jxor g08164(.dina(n8231), .dinb(n8070), .dout(n8232));
   jor  g08165(.dina(n6516), .dinb(n4692), .dout(n8233));
@@ -11197,7 +11177,7 @@ module gf_log2 (
   jor  g08195(.dina(n7999), .dinb(n6507), .dout(n8263));
   jand g08196(.dina(n8263), .dinb(n8262), .dout(n8264));
   jand g08197(.dina(n8264), .dinb(n8261), .dout(n8265));
-  jxor g08198(.dina(n8265), .dinb(\a[2] ), .dout(n8266));
+  jxor g08198(.dina(n8265), .dinb(a[2] ), .dout(n8266));
   jxor g08199(.dina(n8266), .dinb(n8253), .dout(n8267));
   jxor g08200(.dina(n8267), .dinb(n8061), .dout(n8268));
   jxor g08201(.dina(n8268), .dinb(n8022), .dout(n8269));
@@ -11228,7 +11208,7 @@ module gf_log2 (
   jand g08226(.dina(n8258), .dinb(n7680), .dout(n8294));
   jor  g08227(.dina(n8294), .dinb(n7999), .dout(n8295));
   jor  g08228(.dina(n8295), .dinb(n6496), .dout(n8296));
-  jor  g08229(.dina(n8296), .dinb(\a[2] ), .dout(n8297));
+  jor  g08229(.dina(n8296), .dinb(a[2] ), .dout(n8297));
   jand g08230(.dina(n8257), .dinb(n6495), .dout(n8298));
   jand g08231(.dina(n8000), .dinb(n6499), .dout(n8299));
   jor  g08232(.dina(n8299), .dinb(n6219), .dout(n8300));
@@ -11364,7 +11344,7 @@ module gf_log2 (
   jor  g08362(.dina(n3683), .dinb(n2174), .dout(n8430));
   jand g08363(.dina(n8430), .dinb(n8429), .dout(n8431));
   jand g08364(.dina(n8431), .dinb(n8426), .dout(n8432));
-  jxor g08365(.dina(n8432), .dinb(\a[29] ), .dout(n8433));
+  jxor g08365(.dina(n8432), .dinb(a[29] ), .dout(n8433));
   jxor g08366(.dina(n8433), .dinb(n8425), .dout(n8434));
   jxor g08367(.dina(n8434), .dinb(n8336), .dout(n8435));
   jnot g08368(.din(n8435), .dout(n8436));
@@ -11375,7 +11355,7 @@ module gf_log2 (
   jor  g08373(.dina(n3072), .dinb(n2309), .dout(n8441));
   jand g08374(.dina(n8441), .dinb(n8440), .dout(n8442));
   jand g08375(.dina(n8442), .dinb(n8437), .dout(n8443));
-  jxor g08376(.dina(n8443), .dinb(\a[26] ), .dout(n8444));
+  jxor g08376(.dina(n8443), .dinb(a[26] ), .dout(n8444));
   jxor g08377(.dina(n8444), .dinb(n8436), .dout(n8445));
   jxor g08378(.dina(n8445), .dinb(n8333), .dout(n8446));
   jnot g08379(.din(n8446), .dout(n8447));
@@ -11386,7 +11366,7 @@ module gf_log2 (
   jand g08384(.dina(n8451), .dinb(n8450), .dout(n8452));
   jand g08385(.dina(n8452), .dinb(n8449), .dout(n8453));
   jand g08386(.dina(n8453), .dinb(n8448), .dout(n8454));
-  jxor g08387(.dina(n8454), .dinb(\a[23] ), .dout(n8455));
+  jxor g08387(.dina(n8454), .dinb(a[23] ), .dout(n8455));
   jxor g08388(.dina(n8455), .dinb(n8447), .dout(n8456));
   jxor g08389(.dina(n8456), .dinb(n8328), .dout(n8457));
   jnot g08390(.din(n8457), .dout(n8458));
@@ -11397,7 +11377,7 @@ module gf_log2 (
   jor  g08395(.dina(n3787), .dinb(n2186), .dout(n8463));
   jand g08396(.dina(n8463), .dinb(n8462), .dout(n8464));
   jand g08397(.dina(n8464), .dinb(n8459), .dout(n8465));
-  jxor g08398(.dina(n8465), .dinb(\a[20] ), .dout(n8466));
+  jxor g08398(.dina(n8465), .dinb(a[20] ), .dout(n8466));
   jxor g08399(.dina(n8466), .dinb(n8458), .dout(n8467));
   jxor g08400(.dina(n8467), .dinb(n8323), .dout(n8468));
   jor  g08401(.dina(n4726), .dinb(n2744), .dout(n8469));
@@ -11417,7 +11397,7 @@ module gf_log2 (
   jor  g08415(.dina(n4526), .dinb(n3211), .dout(n8483));
   jand g08416(.dina(n8483), .dinb(n8482), .dout(n8484));
   jand g08417(.dina(n8484), .dinb(n8479), .dout(n8485));
-  jxor g08418(.dina(n8485), .dinb(\a[14] ), .dout(n8486));
+  jxor g08418(.dina(n8485), .dinb(a[14] ), .dout(n8486));
   jxor g08419(.dina(n8486), .dinb(n8478), .dout(n8487));
   jxor g08420(.dina(n8487), .dinb(n8315), .dout(n8488));
   jor  g08421(.dina(n5527), .dinb(n4023), .dout(n8489));
@@ -11590,7 +11570,7 @@ module gf_log2 (
   jor  g08588(.dina(n3787), .dinb(n1621), .dout(n8656));
   jand g08589(.dina(n8656), .dinb(n8655), .dout(n8657));
   jand g08590(.dina(n8657), .dinb(n8652), .dout(n8658));
-  jxor g08591(.dina(n8658), .dinb(\a[23] ), .dout(n8659));
+  jxor g08591(.dina(n8658), .dinb(a[23] ), .dout(n8659));
   jxor g08592(.dina(n8659), .dinb(n8651), .dout(n8660));
   jxor g08593(.dina(n8660), .dinb(n8552), .dout(n8661));
   jnot g08594(.din(n8661), .dout(n8662));
@@ -11601,7 +11581,7 @@ module gf_log2 (
   jand g08599(.dina(n8666), .dinb(n8665), .dout(n8667));
   jand g08600(.dina(n8667), .dinb(n8664), .dout(n8668));
   jand g08601(.dina(n8668), .dinb(n8663), .dout(n8669));
-  jxor g08602(.dina(n8669), .dinb(\a[20] ), .dout(n8670));
+  jxor g08602(.dina(n8669), .dinb(a[20] ), .dout(n8670));
   jxor g08603(.dina(n8670), .dinb(n8662), .dout(n8671));
   jxor g08604(.dina(n8671), .dinb(n8547), .dout(n8672));
   jor  g08605(.dina(n4714), .dinb(n2744), .dout(n8673));
@@ -11641,7 +11621,7 @@ module gf_log2 (
   jor  g08639(.dina(n6390), .dinb(n4702), .dout(n8707));
   jand g08640(.dina(n8707), .dinb(n8706), .dout(n8708));
   jand g08641(.dina(n8708), .dinb(n8703), .dout(n8709));
-  jxor g08642(.dina(n8709), .dinb(\a[8] ), .dout(n8710));
+  jxor g08642(.dina(n8709), .dinb(a[8] ), .dout(n8710));
   jxor g08643(.dina(n8710), .dinb(n8702), .dout(n8711));
   jxor g08644(.dina(n8711), .dinb(n8528), .dout(n8712));
   jor  g08645(.dina(n7301), .dinb(n5537), .dout(n8713));
@@ -11651,7 +11631,7 @@ module gf_log2 (
   jand g08649(.dina(n8716), .dinb(n8715), .dout(n8717));
   jand g08650(.dina(n8717), .dinb(n8714), .dout(n8718));
   jand g08651(.dina(n8718), .dinb(n8713), .dout(n8719));
-  jxor g08652(.dina(n8719), .dinb(\a[5] ), .dout(n8720));
+  jxor g08652(.dina(n8719), .dinb(a[5] ), .dout(n8720));
   jxor g08653(.dina(n8720), .dinb(n8712), .dout(n8721));
   jxor g08654(.dina(n8721), .dinb(n8522), .dout(n8722));
   jxor g08655(.dina(n8722), .dinb(n8518), .dout(n8723));
@@ -11701,7 +11681,7 @@ module gf_log2 (
   jor  g08699(.dina(n7680), .dinb(n5537), .dout(n8767));
   jand g08700(.dina(n8767), .dinb(n8766), .dout(n8768));
   jand g08701(.dina(n8768), .dinb(n8765), .dout(n8769));
-  jxor g08702(.dina(n8769), .dinb(\a[5] ), .dout(n8770));
+  jxor g08702(.dina(n8769), .dinb(a[5] ), .dout(n8770));
   jxor g08703(.dina(n8770), .dinb(n8764), .dout(n8771));
   jand g08704(.dina(n8691), .dinb(n8538), .dout(n8772));
   jand g08705(.dina(n8700), .dinb(n8692), .dout(n8773));
@@ -11790,7 +11770,7 @@ module gf_log2 (
   jor  g08788(.dina(n3683), .dinb(n2629), .dout(n8856));
   jand g08789(.dina(n8856), .dinb(n8855), .dout(n8857));
   jand g08790(.dina(n8857), .dinb(n8852), .dout(n8858));
-  jxor g08791(.dina(n8858), .dinb(\a[29] ), .dout(n8859));
+  jxor g08791(.dina(n8858), .dinb(a[29] ), .dout(n8859));
   jxor g08792(.dina(n8859), .dinb(n8851), .dout(n8860));
   jnot g08793(.din(n8860), .dout(n8861));
   jor  g08794(.dina(n3440), .dinb(n2303), .dout(n8862));
@@ -11800,7 +11780,7 @@ module gf_log2 (
   jor  g08798(.dina(n3072), .dinb(n1805), .dout(n8866));
   jand g08799(.dina(n8866), .dinb(n8865), .dout(n8867));
   jand g08800(.dina(n8867), .dinb(n8862), .dout(n8868));
-  jxor g08801(.dina(n8868), .dinb(\a[26] ), .dout(n8869));
+  jxor g08801(.dina(n8868), .dinb(a[26] ), .dout(n8869));
   jxor g08802(.dina(n8869), .dinb(n8861), .dout(n8870));
   jxor g08803(.dina(n8870), .dinb(n8793), .dout(n8871));
   jor  g08804(.dina(n4051), .dinb(n807), .dout(n8872));
@@ -11841,7 +11821,7 @@ module gf_log2 (
   jor  g08839(.dina(n5264), .dinb(n3211), .dout(n8907));
   jand g08840(.dina(n8907), .dinb(n8906), .dout(n8908));
   jand g08841(.dina(n8908), .dinb(n8903), .dout(n8909));
-  jxor g08842(.dina(n8909), .dinb(\a[14] ), .dout(n8910));
+  jxor g08842(.dina(n8909), .dinb(a[14] ), .dout(n8910));
   jxor g08843(.dina(n8910), .dinb(n8902), .dout(n8911));
   jxor g08844(.dina(n8911), .dinb(n8777), .dout(n8912));
   jnot g08845(.din(n8912), .dout(n8913));
@@ -11852,7 +11832,7 @@ module gf_log2 (
   jor  g08850(.dina(n5525), .dinb(n3871), .dout(n8918));
   jand g08851(.dina(n8918), .dinb(n8917), .dout(n8919));
   jand g08852(.dina(n8919), .dinb(n8914), .dout(n8920));
-  jxor g08853(.dina(n8920), .dinb(\a[11] ), .dout(n8921));
+  jxor g08853(.dina(n8920), .dinb(a[11] ), .dout(n8921));
   jxor g08854(.dina(n8921), .dinb(n8913), .dout(n8922));
   jxor g08855(.dina(n8922), .dinb(n8774), .dout(n8923));
   jnot g08856(.din(n8923), .dout(n8924));
@@ -11863,7 +11843,7 @@ module gf_log2 (
   jand g08861(.dina(n8928), .dinb(n8927), .dout(n8929));
   jand g08862(.dina(n8929), .dinb(n8926), .dout(n8930));
   jand g08863(.dina(n8930), .dinb(n8925), .dout(n8931));
-  jxor g08864(.dina(n8931), .dinb(\a[8] ), .dout(n8932));
+  jxor g08864(.dina(n8931), .dinb(a[8] ), .dout(n8932));
   jxor g08865(.dina(n8932), .dinb(n8924), .dout(n8933));
   jxor g08866(.dina(n8933), .dinb(n8771), .dout(n8934));
   jxor g08867(.dina(n8934), .dinb(n8759), .dout(n8935));
@@ -11901,9 +11881,9 @@ module gf_log2 (
   jor  g08899(.dina(n8966), .dinb(n8965), .dout(n8967));
   jor  g08900(.dina(n8967), .dinb(n8964), .dout(n8968));
   jor  g08901(.dina(n8968), .dinb(n8963), .dout(n8969));
-  jxor g08902(.dina(n8969), .dinb(\a[20] ), .dout(n8970));
+  jxor g08902(.dina(n8969), .dinb(a[20] ), .dout(n8970));
   jand g08903(.dina(n8970), .dinb(n8961), .dout(n8971));
-  jand g08904(.dina(n7322), .dinb(\a[23] ), .dout(n8972));
+  jand g08904(.dina(n7322), .dinb(a[23] ), .dout(n8972));
   jxor g08905(.dina(n8972), .dinb(n7320), .dout(n8973));
   jnot g08906(.din(n8973), .dout(n8974));
   jand g08907(.dina(n8270), .dinb(n1819), .dout(n8975));
@@ -11923,7 +11903,7 @@ module gf_log2 (
   jnot g08921(.din(n8988), .dout(n8989));
   jand g08922(.dina(n7019), .dinb(n1817), .dout(n8990));
   jnot g08923(.din(n8990), .dout(n8991));
-  jand g08924(.dina(n8991), .dinb(\a[20] ), .dout(n8992));
+  jand g08924(.dina(n8991), .dinb(a[20] ), .dout(n8992));
   jand g08925(.dina(n8992), .dinb(n8989), .dout(n8993));
   jand g08926(.dina(n7693), .dinb(n1819), .dout(n8994));
   jand g08927(.dina(n7313), .dinb(n2180), .dout(n8995));
@@ -11990,7 +11970,7 @@ module gf_log2 (
   jor  g08988(.dina(n9055), .dinb(n9052), .dout(n9056));
   jor  g08989(.dina(n7020), .dinb(n77), .dout(n9057));
   jor  g08990(.dina(n9057), .dinb(n8045), .dout(n9058));
-  jand g08991(.dina(n9058), .dinb(\a[26] ), .dout(n9059));
+  jand g08991(.dina(n9058), .dinb(a[26] ), .dout(n9059));
   jxor g08992(.dina(n9059), .dinb(n9056), .dout(n9060));
   jxor g08993(.dina(n9060), .dinb(n9049), .dout(n9061));
   jxor g08994(.dina(n9061), .dinb(n9040), .dout(n9062));
@@ -12092,7 +12072,7 @@ module gf_log2 (
   jor  g09090(.dina(n3072), .dinb(n4348), .dout(n9158));
   jand g09091(.dina(n9158), .dinb(n9157), .dout(n9159));
   jand g09092(.dina(n9159), .dinb(n9154), .dout(n9160));
-  jxor g09093(.dina(n9160), .dinb(\a[29] ), .dout(n9161));
+  jxor g09093(.dina(n9160), .dinb(a[29] ), .dout(n9161));
   jxor g09094(.dina(n9161), .dinb(n9153), .dout(n9162));
   jor  g09095(.dina(n3422), .dinb(n2303), .dout(n9163));
   jor  g09096(.dina(n3203), .dinb(n1805), .dout(n9164));
@@ -12112,7 +12092,7 @@ module gf_log2 (
   jor  g09110(.dina(n3787), .dinb(n1617), .dout(n9178));
   jand g09111(.dina(n9178), .dinb(n9177), .dout(n9179));
   jand g09112(.dina(n9179), .dinb(n9174), .dout(n9180));
-  jxor g09113(.dina(n9180), .dinb(\a[23] ), .dout(n9181));
+  jxor g09113(.dina(n9180), .dinb(a[23] ), .dout(n9181));
   jxor g09114(.dina(n9181), .dinb(n9173), .dout(n9182));
   jxor g09115(.dina(n9182), .dinb(n9098), .dout(n9183));
   jor  g09116(.dina(n4726), .dinb(n1820), .dout(n9184));
@@ -12210,7 +12190,7 @@ module gf_log2 (
   jor  g09208(.dina(n6489), .dinb(n4025), .dout(n9276));
   jand g09209(.dina(n9276), .dinb(n9275), .dout(n9277));
   jand g09210(.dina(n9277), .dinb(n9272), .dout(n9278));
-  jxor g09211(.dina(n9278), .dinb(\a[11] ), .dout(n9279));
+  jxor g09211(.dina(n9278), .dinb(a[11] ), .dout(n9279));
   jxor g09212(.dina(n9279), .dinb(n9271), .dout(n9280));
   jand g09213(.dina(n9202), .dinb(n9092), .dout(n9281));
   jand g09214(.dina(n9211), .dinb(n9203), .dout(n9282));
@@ -12312,7 +12292,7 @@ module gf_log2 (
   jand g09310(.dina(n9377), .dinb(n9362), .dout(n9378));
   jand g09311(.dina(n9378), .dinb(n5314), .dout(n9379));
   jand g09312(.dina(n9379), .dinb(n9351), .dout(n9380));
-  jxor g09313(.dina(n9380), .dinb(\a[2] ), .dout(n9381));
+  jxor g09313(.dina(n9380), .dinb(a[2] ), .dout(n9381));
   jxor g09314(.dina(n9381), .dinb(n5277), .dout(n9382));
   jxor g09315(.dina(n9382), .dinb(n9316), .dout(n9383));
   jxor g09316(.dina(n9383), .dinb(n9311), .dout(n9384));
@@ -12325,7 +12305,7 @@ module gf_log2 (
   jor  g09323(.dina(n3203), .dinb(n4348), .dout(n9391));
   jand g09324(.dina(n9391), .dinb(n9390), .dout(n9392));
   jand g09325(.dina(n9392), .dinb(n9387), .dout(n9393));
-  jxor g09326(.dina(n9393), .dinb(\a[29] ), .dout(n9394));
+  jxor g09326(.dina(n9393), .dinb(a[29] ), .dout(n9394));
   jxor g09327(.dina(n9394), .dinb(n9386), .dout(n9395));
   jnot g09328(.din(n9395), .dout(n9396));
   jor  g09329(.dina(n3789), .dinb(n2303), .dout(n9397));
@@ -12335,7 +12315,7 @@ module gf_log2 (
   jor  g09333(.dina(n3787), .dinb(n2309), .dout(n9401));
   jand g09334(.dina(n9401), .dinb(n9400), .dout(n9402));
   jand g09335(.dina(n9402), .dinb(n9397), .dout(n9403));
-  jxor g09336(.dina(n9403), .dinb(\a[26] ), .dout(n9404));
+  jxor g09336(.dina(n9403), .dinb(a[26] ), .dout(n9404));
   jxor g09337(.dina(n9404), .dinb(n9396), .dout(n9405));
   jxor g09338(.dina(n9405), .dinb(n9299), .dout(n9406));
   jor  g09339(.dina(n4021), .dinb(n807), .dout(n9407));
@@ -12390,7 +12370,7 @@ module gf_log2 (
   jand g09388(.dina(n9455), .dinb(n9454), .dout(n9456));
   jand g09389(.dina(n9456), .dinb(n9453), .dout(n9457));
   jand g09390(.dina(n9457), .dinb(n9452), .dout(n9458));
-  jxor g09391(.dina(n9458), .dinb(\a[8] ), .dout(n9459));
+  jxor g09391(.dina(n9458), .dinb(a[8] ), .dout(n9459));
   jxor g09392(.dina(n9459), .dinb(n9451), .dout(n9460));
   jxor g09393(.dina(n9460), .dinb(n9447), .dout(n9461));
   jand g09394(.dina(n9461), .dinb(n9267), .dout(n9462));
@@ -12415,7 +12395,7 @@ module gf_log2 (
   jor  g09413(.dina(n7680), .dinb(n4702), .dout(n9481));
   jand g09414(.dina(n9481), .dinb(n9480), .dout(n9482));
   jand g09415(.dina(n9482), .dinb(n9479), .dout(n9483));
-  jxor g09416(.dina(n9483), .dinb(\a[8] ), .dout(n9484));
+  jxor g09416(.dina(n9483), .dinb(a[8] ), .dout(n9484));
   jxor g09417(.dina(n9484), .dinb(n9478), .dout(n9485));
   jand g09418(.dina(n9444), .dinb(n9436), .dout(n9486));
   jand g09419(.dina(n9445), .dinb(n9283), .dout(n9487));
@@ -12505,7 +12485,7 @@ module gf_log2 (
   jand g09503(.dina(n9570), .dinb(n9553), .dout(n9571));
   jand g09504(.dina(n9571), .dinb(n9531), .dout(n9572));
   jnot g09505(.din(n9572), .dout(n9573));
-  jor  g09506(.dina(n9380), .dinb(\a[2] ), .dout(n9574));
+  jor  g09506(.dina(n9380), .dinb(a[2] ), .dout(n9574));
   jand g09507(.dina(n9381), .dinb(n5277), .dout(n9575));
   jnot g09508(.din(n9575), .dout(n9576));
   jand g09509(.dina(n9576), .dinb(n9574), .dout(n9577));
@@ -12520,7 +12500,7 @@ module gf_log2 (
   jor  g09518(.dina(n3683), .dinb(n3072), .dout(n9586));
   jand g09519(.dina(n9586), .dinb(n9585), .dout(n9587));
   jand g09520(.dina(n9587), .dinb(n9582), .dout(n9588));
-  jxor g09521(.dina(n9588), .dinb(\a[29] ), .dout(n9589));
+  jxor g09521(.dina(n9588), .dinb(a[29] ), .dout(n9589));
   jxor g09522(.dina(n9589), .dinb(n9581), .dout(n9590));
   jxor g09523(.dina(n9590), .dinb(n9507), .dout(n9591));
   jor  g09524(.dina(n4051), .dinb(n2303), .dout(n9592));
@@ -12561,7 +12541,7 @@ module gf_log2 (
   jor  g09559(.dina(n5264), .dinb(n2758), .dout(n9627));
   jand g09560(.dina(n9627), .dinb(n9626), .dout(n9628));
   jand g09561(.dina(n9628), .dinb(n9623), .dout(n9629));
-  jxor g09562(.dina(n9629), .dinb(\a[17] ), .dout(n9630));
+  jxor g09562(.dina(n9629), .dinb(a[17] ), .dout(n9630));
   jxor g09563(.dina(n9630), .dinb(n9622), .dout(n9631));
   jxor g09564(.dina(n9631), .dinb(n9491), .dout(n9632));
   jnot g09565(.din(n9632), .dout(n9633));
@@ -12572,7 +12552,7 @@ module gf_log2 (
   jor  g09570(.dina(n5525), .dinb(n3211), .dout(n9638));
   jand g09571(.dina(n9638), .dinb(n9637), .dout(n9639));
   jand g09572(.dina(n9639), .dinb(n9634), .dout(n9640));
-  jxor g09573(.dina(n9640), .dinb(\a[14] ), .dout(n9641));
+  jxor g09573(.dina(n9640), .dinb(a[14] ), .dout(n9641));
   jxor g09574(.dina(n9641), .dinb(n9633), .dout(n9642));
   jxor g09575(.dina(n9642), .dinb(n9488), .dout(n9643));
   jor  g09576(.dina(n7303), .dinb(n4023), .dout(n9644));
@@ -12735,7 +12715,7 @@ module gf_log2 (
   jor  g09733(.dina(n3787), .dinb(n1805), .dout(n9801));
   jand g09734(.dina(n9801), .dinb(n9800), .dout(n9802));
   jand g09735(.dina(n9802), .dinb(n9797), .dout(n9803));
-  jxor g09736(.dina(n9803), .dinb(\a[26] ), .dout(n9804));
+  jxor g09736(.dina(n9803), .dinb(a[26] ), .dout(n9804));
   jxor g09737(.dina(n9804), .dinb(n9796), .dout(n9805));
   jxor g09738(.dina(n9805), .dinb(n9700), .dout(n9806));
   jor  g09739(.dina(n4726), .dinb(n807), .dout(n9807));
@@ -12776,7 +12756,7 @@ module gf_log2 (
   jor  g09774(.dina(n6205), .dinb(n3211), .dout(n9842));
   jand g09775(.dina(n9842), .dinb(n9841), .dout(n9843));
   jand g09776(.dina(n9843), .dinb(n9838), .dout(n9844));
-  jxor g09777(.dina(n9844), .dinb(\a[14] ), .dout(n9845));
+  jxor g09777(.dina(n9844), .dinb(a[14] ), .dout(n9845));
   jxor g09778(.dina(n9845), .dinb(n9837), .dout(n9846));
   jxor g09779(.dina(n9846), .dinb(n9686), .dout(n9847));
   jor  g09780(.dina(n7682), .dinb(n4023), .dout(n9848));
@@ -12884,7 +12864,7 @@ module gf_log2 (
   jor  g09882(.dina(n8993), .dinb(n2196), .dout(n9950));
   jxor g09883(.dina(n9950), .dinb(n9001), .dout(n9951));
   jand g09884(.dina(n9951), .dinb(n9949), .dout(n9952));
-  jand g09885(.dina(n8990), .dinb(\a[20] ), .dout(n9953));
+  jand g09885(.dina(n8990), .dinb(a[20] ), .dout(n9953));
   jxor g09886(.dina(n9953), .dinb(n8988), .dout(n9954));
   jnot g09887(.din(n9954), .dout(n9955));
   jand g09888(.dina(n8270), .dinb(n2743), .dout(n9956));
@@ -12904,7 +12884,7 @@ module gf_log2 (
   jnot g09902(.din(n9969), .dout(n9970));
   jand g09903(.dina(n7019), .dinb(n2741), .dout(n9971));
   jnot g09904(.din(n9971), .dout(n9972));
-  jand g09905(.dina(n9972), .dinb(\a[17] ), .dout(n9973));
+  jand g09905(.dina(n9972), .dinb(a[17] ), .dout(n9973));
   jand g09906(.dina(n9973), .dinb(n9970), .dout(n9974));
   jand g09907(.dina(n7693), .dinb(n2743), .dout(n9975));
   jand g09908(.dina(n7313), .dinb(n2748), .dout(n9976));
@@ -13175,7 +13155,7 @@ module gf_log2 (
   jor  g10173(.dina(n3787), .dinb(n4348), .dout(n10241));
   jand g10174(.dina(n10241), .dinb(n10240), .dout(n10242));
   jand g10175(.dina(n10242), .dinb(n10237), .dout(n10243));
-  jxor g10176(.dina(n10243), .dinb(\a[29] ), .dout(n10244));
+  jxor g10176(.dina(n10243), .dinb(a[29] ), .dout(n10244));
   jxor g10177(.dina(n10244), .dinb(n10236), .dout(n10245));
   jxor g10178(.dina(n10245), .dinb(n10123), .dout(n10246));
   jor  g10179(.dina(n4021), .dinb(n2303), .dout(n10247));
@@ -13196,7 +13176,7 @@ module gf_log2 (
   jor  g10194(.dina(n4471), .dinb(n1617), .dout(n10262));
   jand g10195(.dina(n10262), .dinb(n10261), .dout(n10263));
   jand g10196(.dina(n10263), .dinb(n10258), .dout(n10264));
-  jxor g10197(.dina(n10264), .dinb(\a[23] ), .dout(n10265));
+  jxor g10197(.dina(n10264), .dinb(a[23] ), .dout(n10265));
   jxor g10198(.dina(n10265), .dinb(n10257), .dout(n10266));
   jxor g10199(.dina(n10266), .dinb(n10115), .dout(n10267));
   jor  g10200(.dina(n5560), .dinb(n1820), .dout(n10268));
@@ -13259,7 +13239,7 @@ module gf_log2 (
   jor  g10257(.dina(n7999), .dinb(n4028), .dout(n10325));
   jand g10258(.dina(n10325), .dinb(n10324), .dout(n10326));
   jand g10259(.dina(n10326), .dinb(n10323), .dout(n10327));
-  jxor g10260(.dina(n10327), .dinb(\a[11] ), .dout(n10328));
+  jxor g10260(.dina(n10327), .dinb(a[11] ), .dout(n10328));
   jor  g10261(.dina(n10328), .dinb(n10322), .dout(n10329));
   jxor g10262(.dina(n10328), .dinb(n10322), .dout(n10330));
   jand g10263(.dina(n10285), .dinb(n10277), .dout(n10331));
@@ -13374,7 +13354,7 @@ module gf_log2 (
   jor  g10372(.dina(n3929), .dinb(n1805), .dout(n10440));
   jand g10373(.dina(n10440), .dinb(n10439), .dout(n10441));
   jand g10374(.dina(n10441), .dinb(n10436), .dout(n10442));
-  jxor g10375(.dina(n10442), .dinb(\a[26] ), .dout(n10443));
+  jxor g10375(.dina(n10442), .dinb(a[26] ), .dout(n10443));
   jxor g10376(.dina(n10443), .dinb(n10435), .dout(n10444));
   jxor g10377(.dina(n10444), .dinb(n10344), .dout(n10445));
   jor  g10378(.dina(n4688), .dinb(n807), .dout(n10446));
@@ -13415,7 +13395,7 @@ module gf_log2 (
   jand g10413(.dina(n10480), .dinb(n10479), .dout(n10481));
   jand g10414(.dina(n10481), .dinb(n10478), .dout(n10482));
   jand g10415(.dina(n10482), .dinb(n10477), .dout(n10483));
-  jxor g10416(.dina(n10483), .dinb(\a[14] ), .dout(n10484));
+  jxor g10416(.dina(n10483), .dinb(a[14] ), .dout(n10484));
   jxor g10417(.dina(n10484), .dinb(n10476), .dout(n10485));
   jand g10418(.dina(n10485), .dinb(n10330), .dout(n10486));
   jnot g10419(.din(n10486), .dout(n10487));
@@ -13500,7 +13480,7 @@ module gf_log2 (
   jor  g10498(.dina(n3787), .dinb(n3683), .dout(n10566));
   jand g10499(.dina(n10566), .dinb(n10565), .dout(n10567));
   jand g10500(.dina(n10567), .dinb(n10562), .dout(n10568));
-  jxor g10501(.dina(n10568), .dinb(\a[29] ), .dout(n10569));
+  jxor g10501(.dina(n10568), .dinb(a[29] ), .dout(n10569));
   jxor g10502(.dina(n10569), .dinb(n10561), .dout(n10570));
   jxor g10503(.dina(n10570), .dinb(n10515), .dout(n10571));
   jnot g10504(.din(n10571), .dout(n10572));
@@ -13511,7 +13491,7 @@ module gf_log2 (
   jor  g10509(.dina(n4019), .dinb(n1805), .dout(n10577));
   jand g10510(.dina(n10577), .dinb(n10576), .dout(n10578));
   jand g10511(.dina(n10578), .dinb(n10573), .dout(n10579));
-  jxor g10512(.dina(n10579), .dinb(\a[26] ), .dout(n10580));
+  jxor g10512(.dina(n10579), .dinb(a[26] ), .dout(n10580));
   jxor g10513(.dina(n10580), .dinb(n10572), .dout(n10581));
   jxor g10514(.dina(n10581), .dinb(n10512), .dout(n10582));
   jor  g10515(.dina(n5266), .dinb(n807), .dout(n10583));
@@ -13552,7 +13532,7 @@ module gf_log2 (
   jor  g10550(.dina(n7680), .dinb(n3426), .dout(n10618));
   jand g10551(.dina(n10618), .dinb(n10617), .dout(n10619));
   jand g10552(.dina(n10619), .dinb(n10614), .dout(n10620));
-  jxor g10553(.dina(n10620), .dinb(\a[14] ), .dout(n10621));
+  jxor g10553(.dina(n10620), .dinb(a[14] ), .dout(n10621));
   jxor g10554(.dina(n10621), .dinb(n10613), .dout(n10622));
   jxor g10555(.dina(n10622), .dinb(n10498), .dout(n10623));
   jxor g10556(.dina(n10623), .dinb(n10489), .dout(n10624));
@@ -13717,7 +13697,7 @@ module gf_log2 (
   jor  g10715(.dina(n4526), .dinb(n2309), .dout(n10783));
   jand g10716(.dina(n10783), .dinb(n10782), .dout(n10784));
   jand g10717(.dina(n10784), .dinb(n10779), .dout(n10785));
-  jxor g10718(.dina(n10785), .dinb(\a[26] ), .dout(n10786));
+  jxor g10718(.dina(n10785), .dinb(a[26] ), .dout(n10786));
   jxor g10719(.dina(n10786), .dinb(n10778), .dout(n10787));
   jxor g10720(.dina(n10787), .dinb(n10682), .dout(n10788));
   jnot g10721(.din(n10788), .dout(n10789));
@@ -13728,7 +13708,7 @@ module gf_log2 (
   jor  g10726(.dina(n4686), .dinb(n1617), .dout(n10794));
   jand g10727(.dina(n10794), .dinb(n10793), .dout(n10795));
   jand g10728(.dina(n10795), .dinb(n10790), .dout(n10796));
-  jxor g10729(.dina(n10796), .dinb(\a[23] ), .dout(n10797));
+  jxor g10729(.dina(n10796), .dinb(a[23] ), .dout(n10797));
   jxor g10730(.dina(n10797), .dinb(n10789), .dout(n10798));
   jxor g10731(.dina(n10798), .dinb(n10677), .dout(n10799));
   jor  g10732(.dina(n6207), .dinb(n1820), .dout(n10800));
@@ -13811,7 +13791,7 @@ module gf_log2 (
   jor  g10809(.dina(n10876), .dinb(n10875), .dout(n10877));
   jor  g10810(.dina(n10877), .dinb(n10874), .dout(n10878));
   jor  g10811(.dina(n10878), .dinb(n10873), .dout(n10879));
-  jxor g10812(.dina(n10879), .dinb(\a[14] ), .dout(n10880));
+  jxor g10812(.dina(n10879), .dinb(a[14] ), .dout(n10880));
   jand g10813(.dina(n10880), .dinb(n10872), .dout(n10881));
   jxor g10814(.dina(n10017), .dinb(n10016), .dout(n10882));
   jnot g10815(.din(n10882), .dout(n10883));
@@ -13888,9 +13868,9 @@ module gf_log2 (
   jor  g10886(.dina(n10953), .dinb(n10952), .dout(n10954));
   jor  g10887(.dina(n10954), .dinb(n10951), .dout(n10955));
   jor  g10888(.dina(n10955), .dinb(n10950), .dout(n10956));
-  jxor g10889(.dina(n10956), .dinb(\a[14] ), .dout(n10957));
+  jxor g10889(.dina(n10956), .dinb(a[14] ), .dout(n10957));
   jand g10890(.dina(n10957), .dinb(n10949), .dout(n10958));
-  jand g10891(.dina(n9971), .dinb(\a[17] ), .dout(n10959));
+  jand g10891(.dina(n9971), .dinb(a[17] ), .dout(n10959));
   jxor g10892(.dina(n10959), .dinb(n9969), .dout(n10960));
   jnot g10893(.din(n10960), .dout(n10961));
   jand g10894(.dina(n8270), .dinb(n3423), .dout(n10962));
@@ -13910,7 +13890,7 @@ module gf_log2 (
   jnot g10908(.din(n10975), .dout(n10976));
   jand g10909(.dina(n7019), .dinb(n3205), .dout(n10977));
   jnot g10910(.din(n10977), .dout(n10978));
-  jand g10911(.dina(n10978), .dinb(\a[14] ), .dout(n10979));
+  jand g10911(.dina(n10978), .dinb(a[14] ), .dout(n10979));
   jand g10912(.dina(n10979), .dinb(n10976), .dout(n10980));
   jand g10913(.dina(n7693), .dinb(n3423), .dout(n10981));
   jand g10914(.dina(n7313), .dinb(n3428), .dout(n10982));
@@ -14080,7 +14060,7 @@ module gf_log2 (
   jor  g11078(.dina(n7999), .dinb(n3429), .dout(n11146));
   jand g11079(.dina(n11146), .dinb(n11145), .dout(n11147));
   jand g11080(.dina(n11147), .dinb(n11144), .dout(n11148));
-  jxor g11081(.dina(n11148), .dinb(\a[14] ), .dout(n11149));
+  jxor g11081(.dina(n11148), .dinb(a[14] ), .dout(n11149));
   jxor g11082(.dina(n11149), .dinb(n11143), .dout(n11150));
   jand g11083(.dina(n10807), .dinb(n10799), .dout(n11151));
   jand g11084(.dina(n10808), .dinb(n10674), .dout(n11152));
@@ -14190,7 +14170,7 @@ module gf_log2 (
   jor  g11188(.dina(n4471), .dinb(n4348), .dout(n11256));
   jand g11189(.dina(n11256), .dinb(n11255), .dout(n11257));
   jand g11190(.dina(n11257), .dinb(n11252), .dout(n11258));
-  jxor g11191(.dina(n11258), .dinb(\a[29] ), .dout(n11259));
+  jxor g11191(.dina(n11258), .dinb(a[29] ), .dout(n11259));
   jxor g11192(.dina(n11259), .dinb(n11251), .dout(n11260));
   jxor g11193(.dina(n11260), .dinb(n11166), .dout(n11261));
   jnot g11194(.din(n11261), .dout(n11262));
@@ -14201,7 +14181,7 @@ module gf_log2 (
   jor  g11199(.dina(n4596), .dinb(n1805), .dout(n11267));
   jand g11200(.dina(n11267), .dinb(n11266), .dout(n11268));
   jand g11201(.dina(n11268), .dinb(n11263), .dout(n11269));
-  jxor g11202(.dina(n11269), .dinb(\a[26] ), .dout(n11270));
+  jxor g11202(.dina(n11269), .dinb(a[26] ), .dout(n11270));
   jxor g11203(.dina(n11270), .dinb(n11262), .dout(n11271));
   jxor g11204(.dina(n11271), .dinb(n11163), .dout(n11272));
   jnot g11205(.din(n11272), .dout(n11273));
@@ -14212,7 +14192,7 @@ module gf_log2 (
   jor  g11210(.dina(n5364), .dinb(n1621), .dout(n11278));
   jand g11211(.dina(n11278), .dinb(n11277), .dout(n11279));
   jand g11212(.dina(n11279), .dinb(n11274), .dout(n11280));
-  jxor g11213(.dina(n11280), .dinb(\a[23] ), .dout(n11281));
+  jxor g11213(.dina(n11280), .dinb(a[23] ), .dout(n11281));
   jxor g11214(.dina(n11281), .dinb(n11273), .dout(n11282));
   jxor g11215(.dina(n11282), .dinb(n11158), .dout(n11283));
   jor  g11216(.dina(n6516), .dinb(n1820), .dout(n11284));
@@ -14233,7 +14213,7 @@ module gf_log2 (
   jand g11231(.dina(n11298), .dinb(n11297), .dout(n11299));
   jand g11232(.dina(n11299), .dinb(n11296), .dout(n11300));
   jand g11233(.dina(n11300), .dinb(n11295), .dout(n11301));
-  jxor g11234(.dina(n11301), .dinb(\a[17] ), .dout(n11302));
+  jxor g11234(.dina(n11301), .dinb(a[17] ), .dout(n11302));
   jxor g11235(.dina(n11302), .dinb(n11294), .dout(n11303));
   jxor g11236(.dina(n11303), .dinb(n11150), .dout(n11304));
   jxor g11237(.dina(n11304), .dinb(n11139), .dout(n11305));
@@ -14259,7 +14239,7 @@ module gf_log2 (
   jor  g11257(.dina(n7999), .dinb(n3211), .dout(n11325));
   jor  g11258(.dina(n8295), .dinb(n3424), .dout(n11326));
   jand g11259(.dina(n11326), .dinb(n11325), .dout(n11327));
-  jxor g11260(.dina(n11327), .dinb(\a[14] ), .dout(n11328));
+  jxor g11260(.dina(n11327), .dinb(a[14] ), .dout(n11328));
   jor  g11261(.dina(n11328), .dinb(n11324), .dout(n11329));
   jxor g11262(.dina(n11328), .dinb(n11324), .dout(n11330));
   jand g11263(.dina(n11282), .dinb(n11158), .dout(n11331));
@@ -14389,7 +14369,7 @@ module gf_log2 (
   jor  g11387(.dina(n5264), .dinb(n2309), .dout(n11455));
   jand g11388(.dina(n11455), .dinb(n11454), .dout(n11456));
   jand g11389(.dina(n11456), .dinb(n11451), .dout(n11457));
-  jxor g11390(.dina(n11457), .dinb(\a[26] ), .dout(n11458));
+  jxor g11390(.dina(n11457), .dinb(a[26] ), .dout(n11458));
   jxor g11391(.dina(n11458), .dinb(n11450), .dout(n11459));
   jxor g11392(.dina(n11459), .dinb(n11343), .dout(n11460));
   jor  g11393(.dina(n5527), .dinb(n807), .dout(n11461));
@@ -14410,7 +14390,7 @@ module gf_log2 (
   jor  g11408(.dina(n6205), .dinb(n2186), .dout(n11476));
   jand g11409(.dina(n11476), .dinb(n11475), .dout(n11477));
   jand g11410(.dina(n11477), .dinb(n11472), .dout(n11478));
-  jxor g11411(.dina(n11478), .dinb(\a[20] ), .dout(n11479));
+  jxor g11411(.dina(n11478), .dinb(a[20] ), .dout(n11479));
   jxor g11412(.dina(n11479), .dinb(n11471), .dout(n11480));
   jxor g11413(.dina(n11480), .dinb(n11333), .dout(n11481));
   jor  g11414(.dina(n7682), .dinb(n2744), .dout(n11482));
@@ -14516,7 +14496,7 @@ module gf_log2 (
   jor  g11514(.dina(n4471), .dinb(n3683), .dout(n11582));
   jand g11515(.dina(n11582), .dinb(n11581), .dout(n11583));
   jand g11516(.dina(n11583), .dinb(n11578), .dout(n11584));
-  jxor g11517(.dina(n11584), .dinb(\a[29] ), .dout(n11585));
+  jxor g11517(.dina(n11584), .dinb(a[29] ), .dout(n11585));
   jxor g11518(.dina(n11585), .dinb(n11577), .dout(n11586));
   jxor g11519(.dina(n11586), .dinb(n11524), .dout(n11587));
   jnot g11520(.din(n11587), .dout(n11588));
@@ -14527,7 +14507,7 @@ module gf_log2 (
   jor  g11525(.dina(n4686), .dinb(n1805), .dout(n11593));
   jand g11526(.dina(n11593), .dinb(n11592), .dout(n11594));
   jand g11527(.dina(n11594), .dinb(n11589), .dout(n11595));
-  jxor g11528(.dina(n11595), .dinb(\a[26] ), .dout(n11596));
+  jxor g11528(.dina(n11595), .dinb(a[26] ), .dout(n11596));
   jxor g11529(.dina(n11596), .dinb(n11588), .dout(n11597));
   jxor g11530(.dina(n11597), .dinb(n11519), .dout(n11598));
   jor  g11531(.dina(n6207), .dinb(n807), .dout(n11599));
@@ -14680,7 +14660,7 @@ module gf_log2 (
   jor  g11678(.dina(n4596), .dinb(n3683), .dout(n11746));
   jand g11679(.dina(n11746), .dinb(n11745), .dout(n11747));
   jand g11680(.dina(n11747), .dinb(n11742), .dout(n11748));
-  jxor g11681(.dina(n11748), .dinb(\a[29] ), .dout(n11749));
+  jxor g11681(.dina(n11748), .dinb(a[29] ), .dout(n11749));
   jxor g11682(.dina(n11749), .dinb(n11741), .dout(n11750));
   jxor g11683(.dina(n11750), .dinb(n11677), .dout(n11751));
   jnot g11684(.din(n11751), .dout(n11752));
@@ -14691,7 +14671,7 @@ module gf_log2 (
   jand g11689(.dina(n11756), .dinb(n11755), .dout(n11757));
   jand g11690(.dina(n11757), .dinb(n11754), .dout(n11758));
   jand g11691(.dina(n11758), .dinb(n11753), .dout(n11759));
-  jxor g11692(.dina(n11759), .dinb(\a[26] ), .dout(n11760));
+  jxor g11692(.dina(n11759), .dinb(a[26] ), .dout(n11760));
   jxor g11693(.dina(n11760), .dinb(n11752), .dout(n11761));
   jxor g11694(.dina(n11761), .dinb(n11672), .dout(n11762));
   jor  g11695(.dina(n6516), .dinb(n807), .dout(n11763));
@@ -14712,7 +14692,7 @@ module gf_log2 (
   jand g11710(.dina(n11777), .dinb(n11776), .dout(n11778));
   jand g11711(.dina(n11778), .dinb(n11775), .dout(n11779));
   jand g11712(.dina(n11779), .dinb(n11774), .dout(n11780));
-  jxor g11713(.dina(n11780), .dinb(\a[20] ), .dout(n11781));
+  jxor g11713(.dina(n11780), .dinb(a[20] ), .dout(n11781));
   jxor g11714(.dina(n11781), .dinb(n11773), .dout(n11782));
   jxor g11715(.dina(n11782), .dinb(n11664), .dout(n11783));
   jnot g11716(.din(n11783), .dout(n11784));
@@ -14721,7 +14701,7 @@ module gf_log2 (
   jor  g11719(.dina(n7999), .dinb(n2749), .dout(n11787));
   jand g11720(.dina(n11787), .dinb(n11786), .dout(n11788));
   jand g11721(.dina(n11788), .dinb(n11785), .dout(n11789));
-  jxor g11722(.dina(n11789), .dinb(\a[17] ), .dout(n11790));
+  jxor g11722(.dina(n11789), .dinb(a[17] ), .dout(n11790));
   jxor g11723(.dina(n11790), .dinb(n11784), .dout(n11791));
   jxor g11724(.dina(n11791), .dinb(n11661), .dout(n11792));
   jnot g11725(.din(n11792), .dout(n11793));
@@ -14895,9 +14875,9 @@ module gf_log2 (
   jor  g11893(.dina(n11960), .dinb(n11959), .dout(n11961));
   jor  g11894(.dina(n11961), .dinb(n11958), .dout(n11962));
   jor  g11895(.dina(n11962), .dinb(n11957), .dout(n11963));
-  jxor g11896(.dina(n11963), .dinb(\a[11] ), .dout(n11964));
+  jxor g11896(.dina(n11963), .dinb(a[11] ), .dout(n11964));
   jand g11897(.dina(n11964), .dinb(n11956), .dout(n11965));
-  jand g11898(.dina(n10977), .dinb(\a[14] ), .dout(n11966));
+  jand g11898(.dina(n10977), .dinb(a[14] ), .dout(n11966));
   jxor g11899(.dina(n11966), .dinb(n10975), .dout(n11967));
   jnot g11900(.din(n11967), .dout(n11968));
   jand g11901(.dina(n8270), .dinb(n4022), .dout(n11969));
@@ -14917,7 +14897,7 @@ module gf_log2 (
   jnot g11915(.din(n11982), .dout(n11983));
   jand g11916(.dina(n7019), .dinb(n3865), .dout(n11984));
   jnot g11917(.din(n11984), .dout(n11985));
-  jand g11918(.dina(n11985), .dinb(\a[11] ), .dout(n11986));
+  jand g11918(.dina(n11985), .dinb(a[11] ), .dout(n11986));
   jand g11919(.dina(n11986), .dinb(n11983), .dout(n11987));
   jand g11920(.dina(n7693), .dinb(n4022), .dout(n11988));
   jand g11921(.dina(n7313), .dinb(n4027), .dout(n11989));
@@ -15041,10 +15021,10 @@ module gf_log2 (
   jor  g12039(.dina(n12106), .dinb(n12105), .dout(n12107));
   jor  g12040(.dina(n12107), .dinb(n12102), .dout(n12108));
   jnot g12041(.din(n11084), .dout(n12109));
-  jand g12042(.dina(n10046), .dinb(\a[29] ), .dout(n12110));
+  jand g12042(.dina(n10046), .dinb(a[29] ), .dout(n12110));
   jand g12043(.dina(n12110), .dinb(n12109), .dout(n12111));
   jnot g12044(.din(n12111), .dout(n12112));
-  jand g12045(.dina(n12112), .dinb(\a[29] ), .dout(n12113));
+  jand g12045(.dina(n12112), .dinb(a[29] ), .dout(n12113));
   jxor g12046(.dina(n12113), .dinb(n12108), .dout(n12114));
   jand g12047(.dina(n8962), .dinb(n71), .dout(n12115));
   jand g12048(.dina(n8740), .dinb(n796), .dout(n12116));
@@ -15053,7 +15033,7 @@ module gf_log2 (
   jor  g12051(.dina(n12118), .dinb(n12117), .dout(n12119));
   jor  g12052(.dina(n12119), .dinb(n12116), .dout(n12120));
   jor  g12053(.dina(n12120), .dinb(n12115), .dout(n12121));
-  jxor g12054(.dina(n12121), .dinb(\a[26] ), .dout(n12122));
+  jxor g12054(.dina(n12121), .dinb(a[26] ), .dout(n12122));
   jxor g12055(.dina(n12122), .dinb(n12114), .dout(n12123));
   jxor g12056(.dina(n12123), .dinb(n12101), .dout(n12124));
   jnot g12057(.din(n12124), .dout(n12125));
@@ -15074,7 +15054,7 @@ module gf_log2 (
   jor  g12072(.dina(n12139), .dinb(n12138), .dout(n12140));
   jor  g12073(.dina(n12140), .dinb(n12137), .dout(n12141));
   jor  g12074(.dina(n12141), .dinb(n12136), .dout(n12142));
-  jxor g12075(.dina(n12142), .dinb(\a[20] ), .dout(n12143));
+  jxor g12075(.dina(n12142), .dinb(a[20] ), .dout(n12143));
   jxor g12076(.dina(n12143), .dinb(n12135), .dout(n12144));
   jxor g12077(.dina(n12144), .dinb(n12091), .dout(n12145));
   jnot g12078(.din(n12145), .dout(n12146));
@@ -15172,7 +15152,7 @@ module gf_log2 (
   jor  g12170(.dina(n4526), .dinb(n3683), .dout(n12238));
   jand g12171(.dina(n12238), .dinb(n12237), .dout(n12239));
   jand g12172(.dina(n12239), .dinb(n12234), .dout(n12240));
-  jxor g12173(.dina(n12240), .dinb(\a[29] ), .dout(n12241));
+  jxor g12173(.dina(n12240), .dinb(a[29] ), .dout(n12241));
   jxor g12174(.dina(n12241), .dinb(n12233), .dout(n12242));
   jxor g12175(.dina(n12242), .dinb(n12197), .dout(n12243));
   jor  g12176(.dina(n5527), .dinb(n2303), .dout(n12244));
@@ -15193,7 +15173,7 @@ module gf_log2 (
   jor  g12191(.dina(n6205), .dinb(n1617), .dout(n12259));
   jand g12192(.dina(n12259), .dinb(n12258), .dout(n12260));
   jand g12193(.dina(n12260), .dinb(n12255), .dout(n12261));
-  jxor g12194(.dina(n12261), .dinb(\a[23] ), .dout(n12262));
+  jxor g12194(.dina(n12261), .dinb(a[23] ), .dout(n12262));
   jxor g12195(.dina(n12262), .dinb(n12254), .dout(n12263));
   jxor g12196(.dina(n12263), .dinb(n12187), .dout(n12264));
   jnot g12197(.din(n12264), .dout(n12265));
@@ -15204,7 +15184,7 @@ module gf_log2 (
   jor  g12202(.dina(n6489), .dinb(n2186), .dout(n12270));
   jand g12203(.dina(n12270), .dinb(n12269), .dout(n12271));
   jand g12204(.dina(n12271), .dinb(n12266), .dout(n12272));
-  jxor g12205(.dina(n12272), .dinb(\a[20] ), .dout(n12273));
+  jxor g12205(.dina(n12272), .dinb(a[20] ), .dout(n12273));
   jxor g12206(.dina(n12273), .dinb(n12265), .dout(n12274));
   jxor g12207(.dina(n12274), .dinb(n12184), .dout(n12275));
   jxor g12208(.dina(n12275), .dinb(n12175), .dout(n12276));
@@ -15305,7 +15285,7 @@ module gf_log2 (
   jor  g12303(.dina(n4686), .dinb(n3683), .dout(n12371));
   jand g12304(.dina(n12371), .dinb(n12370), .dout(n12372));
   jand g12305(.dina(n12372), .dinb(n12367), .dout(n12373));
-  jxor g12306(.dina(n12373), .dinb(\a[29] ), .dout(n12374));
+  jxor g12306(.dina(n12373), .dinb(a[29] ), .dout(n12374));
   jxor g12307(.dina(n12374), .dinb(n12366), .dout(n12375));
   jor  g12308(.dina(n6207), .dinb(n2303), .dout(n12376));
   jor  g12309(.dina(n5364), .dinb(n1805), .dout(n12377));
@@ -15325,7 +15305,7 @@ module gf_log2 (
   jor  g12323(.dina(n6390), .dinb(n1617), .dout(n12391));
   jand g12324(.dina(n12391), .dinb(n12390), .dout(n12392));
   jand g12325(.dina(n12392), .dinb(n12387), .dout(n12393));
-  jxor g12326(.dina(n12393), .dinb(\a[23] ), .dout(n12394));
+  jxor g12326(.dina(n12393), .dinb(a[23] ), .dout(n12394));
   jxor g12327(.dina(n12394), .dinb(n12386), .dout(n12395));
   jxor g12328(.dina(n12395), .dinb(n12313), .dout(n12396));
   jxor g12329(.dina(n12307), .dinb(n12299), .dout(n12397));
@@ -15417,7 +15397,7 @@ module gf_log2 (
   jor  g12415(.dina(n5264), .dinb(n3683), .dout(n12483));
   jand g12416(.dina(n12483), .dinb(n12482), .dout(n12484));
   jand g12417(.dina(n12484), .dinb(n12479), .dout(n12485));
-  jxor g12418(.dina(n12485), .dinb(\a[29] ), .dout(n12486));
+  jxor g12418(.dina(n12485), .dinb(a[29] ), .dout(n12486));
   jxor g12419(.dina(n12486), .dinb(n12478), .dout(n12487));
   jxor g12420(.dina(n12487), .dinb(n12412), .dout(n12488));
   jor  g12421(.dina(n6516), .dinb(n2303), .dout(n12489));
@@ -15438,7 +15418,7 @@ module gf_log2 (
   jand g12436(.dina(n12503), .dinb(n12502), .dout(n12504));
   jand g12437(.dina(n12504), .dinb(n12501), .dout(n12505));
   jand g12438(.dina(n12505), .dinb(n12500), .dout(n12506));
-  jxor g12439(.dina(n12506), .dinb(\a[23] ), .dout(n12507));
+  jxor g12439(.dina(n12506), .dinb(a[23] ), .dout(n12507));
   jxor g12440(.dina(n12507), .dinb(n12499), .dout(n12508));
   jxor g12441(.dina(n12508), .dinb(n12404), .dout(n12509));
   jnot g12442(.din(n12509), .dout(n12510));
@@ -15447,7 +15427,7 @@ module gf_log2 (
   jor  g12445(.dina(n7680), .dinb(n2186), .dout(n12513));
   jand g12446(.dina(n12513), .dinb(n12512), .dout(n12514));
   jand g12447(.dina(n12514), .dinb(n12511), .dout(n12515));
-  jxor g12448(.dina(n12515), .dinb(\a[20] ), .dout(n12516));
+  jxor g12448(.dina(n12515), .dinb(a[20] ), .dout(n12516));
   jxor g12449(.dina(n12516), .dinb(n12510), .dout(n12517));
   jxor g12450(.dina(n12517), .dinb(n12399), .dout(n12518));
   jnot g12451(.din(n12518), .dout(n12519));
@@ -15502,7 +15482,7 @@ module gf_log2 (
   jor  g12500(.dina(n7999), .dinb(n2186), .dout(n12568));
   jor  g12501(.dina(n8295), .dinb(n1820), .dout(n12569));
   jand g12502(.dina(n12569), .dinb(n12568), .dout(n12570));
-  jxor g12503(.dina(n12570), .dinb(\a[20] ), .dout(n12571));
+  jxor g12503(.dina(n12570), .dinb(a[20] ), .dout(n12571));
   jxor g12504(.dina(n12571), .dinb(n12567), .dout(n12572));
   jand g12505(.dina(n12487), .dinb(n12412), .dout(n12573));
   jand g12506(.dina(n12496), .dinb(n12488), .dout(n12574));
@@ -15571,7 +15551,7 @@ module gf_log2 (
   jor  g12569(.dina(n5422), .dinb(n3683), .dout(n12637));
   jand g12570(.dina(n12637), .dinb(n12636), .dout(n12638));
   jand g12571(.dina(n12638), .dinb(n12633), .dout(n12639));
-  jxor g12572(.dina(n12639), .dinb(\a[29] ), .dout(n12640));
+  jxor g12572(.dina(n12639), .dinb(a[29] ), .dout(n12640));
   jxor g12573(.dina(n12640), .dinb(n12632), .dout(n12641));
   jor  g12574(.dina(n6999), .dinb(n2303), .dout(n12642));
   jor  g12575(.dina(n6390), .dinb(n2306), .dout(n12643));
@@ -15591,7 +15571,7 @@ module gf_log2 (
   jor  g12589(.dina(n7680), .dinb(n1621), .dout(n12657));
   jand g12590(.dina(n12657), .dinb(n12656), .dout(n12658));
   jand g12591(.dina(n12658), .dinb(n12653), .dout(n12659));
-  jxor g12592(.dina(n12659), .dinb(\a[23] ), .dout(n12660));
+  jxor g12592(.dina(n12659), .dinb(a[23] ), .dout(n12660));
   jxor g12593(.dina(n12660), .dinb(n12652), .dout(n12661));
   jxor g12594(.dina(n12661), .dinb(n12572), .dout(n12662));
   jxor g12595(.dina(n12662), .dinb(n12563), .dout(n12663));
@@ -15813,7 +15793,7 @@ module gf_log2 (
   jor  g12811(.dina(n11987), .dinb(n4050), .dout(n12879));
   jxor g12812(.dina(n12879), .dinb(n11995), .dout(n12880));
   jand g12813(.dina(n12880), .dinb(n12878), .dout(n12881));
-  jand g12814(.dina(n11984), .dinb(\a[11] ), .dout(n12882));
+  jand g12814(.dina(n11984), .dinb(a[11] ), .dout(n12882));
   jxor g12815(.dina(n12882), .dinb(n11982), .dout(n12883));
   jnot g12816(.din(n12883), .dout(n12884));
   jand g12817(.dina(n8270), .dinb(n4691), .dout(n12885));
@@ -15833,7 +15813,7 @@ module gf_log2 (
   jnot g12831(.din(n12898), .dout(n12899));
   jand g12832(.dina(n7019), .dinb(n4689), .dout(n12900));
   jnot g12833(.din(n12900), .dout(n12901));
-  jand g12834(.dina(n12901), .dinb(\a[8] ), .dout(n12902));
+  jand g12834(.dina(n12901), .dinb(a[8] ), .dout(n12902));
   jand g12835(.dina(n12902), .dinb(n12899), .dout(n12903));
   jand g12836(.dina(n7693), .dinb(n4691), .dout(n12904));
   jand g12837(.dina(n7313), .dinb(n4696), .dout(n12905));
@@ -15983,7 +15963,7 @@ module gf_log2 (
   jor  g12981(.dina(n13048), .dinb(n13047), .dout(n13049));
   jor  g12982(.dina(n13049), .dinb(n13046), .dout(n13050));
   jor  g12983(.dina(n13050), .dinb(n13045), .dout(n13051));
-  jxor g12984(.dina(n13051), .dinb(\a[26] ), .dout(n13052));
+  jxor g12984(.dina(n13051), .dinb(a[26] ), .dout(n13052));
   jxor g12985(.dina(n13052), .dinb(n13044), .dout(n13053));
   jxor g12986(.dina(n13053), .dinb(n13030), .dout(n13054));
   jnot g12987(.din(n13054), .dout(n13055));
@@ -16059,7 +16039,7 @@ module gf_log2 (
   jand g13057(.dina(n13124), .dinb(n13123), .dout(n13125));
   jand g13058(.dina(n13125), .dinb(n13122), .dout(n13126));
   jand g13059(.dina(n13126), .dinb(n13121), .dout(n13127));
-  jxor g13060(.dina(n13127), .dinb(\a[23] ), .dout(n13128));
+  jxor g13060(.dina(n13127), .dinb(a[23] ), .dout(n13128));
   jxor g13061(.dina(n13128), .dinb(n13120), .dout(n13129));
   jor  g13062(.dina(n12640), .dinb(n12632), .dout(n13130));
   jand g13063(.dina(n12649), .dinb(n12641), .dout(n13131));
@@ -16286,7 +16266,7 @@ module gf_log2 (
   jor  g13284(.dina(n7680), .dinb(n1617), .dout(n13352));
   jand g13285(.dina(n13352), .dinb(n13351), .dout(n13353));
   jand g13286(.dina(n13353), .dinb(n13350), .dout(n13354));
-  jxor g13287(.dina(n13354), .dinb(\a[23] ), .dout(n13355));
+  jxor g13287(.dina(n13354), .dinb(a[23] ), .dout(n13355));
   jor  g13288(.dina(n13355), .dinb(n13349), .dout(n13356));
   jand g13289(.dina(n13356), .dinb(n13347), .dout(n13357));
   jnot g13290(.din(n13357), .dout(n13358));
@@ -16370,7 +16350,7 @@ module gf_log2 (
   jor  g13368(.dina(n6205), .dinb(n3683), .dout(n13436));
   jand g13369(.dina(n13436), .dinb(n13435), .dout(n13437));
   jand g13370(.dina(n13437), .dinb(n13432), .dout(n13438));
-  jxor g13371(.dina(n13438), .dinb(\a[29] ), .dout(n13439));
+  jxor g13371(.dina(n13438), .dinb(a[29] ), .dout(n13439));
   jxor g13372(.dina(n13439), .dinb(n13431), .dout(n13440));
   jor  g13373(.dina(n7682), .dinb(n2303), .dout(n13441));
   jor  g13374(.dina(n7301), .dinb(n2306), .dout(n13442));
@@ -16541,7 +16521,7 @@ module gf_log2 (
   jand g13539(.dina(n13606), .dinb(n13605), .dout(n13607));
   jand g13540(.dina(n13607), .dinb(n13604), .dout(n13608));
   jand g13541(.dina(n13608), .dinb(n13603), .dout(n13609));
-  jxor g13542(.dina(n13609), .dinb(\a[26] ), .dout(n13610));
+  jxor g13542(.dina(n13609), .dinb(a[26] ), .dout(n13610));
   jxor g13543(.dina(n13610), .dinb(n13602), .dout(n13611));
   jxor g13544(.dina(n13611), .dinb(n13598), .dout(n13612));
   jxor g13545(.dina(n13612), .dinb(n13499), .dout(n13613));
@@ -16600,7 +16580,7 @@ module gf_log2 (
   jor  g13598(.dina(n13665), .dinb(n13664), .dout(n13666));
   jor  g13599(.dina(n13666), .dinb(n13663), .dout(n13667));
   jor  g13600(.dina(n13667), .dinb(n13662), .dout(n13668));
-  jxor g13601(.dina(n13668), .dinb(\a[5] ), .dout(n13669));
+  jxor g13601(.dina(n13668), .dinb(a[5] ), .dout(n13669));
   jand g13602(.dina(n13669), .dinb(n13661), .dout(n13670));
   jnot g13603(.din(n12987), .dout(n13671));
   jxor g13604(.dina(n13671), .dinb(n12986), .dout(n13672));
@@ -16671,7 +16651,7 @@ module gf_log2 (
   jor  g13669(.dina(n13736), .dinb(n13735), .dout(n13737));
   jor  g13670(.dina(n13737), .dinb(n13734), .dout(n13738));
   jor  g13671(.dina(n13738), .dinb(n13733), .dout(n13739));
-  jxor g13672(.dina(n13739), .dinb(\a[5] ), .dout(n13740));
+  jxor g13672(.dina(n13739), .dinb(a[5] ), .dout(n13740));
   jand g13673(.dina(n13740), .dinb(n13732), .dout(n13741));
   jxor g13674(.dina(n12968), .dinb(n12966), .dout(n13742));
   jnot g13675(.din(n13742), .dout(n13743));
@@ -16725,7 +16705,7 @@ module gf_log2 (
   jor  g13723(.dina(n13790), .dinb(n13789), .dout(n13791));
   jor  g13724(.dina(n13791), .dinb(n13788), .dout(n13792));
   jor  g13725(.dina(n13792), .dinb(n13787), .dout(n13793));
-  jxor g13726(.dina(n13793), .dinb(\a[5] ), .dout(n13794));
+  jxor g13726(.dina(n13793), .dinb(a[5] ), .dout(n13794));
   jand g13727(.dina(n13794), .dinb(n13786), .dout(n13795));
   jnot g13728(.din(n13795), .dout(n13796));
   jxor g13729(.dina(n12946), .dinb(n12945), .dout(n13797));
@@ -16806,7 +16786,7 @@ module gf_log2 (
   jor  g13804(.dina(n12903), .dinb(n4713), .dout(n13872));
   jxor g13805(.dina(n13872), .dinb(n12911), .dout(n13873));
   jand g13806(.dina(n13873), .dinb(n13871), .dout(n13874));
-  jand g13807(.dina(n12900), .dinb(\a[8] ), .dout(n13875));
+  jand g13807(.dina(n12900), .dinb(a[8] ), .dout(n13875));
   jxor g13808(.dina(n13875), .dinb(n12898), .dout(n13876));
   jnot g13809(.din(n13876), .dout(n13877));
   jand g13810(.dina(n8270), .dinb(n5280), .dout(n13878));
@@ -16826,7 +16806,7 @@ module gf_log2 (
   jnot g13824(.din(n13891), .dout(n13892));
   jand g13825(.dina(n7019), .dinb(n5279), .dout(n13893));
   jnot g13826(.din(n13893), .dout(n13894));
-  jand g13827(.dina(n13894), .dinb(\a[5] ), .dout(n13895));
+  jand g13827(.dina(n13894), .dinb(a[5] ), .dout(n13895));
   jand g13828(.dina(n13895), .dinb(n13892), .dout(n13896));
   jand g13829(.dina(n7693), .dinb(n5280), .dout(n13897));
   jand g13830(.dina(n7313), .dinb(n5531), .dout(n13898));
@@ -17091,7 +17071,7 @@ module gf_log2 (
   jor  g14089(.dina(n14156), .dinb(n14155), .dout(n14157));
   jor  g14090(.dina(n14157), .dinb(n14154), .dout(n14158));
   jor  g14091(.dina(n14158), .dinb(n14153), .dout(n14159));
-  jxor g14092(.dina(n14159), .dinb(\a[11] ), .dout(n14160));
+  jxor g14092(.dina(n14159), .dinb(a[11] ), .dout(n14160));
   jxor g14093(.dina(n14160), .dinb(n14152), .dout(n14161));
   jxor g14094(.dina(n14161), .dinb(n14013), .dout(n14162));
   jand g14095(.dina(n13639), .dinb(n4691), .dout(n14163));
@@ -17177,7 +17157,7 @@ module gf_log2 (
   jor  g14175(.dina(n7999), .dinb(n2306), .dout(n14243));
   jand g14176(.dina(n14243), .dinb(n14242), .dout(n14244));
   jand g14177(.dina(n14244), .dinb(n14241), .dout(n14245));
-  jxor g14178(.dina(n14245), .dinb(\a[26] ), .dout(n14246));
+  jxor g14178(.dina(n14245), .dinb(a[26] ), .dout(n14246));
   jxor g14179(.dina(n14246), .dinb(n14240), .dout(n14247));
   jxor g14180(.dina(n14247), .dinb(n14184), .dout(n14248));
   jxor g14181(.dina(n14248), .dinb(n14179), .dout(n14249));
@@ -17277,7 +17257,7 @@ module gf_log2 (
   jor  g14275(.dina(n7999), .dinb(n1805), .dout(n14343));
   jor  g14276(.dina(n8295), .dinb(n2303), .dout(n14344));
   jand g14277(.dina(n14344), .dinb(n14343), .dout(n14345));
-  jxor g14278(.dina(n14345), .dinb(\a[26] ), .dout(n14346));
+  jxor g14278(.dina(n14345), .dinb(a[26] ), .dout(n14346));
   jor  g14279(.dina(n7682), .dinb(n4343), .dout(n14347));
   jor  g14280(.dina(n7301), .dinb(n4346), .dout(n14348));
   jor  g14281(.dina(n7680), .dinb(n4348), .dout(n14349));
@@ -17285,7 +17265,7 @@ module gf_log2 (
   jor  g14283(.dina(n6489), .dinb(n3683), .dout(n14351));
   jand g14284(.dina(n14351), .dinb(n14350), .dout(n14352));
   jand g14285(.dina(n14352), .dinb(n14347), .dout(n14353));
-  jxor g14286(.dina(n14353), .dinb(\a[29] ), .dout(n14354));
+  jxor g14286(.dina(n14353), .dinb(a[29] ), .dout(n14354));
   jxor g14287(.dina(n14354), .dinb(n14346), .dout(n14355));
   jxor g14288(.dina(n14355), .dinb(n14342), .dout(n14356));
   jand g14289(.dina(n14356), .dinb(n14267), .dout(n14357));
@@ -17456,7 +17436,7 @@ module gf_log2 (
   jor  g14454(.dina(n7999), .dinb(n4346), .dout(n14522));
   jand g14455(.dina(n14522), .dinb(n14521), .dout(n14523));
   jand g14456(.dina(n14523), .dinb(n14520), .dout(n14524));
-  jxor g14457(.dina(n14524), .dinb(\a[29] ), .dout(n14525));
+  jxor g14457(.dina(n14524), .dinb(a[29] ), .dout(n14525));
   jxor g14458(.dina(n14525), .dinb(n14519), .dout(n14526));
   jxor g14459(.dina(n14526), .dinb(n14462), .dout(n14527));
   jnot g14460(.din(n14527), .dout(n14528));
@@ -17548,7 +17528,7 @@ module gf_log2 (
   jor  g14546(.dina(n14613), .dinb(n14612), .dout(n14614));
   jor  g14547(.dina(n14614), .dinb(n14611), .dout(n14615));
   jor  g14548(.dina(n14615), .dinb(n14610), .dout(n14616));
-  jxor g14549(.dina(n14616), .dinb(\a[2] ), .dout(n14617));
+  jxor g14549(.dina(n14616), .dinb(a[2] ), .dout(n14617));
   jand g14550(.dina(n14617), .dinb(n14609), .dout(n14618));
   jnot g14551(.din(n14618), .dout(n14619));
   jor  g14552(.dina(n14617), .dinb(n14609), .dout(n14620));
@@ -17561,7 +17541,7 @@ module gf_log2 (
   jor  g14559(.dina(n14626), .dinb(n14625), .dout(n14627));
   jor  g14560(.dina(n14627), .dinb(n14624), .dout(n14628));
   jor  g14561(.dina(n14628), .dinb(n14623), .dout(n14629));
-  jxor g14562(.dina(n14629), .dinb(\a[2] ), .dout(n14630));
+  jxor g14562(.dina(n14629), .dinb(a[2] ), .dout(n14630));
   jand g14563(.dina(n14630), .dinb(n14622), .dout(n14631));
   jnot g14564(.din(n14631), .dout(n14632));
   jor  g14565(.dina(n14630), .dinb(n14622), .dout(n14633));
@@ -17644,7 +17624,7 @@ module gf_log2 (
   jor  g14642(.dina(n14709), .dinb(n14708), .dout(n14710));
   jor  g14643(.dina(n14710), .dinb(n14707), .dout(n14711));
   jor  g14644(.dina(n14711), .dinb(n14706), .dout(n14712));
-  jxor g14645(.dina(n14712), .dinb(\a[2] ), .dout(n14713));
+  jxor g14645(.dina(n14712), .dinb(a[2] ), .dout(n14713));
   jand g14646(.dina(n14713), .dinb(n14705), .dout(n14714));
   jnot g14647(.din(n14714), .dout(n14715));
   jor  g14648(.dina(n14713), .dinb(n14705), .dout(n14716));
@@ -17657,7 +17637,7 @@ module gf_log2 (
   jor  g14655(.dina(n14722), .dinb(n14721), .dout(n14723));
   jor  g14656(.dina(n14723), .dinb(n14720), .dout(n14724));
   jor  g14657(.dina(n14724), .dinb(n14719), .dout(n14725));
-  jxor g14658(.dina(n14725), .dinb(\a[2] ), .dout(n14726));
+  jxor g14658(.dina(n14725), .dinb(a[2] ), .dout(n14726));
   jand g14659(.dina(n14726), .dinb(n14718), .dout(n14727));
   jnot g14660(.din(n14727), .dout(n14728));
   jor  g14661(.dina(n14726), .dinb(n14718), .dout(n14729));
@@ -17684,7 +17664,7 @@ module gf_log2 (
   jor  g14682(.dina(n14749), .dinb(n14748), .dout(n14750));
   jor  g14683(.dina(n14750), .dinb(n14747), .dout(n14751));
   jor  g14684(.dina(n14751), .dinb(n14746), .dout(n14752));
-  jxor g14685(.dina(n14752), .dinb(\a[2] ), .dout(n14753));
+  jxor g14685(.dina(n14752), .dinb(a[2] ), .dout(n14753));
   jand g14686(.dina(n14753), .dinb(n14745), .dout(n14754));
   jxor g14687(.dina(n13947), .dinb(n13945), .dout(n14755));
   jand g14688(.dina(n10862), .dinb(n6495), .dout(n14756));
@@ -17780,7 +17760,7 @@ module gf_log2 (
   jor  g14778(.dina(n14845), .dinb(n14844), .dout(n14846));
   jor  g14779(.dina(n14846), .dinb(n14843), .dout(n14847));
   jor  g14780(.dina(n14847), .dinb(n14842), .dout(n14848));
-  jxor g14781(.dina(n14848), .dinb(\a[2] ), .dout(n14849));
+  jxor g14781(.dina(n14848), .dinb(a[2] ), .dout(n14849));
   jand g14782(.dina(n14849), .dinb(n14841), .dout(n14850));
   jxor g14783(.dina(n13917), .dinb(n13909), .dout(n14851));
   jnot g14784(.din(n14851), .dout(n14852));
@@ -17805,7 +17785,7 @@ module gf_log2 (
   jor  g14803(.dina(n14870), .dinb(n14869), .dout(n14871));
   jor  g14804(.dina(n14871), .dinb(n14868), .dout(n14872));
   jor  g14805(.dina(n14872), .dinb(n14867), .dout(n14873));
-  jxor g14806(.dina(n14873), .dinb(\a[2] ), .dout(n14874));
+  jxor g14806(.dina(n14873), .dinb(a[2] ), .dout(n14874));
   jand g14807(.dina(n14874), .dinb(n14866), .dout(n14875));
   jand g14808(.dina(n7692), .dinb(n6503), .dout(n14876));
   jnot g14809(.din(n14876), .dout(n14877));
@@ -17815,7 +17795,7 @@ module gf_log2 (
   jand g14813(.dina(n8025), .dinb(n14880), .dout(n14881));
   jand g14814(.dina(n14881), .dinb(n14879), .dout(n14882));
   jor  g14815(.dina(n14882), .dinb(n6861), .dout(n14883));
-  jand g14816(.dina(n7021), .dinb(\a[2] ), .dout(n14884));
+  jand g14816(.dina(n7021), .dinb(a[2] ), .dout(n14884));
   jand g14817(.dina(n7313), .dinb(n6856), .dout(n14885));
   jnot g14818(.din(n14885), .dout(n14886));
   jand g14819(.dina(n14886), .dinb(n14884), .dout(n14887));
@@ -17843,7 +17823,7 @@ module gf_log2 (
   jnot g14841(.din(n14910), .dout(n14911));
   jand g14842(.dina(n14911), .dinb(n14901), .dout(n14912));
   jor  g14843(.dina(n14911), .dinb(n14901), .dout(n14913));
-  jand g14844(.dina(n13893), .dinb(\a[5] ), .dout(n14914));
+  jand g14844(.dina(n13893), .dinb(a[5] ), .dout(n14914));
   jxor g14845(.dina(n14914), .dinb(n13891), .dout(n14915));
   jand g14846(.dina(n14915), .dinb(n14913), .dout(n14916));
   jor  g14847(.dina(n14916), .dinb(n14912), .dout(n14917));
@@ -17889,7 +17869,7 @@ module gf_log2 (
   jand g14887(.dina(n14956), .dinb(n14954), .dout(n14957));
   jand g14888(.dina(n14957), .dinb(n14952), .dout(n14958));
   jand g14889(.dina(n14958), .dinb(n14950), .dout(n14959));
-  jxor g14890(.dina(n14959), .dinb(\a[2] ), .dout(n14960));
+  jxor g14890(.dina(n14959), .dinb(a[2] ), .dout(n14960));
   jand g14891(.dina(n14960), .dinb(n14948), .dout(n14961));
   jor  g14892(.dina(n14961), .dinb(n14946), .dout(n14962));
   jor  g14893(.dina(n14962), .dinb(n14730), .dout(n14963));
@@ -17924,7 +17904,7 @@ module gf_log2 (
   jand g14922(.dina(n14991), .dinb(n14989), .dout(n14992));
   jand g14923(.dina(n14992), .dinb(n14987), .dout(n14993));
   jand g14924(.dina(n14993), .dinb(n14986), .dout(n14994));
-  jxor g14925(.dina(n14994), .dinb(\a[2] ), .dout(n14995));
+  jxor g14925(.dina(n14994), .dinb(a[2] ), .dout(n14995));
   jand g14926(.dina(n14995), .dinb(n14984), .dout(n14996));
   jor  g14927(.dina(n14996), .dinb(n14983), .dout(n14997));
   jxor g14928(.dina(n13995), .dinb(n13994), .dout(n14998));
@@ -18267,7 +18247,7 @@ module gf_log2 (
   jnot g15265(.din(n15334), .dout(n15335));
   jand g15266(.dina(n15020), .dinb(n67), .dout(n15336));
   jnot g15267(.din(n15336), .dout(n15337));
-  jand g15268(.dina(n15337), .dinb(\a[26] ), .dout(n15338));
+  jand g15268(.dina(n15337), .dinb(a[26] ), .dout(n15338));
   jand g15269(.dina(n15338), .dinb(n15335), .dout(n15339));
   jand g15270(.dina(n15327), .dinb(n15022), .dout(n15340));
   jor  g15271(.dina(n15325), .dinb(n15237), .dout(n15341));
@@ -18398,7 +18378,7 @@ module gf_log2 (
   jor  g15396(.dina(n15465), .dinb(n15464), .dout(n15466));
   jor  g15397(.dina(n15466), .dinb(n15463), .dout(n15467));
   jor  g15398(.dina(n15467), .dinb(n15462), .dout(n15468));
-  jxor g15399(.dina(n15468), .dinb(\a[17] ), .dout(n15469));
+  jxor g15399(.dina(n15468), .dinb(a[17] ), .dout(n15469));
   jxor g15400(.dina(n15469), .dinb(n15461), .dout(n15470));
   jxor g15401(.dina(n15470), .dinb(n15368), .dout(n15471));
   jand g15402(.dina(n12696), .dinb(n3423), .dout(n15472));
@@ -18712,7 +18692,7 @@ module gf_log2 (
   jor  g15710(.dina(n15781), .dinb(n15780), .dout(n15782));
   jor  g15711(.dina(n15782), .dinb(n15779), .dout(n15783));
   jor  g15712(.dina(n15783), .dinb(n15778), .dout(n15784));
-  jxor g15713(.dina(n15784), .dinb(\a[5] ), .dout(n15785));
+  jxor g15713(.dina(n15784), .dinb(a[5] ), .dout(n15785));
   jxor g15714(.dina(n15785), .dinb(n15777), .dout(n15786));
   jxor g15715(.dina(n15786), .dinb(n15599), .dout(n15787));
   jand g15716(.dina(n15567), .dinb(n15315), .dout(n15788));
@@ -18892,7 +18872,7 @@ module gf_log2 (
   jor  g15890(.dina(n15963), .dinb(n15962), .dout(n15964));
   jor  g15891(.dina(n15964), .dinb(n15961), .dout(n15965));
   jor  g15892(.dina(n15965), .dinb(n15960), .dout(n15966));
-  jxor g15893(.dina(n15966), .dinb(\a[29] ), .dout(n15967));
+  jxor g15893(.dina(n15966), .dinb(a[29] ), .dout(n15967));
   jxor g15894(.dina(n15967), .dinb(n15959), .dout(n15968));
   jxor g15895(.dina(n15968), .dinb(n15903), .dout(n15969));
   jnot g15896(.din(n15969), .dout(n15970));
@@ -18977,7 +18957,7 @@ module gf_log2 (
   jor  g15975(.dina(n16048), .dinb(n16047), .dout(n16049));
   jor  g15976(.dina(n16049), .dinb(n16046), .dout(n16050));
   jor  g15977(.dina(n16050), .dinb(n16045), .dout(n16051));
-  jxor g15978(.dina(n16051), .dinb(\a[5] ), .dout(n16052));
+  jxor g15978(.dina(n16051), .dinb(a[5] ), .dout(n16052));
   jxor g15979(.dina(n16052), .dinb(n16044), .dout(n16053));
   jxor g15980(.dina(n16053), .dinb(n15867), .dout(n16054));
   jand g15981(.dina(n15829), .dinb(n15567), .dout(n16055));
@@ -19196,7 +19176,7 @@ module gf_log2 (
   jor  g16194(.dina(n16271), .dinb(n16270), .dout(n16272));
   jor  g16195(.dina(n16272), .dinb(n16269), .dout(n16273));
   jor  g16196(.dina(n16273), .dinb(n16268), .dout(n16274));
-  jxor g16197(.dina(n16274), .dinb(\a[17] ), .dout(n16275));
+  jxor g16197(.dina(n16274), .dinb(a[17] ), .dout(n16275));
   jxor g16198(.dina(n16275), .dinb(n16267), .dout(n16276));
   jxor g16199(.dina(n16276), .dinb(n16140), .dout(n16277));
   jand g16200(.dina(n13250), .dinb(n3423), .dout(n16278));
@@ -19393,7 +19373,7 @@ module gf_log2 (
   jor  g16391(.dina(n16472), .dinb(n16471), .dout(n16473));
   jor  g16392(.dina(n16473), .dinb(n16470), .dout(n16474));
   jor  g16393(.dina(n16474), .dinb(n16469), .dout(n16475));
-  jxor g16394(.dina(n16475), .dinb(\a[23] ), .dout(n16476));
+  jxor g16394(.dina(n16475), .dinb(a[23] ), .dout(n16476));
   jxor g16395(.dina(n16476), .dinb(n16468), .dout(n16477));
   jxor g16396(.dina(n16477), .dinb(n16408), .dout(n16478));
   jnot g16397(.din(n16478), .dout(n16479));
@@ -19530,7 +19510,7 @@ module gf_log2 (
   jor  g16528(.dina(n15339), .dinb(n77), .dout(n16626));
   jxor g16529(.dina(n16626), .dinb(n15588), .dout(n16627));
   jand g16530(.dina(n16627), .dinb(n16625), .dout(n16628));
-  jand g16531(.dina(n15336), .dinb(\a[26] ), .dout(n16629));
+  jand g16531(.dina(n15336), .dinb(a[26] ), .dout(n16629));
   jxor g16532(.dina(n16629), .dinb(n15334), .dout(n16630));
   jnot g16533(.din(n16630), .dout(n16631));
   jxor g16534(.dina(n16366), .dinb(n16365), .dout(n16632));
@@ -19551,7 +19531,7 @@ module gf_log2 (
   jnot g16549(.din(n16646), .dout(n16647));
   jand g16550(.dina(n15020), .dinb(n804), .dout(n16648));
   jnot g16551(.din(n16648), .dout(n16649));
-  jand g16552(.dina(n16649), .dinb(\a[23] ), .dout(n16650));
+  jand g16552(.dina(n16649), .dinb(a[23] ), .dout(n16650));
   jand g16553(.dina(n16650), .dinb(n16647), .dout(n16651));
   jand g16554(.dina(n15580), .dinb(n806), .dout(n16652));
   jand g16555(.dina(n15327), .dinb(n1612), .dout(n16653));
@@ -20146,7 +20126,7 @@ module gf_log2 (
   jor  g17144(.dina(n17242), .dinb(n17241), .dout(n17243));
   jor  g17145(.dina(n17243), .dinb(n17240), .dout(n17244));
   jor  g17146(.dina(n17244), .dinb(n17239), .dout(n17245));
-  jxor g17147(.dina(n17245), .dinb(\a[17] ), .dout(n17246));
+  jxor g17147(.dina(n17245), .dinb(a[17] ), .dout(n17246));
   jxor g17148(.dina(n17246), .dinb(n17238), .dout(n17247));
   jxor g17149(.dina(n17247), .dinb(n17137), .dout(n17248));
   jand g17150(.dina(n14251), .dinb(n3423), .dout(n17249));
@@ -20205,7 +20185,7 @@ module gf_log2 (
   jand g17203(.dina(n17303), .dinb(n6501), .dout(n17304));
   jor  g17204(.dina(n17304), .dinb(n17301), .dout(n17305));
   jand g17205(.dina(n17305), .dinb(n17297), .dout(n17306));
-  jxor g17206(.dina(n17306), .dinb(\a[2] ), .dout(n17307));
+  jxor g17206(.dina(n17306), .dinb(a[2] ), .dout(n17307));
   jxor g17207(.dina(n17307), .dinb(n17287), .dout(n17308));
   jxor g17208(.dina(n17308), .dinb(n17122), .dout(n17309));
   jxor g17209(.dina(n17120), .dinb(n17119), .dout(n17310));
@@ -20318,7 +20298,7 @@ module gf_log2 (
   jand g17316(.dina(n17416), .dinb(n17408), .dout(n17417));
   jand g17317(.dina(n17417), .dinb(n16798), .dout(n17418));
   jor  g17318(.dina(n16924), .dinb(n6219), .dout(n17419));
-  jor  g17319(.dina(n6499), .dinb(\a[2] ), .dout(n17420));
+  jor  g17319(.dina(n6499), .dinb(a[2] ), .dout(n17420));
   jor  g17320(.dina(n17420), .dinb(n17301), .dout(n17421));
   jand g17321(.dina(n17421), .dinb(n17419), .dout(n17422));
   jxor g17322(.dina(n17422), .dinb(n17418), .dout(n17423));
@@ -20333,7 +20313,7 @@ module gf_log2 (
   jor  g17331(.dina(n14771), .dinb(n3683), .dout(n17432));
   jand g17332(.dina(n17432), .dinb(n17431), .dout(n17433));
   jand g17333(.dina(n17433), .dinb(n17427), .dout(n17434));
-  jxor g17334(.dina(n17434), .dinb(\a[29] ), .dout(n17435));
+  jxor g17334(.dina(n17434), .dinb(a[29] ), .dout(n17435));
   jnot g17335(.din(n17435), .dout(n17436));
   jxor g17336(.dina(n17436), .dinb(n17425), .dout(n17437));
   jxor g17337(.dina(n17437), .dinb(n17378), .dout(n17438));
@@ -20376,7 +20356,7 @@ module gf_log2 (
   jand g17374(.dina(n17474), .dinb(n17472), .dout(n17475));
   jand g17375(.dina(n17475), .dinb(n17471), .dout(n17476));
   jand g17376(.dina(n17476), .dinb(n17470), .dout(n17477));
-  jxor g17377(.dina(n17477), .dinb(\a[17] ), .dout(n17478));
+  jxor g17377(.dina(n17477), .dinb(a[17] ), .dout(n17478));
   jxor g17378(.dina(n17478), .dinb(n17468), .dout(n17479));
   jxor g17379(.dina(n17479), .dinb(n17362), .dout(n17480));
   jor  g17380(.dina(n14580), .dinb(n3424), .dout(n17481));
@@ -20386,7 +20366,7 @@ module gf_log2 (
   jand g17384(.dina(n17484), .dinb(n17483), .dout(n17485));
   jand g17385(.dina(n17485), .dinb(n17482), .dout(n17486));
   jand g17386(.dina(n17486), .dinb(n17481), .dout(n17487));
-  jxor g17387(.dina(n17487), .dinb(\a[14] ), .dout(n17488));
+  jxor g17387(.dina(n17487), .dinb(a[14] ), .dout(n17488));
   jxor g17388(.dina(n17488), .dinb(n17480), .dout(n17489));
   jxor g17389(.dina(n17489), .dinb(n17357), .dout(n17490));
   jnot g17390(.din(n15317), .dout(n17491));
@@ -20399,7 +20379,7 @@ module gf_log2 (
   jor  g17397(.dina(n14565), .dinb(n3871), .dout(n17498));
   jand g17398(.dina(n17498), .dinb(n17497), .dout(n17499));
   jand g17399(.dina(n17499), .dinb(n17492), .dout(n17500));
-  jxor g17400(.dina(n17500), .dinb(\a[11] ), .dout(n17501));
+  jxor g17400(.dina(n17500), .dinb(a[11] ), .dout(n17501));
   jxor g17401(.dina(n17501), .dinb(n17490), .dout(n17502));
   jxor g17402(.dina(n17502), .dinb(n17353), .dout(n17503));
   jnot g17403(.din(n16084), .dout(n17504));
@@ -20413,7 +20393,7 @@ module gf_log2 (
   jor  g17411(.dina(n17511), .dinb(n4702), .dout(n17512));
   jand g17412(.dina(n17512), .dinb(n17510), .dout(n17513));
   jand g17413(.dina(n17513), .dinb(n17505), .dout(n17514));
-  jxor g17414(.dina(n17514), .dinb(\a[8] ), .dout(n17515));
+  jxor g17414(.dina(n17514), .dinb(a[8] ), .dout(n17515));
   jxor g17415(.dina(n17515), .dinb(n17503), .dout(n17516));
   jxor g17416(.dina(n17516), .dinb(n17349), .dout(n17517));
   jnot g17417(.din(n16930), .dout(n17518));
@@ -20425,7 +20405,7 @@ module gf_log2 (
   jor  g17423(.dina(n17523), .dinb(n5537), .dout(n17524));
   jand g17424(.dina(n17524), .dinb(n17522), .dout(n17525));
   jand g17425(.dina(n17525), .dinb(n17519), .dout(n17526));
-  jxor g17426(.dina(n17526), .dinb(\a[5] ), .dout(n17527));
+  jxor g17426(.dina(n17526), .dinb(a[5] ), .dout(n17527));
   jxor g17427(.dina(n17527), .dinb(n17517), .dout(n17528));
   jxor g17428(.dina(n17528), .dinb(n17345), .dout(n17529));
   jnot g17429(.din(n17122), .dout(n17530));
@@ -20503,7 +20483,7 @@ module gf_log2 (
   jor  g17501(.dina(n16651), .dinb(n65), .dout(n17602));
   jxor g17502(.dina(n17602), .dinb(n16659), .dout(n17603));
   jand g17503(.dina(n17603), .dinb(n17601), .dout(n17604));
-  jand g17504(.dina(n16648), .dinb(\a[23] ), .dout(n17605));
+  jand g17504(.dina(n16648), .dinb(a[23] ), .dout(n17605));
   jxor g17505(.dina(n17605), .dinb(n16646), .dout(n17606));
   jnot g17506(.din(n17606), .dout(n17607));
   jand g17507(.dina(n16632), .dinb(n1819), .dout(n17608));
@@ -20523,7 +20503,7 @@ module gf_log2 (
   jnot g17521(.din(n17621), .dout(n17622));
   jand g17522(.dina(n15020), .dinb(n1817), .dout(n17623));
   jnot g17523(.din(n17623), .dout(n17624));
-  jand g17524(.dina(n17624), .dinb(\a[20] ), .dout(n17625));
+  jand g17524(.dina(n17624), .dinb(a[20] ), .dout(n17625));
   jand g17525(.dina(n17625), .dinb(n17622), .dout(n17626));
   jand g17526(.dina(n15580), .dinb(n1819), .dout(n17627));
   jand g17527(.dina(n15327), .dinb(n2180), .dout(n17628));
@@ -20610,7 +20590,7 @@ module gf_log2 (
   jor  g17608(.dina(n17708), .dinb(n17703), .dout(n17709));
   jor  g17609(.dina(n15021), .dinb(n93), .dout(n17710));
   jor  g17610(.dina(n17710), .dinb(n16698), .dout(n17711));
-  jand g17611(.dina(n17711), .dinb(\a[29] ), .dout(n17712));
+  jand g17611(.dina(n17711), .dinb(a[29] ), .dout(n17712));
   jxor g17612(.dina(n17712), .dinb(n17709), .dout(n17713));
   jxor g17613(.dina(n17713), .dinb(n17702), .dout(n17714));
   jxor g17614(.dina(n17714), .dinb(n17693), .dout(n17715));
@@ -20676,7 +20656,7 @@ module gf_log2 (
   jor  g17674(.dina(n17774), .dinb(n17771), .dout(n17775));
   jor  g17675(.dina(n17775), .dinb(n17770), .dout(n17776));
   jnot g17676(.din(n17418), .dout(n17777));
-  jand g17677(.dina(n17301), .dinb(\a[2] ), .dout(n17778));
+  jand g17677(.dina(n17301), .dinb(a[2] ), .dout(n17778));
   jnot g17678(.din(n17420), .dout(n17779));
   jand g17679(.dina(n17779), .dinb(n16924), .dout(n17780));
   jor  g17680(.dina(n17780), .dinb(n17778), .dout(n17781));
@@ -20752,7 +20732,7 @@ module gf_log2 (
   jand g17750(.dina(n17850), .dinb(n17848), .dout(n17851));
   jand g17751(.dina(n17851), .dinb(n17847), .dout(n17852));
   jand g17752(.dina(n17852), .dinb(n17845), .dout(n17853));
-  jxor g17753(.dina(n17853), .dinb(\a[26] ), .dout(n17854));
+  jxor g17753(.dina(n17853), .dinb(a[26] ), .dout(n17854));
   jxor g17754(.dina(n17854), .dinb(n17843), .dout(n17855));
   jxor g17755(.dina(n17855), .dinb(n17766), .dout(n17856));
   jnot g17756(.din(n12696), .dout(n17857));
@@ -20766,7 +20746,7 @@ module gf_log2 (
   jand g17764(.dina(n17864), .dinb(n17862), .dout(n17865));
   jand g17765(.dina(n17865), .dinb(n17860), .dout(n17866));
   jand g17766(.dina(n17866), .dinb(n17858), .dout(n17867));
-  jxor g17767(.dina(n17867), .dinb(\a[23] ), .dout(n17868));
+  jxor g17767(.dina(n17867), .dinb(a[23] ), .dout(n17868));
   jxor g17768(.dina(n17868), .dinb(n17856), .dout(n17869));
   jxor g17769(.dina(n17869), .dinb(n17762), .dout(n17870));
   jnot g17770(.din(n13250), .dout(n17871));
@@ -20779,7 +20759,7 @@ module gf_log2 (
   jand g17777(.dina(n17877), .dinb(n17875), .dout(n17878));
   jand g17778(.dina(n17878), .dinb(n17873), .dout(n17879));
   jand g17779(.dina(n17879), .dinb(n17872), .dout(n17880));
-  jxor g17780(.dina(n17880), .dinb(\a[20] ), .dout(n17881));
+  jxor g17780(.dina(n17880), .dinb(a[20] ), .dout(n17881));
   jxor g17781(.dina(n17881), .dinb(n17870), .dout(n17882));
   jxor g17782(.dina(n17882), .dinb(n17758), .dout(n17883));
   jor  g17783(.dina(n14985), .dinb(n2744), .dout(n17884));
@@ -20789,7 +20769,7 @@ module gf_log2 (
   jand g17787(.dina(n17887), .dinb(n17886), .dout(n17888));
   jand g17788(.dina(n17888), .dinb(n17885), .dout(n17889));
   jand g17789(.dina(n17889), .dinb(n17884), .dout(n17890));
-  jxor g17790(.dina(n17890), .dinb(\a[17] ), .dout(n17891));
+  jxor g17790(.dina(n17890), .dinb(a[17] ), .dout(n17891));
   jxor g17791(.dina(n17891), .dinb(n17883), .dout(n17892));
   jxor g17792(.dina(n17892), .dinb(n17754), .dout(n17893));
   jor  g17793(.dina(n14563), .dinb(n3424), .dout(n17894));
@@ -20799,7 +20779,7 @@ module gf_log2 (
   jand g17797(.dina(n17897), .dinb(n17896), .dout(n17898));
   jand g17798(.dina(n17898), .dinb(n17895), .dout(n17899));
   jand g17799(.dina(n17899), .dinb(n17894), .dout(n17900));
-  jxor g17800(.dina(n17900), .dinb(\a[14] ), .dout(n17901));
+  jxor g17800(.dina(n17900), .dinb(a[14] ), .dout(n17901));
   jxor g17801(.dina(n17901), .dinb(n17893), .dout(n17902));
   jxor g17802(.dina(n17902), .dinb(n17750), .dout(n17903));
   jnot g17803(.din(n15569), .dout(n17904));
@@ -20810,7 +20790,7 @@ module gf_log2 (
   jand g17808(.dina(n17908), .dinb(n17907), .dout(n17909));
   jand g17809(.dina(n17909), .dinb(n17906), .dout(n17910));
   jand g17810(.dina(n17910), .dinb(n17905), .dout(n17911));
-  jxor g17811(.dina(n17911), .dinb(\a[11] ), .dout(n17912));
+  jxor g17811(.dina(n17911), .dinb(a[11] ), .dout(n17912));
   jxor g17812(.dina(n17912), .dinb(n17903), .dout(n17913));
   jxor g17813(.dina(n17913), .dinb(n17745), .dout(n17914));
   jnot g17814(.din(n16345), .dout(n17915));
@@ -20821,7 +20801,7 @@ module gf_log2 (
   jor  g17819(.dina(n17506), .dinb(n4702), .dout(n17920));
   jand g17820(.dina(n17920), .dinb(n17919), .dout(n17921));
   jand g17821(.dina(n17921), .dinb(n17916), .dout(n17922));
-  jxor g17822(.dina(n17922), .dinb(\a[8] ), .dout(n17923));
+  jxor g17822(.dina(n17922), .dinb(a[8] ), .dout(n17923));
   jxor g17823(.dina(n17923), .dinb(n17914), .dout(n17924));
   jxor g17824(.dina(n17924), .dinb(n17740), .dout(n17925));
   jnot g17825(.din(n17312), .dout(n17926));
@@ -20832,7 +20812,7 @@ module gf_log2 (
   jand g17830(.dina(n17930), .dinb(n17929), .dout(n17931));
   jand g17831(.dina(n17931), .dinb(n17928), .dout(n17932));
   jand g17832(.dina(n17932), .dinb(n17927), .dout(n17933));
-  jxor g17833(.dina(n17933), .dinb(\a[5] ), .dout(n17934));
+  jxor g17833(.dina(n17933), .dinb(a[5] ), .dout(n17934));
   jxor g17834(.dina(n17934), .dinb(n17925), .dout(n17935));
   jxor g17835(.dina(n17935), .dinb(n17735), .dout(n17936));
   jxor g17836(.dina(n17516), .dinb(n17731), .dout(n17937));
@@ -20972,7 +20952,7 @@ module gf_log2 (
   jand g17970(.dina(n18076), .dinb(n18075), .dout(n18077));
   jand g17971(.dina(n18077), .dinb(n18074), .dout(n18078));
   jand g17972(.dina(n18078), .dinb(n18073), .dout(n18079));
-  jxor g17973(.dina(n18079), .dinb(\a[17] ), .dout(n18080));
+  jxor g17973(.dina(n18079), .dinb(a[17] ), .dout(n18080));
   jxor g17974(.dina(n18080), .dinb(n18072), .dout(n18081));
   jxor g17975(.dina(n18081), .dinb(n17987), .dout(n18082));
   jnot g17976(.din(n14551), .dout(n18083));
@@ -20983,7 +20963,7 @@ module gf_log2 (
   jor  g17981(.dina(n14567), .dinb(n3211), .dout(n18088));
   jand g17982(.dina(n18088), .dinb(n18087), .dout(n18089));
   jand g17983(.dina(n18089), .dinb(n18084), .dout(n18090));
-  jxor g17984(.dina(n18090), .dinb(\a[14] ), .dout(n18091));
+  jxor g17984(.dina(n18090), .dinb(a[14] ), .dout(n18091));
   jxor g17985(.dina(n18091), .dinb(n18082), .dout(n18092));
   jxor g17986(.dina(n18092), .dinb(n17983), .dout(n18093));
   jnot g17987(.din(n15831), .dout(n18094));
@@ -20994,7 +20974,7 @@ module gf_log2 (
   jor  g17992(.dina(n17495), .dinb(n3871), .dout(n18099));
   jand g17993(.dina(n18099), .dinb(n18098), .dout(n18100));
   jand g17994(.dina(n18100), .dinb(n18095), .dout(n18101));
-  jxor g17995(.dina(n18101), .dinb(\a[11] ), .dout(n18102));
+  jxor g17995(.dina(n18101), .dinb(a[11] ), .dout(n18102));
   jxor g17996(.dina(n18102), .dinb(n18093), .dout(n18103));
   jxor g17997(.dina(n18103), .dinb(n17978), .dout(n18104));
   jnot g17998(.din(n16594), .dout(n18105));
@@ -21005,7 +20985,7 @@ module gf_log2 (
   jor  g18003(.dina(n17508), .dinb(n4702), .dout(n18110));
   jand g18004(.dina(n18110), .dinb(n18109), .dout(n18111));
   jand g18005(.dina(n18111), .dinb(n18106), .dout(n18112));
-  jxor g18006(.dina(n18112), .dinb(\a[8] ), .dout(n18113));
+  jxor g18006(.dina(n18112), .dinb(a[8] ), .dout(n18113));
   jxor g18007(.dina(n18113), .dinb(n18104), .dout(n18114));
   jxor g18008(.dina(n18114), .dinb(n17973), .dout(n18115));
   jnot g18009(.din(n18115), .dout(n18116));
@@ -21165,7 +21145,7 @@ module gf_log2 (
   jor  g18163(.dina(n17511), .dinb(n3871), .dout(n18270));
   jand g18164(.dina(n18270), .dinb(n18269), .dout(n18271));
   jand g18165(.dina(n18271), .dinb(n18266), .dout(n18272));
-  jxor g18166(.dina(n18272), .dinb(\a[11] ), .dout(n18273));
+  jxor g18166(.dina(n18272), .dinb(a[11] ), .dout(n18273));
   jxor g18167(.dina(n18273), .dinb(n18265), .dout(n18274));
   jxor g18168(.dina(n18274), .dinb(n18134), .dout(n18275));
   jnot g18169(.din(n17978), .dout(n18276));
@@ -21180,7 +21160,7 @@ module gf_log2 (
   jor  g18178(.dina(n17523), .dinb(n4702), .dout(n18285));
   jand g18179(.dina(n18285), .dinb(n18284), .dout(n18286));
   jand g18180(.dina(n18286), .dinb(n18281), .dout(n18287));
-  jxor g18181(.dina(n18287), .dinb(\a[8] ), .dout(n18288));
+  jxor g18181(.dina(n18287), .dinb(a[8] ), .dout(n18288));
   jxor g18182(.dina(n18288), .dinb(n18280), .dout(n18289));
   jxor g18183(.dina(n18289), .dinb(n18275), .dout(n18290));
   jxor g18184(.dina(n18290), .dinb(n18129), .dout(n18291));
@@ -21357,7 +21337,7 @@ module gf_log2 (
   jor  g18355(.dina(n17493), .dinb(n3211), .dout(n18462));
   jand g18356(.dina(n18462), .dinb(n18461), .dout(n18463));
   jand g18357(.dina(n18463), .dinb(n18458), .dout(n18464));
-  jxor g18358(.dina(n18464), .dinb(\a[14] ), .dout(n18465));
+  jxor g18358(.dina(n18464), .dinb(a[14] ), .dout(n18465));
   jxor g18359(.dina(n18465), .dinb(n18457), .dout(n18466));
   jxor g18360(.dina(n18466), .dinb(n18321), .dout(n18467));
   jand g18361(.dina(n16345), .dinb(n4022), .dout(n18468));
@@ -21374,7 +21354,7 @@ module gf_log2 (
   jor  g18372(.dina(n17289), .dinb(n4702), .dout(n18479));
   jand g18373(.dina(n18775), .dinb(n18479), .dout(n18483));
   jand g18374(.dina(n18483), .dinb(n18478), .dout(n18484));
-  jxor g18375(.dina(n18484), .dinb(\a[8] ), .dout(n18485));
+  jxor g18375(.dina(n18484), .dinb(a[8] ), .dout(n18485));
   jxor g18376(.dina(n18485), .dinb(n18477), .dout(n18486));
   jxor g18377(.dina(n18486), .dinb(n18312), .dout(n18487));
   jxor g18378(.dina(n18487), .dinb(n18308), .dout(n18488));
@@ -21491,7 +21471,7 @@ module gf_log2 (
   jor  g18489(.dina(n17626), .dinb(n2196), .dout(n18599));
   jxor g18490(.dina(n18599), .dinb(n17634), .dout(n18600));
   jand g18491(.dina(n18600), .dinb(n18598), .dout(n18601));
-  jand g18492(.dina(n17623), .dinb(\a[20] ), .dout(n18602));
+  jand g18492(.dina(n17623), .dinb(a[20] ), .dout(n18602));
   jxor g18493(.dina(n18602), .dinb(n17621), .dout(n18603));
   jnot g18494(.din(n18603), .dout(n18604));
   jand g18495(.dina(n16632), .dinb(n2743), .dout(n18605));
@@ -21511,7 +21491,7 @@ module gf_log2 (
   jnot g18509(.din(n18618), .dout(n18619));
   jand g18510(.dina(n15020), .dinb(n2741), .dout(n18620));
   jnot g18511(.din(n18620), .dout(n18621));
-  jand g18512(.dina(n18621), .dinb(\a[17] ), .dout(n18622));
+  jand g18512(.dina(n18621), .dinb(a[17] ), .dout(n18622));
   jand g18513(.dina(n18622), .dinb(n18619), .dout(n18623));
   jand g18514(.dina(n15580), .dinb(n2743), .dout(n18624));
   jand g18515(.dina(n15327), .dinb(n2748), .dout(n18625));
@@ -22317,7 +22297,7 @@ module gf_log2 (
   jor  g19315(.dina(n19435), .dinb(n19434), .dout(n19436));
   jor  g19316(.dina(n19436), .dinb(n19433), .dout(n19437));
   jor  g19317(.dina(n19437), .dinb(n19432), .dout(n19438));
-  jxor g19318(.dina(n19438), .dinb(\a[14] ), .dout(n19439));
+  jxor g19318(.dina(n19438), .dinb(a[14] ), .dout(n19439));
   jand g19319(.dina(n19439), .dinb(n19431), .dout(n19440));
   jxor g19320(.dina(n18671), .dinb(n18670), .dout(n19441));
   jnot g19321(.din(n19441), .dout(n19442));
@@ -22408,7 +22388,7 @@ module gf_log2 (
   jor  g19406(.dina(n18623), .dinb(n2441), .dout(n19527));
   jxor g19407(.dina(n19527), .dinb(n18631), .dout(n19528));
   jand g19408(.dina(n19528), .dinb(n19526), .dout(n19529));
-  jand g19409(.dina(n18620), .dinb(\a[17] ), .dout(n19530));
+  jand g19409(.dina(n18620), .dinb(a[17] ), .dout(n19530));
   jxor g19410(.dina(n19530), .dinb(n18618), .dout(n19531));
   jnot g19411(.din(n19531), .dout(n19532));
   jand g19412(.dina(n16632), .dinb(n3423), .dout(n19533));
@@ -22428,7 +22408,7 @@ module gf_log2 (
   jnot g19426(.din(n19546), .dout(n19547));
   jand g19427(.dina(n15020), .dinb(n3205), .dout(n19548));
   jnot g19428(.din(n19548), .dout(n19549));
-  jand g19429(.dina(n19549), .dinb(\a[14] ), .dout(n19550));
+  jand g19429(.dina(n19549), .dinb(a[14] ), .dout(n19550));
   jand g19430(.dina(n19550), .dinb(n19547), .dout(n19551));
   jand g19431(.dina(n15580), .dinb(n3423), .dout(n19552));
   jand g19432(.dina(n15327), .dinb(n3428), .dout(n19553));
@@ -22651,7 +22631,7 @@ module gf_log2 (
   jor  g19649(.dina(n19769), .dinb(n19768), .dout(n19770));
   jor  g19650(.dina(n19770), .dinb(n19767), .dout(n19771));
   jor  g19651(.dina(n19771), .dinb(n19766), .dout(n19772));
-  jxor g19652(.dina(n19772), .dinb(\a[17] ), .dout(n19773));
+  jxor g19652(.dina(n19772), .dinb(a[17] ), .dout(n19773));
   jxor g19653(.dina(n19773), .dinb(n19765), .dout(n19774));
   jxor g19654(.dina(n19774), .dinb(n19651), .dout(n19775));
   jnot g19655(.din(n19775), .dout(n19776));
@@ -23225,7 +23205,7 @@ module gf_log2 (
   jor  g20223(.dina(n20350), .dinb(n20349), .dout(n20351));
   jor  g20224(.dina(n20351), .dinb(n20348), .dout(n20352));
   jor  g20225(.dina(n20352), .dinb(n20347), .dout(n20353));
-  jxor g20226(.dina(n20353), .dinb(\a[11] ), .dout(n20354));
+  jxor g20226(.dina(n20353), .dinb(a[11] ), .dout(n20354));
   jand g20227(.dina(n20354), .dinb(n19934), .dout(n20355));
   jxor g20228(.dina(n19642), .dinb(n19641), .dout(n20356));
   jnot g20229(.din(n20356), .dout(n20357));
@@ -23261,7 +23241,7 @@ module gf_log2 (
   jor  g20259(.dina(n20386), .dinb(n20385), .dout(n20387));
   jor  g20260(.dina(n20387), .dinb(n20384), .dout(n20388));
   jor  g20261(.dina(n20388), .dinb(n20383), .dout(n20389));
-  jxor g20262(.dina(n20389), .dinb(\a[11] ), .dout(n20390));
+  jxor g20262(.dina(n20389), .dinb(a[11] ), .dout(n20390));
   jand g20263(.dina(n20390), .dinb(n20382), .dout(n20391));
   jxor g20264(.dina(n19627), .dinb(n19626), .dout(n20392));
   jnot g20265(.din(n20392), .dout(n20393));
@@ -23418,7 +23398,7 @@ module gf_log2 (
   jor  g20416(.dina(n19551), .dinb(n3473), .dout(n20544));
   jxor g20417(.dina(n20544), .dinb(n19559), .dout(n20545));
   jand g20418(.dina(n20545), .dinb(n20543), .dout(n20546));
-  jand g20419(.dina(n19548), .dinb(\a[14] ), .dout(n20547));
+  jand g20419(.dina(n19548), .dinb(a[14] ), .dout(n20547));
   jxor g20420(.dina(n20547), .dinb(n19546), .dout(n20548));
   jnot g20421(.din(n20548), .dout(n20549));
   jand g20422(.dina(n16632), .dinb(n4022), .dout(n20550));
@@ -23438,7 +23418,7 @@ module gf_log2 (
   jnot g20436(.din(n20563), .dout(n20564));
   jand g20437(.dina(n15020), .dinb(n3865), .dout(n20565));
   jnot g20438(.din(n20565), .dout(n20566));
-  jand g20439(.dina(n20566), .dinb(\a[11] ), .dout(n20567));
+  jand g20439(.dina(n20566), .dinb(a[11] ), .dout(n20567));
   jand g20440(.dina(n20567), .dinb(n20564), .dout(n20568));
   jand g20441(.dina(n15580), .dinb(n4022), .dout(n20569));
   jand g20442(.dina(n15327), .dinb(n4027), .dout(n20570));
@@ -23846,7 +23826,7 @@ module gf_log2 (
   jor  g20844(.dina(n17288), .dinb(n2758), .dout(n20972));
   jand g20845(.dina(n20972), .dinb(n20971), .dout(n20973));
   jand g20846(.dina(n20973), .dinb(n20970), .dout(n20974));
-  jxor g20847(.dina(n20974), .dinb(\a[17] ), .dout(n20975));
+  jxor g20847(.dina(n20974), .dinb(a[17] ), .dout(n20975));
   jxor g20848(.dina(n20975), .dinb(n20968), .dout(n20976));
   jand g20849(.dina(n20912), .dinb(n20823), .dout(n20977));
   jnot g20850(.din(n20977), .dout(n20978));
@@ -24015,7 +23995,7 @@ module gf_log2 (
   jxor g21013(.dina(n21140), .dinb(n21027), .dout(n21141));
   jand g21014(.dina(n2756), .dinb(n2751), .dout(n21142));
   jor  g21015(.dina(n21142), .dinb(n17301), .dout(n21143));
-  jxor g21016(.dina(n21143), .dinb(\a[17] ), .dout(n21144));
+  jxor g21016(.dina(n21143), .dinb(a[17] ), .dout(n21144));
   jxor g21017(.dina(n21144), .dinb(n21141), .dout(n21145));
   jxor g21018(.dina(n21145), .dinb(n21114), .dout(n21146));
   jxor g21019(.dina(n21146), .dinb(n21107), .dout(n21147));
@@ -24457,7 +24437,7 @@ module gf_log2 (
   jor  g21455(.dina(n20568), .dinb(n4050), .dout(n21583));
   jxor g21456(.dina(n21583), .dinb(n20576), .dout(n21584));
   jand g21457(.dina(n21584), .dinb(n21582), .dout(n21585));
-  jand g21458(.dina(n20565), .dinb(\a[11] ), .dout(n21586));
+  jand g21458(.dina(n20565), .dinb(a[11] ), .dout(n21586));
   jxor g21459(.dina(n21586), .dinb(n20563), .dout(n21587));
   jnot g21460(.din(n21587), .dout(n21588));
   jand g21461(.dina(n16632), .dinb(n4691), .dout(n21589));
@@ -24477,7 +24457,7 @@ module gf_log2 (
   jnot g21475(.din(n21602), .dout(n21603));
   jand g21476(.dina(n15020), .dinb(n4689), .dout(n21604));
   jnot g21477(.din(n21604), .dout(n21605));
-  jand g21478(.dina(n21605), .dinb(\a[8] ), .dout(n21606));
+  jand g21478(.dina(n21605), .dinb(a[8] ), .dout(n21606));
   jand g21479(.dina(n21606), .dinb(n21603), .dout(n21607));
   jand g21480(.dina(n15580), .dinb(n4691), .dout(n21608));
   jand g21481(.dina(n15327), .dinb(n4696), .dout(n21609));
@@ -24911,7 +24891,7 @@ module gf_log2 (
   jxor g21909(.dina(n22042), .dinb(n21279), .dout(n22043));
   jand g21910(.dina(n2186), .dinb(n2184), .dout(n22044));
   jor  g21911(.dina(n22044), .dinb(n17301), .dout(n22045));
-  jxor g21912(.dina(n22045), .dinb(\a[20] ), .dout(n22046));
+  jxor g21912(.dina(n22045), .dinb(a[20] ), .dout(n22046));
   jxor g21913(.dina(n22046), .dinb(n22043), .dout(n22047));
   jxor g21914(.dina(n22047), .dinb(n22014), .dout(n22048));
   jxor g21915(.dina(n22048), .dinb(n22009), .dout(n22049));
@@ -25146,7 +25126,7 @@ module gf_log2 (
   jor  g22144(.dina(n22283), .dinb(n22282), .dout(n22284));
   jor  g22145(.dina(n22284), .dinb(n22281), .dout(n22285));
   jor  g22146(.dina(n22285), .dinb(n22280), .dout(n22286));
-  jxor g22147(.dina(n22286), .dinb(\a[5] ), .dout(n22287));
+  jxor g22147(.dina(n22286), .dinb(a[5] ), .dout(n22287));
   jand g22148(.dina(n22287), .dinb(n22278), .dout(n22288));
   jnot g22149(.din(n22288), .dout(n22289));
   jxor g22150(.dina(n21718), .dinb(n21717), .dout(n22290));
@@ -25158,7 +25138,7 @@ module gf_log2 (
   jor  g22156(.dina(n22295), .dinb(n22294), .dout(n22296));
   jor  g22157(.dina(n22296), .dinb(n22293), .dout(n22297));
   jor  g22158(.dina(n22297), .dinb(n22292), .dout(n22298));
-  jxor g22159(.dina(n22298), .dinb(\a[5] ), .dout(n22299));
+  jxor g22159(.dina(n22298), .dinb(a[5] ), .dout(n22299));
   jand g22160(.dina(n22299), .dinb(n22290), .dout(n22300));
   jnot g22161(.din(n22300), .dout(n22301));
   jxor g22162(.dina(n21715), .dinb(n21714), .dout(n22302));
@@ -25273,7 +25253,7 @@ module gf_log2 (
   jor  g22271(.dina(n22410), .dinb(n22409), .dout(n22411));
   jor  g22272(.dina(n22411), .dinb(n22408), .dout(n22412));
   jor  g22273(.dina(n22412), .dinb(n22407), .dout(n22413));
-  jxor g22274(.dina(n22413), .dinb(\a[5] ), .dout(n22414));
+  jxor g22274(.dina(n22413), .dinb(a[5] ), .dout(n22414));
   jand g22275(.dina(n22414), .dinb(n22406), .dout(n22415));
   jxor g22276(.dina(n21680), .dinb(n21678), .dout(n22416));
   jnot g22277(.din(n22416), .dout(n22417));
@@ -25425,7 +25405,7 @@ module gf_log2 (
   jor  g22423(.dina(n21607), .dinb(n4713), .dout(n22563));
   jxor g22424(.dina(n22563), .dinb(n21615), .dout(n22564));
   jand g22425(.dina(n22564), .dinb(n22562), .dout(n22565));
-  jand g22426(.dina(n21604), .dinb(\a[8] ), .dout(n22566));
+  jand g22426(.dina(n21604), .dinb(a[8] ), .dout(n22566));
   jxor g22427(.dina(n22566), .dinb(n21602), .dout(n22567));
   jnot g22428(.din(n22567), .dout(n22568));
   jand g22429(.dina(n16632), .dinb(n5280), .dout(n22569));
@@ -25445,7 +25425,7 @@ module gf_log2 (
   jnot g22443(.din(n22582), .dout(n22583));
   jand g22444(.dina(n15020), .dinb(n5279), .dout(n22584));
   jnot g22445(.din(n22584), .dout(n22585));
-  jand g22446(.dina(n22585), .dinb(\a[5] ), .dout(n22586));
+  jand g22446(.dina(n22585), .dinb(a[5] ), .dout(n22586));
   jand g22447(.dina(n22586), .dinb(n22583), .dout(n22587));
   jand g22448(.dina(n15580), .dinb(n5280), .dout(n22588));
   jand g22449(.dina(n15327), .dinb(n5531), .dout(n22589));
@@ -25663,7 +25643,7 @@ module gf_log2 (
   jor  g22661(.dina(n22800), .dinb(n22799), .dout(n22801));
   jor  g22662(.dina(n22801), .dinb(n22798), .dout(n22802));
   jor  g22663(.dina(n22802), .dinb(n22797), .dout(n22803));
-  jxor g22664(.dina(n22803), .dinb(\a[23] ), .dout(n22804));
+  jxor g22664(.dina(n22803), .dinb(a[23] ), .dout(n22804));
   jxor g22665(.dina(n22804), .dinb(n22796), .dout(n22805));
   jxor g22666(.dina(n22805), .dinb(n22737), .dout(n22806));
   jnot g22667(.din(n22806), .dout(n22807));
@@ -25684,7 +25664,7 @@ module gf_log2 (
   jor  g22682(.dina(n22821), .dinb(n22820), .dout(n22822));
   jor  g22683(.dina(n22822), .dinb(n22819), .dout(n22823));
   jor  g22684(.dina(n22823), .dinb(n22818), .dout(n22824));
-  jxor g22685(.dina(n22824), .dinb(\a[17] ), .dout(n22825));
+  jxor g22685(.dina(n22824), .dinb(a[17] ), .dout(n22825));
   jxor g22686(.dina(n22825), .dinb(n22817), .dout(n22826));
   jxor g22687(.dina(n22826), .dinb(n22727), .dout(n22827));
   jnot g22688(.din(n22827), .dout(n22828));
@@ -26057,7 +26037,7 @@ module gf_log2 (
   jor  g23055(.dina(n23200), .dinb(n23199), .dout(n23201));
   jor  g23056(.dina(n23201), .dinb(n23198), .dout(n23202));
   jor  g23057(.dina(n23202), .dinb(n23197), .dout(n23203));
-  jxor g23058(.dina(n23203), .dinb(\a[2] ), .dout(n23204));
+  jxor g23058(.dina(n23203), .dinb(a[2] ), .dout(n23204));
   jand g23059(.dina(n23204), .dinb(n23196), .dout(n23205));
   jor  g23060(.dina(n23204), .dinb(n23196), .dout(n23206));
   jxor g23061(.dina(n22693), .dinb(n22692), .dout(n23207));
@@ -26068,7 +26048,7 @@ module gf_log2 (
   jor  g23066(.dina(n23211), .dinb(n23210), .dout(n23212));
   jor  g23067(.dina(n23212), .dinb(n23209), .dout(n23213));
   jor  g23068(.dina(n23213), .dinb(n23208), .dout(n23214));
-  jxor g23069(.dina(n23214), .dinb(\a[2] ), .dout(n23215));
+  jxor g23069(.dina(n23214), .dinb(a[2] ), .dout(n23215));
   jand g23070(.dina(n23215), .dinb(n23207), .dout(n23216));
   jor  g23071(.dina(n23215), .dinb(n23207), .dout(n23217));
   jxor g23072(.dina(n22686), .dinb(n22685), .dout(n23218));
@@ -26084,7 +26064,7 @@ module gf_log2 (
   jand g23082(.dina(n23227), .dinb(n23225), .dout(n23228));
   jand g23083(.dina(n23228), .dinb(n23223), .dout(n23229));
   jand g23084(.dina(n23229), .dinb(n23221), .dout(n23230));
-  jxor g23085(.dina(n23230), .dinb(\a[2] ), .dout(n23231));
+  jxor g23085(.dina(n23230), .dinb(a[2] ), .dout(n23231));
   jand g23086(.dina(n23231), .dinb(n23219), .dout(n23232));
   jnot g23087(.din(n23232), .dout(n23233));
   jxor g23088(.dina(n22689), .dinb(n22688), .dout(n23234));
@@ -26095,7 +26075,7 @@ module gf_log2 (
   jor  g23093(.dina(n23238), .dinb(n23237), .dout(n23239));
   jor  g23094(.dina(n23239), .dinb(n23236), .dout(n23240));
   jor  g23095(.dina(n23240), .dinb(n23235), .dout(n23241));
-  jxor g23096(.dina(n23241), .dinb(\a[2] ), .dout(n23242));
+  jxor g23096(.dina(n23241), .dinb(a[2] ), .dout(n23242));
   jor  g23097(.dina(n23242), .dinb(n23234), .dout(n23243));
   jnot g23098(.din(n23231), .dout(n23244));
   jand g23099(.dina(n23244), .dinb(n23218), .dout(n23245));
@@ -26110,7 +26090,7 @@ module gf_log2 (
   jand g23108(.dina(n23253), .dinb(n23251), .dout(n23254));
   jand g23109(.dina(n23254), .dinb(n23250), .dout(n23255));
   jand g23110(.dina(n23255), .dinb(n23249), .dout(n23256));
-  jxor g23111(.dina(n23256), .dinb(\a[2] ), .dout(n23257));
+  jxor g23111(.dina(n23256), .dinb(a[2] ), .dout(n23257));
   jand g23112(.dina(n23257), .dinb(n23247), .dout(n23258));
   jnot g23113(.din(n23258), .dout(n23259));
   jnot g23114(.din(n23257), .dout(n23260));
@@ -26126,7 +26106,7 @@ module gf_log2 (
   jand g23124(.dina(n23269), .dinb(n23267), .dout(n23270));
   jand g23125(.dina(n23270), .dinb(n23266), .dout(n23271));
   jand g23126(.dina(n23271), .dinb(n23265), .dout(n23272));
-  jxor g23127(.dina(n23272), .dinb(\a[2] ), .dout(n23273));
+  jxor g23127(.dina(n23272), .dinb(a[2] ), .dout(n23273));
   jand g23128(.dina(n23273), .dinb(n23263), .dout(n23274));
   jnot g23129(.din(n23274), .dout(n23275));
   jnot g23130(.din(n23273), .dout(n23276));
@@ -26139,7 +26119,7 @@ module gf_log2 (
   jor  g23137(.dina(n23282), .dinb(n23281), .dout(n23283));
   jor  g23138(.dina(n23283), .dinb(n23280), .dout(n23284));
   jor  g23139(.dina(n23284), .dinb(n23279), .dout(n23285));
-  jxor g23140(.dina(n23285), .dinb(\a[2] ), .dout(n23286));
+  jxor g23140(.dina(n23285), .dinb(a[2] ), .dout(n23286));
   jand g23141(.dina(n23286), .dinb(n23278), .dout(n23287));
   jor  g23142(.dina(n23286), .dinb(n23278), .dout(n23288));
   jxor g23143(.dina(n22674), .dinb(n22673), .dout(n23289));
@@ -26150,7 +26130,7 @@ module gf_log2 (
   jor  g23148(.dina(n23293), .dinb(n23292), .dout(n23294));
   jor  g23149(.dina(n23294), .dinb(n23291), .dout(n23295));
   jor  g23150(.dina(n23295), .dinb(n23290), .dout(n23296));
-  jxor g23151(.dina(n23296), .dinb(\a[2] ), .dout(n23297));
+  jxor g23151(.dina(n23296), .dinb(a[2] ), .dout(n23297));
   jand g23152(.dina(n23297), .dinb(n23289), .dout(n23298));
   jxor g23153(.dina(n22671), .dinb(n22670), .dout(n23299));
   jxor g23154(.dina(n22668), .dinb(n22667), .dout(n23300));
@@ -26173,7 +26153,7 @@ module gf_log2 (
   jor  g23171(.dina(n23316), .dinb(n23315), .dout(n23317));
   jor  g23172(.dina(n23317), .dinb(n23314), .dout(n23318));
   jor  g23173(.dina(n23318), .dinb(n23313), .dout(n23319));
-  jxor g23174(.dina(n23319), .dinb(\a[2] ), .dout(n23320));
+  jxor g23174(.dina(n23319), .dinb(a[2] ), .dout(n23320));
   jand g23175(.dina(n23320), .dinb(n23312), .dout(n23321));
   jor  g23176(.dina(n23320), .dinb(n23312), .dout(n23322));
   jxor g23177(.dina(n22659), .dinb(n22658), .dout(n23323));
@@ -26184,7 +26164,7 @@ module gf_log2 (
   jor  g23182(.dina(n23327), .dinb(n23326), .dout(n23328));
   jor  g23183(.dina(n23328), .dinb(n23325), .dout(n23329));
   jor  g23184(.dina(n23329), .dinb(n23324), .dout(n23330));
-  jxor g23185(.dina(n23330), .dinb(\a[2] ), .dout(n23331));
+  jxor g23185(.dina(n23330), .dinb(a[2] ), .dout(n23331));
   jand g23186(.dina(n23331), .dinb(n23323), .dout(n23332));
   jor  g23187(.dina(n23331), .dinb(n23323), .dout(n23333));
   jxor g23188(.dina(n22656), .dinb(n22655), .dout(n23334));
@@ -26195,7 +26175,7 @@ module gf_log2 (
   jor  g23193(.dina(n23338), .dinb(n23337), .dout(n23339));
   jor  g23194(.dina(n23339), .dinb(n23336), .dout(n23340));
   jor  g23195(.dina(n23340), .dinb(n23335), .dout(n23341));
-  jxor g23196(.dina(n23341), .dinb(\a[2] ), .dout(n23342));
+  jxor g23196(.dina(n23341), .dinb(a[2] ), .dout(n23342));
   jand g23197(.dina(n23342), .dinb(n23334), .dout(n23343));
   jor  g23198(.dina(n23342), .dinb(n23334), .dout(n23344));
   jxor g23199(.dina(n22653), .dinb(n22652), .dout(n23345));
@@ -26230,7 +26210,7 @@ module gf_log2 (
   jor  g23228(.dina(n23373), .dinb(n23372), .dout(n23374));
   jor  g23229(.dina(n23374), .dinb(n23371), .dout(n23375));
   jor  g23230(.dina(n23375), .dinb(n23370), .dout(n23376));
-  jxor g23231(.dina(n23376), .dinb(\a[2] ), .dout(n23377));
+  jxor g23231(.dina(n23376), .dinb(a[2] ), .dout(n23377));
   jand g23232(.dina(n23377), .dinb(n23369), .dout(n23378));
   jxor g23233(.dina(n22640), .dinb(n22639), .dout(n23379));
   jnot g23234(.din(n23379), .dout(n23380));
@@ -26315,7 +26295,7 @@ module gf_log2 (
   jor  g23313(.dina(n23458), .dinb(n23457), .dout(n23459));
   jor  g23314(.dina(n23459), .dinb(n23456), .dout(n23460));
   jor  g23315(.dina(n23460), .dinb(n23455), .dout(n23461));
-  jxor g23316(.dina(n23461), .dinb(\a[2] ), .dout(n23462));
+  jxor g23316(.dina(n23461), .dinb(a[2] ), .dout(n23462));
   jand g23317(.dina(n23462), .dinb(n23454), .dout(n23463));
   jand g23318(.dina(n15579), .dinb(n6503), .dout(n23464));
   jnot g23319(.din(n23464), .dout(n23465));
@@ -26325,7 +26305,7 @@ module gf_log2 (
   jand g23323(.dina(n15844), .dinb(n23468), .dout(n23469));
   jand g23324(.dina(n23469), .dinb(n23467), .dout(n23470));
   jor  g23325(.dina(n23470), .dinb(n6861), .dout(n23471));
-  jand g23326(.dina(n15022), .dinb(\a[2] ), .dout(n23472));
+  jand g23326(.dina(n15022), .dinb(a[2] ), .dout(n23472));
   jand g23327(.dina(n15327), .dinb(n6856), .dout(n23473));
   jnot g23328(.din(n23473), .dout(n23474));
   jand g23329(.dina(n23474), .dinb(n23472), .dout(n23475));
@@ -26353,7 +26333,7 @@ module gf_log2 (
   jnot g23351(.din(n23498), .dout(n23499));
   jand g23352(.dina(n23499), .dinb(n23489), .dout(n23500));
   jor  g23353(.dina(n23499), .dinb(n23489), .dout(n23501));
-  jand g23354(.dina(n22584), .dinb(\a[5] ), .dout(n23502));
+  jand g23354(.dina(n22584), .dinb(a[5] ), .dout(n23502));
   jxor g23355(.dina(n23502), .dinb(n22582), .dout(n23503));
   jand g23356(.dina(n23503), .dinb(n23501), .dout(n23504));
   jor  g23357(.dina(n23504), .dinb(n23500), .dout(n23505));
@@ -26393,7 +26373,7 @@ module gf_log2 (
   jor  g23391(.dina(n23538), .dinb(n23537), .dout(n23539));
   jor  g23392(.dina(n23539), .dinb(n23536), .dout(n23540));
   jor  g23393(.dina(n23540), .dinb(n23535), .dout(n23541));
-  jxor g23394(.dina(n23541), .dinb(\a[2] ), .dout(n23542));
+  jxor g23394(.dina(n23541), .dinb(a[2] ), .dout(n23542));
   jor  g23395(.dina(n23542), .dinb(n23534), .dout(n23543));
   jor  g23396(.dina(n23533), .dinb(n23396), .dout(n23544));
   jxor g23397(.dina(n22635), .dinb(n22634), .dout(n23545));
@@ -26606,7 +26586,7 @@ module gf_log2 (
   jor  g23604(.dina(n23751), .dinb(n23750), .dout(n23752));
   jor  g23605(.dina(n23752), .dinb(n23749), .dout(n23753));
   jor  g23606(.dina(n23753), .dinb(n23748), .dout(n23754));
-  jxor g23607(.dina(n23754), .dinb(\a[17] ), .dout(n23755));
+  jxor g23607(.dina(n23754), .dinb(a[17] ), .dout(n23755));
   jxor g23608(.dina(n23755), .dinb(n23747), .dout(n23756));
   jxor g23609(.dina(n23756), .dinb(n23657), .dout(n23757));
   jnot g23610(.din(n23757), .dout(n23758));
@@ -26627,7 +26607,7 @@ module gf_log2 (
   jor  g23625(.dina(n23772), .dinb(n23771), .dout(n23773));
   jor  g23626(.dina(n23773), .dinb(n23770), .dout(n23774));
   jor  g23627(.dina(n23774), .dinb(n23769), .dout(n23775));
-  jxor g23628(.dina(n23775), .dinb(\a[11] ), .dout(n23776));
+  jxor g23628(.dina(n23775), .dinb(a[11] ), .dout(n23776));
   jxor g23629(.dina(n23776), .dinb(n23768), .dout(n23777));
   jxor g23630(.dina(n23777), .dinb(n23650), .dout(n23778));
   jand g23631(.dina(n22279), .dinb(n4691), .dout(n23779));
@@ -26648,7 +26628,7 @@ module gf_log2 (
   jor  g23646(.dina(n23793), .dinb(n23792), .dout(n23794));
   jor  g23647(.dina(n23794), .dinb(n23791), .dout(n23795));
   jor  g23648(.dina(n23795), .dinb(n23790), .dout(n23796));
-  jxor g23649(.dina(n23796), .dinb(\a[5] ), .dout(n23797));
+  jxor g23649(.dina(n23796), .dinb(a[5] ), .dout(n23797));
   jxor g23650(.dina(n23797), .dinb(n23789), .dout(n23798));
   jnot g23651(.din(n23798), .dout(n23799));
   jxor g23652(.dina(n23799), .dinb(n23638), .dout(n23800));
@@ -26701,7 +26681,7 @@ module gf_log2 (
   jxor g23699(.dina(n23855), .dinb(n23800), .dout(n23856));
   jxor g23700(.dina(n23856), .dinb(n23634), .dout(n23857));
   jxor g23701(.dina(n23632), .dinb(n23157), .dout(n23858));
-  jxor g23702(.dina(n23858), .dinb(n23857), .dout(\result[0] ));
+  jxor g23702(.dina(n23858), .dinb(n23857), .dout(result[0] ));
   jand g23703(.dina(n23858), .dinb(n23857), .dout(n23860));
   jor  g23704(.dina(n23855), .dinb(n23800), .dout(n23861));
   jnot g23705(.din(n23861), .dout(n23862));
@@ -26923,7 +26903,7 @@ module gf_log2 (
   jxor g23921(.dina(n24084), .dinb(n6219), .dout(n24085));
   jxor g23922(.dina(n24085), .dinb(n24036), .dout(n24086));
   jxor g23923(.dina(n24086), .dinb(n23864), .dout(n24087));
-  jxor g23924(.dina(n24087), .dinb(n23860), .dout(\result[1] ));
+  jxor g23924(.dina(n24087), .dinb(n23860), .dout(result[1] ));
   jand g23925(.dina(n24087), .dinb(n23860), .dout(n24089));
   jor  g23926(.dina(n24085), .dinb(n24036), .dout(n24090));
   jnot g23927(.din(n24090), .dout(n24091));
@@ -27145,10 +27125,10 @@ module gf_log2 (
   jand g24143(.dina(n24307), .dinb(n24306), .dout(n24308));
   jand g24144(.dina(n24308), .dinb(n24305), .dout(n24309));
   jand g24145(.dina(n24309), .dinb(n24303), .dout(n24310));
-  jxor g24146(.dina(n24310), .dinb(\a[2] ), .dout(n24311));
+  jxor g24146(.dina(n24310), .dinb(a[2] ), .dout(n24311));
   jxor g24147(.dina(n24311), .dinb(n24264), .dout(n24312));
   jxor g24148(.dina(n24312), .dinb(n24093), .dout(n24313));
-  jxor g24149(.dina(n24313), .dinb(n24089), .dout(\result[2] ));
+  jxor g24149(.dina(n24313), .dinb(n24089), .dout(result[2] ));
   jand g24150(.dina(n24313), .dinb(n24089), .dout(n24315));
   jor  g24151(.dina(n24311), .dinb(n24264), .dout(n24316));
   jnot g24152(.din(n24316), .dout(n24317));
@@ -27276,7 +27256,7 @@ module gf_log2 (
   jor  g24274(.dina(n24438), .dinb(n24437), .dout(n24439));
   jor  g24275(.dina(n24439), .dinb(n24436), .dout(n24440));
   jor  g24276(.dina(n24440), .dinb(n24435), .dout(n24441));
-  jxor g24277(.dina(n24441), .dinb(\a[17] ), .dout(n24442));
+  jxor g24277(.dina(n24441), .dinb(a[17] ), .dout(n24442));
   jxor g24278(.dina(n24442), .dinb(n24434), .dout(n24443));
   jxor g24279(.dina(n24443), .dinb(n24342), .dout(n24444));
   jand g24280(.dina(n21342), .dinb(n3423), .dout(n24445));
@@ -27316,7 +27296,7 @@ module gf_log2 (
   jor  g24314(.dina(n24478), .dinb(n24477), .dout(n24479));
   jor  g24315(.dina(n24479), .dinb(n24476), .dout(n24480));
   jor  g24316(.dina(n24480), .dinb(n24475), .dout(n24481));
-  jxor g24317(.dina(n24481), .dinb(\a[5] ), .dout(n24482));
+  jxor g24317(.dina(n24481), .dinb(a[5] ), .dout(n24482));
   jnot g24318(.din(n24482), .dout(n24483));
   jxor g24319(.dina(n24483), .dinb(n24474), .dout(n24484));
   jnot g24320(.din(n24484), .dout(n24485));
@@ -27357,10 +27337,10 @@ module gf_log2 (
   jand g24355(.dina(n24521), .dinb(n24520), .dout(n24522));
   jand g24356(.dina(n24522), .dinb(n24519), .dout(n24523));
   jand g24357(.dina(n24523), .dinb(n24517), .dout(n24524));
-  jxor g24358(.dina(n24524), .dinb(\a[2] ), .dout(n24525));
+  jxor g24358(.dina(n24524), .dinb(a[2] ), .dout(n24525));
   jxor g24359(.dina(n24525), .dinb(n24486), .dout(n24526));
   jxor g24360(.dina(n24526), .dinb(n24319), .dout(n24527));
-  jxor g24361(.dina(n24527), .dinb(n24315), .dout(\result[3] ));
+  jxor g24361(.dina(n24527), .dinb(n24315), .dout(result[3] ));
   jand g24362(.dina(n24527), .dinb(n24315), .dout(n24529));
   jor  g24363(.dina(n24525), .dinb(n24486), .dout(n24530));
   jnot g24364(.din(n24530), .dout(n24531));
@@ -27497,7 +27477,7 @@ module gf_log2 (
   jor  g24495(.dina(n24661), .dinb(n24660), .dout(n24662));
   jor  g24496(.dina(n24662), .dinb(n24659), .dout(n24663));
   jor  g24497(.dina(n24663), .dinb(n24658), .dout(n24664));
-  jxor g24498(.dina(n24664), .dinb(\a[17] ), .dout(n24665));
+  jxor g24498(.dina(n24664), .dinb(a[17] ), .dout(n24665));
   jxor g24499(.dina(n24665), .dinb(n24657), .dout(n24666));
   jxor g24500(.dina(n24666), .dinb(n24554), .dout(n24667));
   jand g24501(.dina(n21976), .dinb(n3423), .dout(n24668));
@@ -27575,10 +27555,10 @@ module gf_log2 (
   jand g24573(.dina(n24741), .dinb(n24740), .dout(n24742));
   jand g24574(.dina(n24742), .dinb(n24739), .dout(n24743));
   jand g24575(.dina(n24743), .dinb(n24737), .dout(n24744));
-  jxor g24576(.dina(n24744), .dinb(\a[2] ), .dout(n24745));
+  jxor g24576(.dina(n24744), .dinb(a[2] ), .dout(n24745));
   jxor g24577(.dina(n24745), .dinb(n24710), .dout(n24746));
   jxor g24578(.dina(n24746), .dinb(n24533), .dout(n24747));
-  jxor g24579(.dina(n24747), .dinb(n24529), .dout(\result[4] ));
+  jxor g24579(.dina(n24747), .dinb(n24529), .dout(result[4] ));
   jand g24580(.dina(n24747), .dinb(n24529), .dout(n24749));
   jor  g24581(.dina(n24745), .dinb(n24710), .dout(n24750));
   jnot g24582(.din(n24750), .dout(n24751));
@@ -27747,7 +27727,7 @@ module gf_log2 (
   jor  g24745(.dina(n24265), .dinb(n5537), .dout(n24914));
   jand g24746(.dina(n24914), .dinb(n24913), .dout(n24915));
   jand g24747(.dina(n24915), .dinb(n24910), .dout(n24916));
-  jxor g24748(.dina(n24916), .dinb(\a[5] ), .dout(n24917));
+  jxor g24748(.dina(n24916), .dinb(a[5] ), .dout(n24917));
   jxor g24749(.dina(n24917), .dinb(n24909), .dout(n24918));
   jxor g24750(.dina(n24918), .dinb(n24758), .dout(n24919));
   jor  g24751(.dina(n24738), .dinb(n24518), .dout(n24920));
@@ -27770,11 +27750,11 @@ module gf_log2 (
   jand g24768(.dina(n24936), .dinb(n24935), .dout(n24937));
   jand g24769(.dina(n24937), .dinb(n24934), .dout(n24938));
   jand g24770(.dina(n24938), .dinb(n24933), .dout(n24939));
-  jxor g24771(.dina(n24939), .dinb(\a[2] ), .dout(n24940));
+  jxor g24771(.dina(n24939), .dinb(a[2] ), .dout(n24940));
   jnot g24772(.din(n24940), .dout(n24941));
   jxor g24773(.dina(n24941), .dinb(n24919), .dout(n24942));
   jxor g24774(.dina(n24942), .dinb(n24753), .dout(n24943));
-  jxor g24775(.dina(n24943), .dinb(n24749), .dout(\result[5] ));
+  jxor g24775(.dina(n24943), .dinb(n24749), .dout(result[5] ));
   jand g24776(.dina(n24943), .dinb(n24749), .dout(n24945));
   jor  g24777(.dina(n24917), .dinb(n24909), .dout(n24946));
   jnot g24778(.din(n24946), .dout(n24947));
@@ -27901,7 +27881,7 @@ module gf_log2 (
   jor  g24899(.dina(n25067), .dinb(n25066), .dout(n25068));
   jor  g24900(.dina(n25068), .dinb(n25065), .dout(n25069));
   jor  g24901(.dina(n25069), .dinb(n25064), .dout(n25070));
-  jxor g24902(.dina(n25070), .dinb(\a[17] ), .dout(n25071));
+  jxor g24902(.dina(n25070), .dinb(a[17] ), .dout(n25071));
   jxor g24903(.dina(n25071), .dinb(n25063), .dout(n25072));
   jxor g24904(.dina(n25072), .dinb(n24966), .dout(n25073));
   jand g24905(.dina(n22279), .dinb(n3423), .dout(n25074));
@@ -27921,7 +27901,7 @@ module gf_log2 (
   jor  g24919(.dina(n25087), .dinb(n25086), .dout(n25088));
   jor  g24920(.dina(n25088), .dinb(n25085), .dout(n25089));
   jor  g24921(.dina(n25089), .dinb(n25084), .dout(n25090));
-  jxor g24922(.dina(n25090), .dinb(\a[11] ), .dout(n25091));
+  jxor g24922(.dina(n25090), .dinb(a[11] ), .dout(n25091));
   jxor g24923(.dina(n25091), .dinb(n25083), .dout(n25092));
   jxor g24924(.dina(n25092), .dinb(n24957), .dout(n25093));
   jand g24925(.dina(n23847), .dinb(n4691), .dout(n25094));
@@ -27941,7 +27921,7 @@ module gf_log2 (
   jor  g24939(.dina(n24266), .dinb(n5537), .dout(n25108));
   jand g24940(.dina(n25108), .dinb(n25107), .dout(n25109));
   jand g24941(.dina(n25109), .dinb(n25104), .dout(n25110));
-  jxor g24942(.dina(n25110), .dinb(\a[5] ), .dout(n25111));
+  jxor g24942(.dina(n25110), .dinb(a[5] ), .dout(n25111));
   jxor g24943(.dina(n25111), .dinb(n25103), .dout(n25112));
   jor  g24944(.dina(n24930), .dinb(n24738), .dout(n25113));
   jnot g24945(.din(n24931), .dout(n25114));
@@ -27952,14 +27932,14 @@ module gf_log2 (
   jor  g24950(.dina(n24738), .dinb(n6501), .dout(n25119));
   jand g24951(.dina(n25119), .dinb(n25118), .dout(n25120));
   jand g24952(.dina(n25120), .dinb(n25117), .dout(n25121));
-  jxor g24953(.dina(n25121), .dinb(\a[2] ), .dout(n25122));
+  jxor g24953(.dina(n25121), .dinb(a[2] ), .dout(n25122));
   jxor g24954(.dina(n25122), .dinb(n25112), .dout(n25123));
   jxor g24955(.dina(n25123), .dinb(n24949), .dout(n25124));
   jand g24956(.dina(n24941), .dinb(n24919), .dout(n25125));
   jand g24957(.dina(n24942), .dinb(n24753), .dout(n25126));
   jor  g24958(.dina(n25126), .dinb(n25125), .dout(n25127));
   jxor g24959(.dina(n25127), .dinb(n25124), .dout(n25128));
-  jxor g24960(.dina(n25128), .dinb(n24945), .dout(\result[6] ));
+  jxor g24960(.dina(n25128), .dinb(n24945), .dout(result[6] ));
   jand g24961(.dina(n25128), .dinb(n24945), .dout(n25130));
   jnot g24962(.din(n25103), .dout(n25131));
   jor  g24963(.dina(n25111), .dinb(n25131), .dout(n25132));
@@ -28030,7 +28010,7 @@ module gf_log2 (
   jand g25028(.dina(n25196), .dinb(n25195), .dout(n25197));
   jnot g25029(.din(n25197), .dout(n25198));
   jxor g25030(.dina(n24928), .dinb(n24926), .dout(n25199));
-  jor  g25031(.dina(n25199), .dinb(\a[2] ), .dout(n25200));
+  jor  g25031(.dina(n25199), .dinb(a[2] ), .dout(n25200));
   jor  g25032(.dina(n24930), .dinb(n17779), .dout(n25201));
   jand g25033(.dina(n25201), .dinb(n25200), .dout(n25202));
   jxor g25034(.dina(n25202), .dinb(n25198), .dout(n25203));
@@ -28046,7 +28026,7 @@ module gf_log2 (
   jor  g25044(.dina(n23383), .dinb(n3683), .dout(n25213));
   jand g25045(.dina(n25213), .dinb(n25212), .dout(n25214));
   jand g25046(.dina(n25214), .dinb(n25207), .dout(n25215));
-  jxor g25047(.dina(n25215), .dinb(\a[29] ), .dout(n25216));
+  jxor g25047(.dina(n25215), .dinb(a[29] ), .dout(n25216));
   jnot g25048(.din(n25216), .dout(n25217));
   jxor g25049(.dina(n25217), .dinb(n25205), .dout(n25218));
   jxor g25050(.dina(n25218), .dinb(n25170), .dout(n25219));
@@ -28079,7 +28059,7 @@ module gf_log2 (
   jand g25077(.dina(n25245), .dinb(n25243), .dout(n25246));
   jand g25078(.dina(n25246), .dinb(n25242), .dout(n25247));
   jand g25079(.dina(n25247), .dinb(n25241), .dout(n25248));
-  jxor g25080(.dina(n25248), .dinb(\a[20] ), .dout(n25249));
+  jxor g25080(.dina(n25248), .dinb(a[20] ), .dout(n25249));
   jxor g25081(.dina(n25249), .dinb(n25239), .dout(n25250));
   jxor g25082(.dina(n25250), .dinb(n25158), .dout(n25251));
   jor  g25083(.dina(n23220), .dinb(n2744), .dout(n25252));
@@ -28089,7 +28069,7 @@ module gf_log2 (
   jand g25087(.dina(n25255), .dinb(n25254), .dout(n25256));
   jand g25088(.dina(n25256), .dinb(n25253), .dout(n25257));
   jand g25089(.dina(n25257), .dinb(n25252), .dout(n25258));
-  jxor g25090(.dina(n25258), .dinb(\a[17] ), .dout(n25259));
+  jxor g25090(.dina(n25258), .dinb(a[17] ), .dout(n25259));
   jxor g25091(.dina(n25259), .dinb(n25251), .dout(n25260));
   jxor g25092(.dina(n25260), .dinb(n25154), .dout(n25261));
   jand g25093(.dina(n22267), .dinb(n3423), .dout(n25262));
@@ -28113,7 +28093,7 @@ module gf_log2 (
   jand g25111(.dina(n25279), .dinb(n25277), .dout(n25280));
   jand g25112(.dina(n25280), .dinb(n25275), .dout(n25281));
   jand g25113(.dina(n25281), .dinb(n25273), .dout(n25282));
-  jxor g25114(.dina(n25282), .dinb(\a[11] ), .dout(n25283));
+  jxor g25114(.dina(n25282), .dinb(a[11] ), .dout(n25283));
   jxor g25115(.dina(n25283), .dinb(n25271), .dout(n25284));
   jxor g25116(.dina(n25284), .dinb(n25145), .dout(n25285));
   jnot g25117(.din(n24077), .dout(n25286));
@@ -28125,7 +28105,7 @@ module gf_log2 (
   jand g25123(.dina(n25291), .dinb(n25289), .dout(n25292));
   jand g25124(.dina(n25292), .dinb(n25288), .dout(n25293));
   jand g25125(.dina(n25293), .dinb(n25287), .dout(n25294));
-  jxor g25126(.dina(n25294), .dinb(\a[8] ), .dout(n25295));
+  jxor g25126(.dina(n25294), .dinb(a[8] ), .dout(n25295));
   jxor g25127(.dina(n25295), .dinb(n25285), .dout(n25296));
   jxor g25128(.dina(n25296), .dinb(n25140), .dout(n25297));
   jor  g25129(.dina(n24736), .dinb(n5281), .dout(n25298));
@@ -28135,7 +28115,7 @@ module gf_log2 (
   jand g25133(.dina(n25301), .dinb(n25300), .dout(n25302));
   jand g25134(.dina(n25302), .dinb(n25299), .dout(n25303));
   jand g25135(.dina(n25303), .dinb(n25298), .dout(n25304));
-  jxor g25136(.dina(n25304), .dinb(\a[5] ), .dout(n25305));
+  jxor g25136(.dina(n25304), .dinb(a[5] ), .dout(n25305));
   jnot g25137(.din(n25305), .dout(n25306));
   jxor g25138(.dina(n25306), .dinb(n25297), .dout(n25307));
   jxor g25139(.dina(n25307), .dinb(n25135), .dout(n25308));
@@ -28143,7 +28123,7 @@ module gf_log2 (
   jand g25141(.dina(n25127), .dinb(n25124), .dout(n25310));
   jor  g25142(.dina(n25310), .dinb(n25309), .dout(n25311));
   jxor g25143(.dina(n25311), .dinb(n25308), .dout(n25312));
-  jxor g25144(.dina(n25312), .dinb(n25130), .dout(\result[7] ));
+  jxor g25144(.dina(n25312), .dinb(n25130), .dout(result[7] ));
   jand g25145(.dina(n25312), .dinb(n25130), .dout(n25314));
   jand g25146(.dina(n25296), .dinb(n25140), .dout(n25315));
   jand g25147(.dina(n25306), .dinb(n25297), .dout(n25316));
@@ -28237,7 +28217,7 @@ module gf_log2 (
   jand g25235(.dina(n25403), .dinb(n25401), .dout(n25404));
   jand g25236(.dina(n25404), .dinb(n25399), .dout(n25405));
   jand g25237(.dina(n25405), .dinb(n25397), .dout(n25406));
-  jxor g25238(.dina(n25406), .dinb(\a[26] ), .dout(n25407));
+  jxor g25238(.dina(n25406), .dinb(a[26] ), .dout(n25407));
   jxor g25239(.dina(n25407), .dinb(n25395), .dout(n25408));
   jxor g25240(.dina(n25408), .dinb(n25347), .dout(n25409));
   jnot g25241(.din(n20346), .dout(n25410));
@@ -28250,7 +28230,7 @@ module gf_log2 (
   jand g25248(.dina(n25416), .dinb(n25414), .dout(n25417));
   jand g25249(.dina(n25417), .dinb(n25412), .dout(n25418));
   jand g25250(.dina(n25418), .dinb(n25411), .dout(n25419));
-  jxor g25251(.dina(n25419), .dinb(\a[23] ), .dout(n25420));
+  jxor g25251(.dina(n25419), .dinb(a[23] ), .dout(n25420));
   jxor g25252(.dina(n25420), .dinb(n25409), .dout(n25421));
   jxor g25253(.dina(n25421), .dinb(n25343), .dout(n25422));
   jand g25254(.dina(n21355), .dinb(n1819), .dout(n25423));
@@ -28272,7 +28252,7 @@ module gf_log2 (
   jand g25270(.dina(n25438), .dinb(n25437), .dout(n25439));
   jand g25271(.dina(n25439), .dinb(n25436), .dout(n25440));
   jand g25272(.dina(n25440), .dinb(n25434), .dout(n25441));
-  jxor g25273(.dina(n25441), .dinb(\a[17] ), .dout(n25442));
+  jxor g25273(.dina(n25441), .dinb(a[17] ), .dout(n25442));
   jxor g25274(.dina(n25442), .dinb(n25432), .dout(n25443));
   jxor g25275(.dina(n25443), .dinb(n25335), .dout(n25444));
   jnot g25276(.din(n22939), .dout(n25445));
@@ -28285,7 +28265,7 @@ module gf_log2 (
   jor  g25283(.dina(n25451), .dinb(n3211), .dout(n25452));
   jand g25284(.dina(n25452), .dinb(n25450), .dout(n25453));
   jand g25285(.dina(n25453), .dinb(n25446), .dout(n25454));
-  jxor g25286(.dina(n25454), .dinb(\a[14] ), .dout(n25455));
+  jxor g25286(.dina(n25454), .dinb(a[14] ), .dout(n25455));
   jxor g25287(.dina(n25455), .dinb(n25444), .dout(n25456));
   jxor g25288(.dina(n25456), .dinb(n25331), .dout(n25457));
   jnot g25289(.din(n23146), .dout(n25458));
@@ -28296,7 +28276,7 @@ module gf_log2 (
   jand g25294(.dina(n25462), .dinb(n25461), .dout(n25463));
   jand g25295(.dina(n25463), .dinb(n25460), .dout(n25464));
   jand g25296(.dina(n25464), .dinb(n25459), .dout(n25465));
-  jxor g25297(.dina(n25465), .dinb(\a[11] ), .dout(n25466));
+  jxor g25297(.dina(n25465), .dinb(a[11] ), .dout(n25466));
   jxor g25298(.dina(n25466), .dinb(n25457), .dout(n25467));
   jxor g25299(.dina(n25467), .dinb(n25327), .dout(n25468));
   jor  g25300(.dina(n24302), .dinb(n4692), .dout(n25469));
@@ -28306,7 +28286,7 @@ module gf_log2 (
   jand g25304(.dina(n25472), .dinb(n25471), .dout(n25473));
   jand g25305(.dina(n25473), .dinb(n25470), .dout(n25474));
   jand g25306(.dina(n25474), .dinb(n25469), .dout(n25475));
-  jxor g25307(.dina(n25475), .dinb(\a[8] ), .dout(n25476));
+  jxor g25307(.dina(n25475), .dinb(a[8] ), .dout(n25476));
   jxor g25308(.dina(n25476), .dinb(n25468), .dout(n25477));
   jxor g25309(.dina(n25477), .dinb(n25323), .dout(n25478));
   jor  g25310(.dina(n24932), .dinb(n5281), .dout(n25479));
@@ -28316,7 +28296,7 @@ module gf_log2 (
   jand g25314(.dina(n25482), .dinb(n25481), .dout(n25483));
   jand g25315(.dina(n25483), .dinb(n25480), .dout(n25484));
   jand g25316(.dina(n25484), .dinb(n25479), .dout(n25485));
-  jxor g25317(.dina(n25485), .dinb(\a[5] ), .dout(n25486));
+  jxor g25317(.dina(n25485), .dinb(a[5] ), .dout(n25486));
   jnot g25318(.din(n25486), .dout(n25487));
   jxor g25319(.dina(n25487), .dinb(n25478), .dout(n25488));
   jxor g25320(.dina(n25488), .dinb(n25317), .dout(n25489));
@@ -28324,7 +28304,7 @@ module gf_log2 (
   jand g25322(.dina(n25311), .dinb(n25308), .dout(n25491));
   jor  g25323(.dina(n25491), .dinb(n25490), .dout(n25492));
   jxor g25324(.dina(n25492), .dinb(n25489), .dout(n25493));
-  jxor g25325(.dina(n25493), .dinb(n25314), .dout(\result[8] ));
+  jxor g25325(.dina(n25493), .dinb(n25314), .dout(result[8] ));
   jand g25326(.dina(n25493), .dinb(n25314), .dout(n25495));
   jand g25327(.dina(n25477), .dinb(n25323), .dout(n25496));
   jand g25328(.dina(n25487), .dinb(n25478), .dout(n25497));
@@ -28339,7 +28319,7 @@ module gf_log2 (
   jor  g25337(.dina(n24738), .dinb(n5537), .dout(n25506));
   jand g25338(.dina(n25506), .dinb(n25505), .dout(n25507));
   jand g25339(.dina(n25507), .dinb(n25504), .dout(n25508));
-  jxor g25340(.dina(n25508), .dinb(\a[5] ), .dout(n25509));
+  jxor g25340(.dina(n25508), .dinb(a[5] ), .dout(n25509));
   jxor g25341(.dina(n25509), .dinb(n25503), .dout(n25510));
   jnot g25342(.din(n25456), .dout(n25511));
   jor  g25343(.dina(n25511), .dinb(n25331), .dout(n25512));
@@ -28448,7 +28428,7 @@ module gf_log2 (
   jand g25446(.dina(n25614), .dinb(n25613), .dout(n25615));
   jand g25447(.dina(n25615), .dinb(n25612), .dout(n25616));
   jand g25448(.dina(n25616), .dinb(n25611), .dout(n25617));
-  jxor g25449(.dina(n25617), .dinb(\a[17] ), .dout(n25618));
+  jxor g25449(.dina(n25617), .dinb(a[17] ), .dout(n25618));
   jxor g25450(.dina(n25618), .dinb(n25609), .dout(n25619));
   jxor g25451(.dina(n25619), .dinb(n25524), .dout(n25620));
   jand g25452(.dina(n23172), .dinb(n3423), .dout(n25621));
@@ -28469,7 +28449,7 @@ module gf_log2 (
   jand g25467(.dina(n25635), .dinb(n25634), .dout(n25636));
   jand g25468(.dina(n25636), .dinb(n25633), .dout(n25637));
   jand g25469(.dina(n25637), .dinb(n25632), .dout(n25638));
-  jxor g25470(.dina(n25638), .dinb(\a[11] ), .dout(n25639));
+  jxor g25470(.dina(n25638), .dinb(a[11] ), .dout(n25639));
   jxor g25471(.dina(n25639), .dinb(n25630), .dout(n25640));
   jxor g25472(.dina(n25640), .dinb(n25514), .dout(n25641));
   jor  g25473(.dina(n24516), .dinb(n4692), .dout(n25642));
@@ -28479,7 +28459,7 @@ module gf_log2 (
   jor  g25477(.dina(n24266), .dinb(n4702), .dout(n25646));
   jand g25478(.dina(n25646), .dinb(n25645), .dout(n25647));
   jand g25479(.dina(n25647), .dinb(n25642), .dout(n25648));
-  jxor g25480(.dina(n25648), .dinb(\a[8] ), .dout(n25649));
+  jxor g25480(.dina(n25648), .dinb(a[8] ), .dout(n25649));
   jxor g25481(.dina(n25649), .dinb(n25641), .dout(n25650));
   jxor g25482(.dina(n25650), .dinb(n25510), .dout(n25651));
   jxor g25483(.dina(n25651), .dinb(n25498), .dout(n25652));
@@ -28487,7 +28467,7 @@ module gf_log2 (
   jand g25485(.dina(n25492), .dinb(n25489), .dout(n25654));
   jor  g25486(.dina(n25654), .dinb(n25653), .dout(n25655));
   jxor g25487(.dina(n25655), .dinb(n25652), .dout(n25656));
-  jxor g25488(.dina(n25656), .dinb(n25495), .dout(\result[9] ));
+  jxor g25488(.dina(n25656), .dinb(n25495), .dout(result[9] ));
   jand g25489(.dina(n25656), .dinb(n25495), .dout(n25658));
   jand g25490(.dina(n25651), .dinb(n25498), .dout(n25659));
   jand g25491(.dina(n25655), .dinb(n25652), .dout(n25660));
@@ -28619,7 +28599,7 @@ module gf_log2 (
   jor  g25617(.dina(n25278), .dinb(n3211), .dout(n25786));
   jand g25618(.dina(n25786), .dinb(n25785), .dout(n25787));
   jand g25619(.dina(n25787), .dinb(n25782), .dout(n25788));
-  jxor g25620(.dina(n25788), .dinb(\a[14] ), .dout(n25789));
+  jxor g25620(.dina(n25788), .dinb(a[14] ), .dout(n25789));
   jxor g25621(.dina(n25789), .dinb(n25781), .dout(n25790));
   jxor g25622(.dina(n25790), .dinb(n25777), .dout(n25791));
   jor  g25623(.dina(n25286), .dinb(n4023), .dout(n25792));
@@ -28629,7 +28609,7 @@ module gf_log2 (
   jand g25627(.dina(n25795), .dinb(n25794), .dout(n25796));
   jand g25628(.dina(n25796), .dinb(n25793), .dout(n25797));
   jand g25629(.dina(n25797), .dinb(n25792), .dout(n25798));
-  jxor g25630(.dina(n25798), .dinb(\a[11] ), .dout(n25799));
+  jxor g25630(.dina(n25798), .dinb(a[11] ), .dout(n25799));
   jxor g25631(.dina(n25799), .dinb(n25791), .dout(n25800));
   jxor g25632(.dina(n25800), .dinb(n25671), .dout(n25801));
   jnot g25633(.din(n25514), .dout(n25802));
@@ -28644,12 +28624,12 @@ module gf_log2 (
   jand g25642(.dina(n25810), .dinb(n25809), .dout(n25811));
   jand g25643(.dina(n25811), .dinb(n25808), .dout(n25812));
   jand g25644(.dina(n25812), .dinb(n25807), .dout(n25813));
-  jxor g25645(.dina(n25813), .dinb(\a[8] ), .dout(n25814));
+  jxor g25645(.dina(n25813), .dinb(a[8] ), .dout(n25814));
   jxor g25646(.dina(n25814), .dinb(n25806), .dout(n25815));
   jxor g25647(.dina(n25815), .dinb(n25801), .dout(n25816));
   jxor g25648(.dina(n25816), .dinb(n25665), .dout(n25817));
   jxor g25649(.dina(n25817), .dinb(n25661), .dout(n25818));
-  jxor g25650(.dina(n25818), .dinb(n25658), .dout(\result[10] ));
+  jxor g25650(.dina(n25818), .dinb(n25658), .dout(result[10] ));
   jand g25651(.dina(n25818), .dinb(n25658), .dout(n25820));
   jand g25652(.dina(n25816), .dinb(n25665), .dout(n25821));
   jand g25653(.dina(n25817), .dinb(n25661), .dout(n25822));
@@ -28806,7 +28786,7 @@ module gf_log2 (
   jor  g25804(.dina(n24265), .dinb(n3871), .dout(n25973));
   jand g25805(.dina(n25973), .dinb(n25972), .dout(n25974));
   jand g25806(.dina(n25974), .dinb(n25969), .dout(n25975));
-  jxor g25807(.dina(n25975), .dinb(\a[11] ), .dout(n25976));
+  jxor g25807(.dina(n25975), .dinb(a[11] ), .dout(n25976));
   jnot g25808(.din(n25976), .dout(n25977));
   jxor g25809(.dina(n25977), .dinb(n25968), .dout(n25978));
   jxor g25810(.dina(n25978), .dinb(n25832), .dout(n25979));
@@ -28817,12 +28797,12 @@ module gf_log2 (
   jor  g25815(.dina(n24518), .dinb(n4702), .dout(n25984));
   jand g25816(.dina(n25984), .dinb(n25983), .dout(n25985));
   jand g25817(.dina(n25985), .dinb(n25980), .dout(n25986));
-  jxor g25818(.dina(n25986), .dinb(\a[8] ), .dout(n25987));
+  jxor g25818(.dina(n25986), .dinb(a[8] ), .dout(n25987));
   jnot g25819(.din(n25987), .dout(n25988));
   jxor g25820(.dina(n25988), .dinb(n25979), .dout(n25989));
   jxor g25821(.dina(n25989), .dinb(n25827), .dout(n25990));
   jxor g25822(.dina(n25990), .dinb(n25823), .dout(n25991));
-  jxor g25823(.dina(n25991), .dinb(n25820), .dout(\result[11] ));
+  jxor g25823(.dina(n25991), .dinb(n25820), .dout(result[11] ));
   jand g25824(.dina(n25991), .dinb(n25820), .dout(n25993));
   jand g25825(.dina(n25978), .dinb(n25832), .dout(n25994));
   jand g25826(.dina(n25988), .dinb(n25979), .dout(n25995));
@@ -28836,7 +28816,7 @@ module gf_log2 (
   jor  g25834(.dina(n24738), .dinb(n4702), .dout(n26003));
   jand g25835(.dina(n26003), .dinb(n26002), .dout(n26004));
   jand g25836(.dina(n26004), .dinb(n26001), .dout(n26005));
-  jxor g25837(.dina(n26005), .dinb(\a[8] ), .dout(n26006));
+  jxor g25837(.dina(n26005), .dinb(a[8] ), .dout(n26006));
   jnot g25838(.din(n26006), .dout(n26007));
   jxor g25839(.dina(n26007), .dinb(n26000), .dout(n26008));
   jand g25840(.dina(n25957), .dinb(n25841), .dout(n26009));
@@ -28980,7 +28960,7 @@ module gf_log2 (
   jor  g25978(.dina(n24266), .dinb(n3871), .dout(n26147));
   jand g25979(.dina(n26147), .dinb(n26146), .dout(n26148));
   jand g25980(.dina(n26148), .dinb(n26143), .dout(n26149));
-  jxor g25981(.dina(n26149), .dinb(\a[11] ), .dout(n26150));
+  jxor g25981(.dina(n26149), .dinb(a[11] ), .dout(n26150));
   jxor g25982(.dina(n26150), .dinb(n26142), .dout(n26151));
   jxor g25983(.dina(n26151), .dinb(n26008), .dout(n26152));
   jxor g25984(.dina(n26152), .dinb(n25996), .dout(n26153));
@@ -28988,7 +28968,7 @@ module gf_log2 (
   jand g25986(.dina(n25990), .dinb(n25823), .dout(n26155));
   jor  g25987(.dina(n26155), .dinb(n26154), .dout(n26156));
   jxor g25988(.dina(n26156), .dinb(n26153), .dout(n26157));
-  jxor g25989(.dina(n26157), .dinb(n25993), .dout(\result[12] ));
+  jxor g25989(.dina(n26157), .dinb(n25993), .dout(result[12] ));
   jand g25990(.dina(n26157), .dinb(n25993), .dout(n26159));
   jand g25991(.dina(n26152), .dinb(n25996), .dout(n26160));
   jand g25992(.dina(n26156), .dinb(n26153), .dout(n26161));
@@ -29102,7 +29082,7 @@ module gf_log2 (
   jand g26100(.dina(n26268), .dinb(n26267), .dout(n26269));
   jand g26101(.dina(n26269), .dinb(n26266), .dout(n26270));
   jand g26102(.dina(n26270), .dinb(n26265), .dout(n26271));
-  jxor g26103(.dina(n26271), .dinb(\a[17] ), .dout(n26272));
+  jxor g26103(.dina(n26271), .dinb(a[17] ), .dout(n26272));
   jxor g26104(.dina(n26272), .dinb(n26264), .dout(n26273));
   jxor g26105(.dina(n26273), .dinb(n26259), .dout(n26274));
   jand g26106(.dina(n24077), .dinb(n3423), .dout(n26275));
@@ -29126,12 +29106,12 @@ module gf_log2 (
   jand g26124(.dina(n26292), .dinb(n26291), .dout(n26293));
   jand g26125(.dina(n26293), .dinb(n26290), .dout(n26294));
   jand g26126(.dina(n26294), .dinb(n26289), .dout(n26295));
-  jxor g26127(.dina(n26295), .dinb(\a[11] ), .dout(n26296));
+  jxor g26127(.dina(n26295), .dinb(a[11] ), .dout(n26296));
   jxor g26128(.dina(n26296), .dinb(n26288), .dout(n26297));
   jxor g26129(.dina(n26297), .dinb(n26284), .dout(n26298));
   jxor g26130(.dina(n26298), .dinb(n26165), .dout(n26299));
   jxor g26131(.dina(n26299), .dinb(n26162), .dout(n26300));
-  jxor g26132(.dina(n26300), .dinb(n26159), .dout(\result[13] ));
+  jxor g26132(.dina(n26300), .dinb(n26159), .dout(result[13] ));
   jand g26133(.dina(n26300), .dinb(n26159), .dout(n26302));
   jand g26134(.dina(n26298), .dinb(n26165), .dout(n26303));
   jand g26135(.dina(n26299), .dinb(n26162), .dout(n26304));
@@ -29256,7 +29236,7 @@ module gf_log2 (
   jand g26254(.dina(n26422), .dinb(n26421), .dout(n26423));
   jand g26255(.dina(n26423), .dinb(n26420), .dout(n26424));
   jand g26256(.dina(n26424), .dinb(n26419), .dout(n26425));
-  jxor g26257(.dina(n26425), .dinb(\a[14] ), .dout(n26426));
+  jxor g26257(.dina(n26425), .dinb(a[14] ), .dout(n26426));
   jxor g26258(.dina(n26426), .dinb(n26418), .dout(n26427));
   jxor g26259(.dina(n26427), .dinb(n26313), .dout(n26428));
   jor  g26260(.dina(n24932), .dinb(n4023), .dout(n26429));
@@ -29266,11 +29246,11 @@ module gf_log2 (
   jor  g26264(.dina(n24518), .dinb(n3871), .dout(n26433));
   jand g26265(.dina(n26433), .dinb(n26432), .dout(n26434));
   jand g26266(.dina(n26434), .dinb(n26429), .dout(n26435));
-  jxor g26267(.dina(n26435), .dinb(\a[11] ), .dout(n26436));
+  jxor g26267(.dina(n26435), .dinb(a[11] ), .dout(n26436));
   jxor g26268(.dina(n26436), .dinb(n26428), .dout(n26437));
   jxor g26269(.dina(n26437), .dinb(n26309), .dout(n26438));
   jxor g26270(.dina(n26438), .dinb(n26305), .dout(n26439));
-  jxor g26271(.dina(n26439), .dinb(n26302), .dout(\result[14] ));
+  jxor g26271(.dina(n26439), .dinb(n26302), .dout(result[14] ));
   jand g26272(.dina(n26439), .dinb(n26302), .dout(n26441));
   jnot g26273(.din(n26313), .dout(n26442));
   jand g26274(.dina(n26427), .dinb(n26442), .dout(n26443));
@@ -29287,7 +29267,7 @@ module gf_log2 (
   jor  g26285(.dina(n24738), .dinb(n3871), .dout(n26454));
   jand g26286(.dina(n26454), .dinb(n26453), .dout(n26455));
   jand g26287(.dina(n26455), .dinb(n26452), .dout(n26456));
-  jxor g26288(.dina(n26456), .dinb(\a[11] ), .dout(n26457));
+  jxor g26288(.dina(n26456), .dinb(a[11] ), .dout(n26457));
   jxor g26289(.dina(n26457), .dinb(n26451), .dout(n26458));
   jnot g26290(.din(n26322), .dout(n26459));
   jand g26291(.dina(n26407), .dinb(n26459), .dout(n26460));
@@ -29404,7 +29384,7 @@ module gf_log2 (
   jand g26402(.dina(n26570), .dinb(n26569), .dout(n26571));
   jand g26403(.dina(n26571), .dinb(n26568), .dout(n26572));
   jand g26404(.dina(n26572), .dinb(n26567), .dout(n26573));
-  jxor g26405(.dina(n26573), .dinb(\a[14] ), .dout(n26574));
+  jxor g26405(.dina(n26573), .dinb(a[14] ), .dout(n26574));
   jxor g26406(.dina(n26574), .dinb(n26566), .dout(n26575));
   jxor g26407(.dina(n26575), .dinb(n26458), .dout(n26576));
   jxor g26408(.dina(n26576), .dinb(n26446), .dout(n26577));
@@ -29412,7 +29392,7 @@ module gf_log2 (
   jand g26410(.dina(n26438), .dinb(n26305), .dout(n26579));
   jor  g26411(.dina(n26579), .dinb(n26578), .dout(n26580));
   jxor g26412(.dina(n26580), .dinb(n26577), .dout(n26581));
-  jxor g26413(.dina(n26581), .dinb(n26441), .dout(\result[15] ));
+  jxor g26413(.dina(n26581), .dinb(n26441), .dout(result[15] ));
   jand g26414(.dina(n26581), .dinb(n26441), .dout(n26583));
   jand g26415(.dina(n26576), .dinb(n26446), .dout(n26584));
   jand g26416(.dina(n26580), .dinb(n26577), .dout(n26585));
@@ -29545,12 +29525,12 @@ module gf_log2 (
   jand g26543(.dina(n26711), .dinb(n26710), .dout(n26712));
   jand g26544(.dina(n26712), .dinb(n26709), .dout(n26713));
   jand g26545(.dina(n26713), .dinb(n26708), .dout(n26714));
-  jxor g26546(.dina(n26714), .dinb(\a[14] ), .dout(n26715));
+  jxor g26546(.dina(n26714), .dinb(a[14] ), .dout(n26715));
   jxor g26547(.dina(n26715), .dinb(n26707), .dout(n26716));
   jxor g26548(.dina(n26716), .dinb(n26702), .dout(n26717));
   jxor g26549(.dina(n26717), .dinb(n26590), .dout(n26718));
   jxor g26550(.dina(n26718), .dinb(n26586), .dout(n26719));
-  jxor g26551(.dina(n26719), .dinb(n26583), .dout(\result[16] ));
+  jxor g26551(.dina(n26719), .dinb(n26583), .dout(result[16] ));
   jand g26552(.dina(n26719), .dinb(n26583), .dout(n26721));
   jand g26553(.dina(n26717), .dinb(n26590), .dout(n26722));
   jand g26554(.dina(n26718), .dinb(n26586), .dout(n26723));
@@ -29661,7 +29641,7 @@ module gf_log2 (
   jand g26659(.dina(n26827), .dinb(n26826), .dout(n26828));
   jand g26660(.dina(n26828), .dinb(n26825), .dout(n26829));
   jand g26661(.dina(n26829), .dinb(n26824), .dout(n26830));
-  jxor g26662(.dina(n26830), .dinb(\a[17] ), .dout(n26831));
+  jxor g26662(.dina(n26830), .dinb(a[17] ), .dout(n26831));
   jxor g26663(.dina(n26831), .dinb(n26823), .dout(n26832));
   jxor g26664(.dina(n26832), .dinb(n26732), .dout(n26833));
   jor  g26665(.dina(n24932), .dinb(n3424), .dout(n26834));
@@ -29671,11 +29651,11 @@ module gf_log2 (
   jor  g26669(.dina(n24518), .dinb(n3211), .dout(n26838));
   jand g26670(.dina(n26838), .dinb(n26837), .dout(n26839));
   jand g26671(.dina(n26839), .dinb(n26834), .dout(n26840));
-  jxor g26672(.dina(n26840), .dinb(\a[14] ), .dout(n26841));
+  jxor g26672(.dina(n26840), .dinb(a[14] ), .dout(n26841));
   jxor g26673(.dina(n26841), .dinb(n26833), .dout(n26842));
   jxor g26674(.dina(n26842), .dinb(n26728), .dout(n26843));
   jxor g26675(.dina(n26843), .dinb(n26724), .dout(n26844));
-  jxor g26676(.dina(n26844), .dinb(n26721), .dout(\result[17] ));
+  jxor g26676(.dina(n26844), .dinb(n26721), .dout(result[17] ));
   jand g26677(.dina(n26844), .dinb(n26721), .dout(n26846));
   jnot g26678(.din(n26732), .dout(n26847));
   jand g26679(.dina(n26832), .dinb(n26847), .dout(n26848));
@@ -29693,7 +29673,7 @@ module gf_log2 (
   jor  g26691(.dina(n24738), .dinb(n3211), .dout(n26860));
   jand g26692(.dina(n26860), .dinb(n26859), .dout(n26861));
   jand g26693(.dina(n26861), .dinb(n26858), .dout(n26862));
-  jxor g26694(.dina(n26862), .dinb(\a[14] ), .dout(n26863));
+  jxor g26694(.dina(n26862), .dinb(a[14] ), .dout(n26863));
   jxor g26695(.dina(n26863), .dinb(n26857), .dout(n26864));
   jnot g26696(.din(n26740), .dout(n26865));
   jand g26697(.dina(n26812), .dinb(n26865), .dout(n26866));
@@ -29797,7 +29777,7 @@ module gf_log2 (
   jand g26795(.dina(n26963), .dinb(n26962), .dout(n26964));
   jand g26796(.dina(n26964), .dinb(n26961), .dout(n26965));
   jand g26797(.dina(n26965), .dinb(n26960), .dout(n26966));
-  jxor g26798(.dina(n26966), .dinb(\a[17] ), .dout(n26967));
+  jxor g26798(.dina(n26966), .dinb(a[17] ), .dout(n26967));
   jxor g26799(.dina(n26967), .dinb(n26959), .dout(n26968));
   jxor g26800(.dina(n26968), .dinb(n26864), .dout(n26969));
   jxor g26801(.dina(n26969), .dinb(n26852), .dout(n26970));
@@ -29805,7 +29785,7 @@ module gf_log2 (
   jand g26803(.dina(n26843), .dinb(n26724), .dout(n26972));
   jor  g26804(.dina(n26972), .dinb(n26971), .dout(n26973));
   jxor g26805(.dina(n26973), .dinb(n26970), .dout(n26974));
-  jxor g26806(.dina(n26974), .dinb(n26846), .dout(\result[18] ));
+  jxor g26806(.dina(n26974), .dinb(n26846), .dout(result[18] ));
   jand g26807(.dina(n26974), .dinb(n26846), .dout(n26976));
   jand g26808(.dina(n26969), .dinb(n26852), .dout(n26977));
   jand g26809(.dina(n26973), .dinb(n26970), .dout(n26978));
@@ -29917,12 +29897,12 @@ module gf_log2 (
   jor  g26915(.dina(n24304), .dinb(n2758), .dout(n27084));
   jand g26916(.dina(n27084), .dinb(n27083), .dout(n27085));
   jand g26917(.dina(n27085), .dinb(n27080), .dout(n27086));
-  jxor g26918(.dina(n27086), .dinb(\a[17] ), .dout(n27087));
+  jxor g26918(.dina(n27086), .dinb(a[17] ), .dout(n27087));
   jxor g26919(.dina(n27087), .dinb(n27079), .dout(n27088));
   jxor g26920(.dina(n27088), .dinb(n27075), .dout(n27089));
   jxor g26921(.dina(n27089), .dinb(n26983), .dout(n27090));
   jxor g26922(.dina(n27090), .dinb(n26979), .dout(n27091));
-  jxor g26923(.dina(n27091), .dinb(n26976), .dout(\result[19] ));
+  jxor g26923(.dina(n27091), .dinb(n26976), .dout(result[19] ));
   jand g26924(.dina(n27091), .dinb(n26976), .dout(n27093));
   jand g26925(.dina(n27089), .dinb(n26983), .dout(n27094));
   jand g26926(.dina(n27090), .dinb(n26979), .dout(n27095));
@@ -30024,7 +30004,7 @@ module gf_log2 (
   jor  g27022(.dina(n24265), .dinb(n2186), .dout(n27191));
   jand g27023(.dina(n27191), .dinb(n27190), .dout(n27192));
   jand g27024(.dina(n27192), .dinb(n27187), .dout(n27193));
-  jxor g27025(.dina(n27193), .dinb(\a[20] ), .dout(n27194));
+  jxor g27025(.dina(n27193), .dinb(a[20] ), .dout(n27194));
   jxor g27026(.dina(n27194), .dinb(n27186), .dout(n27195));
   jxor g27027(.dina(n27195), .dinb(n27104), .dout(n27196));
   jor  g27028(.dina(n24932), .dinb(n2744), .dout(n27197));
@@ -30034,11 +30014,11 @@ module gf_log2 (
   jor  g27032(.dina(n24518), .dinb(n2758), .dout(n27201));
   jand g27033(.dina(n27201), .dinb(n27200), .dout(n27202));
   jand g27034(.dina(n27202), .dinb(n27197), .dout(n27203));
-  jxor g27035(.dina(n27203), .dinb(\a[17] ), .dout(n27204));
+  jxor g27035(.dina(n27203), .dinb(a[17] ), .dout(n27204));
   jxor g27036(.dina(n27204), .dinb(n27196), .dout(n27205));
   jxor g27037(.dina(n27205), .dinb(n27100), .dout(n27206));
   jxor g27038(.dina(n27206), .dinb(n27096), .dout(n27207));
-  jxor g27039(.dina(n27207), .dinb(n27093), .dout(\result[20] ));
+  jxor g27039(.dina(n27207), .dinb(n27093), .dout(result[20] ));
   jand g27040(.dina(n27207), .dinb(n27093), .dout(n27209));
   jnot g27041(.din(n27104), .dout(n27210));
   jand g27042(.dina(n27195), .dinb(n27210), .dout(n27211));
@@ -30054,7 +30034,7 @@ module gf_log2 (
   jor  g27052(.dina(n24738), .dinb(n2758), .dout(n27221));
   jand g27053(.dina(n27221), .dinb(n27220), .dout(n27222));
   jand g27054(.dina(n27222), .dinb(n27219), .dout(n27223));
-  jxor g27055(.dina(n27223), .dinb(\a[17] ), .dout(n27224));
+  jxor g27055(.dina(n27223), .dinb(a[17] ), .dout(n27224));
   jxor g27056(.dina(n27224), .dinb(n27218), .dout(n27225));
   jand g27057(.dina(n27173), .dinb(n27114), .dout(n27226));
   jnot g27058(.din(n27226), .dout(n27227));
@@ -30143,7 +30123,7 @@ module gf_log2 (
   jand g27141(.dina(n27309), .dinb(n27308), .dout(n27310));
   jand g27142(.dina(n27310), .dinb(n27307), .dout(n27311));
   jand g27143(.dina(n27311), .dinb(n27306), .dout(n27312));
-  jxor g27144(.dina(n27312), .dinb(\a[20] ), .dout(n27313));
+  jxor g27144(.dina(n27312), .dinb(a[20] ), .dout(n27313));
   jxor g27145(.dina(n27313), .dinb(n27305), .dout(n27314));
   jxor g27146(.dina(n27314), .dinb(n27225), .dout(n27315));
   jxor g27147(.dina(n27315), .dinb(n27214), .dout(n27316));
@@ -30151,7 +30131,7 @@ module gf_log2 (
   jand g27149(.dina(n27206), .dinb(n27096), .dout(n27318));
   jor  g27150(.dina(n27318), .dinb(n27317), .dout(n27319));
   jxor g27151(.dina(n27319), .dinb(n27316), .dout(n27320));
-  jxor g27152(.dina(n27320), .dinb(n27209), .dout(\result[21] ));
+  jxor g27152(.dina(n27320), .dinb(n27209), .dout(result[21] ));
   jand g27153(.dina(n27320), .dinb(n27209), .dout(n27322));
   jand g27154(.dina(n27315), .dinb(n27214), .dout(n27323));
   jand g27155(.dina(n27319), .dinb(n27316), .dout(n27324));
@@ -30202,7 +30182,7 @@ module gf_log2 (
   jand g27200(.dina(n27368), .dinb(n27365), .dout(n27369));
   jxor g27201(.dina(n27369), .dinb(n27268), .dout(n27370));
   jor  g27202(.dina(n24930), .dinb(n21142), .dout(n27371));
-  jxor g27203(.dina(n27371), .dinb(\a[17] ), .dout(n27372));
+  jxor g27203(.dina(n27371), .dinb(a[17] ), .dout(n27372));
   jxor g27204(.dina(n27372), .dinb(n27370), .dout(n27373));
   jand g27205(.dina(n21976), .dinb(n5076), .dout(n27374));
   jand g27206(.dina(n21974), .dinb(n5084), .dout(n27375));
@@ -30247,12 +30227,12 @@ module gf_log2 (
   jand g27245(.dina(n27413), .dinb(n27412), .dout(n27414));
   jand g27246(.dina(n27414), .dinb(n27411), .dout(n27415));
   jand g27247(.dina(n27415), .dinb(n27410), .dout(n27416));
-  jxor g27248(.dina(n27416), .dinb(\a[20] ), .dout(n27417));
+  jxor g27248(.dina(n27416), .dinb(a[20] ), .dout(n27417));
   jxor g27249(.dina(n27417), .dinb(n27409), .dout(n27418));
   jxor g27250(.dina(n27418), .dinb(n27405), .dout(n27419));
   jxor g27251(.dina(n27419), .dinb(n27330), .dout(n27420));
   jxor g27252(.dina(n27420), .dinb(n27325), .dout(n27421));
-  jxor g27253(.dina(n27421), .dinb(n27322), .dout(\result[22] ));
+  jxor g27253(.dina(n27421), .dinb(n27322), .dout(result[22] ));
   jand g27254(.dina(n27421), .dinb(n27322), .dout(n27423));
   jand g27255(.dina(n27419), .dinb(n27330), .dout(n27424));
   jand g27256(.dina(n27420), .dinb(n27325), .dout(n27425));
@@ -30339,7 +30319,7 @@ module gf_log2 (
   jand g27337(.dina(n27505), .dinb(n27504), .dout(n27506));
   jand g27338(.dina(n27506), .dinb(n27503), .dout(n27507));
   jand g27339(.dina(n27507), .dinb(n27502), .dout(n27508));
-  jxor g27340(.dina(n27508), .dinb(\a[23] ), .dout(n27509));
+  jxor g27340(.dina(n27508), .dinb(a[23] ), .dout(n27509));
   jxor g27341(.dina(n27509), .dinb(n27501), .dout(n27510));
   jxor g27342(.dina(n27510), .dinb(n27436), .dout(n27511));
   jnot g27343(.din(n27511), .dout(n27512));
@@ -30350,11 +30330,11 @@ module gf_log2 (
   jand g27348(.dina(n27516), .dinb(n27515), .dout(n27517));
   jand g27349(.dina(n27517), .dinb(n27514), .dout(n27518));
   jand g27350(.dina(n27518), .dinb(n27513), .dout(n27519));
-  jxor g27351(.dina(n27519), .dinb(\a[20] ), .dout(n27520));
+  jxor g27351(.dina(n27519), .dinb(a[20] ), .dout(n27520));
   jxor g27352(.dina(n27520), .dinb(n27512), .dout(n27521));
   jxor g27353(.dina(n27521), .dinb(n27431), .dout(n27522));
   jxor g27354(.dina(n27522), .dinb(n27426), .dout(n27523));
-  jxor g27355(.dina(n27523), .dinb(n27423), .dout(\result[23] ));
+  jxor g27355(.dina(n27523), .dinb(n27423), .dout(result[23] ));
   jand g27356(.dina(n27523), .dinb(n27423), .dout(n27525));
   jand g27357(.dina(n27510), .dinb(n27436), .dout(n27526));
   jnot g27358(.din(n27526), .dout(n27527));
@@ -30370,7 +30350,7 @@ module gf_log2 (
   jor  g27368(.dina(n24738), .dinb(n2186), .dout(n27537));
   jand g27369(.dina(n27537), .dinb(n27536), .dout(n27538));
   jand g27370(.dina(n27538), .dinb(n27535), .dout(n27539));
-  jxor g27371(.dina(n27539), .dinb(\a[20] ), .dout(n27540));
+  jxor g27371(.dina(n27539), .dinb(a[20] ), .dout(n27540));
   jxor g27372(.dina(n27540), .dinb(n27534), .dout(n27541));
   jand g27373(.dina(n27488), .dinb(n27446), .dout(n27542));
   jnot g27374(.din(n27542), .dout(n27543));
@@ -30439,7 +30419,7 @@ module gf_log2 (
   jor  g27437(.dina(n24266), .dinb(n1617), .dout(n27606));
   jand g27438(.dina(n27606), .dinb(n27605), .dout(n27607));
   jand g27439(.dina(n27607), .dinb(n27602), .dout(n27608));
-  jxor g27440(.dina(n27608), .dinb(\a[23] ), .dout(n27609));
+  jxor g27440(.dina(n27608), .dinb(a[23] ), .dout(n27609));
   jxor g27441(.dina(n27609), .dinb(n27601), .dout(n27610));
   jxor g27442(.dina(n27610), .dinb(n27541), .dout(n27611));
   jxor g27443(.dina(n27611), .dinb(n27530), .dout(n27612));
@@ -30447,7 +30427,7 @@ module gf_log2 (
   jand g27445(.dina(n27522), .dinb(n27426), .dout(n27614));
   jor  g27446(.dina(n27614), .dinb(n27613), .dout(n27615));
   jxor g27447(.dina(n27615), .dinb(n27612), .dout(n27616));
-  jxor g27448(.dina(n27616), .dinb(n27525), .dout(\result[24] ));
+  jxor g27448(.dina(n27616), .dinb(n27525), .dout(result[24] ));
   jand g27449(.dina(n27616), .dinb(n27525), .dout(n27618));
   jand g27450(.dina(n27611), .dinb(n27530), .dout(n27619));
   jand g27451(.dina(n27615), .dinb(n27612), .dout(n27620));
@@ -30490,7 +30470,7 @@ module gf_log2 (
   jand g27488(.dina(n27656), .dinb(n27649), .dout(n27657));
   jxor g27489(.dina(n27657), .dinb(n27474), .dout(n27658));
   jor  g27490(.dina(n24930), .dinb(n22044), .dout(n27659));
-  jxor g27491(.dina(n27659), .dinb(\a[20] ), .dout(n27660));
+  jxor g27491(.dina(n27659), .dinb(a[20] ), .dout(n27660));
   jxor g27492(.dina(n27660), .dinb(n27658), .dout(n27661));
   jxor g27493(.dina(n27661), .dinb(n27640), .dout(n27662));
   jand g27494(.dina(n22267), .dinb(n5076), .dout(n27663));
@@ -30534,12 +30514,12 @@ module gf_log2 (
   jand g27532(.dina(n27700), .dinb(n27699), .dout(n27701));
   jand g27533(.dina(n27701), .dinb(n27698), .dout(n27702));
   jand g27534(.dina(n27702), .dinb(n27697), .dout(n27703));
-  jxor g27535(.dina(n27703), .dinb(\a[23] ), .dout(n27704));
+  jxor g27535(.dina(n27703), .dinb(a[23] ), .dout(n27704));
   jxor g27536(.dina(n27704), .dinb(n27696), .dout(n27705));
   jxor g27537(.dina(n27705), .dinb(n27692), .dout(n27706));
   jxor g27538(.dina(n27706), .dinb(n27626), .dout(n27707));
   jxor g27539(.dina(n27707), .dinb(n27621), .dout(n27708));
-  jxor g27540(.dina(n27708), .dinb(n27618), .dout(\result[25] ));
+  jxor g27540(.dina(n27708), .dinb(n27618), .dout(result[25] ));
   jand g27541(.dina(n27708), .dinb(n27618), .dout(n27710));
   jand g27542(.dina(n27706), .dinb(n27626), .dout(n27711));
   jand g27543(.dina(n27707), .dinb(n27621), .dout(n27712));
@@ -30611,7 +30591,7 @@ module gf_log2 (
   jor  g27609(.dina(n24265), .dinb(n1805), .dout(n27778));
   jand g27610(.dina(n27778), .dinb(n27777), .dout(n27779));
   jand g27611(.dina(n27779), .dinb(n27774), .dout(n27780));
-  jxor g27612(.dina(n27780), .dinb(\a[26] ), .dout(n27781));
+  jxor g27612(.dina(n27780), .dinb(a[26] ), .dout(n27781));
   jxor g27613(.dina(n27781), .dinb(n27773), .dout(n27782));
   jxor g27614(.dina(n27782), .dinb(n27723), .dout(n27783));
   jnot g27615(.din(n27783), .dout(n27784));
@@ -30622,11 +30602,11 @@ module gf_log2 (
   jand g27620(.dina(n27788), .dinb(n27787), .dout(n27789));
   jand g27621(.dina(n27789), .dinb(n27786), .dout(n27790));
   jand g27622(.dina(n27790), .dinb(n27785), .dout(n27791));
-  jxor g27623(.dina(n27791), .dinb(\a[23] ), .dout(n27792));
+  jxor g27623(.dina(n27791), .dinb(a[23] ), .dout(n27792));
   jxor g27624(.dina(n27792), .dinb(n27784), .dout(n27793));
   jxor g27625(.dina(n27793), .dinb(n27718), .dout(n27794));
   jxor g27626(.dina(n27794), .dinb(n27713), .dout(n27795));
-  jxor g27627(.dina(n27795), .dinb(n27710), .dout(\result[26] ));
+  jxor g27627(.dina(n27795), .dinb(n27710), .dout(result[26] ));
   jand g27628(.dina(n27795), .dinb(n27710), .dout(n27797));
   jnot g27629(.din(n27797), .dout(n27798));
   jand g27630(.dina(n27782), .dinb(n27723), .dout(n27799));
@@ -30643,7 +30623,7 @@ module gf_log2 (
   jor  g27641(.dina(n24930), .dinb(n22185), .dout(n27810));
   jand g27642(.dina(n27810), .dinb(n27809), .dout(n27811));
   jand g27643(.dina(n27811), .dinb(n27808), .dout(n27812));
-  jxor g27644(.dina(n27812), .dinb(\a[23] ), .dout(n27813));
+  jxor g27644(.dina(n27812), .dinb(a[23] ), .dout(n27813));
   jxor g27645(.dina(n27813), .dinb(n27807), .dout(n27814));
   jand g27646(.dina(n27760), .dinb(n27731), .dout(n27815));
   jnot g27647(.din(n27815), .dout(n27816));
@@ -30698,7 +30678,7 @@ module gf_log2 (
   jor  g27696(.dina(n24266), .dinb(n1805), .dout(n27865));
   jand g27697(.dina(n27865), .dinb(n27864), .dout(n27866));
   jand g27698(.dina(n27866), .dinb(n27861), .dout(n27867));
-  jxor g27699(.dina(n27867), .dinb(\a[26] ), .dout(n27868));
+  jxor g27699(.dina(n27867), .dinb(a[26] ), .dout(n27868));
   jxor g27700(.dina(n27868), .dinb(n27860), .dout(n27869));
   jxor g27701(.dina(n27869), .dinb(n27814), .dout(n27870));
   jxor g27702(.dina(n27870), .dinb(n27803), .dout(n27871));
@@ -30707,7 +30687,7 @@ module gf_log2 (
   jand g27705(.dina(n27794), .dinb(n27713), .dout(n27874));
   jor  g27706(.dina(n27874), .dinb(n27873), .dout(n27875));
   jxor g27707(.dina(n27875), .dinb(n27872), .dout(n27876));
-  jxor g27708(.dina(n27876), .dinb(n27798), .dout(\result[27] ));
+  jxor g27708(.dina(n27876), .dinb(n27798), .dout(result[27] ));
   jor  g27709(.dina(n27876), .dinb(n27798), .dout(n27878));
   jnot g27710(.din(n27878), .dout(n27879));
   jand g27711(.dina(n27870), .dinb(n27803), .dout(n27880));
@@ -30728,7 +30708,7 @@ module gf_log2 (
   jand g27726(.dina(n27894), .dinb(n27893), .dout(n27895));
   jand g27727(.dina(n27895), .dinb(n27892), .dout(n27896));
   jand g27728(.dina(n27896), .dinb(n27891), .dout(n27897));
-  jxor g27729(.dina(n27897), .dinb(\a[26] ), .dout(n27898));
+  jxor g27729(.dina(n27897), .dinb(a[26] ), .dout(n27898));
   jxor g27730(.dina(n27898), .dinb(n27890), .dout(n27899));
   jand g27731(.dina(n27847), .dinb(n27826), .dout(n27900));
   jand g27732(.dina(n27848), .dinb(n27819), .dout(n27901));
@@ -30775,7 +30755,7 @@ module gf_log2 (
   jxor g27773(.dina(n27941), .dinb(n27899), .dout(n27942));
   jxor g27774(.dina(n27942), .dinb(n27887), .dout(n27943));
   jxor g27775(.dina(n27943), .dinb(n27882), .dout(n27944));
-  jxor g27776(.dina(n27944), .dinb(n27879), .dout(\result[28] ));
+  jxor g27776(.dina(n27944), .dinb(n27879), .dout(result[28] ));
   jand g27777(.dina(n27944), .dinb(n27879), .dout(n27946));
   jand g27778(.dina(n27942), .dinb(n27887), .dout(n27947));
   jand g27779(.dina(n27943), .dinb(n27882), .dout(n27948));
@@ -30830,7 +30810,7 @@ module gf_log2 (
   jor  g27828(.dina(n24265), .dinb(n3683), .dout(n27997));
   jand g27829(.dina(n27997), .dinb(n27996), .dout(n27998));
   jand g27830(.dina(n27998), .dinb(n27993), .dout(n27999));
-  jxor g27831(.dina(n27999), .dinb(\a[29] ), .dout(n28000));
+  jxor g27831(.dina(n27999), .dinb(a[29] ), .dout(n28000));
   jxor g27832(.dina(n28000), .dinb(n27992), .dout(n28001));
   jxor g27833(.dina(n28001), .dinb(n27957), .dout(n28002));
   jor  g27834(.dina(n24932), .dinb(n2303), .dout(n28003));
@@ -30840,12 +30820,12 @@ module gf_log2 (
   jor  g27838(.dina(n24518), .dinb(n1805), .dout(n28007));
   jand g27839(.dina(n28007), .dinb(n28006), .dout(n28008));
   jand g27840(.dina(n28008), .dinb(n28003), .dout(n28009));
-  jxor g27841(.dina(n28009), .dinb(\a[26] ), .dout(n28010));
+  jxor g27841(.dina(n28009), .dinb(a[26] ), .dout(n28010));
   jnot g27842(.din(n28010), .dout(n28011));
   jxor g27843(.dina(n28011), .dinb(n28002), .dout(n28012));
   jxor g27844(.dina(n28012), .dinb(n27954), .dout(n28013));
   jxor g27845(.dina(n28013), .dinb(n27949), .dout(n28014));
-  jxor g27846(.dina(n28014), .dinb(n27946), .dout(\result[29] ));
+  jxor g27846(.dina(n28014), .dinb(n27946), .dout(result[29] ));
   jnot g27847(.din(n27946), .dout(n28016));
   jnot g27848(.din(n28014), .dout(n28017));
   jor  g27849(.dina(n28017), .dinb(n28016), .dout(n28018));
@@ -30891,7 +30871,7 @@ module gf_log2 (
   jor  g27889(.dina(n24738), .dinb(n1805), .dout(n28058));
   jand g27890(.dina(n28058), .dinb(n28057), .dout(n28059));
   jand g27891(.dina(n28059), .dinb(n28056), .dout(n28060));
-  jxor g27892(.dina(n28060), .dinb(\a[26] ), .dout(n28061));
+  jxor g27892(.dina(n28060), .dinb(a[26] ), .dout(n28061));
   jor  g27893(.dina(n24516), .dinb(n4343), .dout(n28062));
   jor  g27894(.dina(n24304), .dinb(n4346), .dout(n28063));
   jor  g27895(.dina(n24518), .dinb(n4348), .dout(n28064));
@@ -30899,13 +30879,13 @@ module gf_log2 (
   jor  g27897(.dina(n24266), .dinb(n3683), .dout(n28066));
   jand g27898(.dina(n28066), .dinb(n28065), .dout(n28067));
   jand g27899(.dina(n28067), .dinb(n28062), .dout(n28068));
-  jxor g27900(.dina(n28068), .dinb(\a[29] ), .dout(n28069));
+  jxor g27900(.dina(n28068), .dinb(a[29] ), .dout(n28069));
   jxor g27901(.dina(n28069), .dinb(n28061), .dout(n28070));
   jxor g27902(.dina(n28070), .dinb(n28055), .dout(n28071));
   jxor g27903(.dina(n28071), .dinb(n28024), .dout(n28072));
   jnot g27904(.din(n28072), .dout(n28073));
   jxor g27905(.dina(n28073), .dinb(n28021), .dout(n28074));
-  jxor g27906(.dina(n28074), .dinb(n28018), .dout(\result[30] ));
+  jxor g27906(.dina(n28074), .dinb(n28018), .dout(result[30] ));
   jor  g27907(.dina(n28074), .dinb(n28018), .dout(n28076));
   jand g27908(.dina(n28071), .dinb(n28024), .dout(n28077));
   jand g27909(.dina(n28072), .dinb(n28021), .dout(n28078));
@@ -30947,7 +30927,7 @@ module gf_log2 (
   jxor g27945(.dina(n28113), .dinb(n28112), .dout(n28114));
   jxor g27946(.dina(n28114), .dinb(n28107), .dout(n28115));
   jxor g27947(.dina(n28115), .dinb(n28079), .dout(n28116));
-  jxor g27948(.dina(n28116), .dinb(n28076), .dout(\result[31] ));
+  jxor g27948(.dina(n28116), .dinb(n28076), .dout(result[31] ));
 endmodule
 
 
