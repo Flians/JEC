@@ -175,6 +175,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
         iterStart = line.begin();
         iterEnd = line.end();
         int bits_begin = -1, bits_end = -1;
+        bool has_bits = false;
         if (regex_search(iterStart, iterEnd, match, pattern))
         {
             string item = match[0];
@@ -212,8 +213,11 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                     {
                         item = match[0];
                         iterStart = match[0].second;
-                        parse_bits(item, bits_begin, bits_end);
-                        if (bits_begin > 0)
+                        if (!has_bits)
+                        {
+                            has_bits = parse_bits(item, bits_begin, bits_end);
+                        }
+                        if (has_bits)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
@@ -246,8 +250,11 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                     {
                         item = match[0];
                         iterStart = match[0].second;
-                        parse_bits(item, bits_begin, bits_end);
-                        if (bits_begin > 0)
+                        if (!has_bits)
+                        {
+                            has_bits = parse_bits(item, bits_begin, bits_end);
+                        }
+                        if (has_bits)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
@@ -271,8 +278,11 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                     {
                         item = match[0];
                         iterStart = match[0].second;
-                        parse_bits(item, bits_begin, bits_end);
-                        if (bits_begin >= 0)
+                        if (!has_bits)
+                        {
+                            has_bits = parse_bits(item, bits_begin, bits_end);
+                        }
+                        if (has_bits)
                         {
                             for (int i = bits_begin; i <= bits_end; ++i)
                             {
