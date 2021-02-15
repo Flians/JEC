@@ -64,20 +64,17 @@ const std::unordered_map<GType, string, EnumClassHash> GType_Str = {
 Node::~Node()
 {
     // cout << "~delete Node: " << this->name << endl;
-    for (auto &in : this->ins)
+    std::size_t in_size = this->ins.size();
+    while ((in_size--) > 0)
     {
-        if (in.second)
-        {
-            delete in.second;
-        }
+        delete this->ins.begin()->second;
     }
     this->ins.clear();
-    for (auto &out : this->outs)
+
+    std::size_t out_size = this->outs.size();
+    while ((out_size--) > 0)
     {
-        if (out.second)
-        {
-            delete out.second;
-        }
+        delete this->outs.begin()->second;
     }
     this->outs.clear();
 }

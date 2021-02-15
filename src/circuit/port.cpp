@@ -26,6 +26,22 @@ Port::~Port()
         delete *this->out_edges.begin();
     }
     this->out_edges.clear();
+    if (this->own)
+    {
+        if (this->type == PType::_IN)
+        {
+            this->own->ins.erase(this->name);
+        }
+        else if (this->type == PType::_OUT)
+        {
+            this->own->outs.erase(this->name);
+        }
+        else
+        {
+            this->own->ins.erase(this->name);
+            this->own->outs.erase(this->name);
+        }
+    }
     this->own = nullptr;
 }
 

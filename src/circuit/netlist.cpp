@@ -44,7 +44,7 @@ Netlist::Netlist(ifstream &golden, ifstream &revised)
 Netlist::~Netlist()
 {
     Util::cleanVP(this->gates);
-    Util::cleanVP(this->ports);
+    vector<Port *>().swap(this->ports);
     this->map_PIs.clear();
     this->map_POs.clear();
     JINFO("The netlist is destroyed!");
