@@ -3,9 +3,9 @@ import os
 def rename(root, prefix):
     files = os.listdir(root)
     for i, file in enumerate(files):
-        print(file)
-        if file.find('_') != -1:
-            NewName = os.path.join(root, prefix + '_'.join(file.split('_')[1:]))
+        if file.find('_syn') != -1:
+            print(file)
+            NewName = os.path.join(root, prefix + file.split('_')[0] + ".v")
             OldName = os.path.join(root, file)
             os.rename(OldName, NewName)
 
