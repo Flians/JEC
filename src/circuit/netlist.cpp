@@ -41,9 +41,12 @@ Netlist::~Netlist()
     for (std::size_t i = 0; i < this->num_gate; ++i)
     {
         auto &cur = this->gates[i];
-        vector<Node *>().swap(cur->ins);
-        vector<Node *>().swap(cur->outs);
-        delete cur;
+        if (cur)
+        {
+            vector<Node *>().swap(cur->ins);
+            vector<Node *>().swap(cur->outs);
+            delete cur;
+        }
     }
     vector<Node *>().swap(this->gates);
     // Util::cleanVP(this->gates);

@@ -21,7 +21,7 @@ std::unordered_map<string, SMT> Str_SMT = {
 
 vector<double> workflow(const char *golden, const char *revise, const char *output, SMT smt, bool incremental = false, bool merge = true)
 {
-    vector<double> times(4, 0.0);
+    vector<double> times(6, 0.0);
     clock_t startTime, endTime, tmp;
     startTime = clock();
     /* parse Verilog files */
@@ -38,10 +38,12 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
     cout << "The cleaning time is: " << (double)(tmp - startTime) / CLOCKS_PER_SEC << " S" << endl;
     if (!Util::path_balance(&miter))
     {
+        times[4] = 0;
         JWARN("The netlist '" + miter.name + "' is not path_balanced!");
     }
     else
     {
+        times[4] = 1;
         JWARN("The netlist '" + miter.name + "' is path_balanced!");
     }
     cout << "The path balancing time is: " << (double)(clock() - tmp) / CLOCKS_PER_SEC << " S" << endl;
@@ -75,6 +77,7 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
         jec_.evaluate_from_PIs_to_POs(&miter);
     }
     endTime = clock();
+    times[5] = static_cast<double>(miter.getProperty(PROPERTIES::EQ));
     times[2] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
     JINFO("The simulating time is: " + std::to_string(times[2]) + " S");
     return times;
@@ -97,12 +100,12 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
         "decoder",
         // "divisor",
         // "log2",
-        "max",
+        // "max",
         // "multiplier",
         "sin"};
     int patch = 1;
     size_t num_case = cases.size();
-    vector<vector<double>> avg(num_case, vector<double>(4, 0.0));
+    vector<vector<double>> avg(num_case, vector<double>(6, 0.0));
     for (int i = 0; i < patch; ++i)
     {
         cout << ">>> Iterator #" << i + 1 << endl;
@@ -114,13 +117,20 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
             avg[j][1] += runtimes[1];
             avg[j][2] += runtimes[2];
             avg[j][3] += runtimes[3];
+            avg[j][4] += runtimes[4];
+            avg[j][5] += runtimes[5];
         }
     }
     cout << ">>> Iterator over!\n"
          << (incremental ? "Incremental" : "Unincremental") << endl;
     for (size_t j = 0; j < num_case; ++j)
     {
-        cout << fixed << setprecision(6) << cases[j] << "\t" << avg[j][0] / patch << "\t" << avg[j][1] / patch << "\t" << avg[j][2] / patch << "\t" << avg[j][3] / patch << endl;
+        cout << fixed << setprecision(6) << cases[j];
+        for (auto &item : avg[j])
+        {
+            cout << "\t" << item / patch;
+        }
+        cout << endl;
     }
 }
 

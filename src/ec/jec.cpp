@@ -209,8 +209,9 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
 
     if (reslut == s_True)
     {
-        JWARN("The miter is not equivalent.");
+        JWARN("The miter '" + miter->name + "' is not equivalent.");
         this->fout << "NEQ" << endl;
+        miter->setProperty(PROPERTIES::EQ, false);
         for (size_t i = 0, num_pis = layers[0].size(); i < num_pis; ++i)
         {
             auto &pi = layers[0][i];
@@ -223,8 +224,9 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
     }
     else if (reslut == s_False)
     {
-        JWARN("The miter is equivalent.");
+        JWARN("The miter '" + miter->name + "' is equivalent.");
         this->fout << "EQ" << endl;
+        miter->setProperty(PROPERTIES::EQ, true);
     }
     else if (reslut == s_Undef)
     {
@@ -469,8 +471,9 @@ void jec::evaluate_min_cone(Netlist *miter)
                 cout << ">>> The cone " << (smt_id++) << " is evaluated." << endl;
                 if (!evaluate_opensmt(cones[j]))
                 {
-                    cout << "The miter is not equivalent." << endl;
+                    JWARN("The miter '" + miter->name + "' is not equivalent.");
                     this->fout << "NEQ" << endl;
+                    miter->setProperty(PROPERTIES::EQ, false);
                     return;
                 }
             }
@@ -479,8 +482,9 @@ void jec::evaluate_min_cone(Netlist *miter)
     vector<pair<size_t, int>>().swap(info);
     vector<deque<Node *>>().swap(cones);
     vector<size_t>().swap(exor_num);
-    cout << "The miter is equivalent." << endl;
+    JWARN("The miter '" + miter->name + "' is equivalent.");
     this->fout << "EQ" << endl;
+    miter->setProperty(PROPERTIES::EQ, true);
 }
 
 void jec::evaluate_cvc4(Netlist *miter, bool incremental)
@@ -584,8 +588,9 @@ void jec::evaluate_cvc4(Netlist *miter, bool incremental)
 
     if (reslut.isSat() == 1)
     {
-        cout << "The miter is not equivalent." << endl;
+        JWARN("The miter '" + miter->name + "' is not equivalent.");
         this->fout << "NEQ" << endl;
+        miter->setProperty(PROPERTIES::EQ, false);
         for (size_t j = 0, num_layer_pi = layers[0].size(); j < num_layer_pi; ++j)
         {
             auto &pi = layers[0][j];
@@ -595,8 +600,9 @@ void jec::evaluate_cvc4(Netlist *miter, bool incremental)
     }
     else if (reslut.isSat() == 0)
     {
-        cout << "The miter is equivalent." << endl;
+        JWARN("The miter '" + miter->name + "' is equivalent.");
         this->fout << "EQ" << endl;
+        miter->setProperty(PROPERTIES::EQ, true);
     }
     else
     {
