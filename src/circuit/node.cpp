@@ -61,8 +61,9 @@ const std::unordered_map<GType, string, EnumClassHash> GType_Str = {
 Node::~Node()
 {
     // cout << "~delete Node: " << this->name << endl;
-    for (auto &in : this->ins)
+    for (size_t i = 0, len = this->ins.size(); i < len; ++i)
     {
+        auto &in = this->ins[i];
         if (in)
         {
             in->outs.erase(std::remove(in->outs.begin(), in->outs.end(), this), in->outs.end());
@@ -70,8 +71,9 @@ Node::~Node()
     }
     vector<Node *>().swap(this->ins);
 
-    for (auto &out : this->outs)
+    for (size_t i = 0, len = this->outs.size(); i < len; ++i)
     {
+        auto &out = this->outs[i];
         if (out)
         {
             out->ins.erase(std::remove(out->ins.begin(), out->ins.end(), this), out->ins.end());

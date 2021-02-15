@@ -34,15 +34,17 @@ size_t ec::merge_cone(int cur_color, Cone &cur_cone, Cone &other_cone, vector<pa
         }
     }
 
-    for (auto &in : other_cone.inputs)
+    for (size_t i = 0, len = other_cone.inputs.size(); i < len; ++i)
     {
+        auto &in = other_cone.inputs[i];
         info[in->id].second = cur_color;
         cur_cone.inputs.emplace_back(in);
     }
     vector<Node *>().swap(other_cone.inputs);
 
-    for (auto &out : other_cone.outputs)
+    for (size_t i = 0, len = other_cone.outputs.size(); i < len; ++i)
     {
+        auto &out = other_cone.outputs[i];
         info[out->id].second = cur_color;
         cur_cone.outputs.emplace_back(out);
     }

@@ -38,7 +38,15 @@ Netlist::Netlist(ifstream &golden, ifstream &revised)
 
 Netlist::~Netlist()
 {
-    Util::cleanVP(this->gates);
+    for (std::size_t i = 0; i < this->num_gate; ++i)
+    {
+        auto &cur = this->gates[i];
+        vector<Node *>().swap(cur->ins);
+        vector<Node *>().swap(cur->outs);
+        delete cur;
+    }
+    vector<Node *>().swap(this->gates);
+    // Util::cleanVP(this->gates);
     this->map_PIs.clear();
     this->map_POs.clear();
     JINFO("The netlist is destroyed!");
@@ -179,7 +187,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
         {
             string item = match[0];
             iterStart = match[0].second;
-            cerr << item << endl;
+            // cout << item << endl;
             if (Str_GType.find(item) != Str_GType.end())
             {
                 const GType &nt = Str_GType.at(item);
@@ -439,33 +447,28 @@ Node *Netlist::delete_node(Node *cur)
         return nullptr;
     }
     Node *tin = cur->ins.back();
-    if (!cur->outs.empty())
+    if (num_outs > 0)
     {
-        vector<Node *>::iterator it = cur->outs.begin();
-        vector<Node *>::iterator it_end = cur->outs.end();
-        while (it != it_end)
+        for (size_t i = 0; i < num_outs; ++i)
         {
-            vector<Node *>::iterator temp_in = (*it)->ins.begin();
-            vector<Node *>::iterator temp_in_end = (*it)->ins.end();
+            auto &it = cur->outs[i];
             bool flag = false;
-            while (temp_in != temp_in_end)
+            for (size_t j = 0, len = it->ins.size(); j < len; ++j)
             {
-                if (cur == (*temp_in))
+                if (cur == it->ins[j])
                 {
-                    (*temp_in) = tin;
+                    it->ins[j] = tin;
                     flag = true;
                 }
-                ++temp_in;
             }
             if (flag)
             {
-                tin->outs.emplace_back(*it);
+                tin->outs.emplace_back(it);
             }
             else
             {
                 JERROR("There are some troubles in netlist.delete_node for the node: " + cur->name);
             }
-            ++it;
         }
         vector<Node *>().swap(cur->outs);
     }
@@ -491,24 +494,20 @@ bool Netlist::merge_node(Node *node, Node *repeat)
         JWARN("The two nodes do not have the same inputs, so they cannot be merged in netlist.merge_node!");
         return 0;
     }
-    for (auto &out : repeat->outs)
+    for (size_t i = 0, len = repeat->outs.size(); i < len; ++i)
     {
-        // grandson.ins.push(son)
-        vector<Node *>::iterator temp_in = out->ins.begin();
-        vector<Node *>::iterator temp_in_end = out->ins.end();
+        auto &out = repeat->outs[i];
         bool flag = false;
-        while (temp_in != temp_in_end)
+        for (size_t j = 0, len2 = out->ins.size(); j < len2; ++j)
         {
-            if (repeat == (*temp_in))
+            if (repeat == out->ins[j])
             {
-                (*temp_in) = node;
+                out->ins[j] = node;
                 flag = true;
             }
-            ++temp_in;
         }
         if (flag)
         {
-            // son.outs.push(grandson)
             node->outs.emplace_back(out);
         }
         else

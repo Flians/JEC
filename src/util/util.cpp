@@ -30,8 +30,9 @@ vector<Node *> Util::vectors_intersection(vector<Node *> v1, vector<Node *> v2)
 
 Node *Util::find_node_by_name(vector<Node *> &nodes, const string &name)
 {
-    for (auto &node : nodes)
+    for (size_t i = 0, len = nodes.size(); i < len; ++i)
     {
+        auto &node = nodes[i];
         if (name == node->name)
         {
             return node;
@@ -42,8 +43,9 @@ Node *Util::find_node_by_name(vector<Node *> &nodes, const string &name)
 
 bool Util::replace_node_by_name(vector<Node *> &nodes, Node *new_node)
 {
-    for (auto &node : nodes)
+    for (size_t i = 0, len = nodes.size(); i < len; ++i)
     {
+        auto &node = nodes[i];
         if (new_node->name == node->name)
         {
             node = new_node;
@@ -79,15 +81,14 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
         {
             JERROR("The input '" + iter->first + "' in the golden Verilog does not exist in the revised Verilog!");
         }
-        vector<Node *>::iterator it = pi->second->outs.begin();
-        vector<Node *>::iterator it_end = pi->second->outs.end();
-        while (it != it_end)
+        for (size_t i = 0, len = pi->second->outs.size(); i < len; ++i)
         {
-            if (!replace_node_by_name((*it)->ins, iter->second))
+            auto &it = pi->second->outs[i];
+            if (!replace_node_by_name(it->ins, iter->second))
             {
                 JERROR("There are some troubles in util.make_miter!");
             }
-            iter->second->outs.emplace_back(*it);
+            iter->second->outs.emplace_back(it);
             ++it;
         }
         revised->gates[pi->second->id] = nullptr;
@@ -107,8 +108,9 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
             JERROR("The output '" + po->first + "' in the golden Verilog does not exist in the revised Verilog!");
         }
         iter->second->type = _EXOR;
-        for (auto &tg : po->second->ins)
+        for (size_t i = 0, num_po_ins = po->second->ins.size(); i < num_po_ins; ++i)
         {
+            auto &tg = po->second->ins[i];
             iter->second->ins.emplace_back(tg);
             tg->outs.emplace_back(iter->second);
         }
@@ -119,8 +121,9 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
     revised->map_POs.clear();
     size_t num_gate = golden->get_num_gates();
     /** merge gates */
-    for (auto &gate : revised->gates)
+    for (size_t i = 0, num_revised_gates = revised->gates.size(); i < num_revised_gates; ++i)
     {
+        auto &gate = revised->gates[i];
         if (gate)
         {
             gate->id = num_gate++;
@@ -151,8 +154,9 @@ void Util::cycle_break(Netlist *netlist)
      * @param node node for which neighbors are updated
      */
     auto updateNeighbors = [&indeg, &outdeg, &sources, &sinks](const Node *node) {
-        for (Node *src : node->ins)
+        for (size_t i = 0, num_node_ins = node->ins.size(); i < num_node_ins; ++i)
         {
+            auto &src = node->ins[i];
             // exclude self-loops
             if (node == src)
             {
@@ -165,8 +169,9 @@ void Util::cycle_break(Netlist *netlist)
                 sinks.emplace(src);
             }
         }
-        for (Node *tar : node->outs)
+        for (size_t i = 0, num_node_outs = node->outs.size(); i < num_node_outs; ++i)
         {
+            auto &tar = node->outs[i];
             // exclude self-loops
             if (node == tar)
             {
@@ -182,8 +187,9 @@ void Util::cycle_break(Netlist *netlist)
     };
 
     // obtain the indegree and outdegree
-    for (auto &node : netlist->gates)
+    for (size_t i = 0; i < netlist->get_num_gates(); ++i)
     {
+        auto &node = netlist->gates[i];
         indeg[node->id] = node->ins.size();
         outdeg[node->id] = node->outs.size();
         // collect sources and sinks
@@ -232,8 +238,9 @@ void Util::cycle_break(Netlist *netlist)
             int maxOutflow = INT_MIN;
 
             // find the set of unprocessed node (=> mark == 0), with the largest out flow
-            for (Node *node : netlist->gates)
+            for (size_t i = 0; i < netlist->get_num_gates(); ++i)
             {
+                auto &node = netlist->gates[i];
                 if (mark[node->id] == 0)
                 {
                     int outflow = outdeg[node->id] - indeg[node->id];
@@ -268,11 +275,13 @@ void Util::cycle_break(Netlist *netlist)
     }
 
     // reverse edges that point left
-    for (Node *node : netlist->gates)
+    for (size_t i = 0; i < netlist->get_num_gates(); ++i)
     {
+        auto &node = netlist->gates[i];
         // look at the node's outgoing edges
-        for (Node *tar : node->outs)
+        for (size_t j = 0, num_node_outs = node->outs.size(); j < num_node_outs; ++j)
         {
+            auto &tar = node->outs[j];
             if (mark[node->id] > mark[tar->id])
             {
                 Node *last = nullptr;
@@ -314,8 +323,9 @@ void Util::cycle_restore(Netlist *netlist)
     if (!netlist->hasProperty(PROPERTIES::CYCLE))
         return;
     vector<pair<Node *, Node *>> &reversed = netlist->getProperty(PROPERTIES::CYCLE);
-    for (auto &item : reversed)
+    for (size_t i = 0, num_reversed = reversed.size(); i < num_reversed; ++i)
     {
+        auto &item = reversed[i];
         // restore the edge
         item.first->ins.erase(find(item.first->ins.begin(), item.first->ins.end(), item.second));
         item.second->outs.erase(find(item.second->outs.begin(), item.second->outs.end(), item.first));
@@ -331,7 +341,7 @@ bool Util::path_balance(Netlist *netlist)
     if (netlist->isEmpty())
         return true;
     size_t num_gate = netlist->get_num_gates();
-    double INTERVAL = 1.0 / num_gate;
+    double INTERVAL = 1.0 / num_gate, maxLL = 0;
     double level[num_gate];
     std::fill_n(level, num_gate, -1.0);
     queue<Node *> bfs;
@@ -347,8 +357,10 @@ bool Util::path_balance(Netlist *netlist)
     {
         Node *cur = bfs.front();
         bfs.pop();
-        for (auto &tar : cur->outs)
+        maxLL = max(level[cur->id], maxLL);
+        for (size_t i = 0, num_cur_outs = cur->outs.size(); i < num_cur_outs; ++i)
         {
+            auto &tar = cur->outs[i];
             if (level[tar->id] == -1 || level[cur->id] >= level[tar->id])
             {
                 if (tar->containCLK())
@@ -363,13 +375,11 @@ bool Util::path_balance(Netlist *netlist)
             }
         }
     }
-    double maxLL = 0;
     for (auto &po : netlist->map_POs)
     {
-        maxLL = max(level[po.second->id], maxLL);
+        level[po.second->id] = maxLL;
         bfs.emplace(po.second);
     }
-
     bool has_cycle = netlist->hasProperty(PROPERTIES::CYCLE);
     if (has_cycle)
     {
@@ -382,14 +392,16 @@ bool Util::path_balance(Netlist *netlist)
             if (cur->type == SPL || cur->type == SPL3)
             {
                 double minChildLL = DBL_MAX;
-                for (auto &tar : cur->outs)
+                for (size_t i = 0, num_cur_outs = cur->outs.size(); i < num_cur_outs; ++i)
                 {
+                    auto &tar = cur->outs[i];
                     minChildLL = min(minChildLL, level[tar->id]);
                 }
                 level[cur->id] = minChildLL - INTERVAL;
             }
-            for (Node *src : cur->ins)
+            for (size_t i = 0, num_cur_ins = cur->ins.size(); i < num_cur_ins; ++i)
             {
+                auto &src = cur->ins[i];
                 if (level[src->id] == -1 || level[cur->id] <= level[src->id])
                 {
                     if (src->containCLK())
@@ -414,11 +426,12 @@ bool Util::path_balance(Netlist *netlist)
     for (size_t i = 0; i < num_gate; ++i)
     {
         auto &cur = netlist->gates[i];
-        for (auto &src : cur->ins)
+        for (size_t i = 0, num_cur_ins = cur->ins.size(); i < num_cur_ins; ++i)
         {
-            if (level[i] - level[src->id] > 1 && src->type != _CLK)
+            auto &src = cur->ins[i];
+            if (level[i] - level[src->id] > 1 && src->type != _CLK && (cur->type != _EXOR || cur->type != _PO))
             {
-                // JWARN("The path balance condition is not satisfied between node '" + src->name + "' and node '" + cur->name + "'!");
+                JWARN("The path balance condition is not satisfied between node '" + src->name + "' and node '" + cur->name + "'!");
                 path_balanced = false;
             }
         }

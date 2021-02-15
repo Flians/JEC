@@ -48,13 +48,14 @@ bool jec::evaluate(vector<vector<Node *>> &layers)
     size_t len = layers.size() - 1;
     for (size_t level = 1; level < len; level++)
     {
-        for (auto &node : layers[level])
+        for (size_t j = 0, num_layer_level = layers[level].size(); j < num_layer_level; ++j)
         {
-            node->calculate();
+            layers[level][j]->calculate();
         }
     }
-    for (auto &node : layers.back())
+    for (size_t i = 0, len = layers.back().size(); i < len; ++i)
     {
+        auto &node = layers.back()[i];
         if (node->calculate() != L)
         {
             return false;
@@ -65,8 +66,9 @@ bool jec::evaluate(vector<vector<Node *>> &layers)
 
 bool jec::evaluate(const vector<Node *> &nodes)
 {
-    for (auto &node : nodes)
+    for (size_t i = 0, len = nodes.size(); i < len; ++i)
     {
+        auto &node = nodes[i];
         node->calculate();
         if (node->val != L && node->outs.empty())
         {
@@ -119,8 +121,9 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
 
     vector<PTRef> nodes(miter->get_num_gates());
     // layers[0][0] is clk
-    for (auto &pi : layers[0])
+    for (size_t i = 0, num_pis = layers[0].size(); i < num_pis; ++i)
     {
+        auto &pi = layers[0][i];
         if (pi->type == _CONSTANT)
         {
             nodes[pi->id] = pi->val == L ? logic.getTerm_false() : logic.getTerm_true();
@@ -133,12 +136,14 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
     size_t num_level = layers.size();
     for (size_t i = 1; i < num_level; i++)
     {
-        for (auto &node : layers[i])
+        for (size_t j = 0, num_layer_i = layers[i].size(); j < num_layer_i; ++j)
         {
+            auto &node = layers[i][j];
             vec<PTRef> inputs;
             // layers[i][j]->ins->at(0) is clk
-            for (auto &npi : node->ins)
+            for (size_t k = 0, num_node_ins = node->ins.size(); k < num_node_ins; ++k)
             {
+                auto &npi = node->ins[k];
                 if (npi->type != _CLK)
                     inputs.push(nodes[npi->id]);
             }
@@ -181,9 +186,9 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
     if (!incremental)
     {
         vec<PTRef> outputs;
-        for (auto &output : layers.back())
+        for (size_t i = 0, num_layers_back = layers.back().size(); i < num_layers_back; ++i)
         {
-            outputs.push(nodes[output->id]);
+            outputs.push(nodes[layers.back()[i]->id]);
         }
         PTRef assert = logic.mkEq(logic.getTerm_true(), logic.mkOr(outputs));
         mainSolver.push(assert);
@@ -191,9 +196,9 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
     }
     else
     {
-        for (auto &output : layers.back())
+        for (size_t i = 0, num_layers_back = layers.back().size(); i < num_layers_back; ++i)
         {
-            PTRef assert = logic.mkEq(logic.getTerm_true(), nodes[output->id]);
+            PTRef assert = logic.mkEq(logic.getTerm_true(), nodes[layers.back()[i]->id]);
             mainSolver.push(assert);
             reslut = mainSolver.check();
             if (reslut == s_True)
@@ -206,8 +211,9 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
     {
         JWARN("The miter is not equivalent.");
         this->fout << "NEQ" << endl;
-        for (auto &pi : layers[0])
+        for (size_t i = 0, num_pis = layers[0].size(); i < num_pis; ++i)
         {
+            auto &pi = layers[0][i];
             if (pi->type != _CLK)
             {
                 ValPair vp = mainSolver.getValue(nodes[pi->id]);
@@ -255,8 +261,9 @@ void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRe
     else
     {
         vec<PTRef> inputs;
-        for (auto &in : cur->ins)
+        for (size_t i = 0, num_cur_ins = cur->ins.size(); i < num_cur_ins; ++i)
         {
+            auto &in = cur->ins[i];
             build_equation_dfs(in, logic, record);
             if (in->type != _CLK)
             {
@@ -377,8 +384,9 @@ void jec::evaluate_min_cone(Netlist *miter)
     size_t num_level = layers.size();
     for (size_t i = 0; i < num_level; ++i)
     {
-        for (auto &node_ : layers[i])
+        for (size_t j = 0, num_layer_i = layers[i].size(); j < num_layer_i; ++j)
         {
+            auto &node_ = layers[i][j];
             info[node_->id].first = i;
             info[node_->id].second = -1;
         }
@@ -414,8 +422,9 @@ void jec::evaluate_min_cone(Netlist *miter)
                         ++exor_num[j];
                     continue;
                 }
-                for (auto &tout : cur->outs)
+                for (size_t k = 0, num_cur_outs = cur->outs.size(); k < num_cur_outs; ++k)
                 {
+                    auto &tout = cur->outs[k];
                     if (info[tout->id].second == -1)
                     {
                         info[tout->id].second = j;
@@ -491,8 +500,9 @@ void jec::evaluate_cvc4(Netlist *miter, bool incremental)
     vector<CVC4::Expr> nodes(miter->get_num_gates());
     vector<vector<Node *>> &layers = miter->getProperty(PROPERTIES::LAYERS);
     // layers[0][0] is clk
-    for (auto &pi : layers[0])
+    for (size_t i = 0, num_pis = layers[0].size(); i < num_pis; ++i)
     {
+        auto &pi = layers[0][i];
         if (pi->type == _CONSTANT)
         {
             nodes[pi->id] = pi->val == L ? em.mkConst<bool>(false) : em.mkConst<bool>(true);
@@ -505,12 +515,14 @@ void jec::evaluate_cvc4(Netlist *miter, bool incremental)
     size_t num_level = layers.size();
     for (size_t i = 1; i < num_level; i++)
     {
-        for (auto &node : layers[i])
+        for (size_t j = 0, num_layer_i = layers[i].size(); j < num_layer_i; ++j)
         {
+            auto &node = layers[i][j];
             vector<CVC4::Expr> inputs;
             // layers[i][j]->ins->at(0) is clk
-            for (auto &npi : node->ins)
+            for (size_t k = 0, num_node_ins = node->ins.size(); k < num_node_ins; ++k)
             {
+                auto &npi = node->ins[k];
                 if (npi->type != _CLK)
                     inputs.emplace_back(nodes[npi->id]);
             }
@@ -549,9 +561,9 @@ void jec::evaluate_cvc4(Netlist *miter, bool incremental)
     if (!incremental)
     {
         vector<CVC4::Expr> outputs;
-        for (auto &output : layers.back())
+        for (size_t i = 0, num_layers_back = layers.back().size(); i < num_layers_back; ++i)
         {
-            outputs.emplace_back(nodes[output->id]);
+            outputs.emplace_back(nodes[layers.back()[i]->id]);
         }
         CVC4::Expr assert = em.mkExpr(CVC4::kind::EQUAL, em.mkConst<bool>(true), em.mkExpr(CVC4::kind::OR, outputs));
         smt.assertFormula(assert);
@@ -559,9 +571,9 @@ void jec::evaluate_cvc4(Netlist *miter, bool incremental)
     }
     else
     {
-        for (auto &output : layers.back())
+        for (size_t i = 0, num_layers_back = layers.back().size(); i < num_layers_back; ++i)
         {
-            CVC4::Expr assert = em.mkExpr(CVC4::kind::EQUAL, em.mkConst<bool>(true), nodes[output->id]);
+            CVC4::Expr assert = em.mkExpr(CVC4::kind::EQUAL, em.mkConst<bool>(true), nodes[layers.back()[i]->id]);
             smt.assertFormula(assert);
             reslut = smt.checkSat();
             if (reslut.isSat())
@@ -574,8 +586,9 @@ void jec::evaluate_cvc4(Netlist *miter, bool incremental)
     {
         cout << "The miter is not equivalent." << endl;
         this->fout << "NEQ" << endl;
-        for (auto &pi : layers[0])
+        for (size_t j = 0, num_layer_pi = layers[0].size(); j < num_layer_pi; ++j)
         {
+            auto &pi = layers[0][j];
             CVC4::Expr vp = smt.getValue(nodes[pi->id]);
             this->fout << vp.getId() << " " << smt.getValue(nodes[pi->id]) << endl;
         }
