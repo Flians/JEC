@@ -791,15 +791,15 @@ ostream &operator<<(ostream &output, const Netlist &n)
         output << "output reg " << po.first << " = 0";
     }
     output << ");" << endl;
-    for (size_t i = 0; i < n.num_gate; ++i)
+    for (size_t i = 0; i < n.num_port; ++i)
     {
-        auto &node = n.gates[i];
-        if (node->type != _CLK && node->type != _PI && node->type != _EXOR && node->type != _PO && node->type != _CONSTANT)
+        if (n.ports[i]->type == _OUT)
         {
-            for (auto &out : node->outs)
+            if (n.ports[i]->own && (n.ports[i]->own->type == _PI || n.ports[i]->own->type == _CLK || n.ports[i]->own->type == _CONSTANT))
             {
-                output << "    wire n" << node->id << "_" << out.second->id << ";" << endl;
+                continue;
             }
+            output << "    wire n" << n.ports[i]->id << ";" << endl;
         }
     }
     for (auto &node : n.gates)
