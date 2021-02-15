@@ -736,3 +736,70 @@ int Netlist::merge_nodes_between_networks()
     JINFO("The number of INV, BUF, and others reduction is " + std::to_string(reduce));
     return reduce;
 }
+
+ostream &operator<<(ostream &output, const Netlist &n)
+{
+
+    output << "module " << n.name << "(";
+    for (auto &pi : n.map_PIs)
+    {
+        if (pi.second->type != _CONSTANT)
+        {
+            output << "input wire " << pi.first << ", ";
+        }
+    }
+    bool flag = true;
+    for (auto &po : n.map_POs)
+    {
+        if (!flag)
+        {
+            output << ", ";
+        }
+        else
+        {
+            flag = 0;
+        }
+        output << "output reg " << po.first << " = 0";
+    }
+    output << ");" << endl;
+    for (size_t i = 0; i < n.num_gate; ++i)
+    {
+        auto &node = n.gates[i];
+        if (node->type != _CLK && node->type != _PI && node->type != _EXOR && node->type != _PO && node->type != _CONSTANT)
+        {
+            for (auto &out : node->outs)
+            {
+                output << "    wire n" << node->id << "_" << out->id << ";" << endl;
+            }
+        }
+    }
+    for (auto &node : n.gates)
+    {
+        if (node->type != _CLK && node->type != _PI && node->type != _EXOR && node->type != _PO && node->type != _CONSTANT)
+        {
+            output << GType_Str.at(node->type) << " " << n.name << "(";
+            for (size_t i = 0, num_ins = node->ins.size(); i < num_ins; ++i)
+            {
+                output << ".din" << (char)('a' + i) << "(" << node->ins[i]->id << "_" << node->id
+                       << "), ";
+            }
+            bool flag = 1;
+            for (size_t i = 0, num_outs = node->outs.size(); i < num_outs; ++i)
+            {
+                if (flag)
+                {
+                    flag = 0;
+                }
+                else
+                {
+                    output << ", ";
+                }
+                output << ".dout" << (char)('a' + i) << "(" << node->id << "_" << node->outs[i]->id
+                       << "), ";
+            }
+            output << ");";
+        }
+    }
+    output << "endmodule" << endl;
+    return output;
+}

@@ -37,6 +37,8 @@ public:
     Netlist(ifstream &golden, ifstream &revised);
     ~Netlist();
 
+    friend ostream &operator<<(ostream &output, const Netlist &p);
+
     /**
      * @return the number of nodes
      */

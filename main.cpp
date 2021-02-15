@@ -92,17 +92,18 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
         "c432",
         "c499",
         "c5315",
-        // "c6288",
+        "c6288",
         "c7552",
         "c880",
-        "adder",
-        "bar",
-        "decoder",
+        // "adder",
+        // "bar",
+        // "decoder",
         // "divisor",
         // "log2",
         // "max",
         // "multiplier",
-        "sin"};
+        // "sin"
+    };
     int patch = 1;
     size_t num_case = cases.size();
     vector<vector<double>> avg(num_case, vector<double>(6, 0.0));
