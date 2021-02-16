@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
     int opt = 0;
     char golden[100], revise[100], output[100], root_path[100];
     SMT smt = _NONE;
-    bool clean_dff = false, clean_spl = true, incremental = false, merge = true, help = false, is_batch = false;
+    bool clean_dff = false, clean_spl = false, incremental = false, merge = false, help = false, is_batch = false;
     int batch = 100;
     std::string str_help;
     str_help.append("Please input parameters:\n")
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
         .append("\t-s: clean Splitter;\n")
         .append("\t-i: whether to solve iteratively;")
         .append("\t-e: the type fo SMT solver, including FSM, OPENSMT, CONE and CVC4;\n")
-        .append("For example, \"./JEC -g <golden.v> -r <revised.v> -o <output> -e <FSM|OPENSMT|CONE|CVC4> <-i> <-m>\".");
+        .append("For example, \"./JEC -g <golden.v> -r <revised.v> -o <output> -e <FSM|OPENSMT|CONE|CVC4> <-i> <-m> <-s> <-d>\".");
     while ((opt = getopt(argc, argv, "dhimpsb:g:r:o:e:n:")) != -1)
     {
         switch (opt)
