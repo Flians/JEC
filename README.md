@@ -66,10 +66,10 @@ make install     # to install into the prefix specified above
 ## run
 
 ``` shell
-# for one
-./JEC ../test/golden/gf_c880.v ../test/revise/rf_c880.v ../test/output/output_c880.txt CONE i m
+# for single
+./JEC -g ../test/golden/gf_c880.v -r ../test/revise/rf_c880.v -o ../test/output/output_c880.txt -e CONE -i -m -s
 # for batch
-./JEC ../test/ OPENSMT i m
+./JEC -p -b ../test/ -e OPENSMT -i -m -s
 ```
 
 ## result

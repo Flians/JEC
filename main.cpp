@@ -2,6 +2,7 @@
 #include "ec/cec.h"
 #include "ec/jec.h"
 #include <iomanip>
+#include <unistd.h>
 
 using namespace std;
 
@@ -10,16 +11,17 @@ enum SMT
     _FSM,
     _OPENSMT,
     _CONE,
-    _CVC4
+    _CVC4,
+    _NONE
 };
 
-std::unordered_map<string, SMT> Str_SMT = {
+const std::unordered_map<string, SMT> Str_SMT = {
     {"FSM", _FSM},
     {"OPENSMT", _OPENSMT},
     {"CONE", _CONE},
     {"CVC4", _CVC4}};
 
-vector<double> workflow(const char *golden, const char *revise, const char *output, SMT smt, bool incremental = false, bool merge = true)
+vector<double> workflow(const char *golden, const char *revise, const char *output, bool clean_dff, bool clean_spl, bool merge, SMT smt, bool incremental)
 {
     vector<double> times(6, 0.0);
     clock_t startTime, endTime, tmp;
@@ -32,7 +34,7 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
 
     /* simplify the graph */
     startTime = clock();
-    miter.clean_spl(false);
+    miter.clean_spl(clean_spl, clean_dff);
     // cout << miter << endl;
     tmp = clock();
     cout << "The cleaning time is: " << (double)(tmp - startTime) / CLOCKS_PER_SEC << " S" << endl;
@@ -47,6 +49,8 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
         JWARN("The netlist '" + miter.name + "' is path_balanced!");
     }
     cout << "The path balancing time is: " << (double)(clock() - tmp) / CLOCKS_PER_SEC << " S" << endl;
+    if (smt == _NONE)
+        return times;
     tmp = clock();
     if (merge)
     {
@@ -83,7 +87,7 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
     return times;
 }
 
-void evaluate(string root_path, SMT smt, bool incremental, bool merge)
+void evaluate(string root_path, int batch, bool clean_dff, bool clean_spl, bool merge, SMT smt, bool incremental)
 {
     vector<string> cases = {
         "c1355",
@@ -104,16 +108,15 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
         // "multiplier",
         // "sin"
     };
-    int patch = 100;
     size_t num_case = cases.size();
     vector<vector<double>> avg(num_case, vector<double>(6, 0.0));
-    for (int i = 0; i < patch; ++i)
+    for (int i = 0; i < batch; ++i)
     {
         cout << ">>> Iterator #" << i + 1 << endl;
         for (size_t j = 0; j < num_case; ++j)
         {
             cout << "    >>> case " << cases[j] << endl;
-            auto runtimes = workflow((root_path + "/golden/gf_" + cases[j] + ".v").c_str(), (root_path + "/revise/rf_" + cases[j] + ".v").c_str(), (root_path + "/output/output_" + cases[j] + ".txt").c_str(), smt, incremental, merge);
+            auto runtimes = workflow((root_path + "/golden/gf_" + cases[j] + ".v").c_str(), (root_path + "/revise/rf_" + cases[j] + ".v").c_str(), (root_path + "/output/output_" + cases[j] + ".txt").c_str(), clean_dff, clean_spl, merge, smt, incremental);
             avg[j][0] += runtimes[0];
             avg[j][1] += runtimes[1];
             avg[j][2] += runtimes[2];
@@ -129,7 +132,7 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
         cout << fixed << setprecision(6) << cases[j];
         for (auto &item : avg[j])
         {
-            cout << "\t" << item / patch;
+            cout << "\t" << item / batch;
         }
         cout << endl;
     }
@@ -138,17 +141,85 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
 // cd build && cmake -G"Unix Makefiles && make" ../
 int main(int argc, char *argv[])
 {
-    if (argc == 5)
+    int opt = 0;
+    char golden[100], revise[100], output[100], root_path[100];
+    SMT smt = _NONE;
+    bool clean_dff = false, clean_spl = true, incremental = false, merge = true, help = false, is_batch = false;
+    int batch = 100;
+    std::string str_help;
+    str_help.append("Please input parameters:\n")
+        .append("\t-h: help;\n")
+        .append("\t-b: the root directory;\n")
+        .append("\t-n: the batch, the default is 100;\n")
+        .append("\t-p: the batch task;\n")
+        .append("\t-g: the path of golden file;\n")
+        .append("\t-r: the path of revised file;\n")
+        .append("\t-o: the path of output file;\n")
+        .append("\t-m: merge the equivalent nodes;\n")
+        .append("\t-d: clean DFF;\n")
+        .append("\t-s: clean Splitter;\n")
+        .append("\t-i: whether to solve iteratively;")
+        .append("\t-e: the type fo SMT solver, including FSM, OPENSMT, CONE and CVC4;\n")
+        .append("For example, \"./JEC -g <golden.v> -r <revised.v> -o <output> -e <FSM|OPENSMT|CONE|CVC4> <-i> <-m>\".");
+    while ((opt = getopt(argc, argv, "dhimpsb:g:r:o:e:n:")) != -1)
     {
-        evaluate(argv[1], Str_SMT[string(argv[2])], argv[3][0] == 'i', argv[4][0] == 'm');
+        switch (opt)
+        {
+        case 'd':
+            clean_dff = true;
+            break;
+        case 'i':
+            incremental = 1;
+            break;
+        case 'm':
+            merge = 1;
+            break;
+        case 'p':
+            is_batch = 1;
+            break;
+        case 's':
+            clean_spl = 1;
+            break;
+        case 'b':
+            strcpy(root_path, optarg);
+            break;
+        case 'g':
+            strcpy(golden, optarg);
+            break;
+        case 'r':
+            strcpy(revise, optarg);
+            break;
+        case 'o':
+            strcpy(output, optarg);
+            break;
+        case 'e':
+            smt = Str_SMT.at(optarg);
+            break;
+        case 'n':
+        {
+            int tmp = atoi(optarg);
+            if (tmp <= 0)
+            {
+                batch = tmp;
+            }
+            break;
+        }
+        default:
+            help = true;
+        }
     }
-    else if (argc > 5)
+    if (help)
     {
-        workflow(argv[1], argv[2], argv[3], Str_SMT[string(argv[4])], argv[5][0] == 'i', argv[6][0] == 'm');
+        printf("%s\n", str_help.c_str());
+    }
+    if (is_batch)
+    {
+        evaluate(root_path, batch, clean_dff, clean_spl, merge, smt, incremental);
     }
     else
     {
-        printf("Please input five parameters, like \"./JEC <golden.v> <revised.v> <output> <FSM|OPENSMT|CVC4> <i> <m>\".");
+        workflow(golden, revise, output, clean_dff, clean_spl, merge, smt, incremental);
     }
+
     return 0;
 }

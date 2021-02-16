@@ -405,7 +405,8 @@ void Netlist::parse_netlist(ifstream &in, bool is_golden)
 {
     if (!in.is_open())
     {
-        JERROR("The netlist can not be open!");
+        JWARN("The netlist can not be open!");
+        return;
     }
     string buffer;
     // clear eof flag first
@@ -587,14 +588,16 @@ void Netlist::clean_useless_nodes()
 {
 }
 
-void Netlist::clean_spl(bool delete_dff)
+void Netlist::clean_spl(bool delete_spl, bool delete_dff)
 {
+    if (!delete_spl && !delete_dff)
+        return;
     bool flag_spl = false, flag_dff = false;
     size_t i = 0;
     while (i < this->num_gate)
     {
         auto &cur = this->gates[i];
-        if (cur->type == SPL || cur->type == SPL3 || (delete_dff && cur->type == DFF))
+        if ((delete_spl && (cur->type == SPL || cur->type == SPL3)) || (delete_dff && cur->type == DFF))
         {
             if (cur->type == DFF)
             {
@@ -617,7 +620,7 @@ void Netlist::clean_spl(bool delete_dff)
     }
     this->gates.erase(this->gates.begin() + this->num_gate, this->gates.end());
     vector<Node *>(this->gates).swap(this->gates);
-    if (flag_spl)
+    if (delete_spl && flag_spl)
     {
         this->setProperty<bool>(PROPERTIES::CLEAN_SPL, true);
     }

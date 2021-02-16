@@ -69,7 +69,7 @@ public:
      * delete all splitters, and set properties[CLEAN_SPL] = true.
      * @param delete_dff if delete_dff is true, delete all DFFs, and set properties[CLEAN_DFF] = true.
      */
-    void clean_spl(bool delete_dff = false);
+    void clean_spl(bool delete_spl = false, bool delete_dff = false);
 
     /** 
      * merge equivalent nodes 
