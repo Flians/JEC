@@ -190,8 +190,9 @@ void Util::cycle_break(Netlist *netlist)
     for (size_t i = 0; i < netlist->get_num_gates(); ++i)
     {
         auto &node = netlist->gates[i];
-        indeg[node->id] = node->ins.size();
-        outdeg[node->id] = node->outs.size();
+
+        indeg[node->id] = count_if(node->ins.begin(), node->ins.end(), [&node](const Node *src) { return src != node; });
+        outdeg[node->id] = count_if(node->outs.begin(), node->outs.end(), [&node](const Node *tar) { return tar != node; });
         // collect sources and sinks
         if (outdeg[node->id] == 0)
         {
@@ -208,7 +209,7 @@ void Util::cycle_break(Netlist *netlist)
     // assign marks to all nodes
     vector<Node *> maxNodes;
     srand(time(0));
-    size_t unprocessedNodeCount = num_gate;
+    int unprocessedNodeCount = num_gate;
 
     while (unprocessedNodeCount > 0)
     {
@@ -302,12 +303,20 @@ void Util::cycle_break(Netlist *netlist)
                 }
                 if (last == nullptr)
                     continue;
-                reversed.emplace_back(make_pair(last, node));
+                reversed.emplace_back(last, node);
                 // reverse the edge
-                last->outs.erase(find(last->outs.begin(), last->outs.end(), node));
-                node->ins.erase(find(node->ins.begin(), node->ins.end(), last));
-                last->ins.emplace_back(node);
-                node->outs.emplace_back(last);
+                auto _find = find(last->ins.begin(), last->ins.end(), node);
+                if (_find != last->ins.end())
+                {
+                    last->ins.erase(_find);
+                }
+                _find = find(node->outs.begin(), node->outs.end(), node);
+                if (_find != node->outs.end())
+                {
+                    node->outs.erase(_find);
+                }
+                last->outs.emplace_back(node);
+                node->ins.emplace_back(last);
             }
         }
     }
@@ -340,6 +349,7 @@ bool Util::path_balance(Netlist *netlist)
 {
     if (netlist->isEmpty())
         return true;
+    Util::cycle_break(netlist);
     size_t num_gate = netlist->get_num_gates();
     double INTERVAL = 1.0 / num_gate, maxLL = 0;
     double level[num_gate];
