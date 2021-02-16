@@ -768,8 +768,10 @@ int Netlist::merge_nodes_between_networks()
 
 ostream &operator<<(ostream &output, const Netlist &n)
 {
-
-    output << "module " << n.name << "(";
+    bool vis[n.num_gate] = {0};
+    std::string str_module, str_pis, str_pos;
+    str_module.append("module ").append(n.name).append("(");
+    bool flag = true;
     for (auto &pi : n.map_PIs)
     {
         if (pi.second->type != _CONSTANT)
@@ -777,37 +779,63 @@ ostream &operator<<(ostream &output, const Netlist &n)
             output << "input wire " << pi.first << ", ";
         }
     }
-    bool flag = true;
+    flag = true;
     for (auto &po : n.map_POs)
     {
+        vis[po.second->id] = 1;
         if (!flag)
         {
-            output << ", ";
+            str_module.append(", ");
+            str_pos.append(", ");
         }
         else
         {
             flag = 0;
         }
-        output << "output reg " << po.first << " = 0";
+        str_pos.append(po.first);
+        str_module.append(po.first);
+        auto po_succ = po.second->get_predecessors_port();
+        for (auto *src : po_succ)
+        {
+            src->setProperty(PROPERTIES::NET_NAME, po.first);
+            for (auto &src_tar : src->out_edges)
+            {
+                src_tar->tar->setProperty(PROPERTIES::NET_NAME, po.first);
+            }
+        }
     }
-    output << ");" << endl;
+    str_module.append(");");
+    output << str_module << endl;
+    if (!str_pis.empty())
+    {
+        output << "    input " << str_pis << ";" << endl;
+    }
+    if (!str_pos.empty())
+    {
+        output << "    output " << str_pos << ";" << endl;
+    }
     for (size_t i = 0; i < n.num_port; ++i)
     {
-        if (n.ports[i]->type == _OUT)
+        if (n.ports[i] && n.ports[i]->type == _OUT && !n.ports[i]->out_edges.empty())
         {
-            if (n.ports[i]->own && (n.ports[i]->own->type == _PI || n.ports[i]->own->type == _CLK || n.ports[i]->own->type == _CONSTANT))
+            if (!n.ports[i]->own || (n.ports[i]->own && vis[n.ports[i]->own->id]) || n.ports[i]->hasProperty(PROPERTIES::NET_NAME))
             {
                 continue;
+            }
+            if (n.ports[i]->id == 1289)
+            {
+                cout << endl;
             }
             output << "    wire n" << n.ports[i]->id << ";" << endl;
         }
     }
     for (auto &node : n.gates)
     {
-        if (node->type != _CLK && node->type != _PI && node->type != _EXOR && node->type != _PO && node->type != _CONSTANT)
+        if (!vis[node->id])
         {
             output << "    " << *node << endl;
         }
+        vis[node->id] = 1;
     }
     output << "endmodule" << endl;
     return output;

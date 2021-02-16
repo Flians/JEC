@@ -23,6 +23,7 @@ public:
     const static Property<vector<vector<Node *>>> LAYERS; // vector<vector<Node*>>
     const static Property<bool> PATH_BALANCED;            // bool
     const static Property<bool> EQ;                       // bool
+    const static Property<std::string> NET_NAME;          // string
 };
 
 #endif

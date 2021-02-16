@@ -259,7 +259,7 @@ cec golden.v revise.v
 ### run using abc
 
 ``` shell
-./cec_abc ./original/abc.rc ./original/rsfq.genlib ./
+./cec_abc ./original/abc.rc ./original/cmos.genlib ./
 ```
 
 The result <parse, cec>:
@@ -279,6 +279,18 @@ decoder    0.005418    0.007647
 divisor    0.310117    12.486118
 max        0.054789    1.027411
 sin        0.061184    4.987837
+```
+
+```
+c1355    0.005639    0.006189
+c1908    0.010204    0.011066
+c3540    0.025203    0.026842
+c432     0.010093    0.010665
+c499     0.005476    0.005988
+c5315    0.049479    0.052886
+c6288    0.074612    0.078373
+c7552    0.048348    0.051647
+c880     0.012247    0.013111
 ```
 
 ## Analyze performance

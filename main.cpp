@@ -20,8 +20,9 @@ const std::unordered_map<string, SMT> Str_SMT = {
     {"CONE", _CONE},
     {"CVC4", _CVC4}};
 
-void print_netlist(const string &output_path, const string &input_path)
+void print_netlist(const string &output_path, const string &input_path, bool _print_rsfq = true)
 {
+    print_rsfq = _print_rsfq;
     ofstream golden(output_path);
     Netlist gf(input_path);
     gf.clean_spl(0);

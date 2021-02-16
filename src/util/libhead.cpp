@@ -2,6 +2,7 @@
 
 /* initial */
 size_t init_id = 0;
+bool print_rsfq = true;
 
 const std::unordered_map<Value, string, EnumClassHash> Const_Str = {
     {L, "1'b0"},

@@ -49,11 +49,11 @@ const std::unordered_map<GType, string, EnumClassHash> GType_Str = {
     {XNOR, "xnor"},
     {INV, "not"},
     {BUF, "buf"},
-    {DFF, "jdff"},
-    {SPL, "jspl"},
-    {SPL3, "jspl3"},
-    {CB, "jcb"},
-    {CB3, "jcb3"},
+    {DFF, "dff"},
+    {SPL, "spl"},
+    {SPL3, "spl3"},
+    {CB, "cb"},
+    {CB3, "cb3"},
     {_HMUX, "_HMUX"},
     {_DC, "_DC"},
     {_ANDF, "andf"},
@@ -329,9 +329,21 @@ bool Node::operator<(const Node &B)
 
 ostream &operator<<(ostream &output, const Node &n)
 {
-    output << GType_Str.at(n.type) << " " << n.name << "(";
+    output << "j";
+    if (n.type == BUF)
+    {
+        output << GType_Str.at(DFF) << " " << n.name << "(";
+    }
+    else
+    {
+        output << GType_Str.at(n.type) << " " << n.name << "(";
+    }
     for (auto &in : n.ins)
     {
+        if (!print_rsfq && in.second->name == ".clk")
+        {
+            continue;
+        }
         output << *in.second << ", ";
     }
     bool flag = 1;

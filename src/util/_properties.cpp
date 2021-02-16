@@ -7,3 +7,4 @@ const Property<bool> PROPERTIES::CLEAN_DFF("clean_dff", false);
 const Property<vector<vector<Node *>>> PROPERTIES::LAYERS("layers", vector<vector<Node *>>());
 const Property<bool> PROPERTIES::PATH_BALANCED("path_balanced", false);
 const Property<bool> PROPERTIES::EQ("cycle", false);
+const Property<std::string> PROPERTIES::NET_NAME("net_name", "n");

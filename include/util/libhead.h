@@ -43,6 +43,7 @@ enum Value
 };
 
 extern size_t init_id;
+extern bool print_rsfq;
 extern const std::unordered_map<Value, string, EnumClassHash> Const_Str;
 
 /* Global operator overload */

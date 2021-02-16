@@ -68,27 +68,13 @@ void Port::add_input(Port *src)
 ostream &operator<<(ostream &output, const Port &p)
 {
     output << p.name << "(";
-    if (!p.in_edges.empty() && (*p.in_edges.begin())->src)
+    if (p.hasProperty(PROPERTIES::NET_NAME))
     {
-        if ((*p.in_edges.begin())->src->own && (*p.in_edges.begin())->src->own->type <= _PO)
-        {
-            output << (*p.in_edges.begin())->src->own->name;
-        }
-        else
-        {
-            output << "n" << (*p.in_edges.begin())->src->id;
-        }
+        output << const_cast<Port &>(p).getProperty(PROPERTIES::NET_NAME);
     }
     else
     {
-        if (p.own && p.own->type <= _PO)
-        {
-            output << p.own->name;
-        }
-        else
-        {
-            output << "n" << p.id;
-        }
+        output << "n" << (p.type == _IN ? (*p.in_edges.begin())->src->id : p.id);
     }
     output << ")";
     return output;
