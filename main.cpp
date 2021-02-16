@@ -20,6 +20,15 @@ const std::unordered_map<string, SMT> Str_SMT = {
     {"CONE", _CONE},
     {"CVC4", _CVC4}};
 
+void print_netlist(const string &output_path, const string &input_path)
+{
+    ofstream golden(output_path);
+    Netlist gf(input_path);
+    gf.clean_spl(0);
+    golden << gf << endl;
+    golden.close();
+}
+
 vector<double> workflow(const char *golden, const char *revise, const char *output, bool clean_dff, bool clean_spl, bool merge, SMT smt, bool incremental)
 {
     vector<double> times(6, 0.0);
