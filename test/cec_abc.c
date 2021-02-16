@@ -101,19 +101,19 @@ void evaluate(char *abcrc, char *genlib, char *root_path)
         "c432",
         "c499",
         "c5315",
-        // "c6288",
+        "c6288",
         "c7552",
         "c880",
-        "adder",
-        "bar",
-        "decoder",
-        "divisor",
+        // "adder",
+        // "bar",
+        // "decoder",
+        // "divisor",
         // "log2",
-        "max",
+        // "max",
         // "multiplier",
-        "sin"
+        // "sin"
     };
-    int patch = 10;
+    int patch = 100;
     const int cases_size = sizeof(cases) / sizeof(cases[0]);
     double avg[cases_size][2];
     char golden[1000], revise[1000];
@@ -125,8 +125,8 @@ void evaluate(char *abcrc, char *genlib, char *root_path)
         for (size_t j = 0; j < cases_size; ++j)
         {
             printf("    >>> case %s\n", cases[j]);
-            sprintf(golden, "%s/golden/%s.v", root_path, cases[j]);
-            sprintf(revise, "%s/revise/%s.v", root_path, cases[j]);
+            sprintf(golden, "%s/golden/gf_abc_%s.v", root_path, cases[j]);
+            sprintf(revise, "%s/revise/rf_abc_%s.v", root_path, cases[j]);
             cec_by_abc(abcrc, genlib, golden, revise, runtimes);
             if (i == 0)
             {

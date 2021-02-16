@@ -32,8 +32,8 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
 
     /* simplify the graph */
     startTime = clock();
-
-    // miter.clean_spl(1);
+    miter.clean_spl(false);
+    // cout << miter << endl;
     tmp = clock();
     cout << "The cleaning time is: " << (double)(tmp - startTime) / CLOCKS_PER_SEC << " S" << endl;
     if (!Util::path_balance(&miter))
@@ -104,7 +104,7 @@ void evaluate(string root_path, SMT smt, bool incremental, bool merge)
         // "multiplier",
         // "sin"
     };
-    int patch = 1;
+    int patch = 100;
     size_t num_case = cases.size();
     vector<vector<double>> avg(num_case, vector<double>(6, 0.0));
     for (int i = 0; i < patch; ++i)

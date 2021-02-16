@@ -777,11 +777,25 @@ ostream &operator<<(ostream &output, const Netlist &n)
     {
         if (node->type != _CLK && node->type != _PI && node->type != _EXOR && node->type != _PO && node->type != _CONSTANT)
         {
-            output << GType_Str.at(node->type) << " " << n.name << "(";
+            output << "    " << GType_Str.at(node->type) << " " << node->name << "(";
             for (size_t i = 0, num_ins = node->ins.size(); i < num_ins; ++i)
             {
-                output << ".din" << (char)('a' + i) << "(" << node->ins[i]->id << "_" << node->id
-                       << "), ";
+                if (node->ins[i]->type == _CLK)
+                {
+                    output << ".clk"
+                           << "(" << node->ins[i]->name
+                           << "), ";
+                }
+                else if (node->ins[i]->type == _PI || node->ins[i]->type == _CONSTANT)
+                {
+                    output << ".din" << (char)('a' + i - 1) << "(" << node->ins[i]->name
+                           << "), ";
+                }
+                else
+                {
+                    output << ".din" << (char)('a' + i - 1) << "(n" << node->ins[i]->id << "_" << node->id
+                           << "), ";
+                }
             }
             bool flag = 1;
             for (size_t i = 0, num_outs = node->outs.size(); i < num_outs; ++i)
@@ -794,10 +808,18 @@ ostream &operator<<(ostream &output, const Netlist &n)
                 {
                     output << ", ";
                 }
-                output << ".dout" << (char)('a' + i) << "(" << node->id << "_" << node->outs[i]->id
-                       << "), ";
+                if (node->outs[i]->type == _EXOR || node->outs[i]->type == _PO)
+                {
+                    output << ".dout" << (char)('a' + i) << "(" << node->outs[i]->name
+                           << ")";
+                }
+                else
+                {
+                    output << ".dout" << (char)('a' + i) << "(n" << node->id << "_" << node->outs[i]->id
+                           << ")";
+                }
             }
-            output << ");";
+            output << ");" << endl;
         }
     }
     output << "endmodule" << endl;
