@@ -141,7 +141,7 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
 void Util::cycle_break(Netlist *netlist)
 {
     vector<pair<Node *, Node *>> reversed;
-    size_t num_gate = netlist->gates.size();
+    size_t num_gate = netlist->get_num_gates();
     /** indegree values and outdegree values for the nodes; mark for the nodes, inducing an ordering of the nodes. */
     int indeg[num_gate] = {0}, outdeg[num_gate] = {0}, mark[num_gate] = {0};
     /** list of source nodes and sink nodes. */
@@ -187,10 +187,9 @@ void Util::cycle_break(Netlist *netlist)
     };
 
     // obtain the indegree and outdegree
-    for (size_t i = 0; i < netlist->get_num_gates(); ++i)
+    for (size_t i = 0; i < num_gate; ++i)
     {
         auto &node = netlist->gates[i];
-
         indeg[node->id] = count_if(node->ins.begin(), node->ins.end(), [&node](const Node *src) { return src != node; });
         outdeg[node->id] = count_if(node->outs.begin(), node->outs.end(), [&node](const Node *tar) { return tar != node; });
         // collect sources and sinks
@@ -239,7 +238,7 @@ void Util::cycle_break(Netlist *netlist)
             int maxOutflow = INT_MIN;
 
             // find the set of unprocessed node (=> mark == 0), with the largest out flow
-            for (size_t i = 0; i < netlist->get_num_gates(); ++i)
+            for (size_t i = 0; i < num_gate; ++i)
             {
                 auto &node = netlist->gates[i];
                 if (mark[node->id] == 0)
@@ -276,7 +275,7 @@ void Util::cycle_break(Netlist *netlist)
     }
 
     // reverse edges that point left
-    for (size_t i = 0; i < netlist->get_num_gates(); ++i)
+    for (size_t i = 0; i < num_gate; ++i)
     {
         auto &node = netlist->gates[i];
         // look at the node's outgoing edges
