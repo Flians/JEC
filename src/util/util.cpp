@@ -141,7 +141,7 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
 void Util::cycle_break(Netlist *netlist)
 {
     vector<pair<Node *, Node *>> reversed;
-    size_t num_gate = netlist->get_num_gates();
+    const size_t num_gate = netlist->get_num_gates();
     /** indegree values and outdegree values for the nodes; mark for the nodes, inducing an ordering of the nodes. */
     int indeg[num_gate] = {0}, outdeg[num_gate] = {0}, mark[num_gate] = {0};
     /** list of source nodes and sink nodes. */
@@ -153,12 +153,12 @@ void Util::cycle_break(Netlist *netlist)
      * 
      * @param node node for which neighbors are updated
      */
-    auto updateNeighbors = [&indeg, &outdeg, &sources, &sinks](const Node *node) {
+    auto updateNeighbors = [&indeg, &outdeg, &mark, &sources, &sinks](const Node *node) {
         for (size_t i = 0, num_node_ins = node->ins.size(); i < num_node_ins; ++i)
         {
             auto &src = node->ins[i];
             // exclude self-loops
-            if (node == src)
+            if (node == src || mark[src->id] != 0)
             {
                 continue;
             }
@@ -173,7 +173,7 @@ void Util::cycle_break(Netlist *netlist)
         {
             auto &tar = node->outs[i];
             // exclude self-loops
-            if (node == tar)
+            if (node == tar || mark[tar->id] != 0)
             {
                 continue;
             }
