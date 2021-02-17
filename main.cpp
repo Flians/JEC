@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
     std::string str_help;
     str_help.append("Please input parameters:\n")
         .append("\t-h: help;\n")
-        .append("\t-b: the root directory;\n")
+        .append("\t-b: the root directory which includes the godlen directory and the revise directory;\n")
         .append("\t-n: the batch, the default is 100;\n")
         .append("\t-p: the batch task;\n")
         .append("\t-g: the path of golden file;\n")
@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
         .append("\t-m: merge the equivalent nodes;\n")
         .append("\t-d: clean DFF;\n")
         .append("\t-s: clean Splitter;\n")
-        .append("\t-i: whether to solve iteratively;")
+        .append("\t-i: whether to solve iteratively;\n")
         .append("\t-e: the type fo SMT solver, including FSM, OPENSMT, CONE and CVC4;\n")
         .append("For example, \"./JEC -g <golden.v> -r <revised.v> -o <output> -e <FSM|OPENSMT|CONE|CVC4> <-i> <-m> <-s> <-d>\".");
     while ((opt = getopt(argc, argv, "dhimpsb:g:r:o:e:n:")) != -1)
@@ -208,11 +208,12 @@ int main(int argc, char *argv[])
             help = true;
         }
     }
+
     if (help)
     {
         printf("%s\n", str_help.c_str());
     }
-    if (is_batch)
+    else if (is_batch)
     {
         evaluate(root_path, batch, clean_dff, clean_spl, merge, smt, incremental);
     }

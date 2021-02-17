@@ -66,9 +66,27 @@ make install     # to install into the prefix specified above
 ## run
 
 ``` shell
+>>> ./JEC -h
+Please input parameters:
+	-h: help;
+	-b: the root directory which includes the godlen directory and the revise directory;
+	-n: the batch, the default is 100;
+	-p: the batch task;
+	-g: the path of golden file;
+	-r: the path of revised file;
+	-o: the path of output file;
+	-m: merge the equivalent nodes;
+	-d: clean DFF;
+	-s: clean Splitter;
+	-i: whether to solve iteratively;
+	-e: the type fo SMT solver, including FSM, OPENSMT, CONE and CVC4;
+For example, "./JEC -g <golden.v> -r <revised.v> -o <output> -e <FSM|OPENSMT|CONE|CVC4> <-i> <-m> <-s> <-d>".
+
 # for single
+./JEC -g ../test/rsfq/alu_1.v
 ./JEC -g ../test/golden/gf_c880.v -r ../test/revise/rf_c880.v -o ../test/output/output_c880.txt -e CONE -i -m -s
 # for batch
+./JEC -p -b ../test/rsfq
 ./JEC -p -b ../test/ -e OPENSMT -i -m -s
 ```
 

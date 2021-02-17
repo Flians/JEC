@@ -25,8 +25,8 @@ The maximum logic level gap of any gate:
 `timescale  1ps  /  100fs
 module alu_4(gclk, X, Y, Carry_in, End_bar, Cmpl_X, Cmpl_Y, Op_XOR, Op_AND, Op_ARITH, Z, Carry_out);
 	input gclk;
-	input[3:0] X;
-	input[3:0] Y;
+	input [3:0] X;
+	input [3:0] Y;
 	input Carry_in;
 	input End_bar;
 	input Cmpl_X;
@@ -34,7 +34,7 @@ module alu_4(gclk, X, Y, Carry_in, End_bar, Cmpl_X, Cmpl_Y, Op_XOR, Op_AND, Op_A
 	input Op_XOR;
 	input Op_AND;
 	input Op_ARITH;
-	output[3:0] Z;
+	output [3:0] Z;
 	output Carry_out;
 	wire [28:0] ds0;
 	wire [4:0] dj0;

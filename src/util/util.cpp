@@ -281,41 +281,47 @@ void Util::cycle_break(Netlist *netlist)
         // look at the node's outgoing edges
         for (size_t j = 0, num_node_outs = node->outs.size(); j < num_node_outs; ++j)
         {
-            auto &tar = node->outs[j];
-            if (mark[node->id] > mark[tar->id])
+            Node *cur = node;
+            Node *next = cur->outs[j];
+            if (mark[cur->id] > mark[next->id])
             {
-                Node *last = nullptr;
                 // no considering the splitters in the cycle
-                while (node->type == SPL || node->type == SPL3)
+                while (cur->type == SPL || cur->type == SPL3)
                 {
-                    if (node->ins.size() == 1)
+                    if (cur->ins.size() == 1)
                     {
-                        last = node;
-                        node = node->ins[0];
+                        next = cur;
+                        cur = cur->ins[0];
                     }
                     else
                     {
                         JWARN("The splitter in the cycle has no input!");
-                        last = nullptr;
+                        next = nullptr;
                         break;
                     }
                 }
-                if (last == nullptr)
+                if (next == nullptr)
                     continue;
-                reversed.emplace_back(last, node);
+                if (cur == node)
+                {
+                    --num_node_outs;
+                    --j;
+                }
+                reversed.emplace_back(cur, next);
                 // reverse the edge
-                auto _find = find(last->ins.begin(), last->ins.end(), node);
-                if (_find != last->ins.end())
+                auto _find = find(next->ins.begin(), next->ins.end(), cur);
+                if (_find != next->ins.end())
                 {
-                    last->ins.erase(_find);
+                    next->ins.erase(_find);
                 }
-                _find = find(node->outs.begin(), node->outs.end(), node);
-                if (_find != node->outs.end())
+                _find = find(cur->outs.begin(), cur->outs.end(), next);
+                if (_find != cur->outs.end())
                 {
-                    node->outs.erase(_find);
+                    cur->outs.erase(_find);
                 }
-                last->outs.emplace_back(node);
-                node->ins.emplace_back(last);
+                next->outs.emplace_back(cur);
+                cur->ins.emplace_back(next);
+                JINFO("The edge betweeen '" + cur->name + "' and '" + next->name + "' is reversed.");
             }
         }
     }
