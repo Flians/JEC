@@ -248,7 +248,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                                 new_pi->type = _CLK;
                                 swap(this->map_PIs[item], this->map_PIs[new_pi->name]);
                                 swap(this->gates[0]->id, new_pi->id);
-                                swap(this->gates[0], new_pi);
+                                swap(this->gates[0], this->gates[this->num_gate - 1]);
                             }
                         }
                     }
