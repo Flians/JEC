@@ -1,5 +1,4 @@
 /*
-
 alu_2:
 	jxor: 9
 	jspl: 22
@@ -7,7 +6,6 @@ alu_2:
 	jcb: 7
 	jdff: 32
 	jand: 15
-
 Summary:
 	jxor: 9
 	jspl: 22
@@ -15,11 +13,9 @@ Summary:
 	jcb: 7
 	jdff: 32
 	jand: 15
-
 The maximum logic level gap of any gate:
 	alu_2: 3
 */
-
 `timescale  1ps  /  100fs
 module alu_2(xin, yin, carry_in, end_bar, cmpl_x, cmpl_y, op_and, op_xor, op_arith, zout, overflow, carry_out, clk);
 	input [1:0] xin;

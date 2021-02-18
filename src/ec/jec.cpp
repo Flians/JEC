@@ -119,7 +119,7 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
     MainSolver &mainSolver = osmt.getMainSolver();
     Logic &logic = osmt.getLogic();
 
-    vector<PTRef> nodes(miter->get_num_gates());
+    vector<PTRef> nodes(miter->get_num_gates(), logic.getTerm_false());
     // layers[0][0] is clk
     for (size_t i = 0, num_pis = layers[0].size(); i < num_pis; ++i)
     {
@@ -170,6 +170,9 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
                 break;
             case _EXOR:
                 res = logic.mkXor(inputs);
+                break;
+            case _ANDF:
+                res = logic.mkOr(inputs[0], logic.mkAnd(inputs[1], nodes[node->id]));
                 break;
             case WIRE:
             case SPL:
