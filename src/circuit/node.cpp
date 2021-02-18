@@ -18,6 +18,7 @@ const std::unordered_map<string, GType> Str_GType = {
     {"jspl3", SPL3},
     {"jcb", CB},
     {"jcb3", CB3},
+    {"jandf", _ANDF},
 
     {"and", AND},
     {"nand", NAND},
@@ -54,6 +55,7 @@ const std::unordered_map<GType, string, EnumClassHash> GType_Str = {
     {CB3, "jcb3"},
     {_HMUX, "_HMUX"},
     {_DC, "_DC"},
+    {_ANDF, "andf"},
     {_EXOR, "_EXOR"},
     {_MODULE, "module"},
     {_UNDEFINED_G, "undefined"}};
