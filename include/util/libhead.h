@@ -138,9 +138,9 @@ inline Value EXOR(const Value &A, const Value &B)
 }
 
 // ANDF
-inline Value ANDF(const Value &A, const Value &B, const Value &O)
+inline Value ANDF(const Value &A, const Value &B, Value &O)
 {
-    O = A + B | O;
+    O = A | (B ^ O);
     return O;
 }
 

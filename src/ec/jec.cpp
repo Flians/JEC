@@ -109,20 +109,7 @@ void jec::create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &ex
     vector<vector<Node *>> &layers = miter->getProperty(PROPERTIES::LAYERS);
     exprs.resize(miter->get_num_gates(), logic.getTerm_false());
     // layers[0][0] is clk
-    for (auto iter = miter->map_PIs.begin(), iter_end = miter->map_PIs.end(); iter != iter_end; ++iter)
-    {
-        auto &pi = iter->second;
-        if (pi->type == _CONSTANT)
-        {
-            exprs[pi->id] = pi->val == L ? logic.getTerm_false() : logic.getTerm_true();
-        }
-        else if (pi->type != _CLK)
-        {
-            exprs[pi->id] = logic.mkBoolVar(iter->first.c_str());
-        }
-    }
-    size_t num_level = layers.size();
-    for (size_t i = 1; i < num_level; i++)
+    for (size_t i = 0, num_level = layers.size(); i < num_level; i++)
     {
         auto &layer = layers[i];
         for (size_t j = 0, num_layer_i = layer.size(); j < num_layer_i; ++j)
@@ -136,13 +123,21 @@ void jec::create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &ex
                 if (npi->type != _CLK)
                     inputs.push(exprs[npi->id]);
             }
-            if (inputs.size() == 0)
+            if (inputs.size() == 0 && node->type > _PI)
             {
                 JERROR("The inputs is empty! in jec.evaluate_opensmt!");
             }
             PTRef res;
             switch (node->type)
             {
+            case _CONSTANT:
+                res = node->val == L ? logic.getTerm_false() : logic.getTerm_true();
+                break;
+            case _CLK:
+                break;
+            case _PI:
+                res = logic.mkBoolVar(node->name.c_str());
+                break;
             case AND:
                 res = logic.mkAnd(inputs);
                 break;
@@ -231,13 +226,18 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
     Logic &logic = osmt.getLogic();
     vector<PTRef> exprs;
     this->create_expr_of_opensmt(miter, logic, exprs);
+
+    vector<vector<Node *>> &layers = miter->getProperty(PROPERTIES::LAYERS);
+    auto &pos = layers.back();
+    size_t num_pos = pos.size();
+
     sstat reslut;
     if (!incremental)
     {
         vec<PTRef> outputs;
-        for (auto iter = miter->map_POs.begin(), iter_end = miter->map_POs.end(); iter != iter_end; ++iter)
+        for (size_t i = 0; i < num_pos; ++i)
         {
-            outputs.push(exprs[iter->second->id]);
+            outputs.push(exprs[pos[i]->id]);
         }
         PTRef assert = logic.mkEq(logic.getTerm_true(), logic.mkOr(outputs));
         mainSolver.push(assert);
@@ -245,9 +245,13 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
     }
     else
     {
-        for (auto iter = miter->map_POs.begin(), iter_end = miter->map_POs.end(); iter != iter_end; ++iter)
+        sort(pos.begin(), pos.end(), [&exprs](Node *a, Node *b) {
+            return exprs[a->id].x < exprs[b->id].x;
+        });
+        for (size_t i = 0; i < num_pos; ++i)
         {
-            PTRef assert = logic.mkEq(logic.getTerm_true(), exprs[iter->second->id]);
+            cout << exprs[pos[i]->id].x << endl;
+            PTRef assert = logic.mkEq(logic.getTerm_true(), exprs[pos[i]->id]);
             mainSolver.push(assert);
             reslut = mainSolver.check();
             if (reslut == s_True)
