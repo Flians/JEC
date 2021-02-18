@@ -345,6 +345,7 @@ void Util::cycle_restore(Netlist *netlist)
         item.second->outs.erase(find(item.second->outs.begin(), item.second->outs.end(), item.first));
         item.first->outs.emplace_back(item.second);
         item.second->ins.emplace_back(item.first);
+        JINFO("The edge betweeen '" + item.first->name + "' and '" + item.second->name + "' is restored.");
     }
     vector<pair<Node *, Node *>>().swap(reversed);
     netlist->removeProperty(PROPERTIES::CYCLE);
@@ -469,5 +470,6 @@ bool Util::path_balance(Netlist *netlist)
     }
     groups.clear();
     netlist->setProperty<bool>(PROPERTIES::PATH_BALANCED, path_balanced);
+    Util::cycle_restore(netlist);
     return path_balanced;
 }

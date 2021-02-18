@@ -394,7 +394,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
     {
         if (item.second->outs.size() > 1)
         {
-            JWARN("The netlist '" + this->name + "' has multi fan-outs!");
+            JWARN("The wire '" + item.second->name + "' in netlist '" + this->name + "' has multi fan-outs!");
         }
         this->delete_node(item.second);
     }
