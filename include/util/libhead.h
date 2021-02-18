@@ -138,44 +138,70 @@ inline Value EXOR(const Value &A, const Value &B)
 }
 
 template <typename T, typename... Ts>
-std::unique_ptr<T> make_unique(Ts &&...params)
+std::unique_ptr<T> make_unique(Ts &&... params)
 {
     return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
 }
 
-// show error message and exit
-inline void JERROR(string &&message)
+template <size_t I = 0, typename FuncT, typename Tuple>
+inline typename std::enable_if<I == std::tuple_size<Tuple>::value>::type for_each(Tuple &, FuncT)
+{
+}
+
+template <size_t I = 0, typename FuncT, typename Tuple>
+    inline typename std::enable_if < I<std::tuple_size<Tuple>::value>::type for_each(Tuple &t, FuncT f)
+{
+    f(std::get<I>(t));
+    for_each<I + 1, FuncT, Tuple>(t, f);
+}
+
+// show error messages and exit
+template <typename... Args>
+inline void JERROR(const Args &... messages)
 {
     std::cerr << "ERROR: ";
+    auto a = std::forward_as_tuple(messages...);
+    for_each(a, [](auto &item) {
 #ifdef WIN
-    SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED);
-    std::cerr << message;
-    SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED);
+        std::cerr << item << " ";
+        SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 #else
-    std::cerr << "\033[31m" << message << "\033[0m";
+            std::cerr << "\033[31m" << item << " \033[0m";
 #endif
+    });
     std::cerr << std::endl;
     exit(-1);
 }
 
-// show warning message
-inline void JWARN(string &&message)
+// show warning messages
+template <typename... Args>
+inline void JWARN(const Args &... messages)
 {
     std::cerr << "WARN: ";
+    auto a = std::forward_as_tuple(messages...);
+    for_each(a, [](auto &item) {
 #ifdef WIN
-    SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN);
-    std::cerr << message;
-    SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+        SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN);
+        std::cerr << item << " ";
+        SetConsoleTextAttribute(GetStdHandle(STD_ERROR_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 #else
-    std::cerr << "\033[33m" << message << "\033[0m";
+            std::cerr << "\033[33m" << item << " \033[0m";
 #endif
+    });
     std::cerr << std::endl;
 }
 
-// show info message
-inline void JINFO(string &&message)
+// show info messages
+template <typename... Args>
+inline void JINFO(const Args &... messages)
 {
-    std::cerr << "INFO: " << message << std::endl;
+    std::cerr << "INFO: ";
+    auto a = std::forward_as_tuple(messages...);
+    for_each(a, [](auto &item) {
+        std::cerr << item << " ";
+    });
+    std::cerr << std::endl;
 }
 
 #endif
