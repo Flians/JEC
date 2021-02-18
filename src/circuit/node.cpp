@@ -177,6 +177,7 @@ bool Node::containCLK()
     case DFF:
     case _HMUX:
     case _DC:
+    case _ANDF:
     case _EXOR:
         return true;
     default:
