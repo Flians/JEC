@@ -557,8 +557,6 @@ void Netlist::id_reassign()
     {
         return;
     }
-    this->map_PIs.clear();
-    this->map_POs.clear();
     size_t i = 0;
     while (i < this->num_gate)
     {
