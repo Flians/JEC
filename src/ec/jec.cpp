@@ -103,49 +103,38 @@ void jec::evaluate_from_POs_to_PIs(Netlist *miter)
 }
 
 #ifndef WIN
-// evaluate from PIs to POs
-void jec::evaluate_opensmt(Netlist *miter, bool incremental)
-{
-    if (miter->isEmpty())
-    {
-        JWARN("The netlist is empty!");
-        return;
-    }
-    vector<vector<Node *>> &layers = miter->getProperty(PROPERTIES::LAYERS);
-    auto config = std::unique_ptr<SMTConfig>(new SMTConfig());
-    const char *msg;
-    config->setOption(SMTConfig::o_incremental, SMTOption(incremental), msg);
-    Opensmt osmt(opensmt_logic::qf_bool, "JSolver", std::move(config));
-    MainSolver &mainSolver = osmt.getMainSolver();
-    Logic &logic = osmt.getLogic();
 
-    vector<PTRef> nodes(miter->get_num_gates(), logic.getTerm_false());
+void jec::create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &exprs)
+{
+    vector<vector<Node *>> &layers = miter->getProperty(PROPERTIES::LAYERS);
+    exprs.resize(miter->get_num_gates(), logic.getTerm_false());
     // layers[0][0] is clk
-    for (size_t i = 0, num_pis = layers[0].size(); i < num_pis; ++i)
+    for (auto iter = miter->map_PIs.begin(), iter_end = miter->map_PIs.end(); iter != iter_end; ++iter)
     {
-        auto &pi = layers[0][i];
+        auto &pi = iter->second;
         if (pi->type == _CONSTANT)
         {
-            nodes[pi->id] = pi->val == L ? logic.getTerm_false() : logic.getTerm_true();
+            exprs[pi->id] = pi->val == L ? logic.getTerm_false() : logic.getTerm_true();
         }
         else if (pi->type != _CLK)
         {
-            nodes[pi->id] = logic.mkBoolVar(pi->name.c_str());
+            exprs[pi->id] = logic.mkBoolVar(iter->first.c_str());
         }
     }
     size_t num_level = layers.size();
     for (size_t i = 1; i < num_level; i++)
     {
-        for (size_t j = 0, num_layer_i = layers[i].size(); j < num_layer_i; ++j)
+        auto &layer = layers[i];
+        for (size_t j = 0, num_layer_i = layer.size(); j < num_layer_i; ++j)
         {
-            auto &node = layers[i][j];
+            auto &node = layer[j];
             vec<PTRef> inputs;
             // layers[i][j]->ins->at(0) is clk
             for (size_t k = 0, num_node_ins = node->ins.size(); k < num_node_ins; ++k)
             {
                 auto &npi = node->ins[k];
                 if (npi->type != _CLK)
-                    inputs.push(nodes[npi->id]);
+                    inputs.push(exprs[npi->id]);
             }
             if (inputs.size() == 0)
             {
@@ -172,7 +161,7 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
                 res = logic.mkXor(inputs);
                 break;
             case _ANDF:
-                res = logic.mkOr(inputs[0], logic.mkAnd(inputs[1], nodes[node->id]));
+                res = logic.mkOr(inputs[0], logic.mkAnd(inputs[1], exprs[node->id]));
                 break;
             case WIRE:
             case SPL:
@@ -182,45 +171,26 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
                 res = inputs[0];
                 break;
             }
-            nodes[node->id] = res;
+            exprs[node->id] = res;
         }
     }
-    sstat reslut;
-    if (!incremental)
-    {
-        vec<PTRef> outputs;
-        for (size_t i = 0, num_layers_back = layers.back().size(); i < num_layers_back; ++i)
-        {
-            outputs.push(nodes[layers.back()[i]->id]);
-        }
-        PTRef assert = logic.mkEq(logic.getTerm_true(), logic.mkOr(outputs));
-        mainSolver.push(assert);
-        reslut = mainSolver.check();
-    }
-    else
-    {
-        for (size_t i = 0, num_layers_back = layers.back().size(); i < num_layers_back; ++i)
-        {
-            PTRef assert = logic.mkEq(logic.getTerm_true(), nodes[layers.back()[i]->id]);
-            mainSolver.push(assert);
-            reslut = mainSolver.check();
-            if (reslut == s_True)
-                break;
-        }
-    }
-    JINFO("The prover is opensmt.");
+}
 
+bool jec::print_result_of_opensmt(Netlist *miter, vector<PTRef> &exprs, Opensmt &osmt, sstat &reslut)
+{
     if (reslut == s_True)
     {
+        Logic &logic = osmt.getLogic();
+        MainSolver &mainSolver = osmt.getMainSolver();
         JWARN("The miter '" + miter->name + "' is not equivalent.");
         this->fout << "NEQ" << endl;
         miter->setProperty(PROPERTIES::EQ, false);
-        for (size_t i = 0, num_pis = layers[0].size(); i < num_pis; ++i)
+        for (auto iter = miter->map_PIs.begin(), iter_end = miter->map_PIs.end(); iter != iter_end; ++iter)
         {
-            auto &pi = layers[0][i];
+            auto &pi = iter->second;
             if (pi->type != _CLK)
             {
-                ValPair vp = mainSolver.getValue(nodes[pi->id]);
+                ValPair vp = mainSolver.getValue(exprs[pi->id]);
                 this->fout << logic.printTerm(vp.tr) << " " << vp.val << endl;
             }
         }
@@ -230,94 +200,72 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
         JWARN("The miter '" + miter->name + "' is equivalent.");
         this->fout << "EQ" << endl;
         miter->setProperty(PROPERTIES::EQ, true);
+        return true;
     }
     else if (reslut == s_Undef)
     {
-        JWARN("The miter is unknown.");
+        JWARN("The miter '" + miter->name + "' is unknown.");
         this->fout << "unknown" << endl;
     }
     else
     {
-        JWARN("The miter is error.");
+        JWARN("The miter '" + miter->name + "' is error.");
         this->fout << "error" << endl;
     }
-    vector<PTRef>().swap(nodes);
+    return false;
 }
 
-void jec::build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRef> &record)
+// evaluate from PIs to POs
+void jec::evaluate_opensmt(Netlist *miter, bool incremental)
 {
-    if (!cur)
+    if (!miter || miter->isEmpty())
     {
-        JWARN("The current node is NULL in jec.build_equation_dfs!");
+        JWARN("The netlist is empty!");
         return;
     }
-    if (record.find(cur) != record.end() || cur->type == _CLK)
+    auto config = std::unique_ptr<SMTConfig>(new SMTConfig());
+    const char *msg;
+    config->setOption(SMTConfig::o_incremental, SMTOption(incremental), msg);
+    Opensmt osmt(opensmt_logic::qf_bool, "JSolver", std::move(config));
+    MainSolver &mainSolver = osmt.getMainSolver();
+    Logic &logic = osmt.getLogic();
+    vector<PTRef> exprs;
+    this->create_expr_of_opensmt(miter, logic, exprs);
+    sstat reslut;
+    if (!incremental)
     {
-        return;
-    }
-    if (cur->type == _CONSTANT)
-    {
-        record[cur] = cur->val == L ? logic.getTerm_false() : logic.getTerm_true();
-    }
-    else if (cur->type == _PI)
-    {
-        record[cur] = logic.mkBoolVar(cur->name.c_str());
+        vec<PTRef> outputs;
+        for (auto iter = miter->map_POs.begin(), iter_end = miter->map_POs.end(); iter != iter_end; ++iter)
+        {
+            outputs.push(exprs[iter->second->id]);
+        }
+        PTRef assert = logic.mkEq(logic.getTerm_true(), logic.mkOr(outputs));
+        mainSolver.push(assert);
+        reslut = mainSolver.check();
     }
     else
     {
-        vec<PTRef> inputs;
-        for (size_t i = 0, num_cur_ins = cur->ins.size(); i < num_cur_ins; ++i)
+        for (auto iter = miter->map_POs.begin(), iter_end = miter->map_POs.end(); iter != iter_end; ++iter)
         {
-            auto &in = cur->ins[i];
-            build_equation_dfs(in, logic, record);
-            if (in->type != _CLK)
-            {
-                inputs.push(record[in]);
-            }
+            PTRef assert = logic.mkEq(logic.getTerm_true(), exprs[iter->second->id]);
+            mainSolver.push(assert);
+            reslut = mainSolver.check();
+            if (reslut == s_True)
+                break;
         }
-        if (inputs.size() == 0)
-        {
-            JWARN("The inputs is empty! in jec.build_equation_dfs!");
-        }
-        PTRef res;
-        switch (cur->type)
-        {
-        case AND:
-            res = logic.mkAnd(inputs);
-            break;
-        case OR:
-        case CB:
-        case CB3:
-            res = logic.mkOr(inputs);
-            break;
-        case XOR:
-            res = logic.mkXor(inputs);
-            break;
-        case INV:
-            res = logic.mkNot(inputs);
-            break;
-        case _EXOR:
-            res = logic.mkXor(inputs);
-            break;
-        case WIRE:
-        case SPL:
-        case SPL3:
-            // cout << "RG " << cur->name << endl;
-        default:
-            res = inputs[0];
-            break;
-        }
-        record[cur] = res;
     }
+    JINFO("The prover is opensmt.");
+    this->print_result_of_opensmt(miter, exprs, osmt, reslut);
+    vector<PTRef>().swap(exprs);
 }
 
-bool jec::evaluate_opensmt(deque<Node *> &cone)
+void jec::evaluate_min_cone(Netlist *miter)
 {
-    if (cone.empty())
+    if (miter->isEmpty())
     {
-        cout << "The vector POs is empty in jec.evaluate_opensmt!" << endl;
+        JWARN("The netlist is empty!");
+        return;
     }
-
     auto config = std::unique_ptr<SMTConfig>(new SMTConfig());
     const char *msg;
     config->setOption(SMTConfig::o_incremental, SMTOption(true), msg);
@@ -325,68 +273,15 @@ bool jec::evaluate_opensmt(deque<Node *> &cone)
     MainSolver &mainSolver = osmt.getMainSolver();
     Logic &logic = osmt.getLogic();
     mainSolver.getConfig().setOption(SMTConfig::o_time_queries, SMTOption(false), msg);
+    vector<PTRef> exprs;
+    this->create_expr_of_opensmt(miter, logic, exprs);
 
-    unordered_map<Node *, PTRef> nodes;
-
-    sstat reslut;
-    int out_len = cone.size();
-    while (out_len--)
-    {
-        Node *output = cone.back();
-        cone.pop_back();
-        if (output->type != _EXOR)
-        {
-            cone.emplace_front(output);
-        }
-        build_equation_dfs(output, logic, nodes);
-        PTRef assert = logic.mkEq(logic.getTerm_true(), nodes[output]);
-        mainSolver.push(assert);
-        reslut = mainSolver.check();
-        if (reslut == s_True)
-        {
-            if (output->type == _EXOR)
-            {
-                return false;
-            }
-            mainSolver.pop();
-            assert = logic.mkEq(logic.getTerm_false(), nodes[output]);
-            mainSolver.push(assert);
-            reslut = mainSolver.check();
-            // mainSolver.printFramesAsQuery();
-            if (reslut == s_True)
-            {
-                output->type = _PI;
-            }
-            else if (reslut == s_False)
-            {
-                output->type = _CONSTANT;
-                output->val = H;
-            }
-            else
-            {
-                JWARN("The result2 is unknown in jec.evaluate_opensmt!");
-            }
-        }
-        else if (reslut == s_False)
-        {
-            output->type = _CONSTANT;
-            output->val = L;
-        }
-        else
-        {
-            JWARN("The result is unknown in jec.evaluate_opensmt!");
-        }
-    }
-    nodes.clear();
-    return true;
-}
-
-void jec::evaluate_min_cone(Netlist *miter)
-{
     // <level, color>
     vector<pair<size_t, int>> info(miter->get_num_gates(), {0, 0});
     vector<vector<Node *>> &layers = miter->getProperty(PROPERTIES::LAYERS);
-    size_t num_level = layers.size();
+    const size_t num_level = layers.size();
+    const size_t num_pis = miter->map_PIs.size();
+    vector<deque<Node *>> cones(num_pis);
     for (size_t i = 0; i < num_level; ++i)
     {
         for (size_t j = 0, num_layer_i = layers[i].size(); j < num_layer_i; ++j)
@@ -394,35 +289,29 @@ void jec::evaluate_min_cone(Netlist *miter)
             auto &node_ = layers[i][j];
             info[node_->id].first = i;
             info[node_->id].second = -1;
-        }
-    }
-    size_t num_pis = layers[0].size();
-    // the max number of cones is the size of PIs.
-    vector<deque<Node *>> cones(num_pis);
-    // init cones
-    for (size_t i = 0; i < num_pis; ++i)
-    {
-        info[layers[0][i]->id].second = i;
-        if (layers[0][i]->type != _CLK)
-        {
-            cones[i].emplace_back(layers[0][i]);
+            // init cones. The max number of cones is the size of PIs.
+            if (i == 0 && node_->type != _CLK)
+            {
+                cones[j].emplace_back(node_);
+            }
         }
     }
     int smt_id = 0;
+    sstat reslut = s_False;
     vector<size_t> exor_num(num_pis, 0);
     for (size_t i = 1; i < num_level; ++i)
     {
         for (size_t j = 0; j < num_pis; ++j)
         {
-            exor_num[j] = 0;
-            int cur_len = cones[j].size();
+            auto &cur_cone = cones[j];
+            size_t cur_len = cur_cone.size();
             while (cur_len--)
             {
-                Node *cur = cones[j].front();
-                cones[j].pop_front();
+                Node *cur = cur_cone.front();
+                cur_cone.pop_front();
                 if (info[cur->id].first >= i || cur->type == _EXOR)
                 {
-                    cones[j].emplace_back(cur);
+                    cur_cone.emplace_back(cur);
                     if (cur->type == _EXOR)
                         ++exor_num[j];
                     continue;
@@ -433,7 +322,7 @@ void jec::evaluate_min_cone(Netlist *miter)
                     if (info[tout->id].second == -1)
                     {
                         info[tout->id].second = j;
-                        cones[j].emplace_back(tout);
+                        cur_cone.emplace_back(tout);
                         if (tout->type == _EXOR)
                             ++exor_num[j];
                     }
@@ -444,50 +333,74 @@ void jec::evaluate_min_cone(Netlist *miter)
                         {
                             continue;
                         }
-                        while (!cones[old_color].empty())
-                        {
-                            Node *tmp = cones[old_color].front();
-                            cones[old_color].pop_front();
-                            info[tmp->id].second = j;
-                            if (info[tmp->id].first >= i || tmp->type == _EXOR)
-                            {
-                                cones[j].emplace_back(tmp);
-                                if (tmp->type == _EXOR)
-                                    ++exor_num[j];
-                            }
-                            else
-                            {
-                                cones[j].emplace_front(tmp);
-                                ++cur_len;
-                            }
-                        }
+                        auto &other_cone = cones[old_color];
+                        exor_num[old_color] = 0;
+                        cur_len += other_cone.size();
+                        cur_cone.insert(cur_cone.begin(), other_cone.begin(), other_cone.end());
+                        std::deque<Node *>().swap(other_cone);
                     }
                 }
             }
         }
         for (size_t j = 0; j < num_pis; ++j)
         {
-            size_t num_node = cones[j].size();
+            auto &cur_cone = cones[j];
+            size_t num_node = cur_cone.size();
             // evaluate cur_cone
-            if (!cones[j].empty() && ((num_node == 1 && info[cones[j][0]->id].first == i) || exor_num[j] == num_node))
+            if (num_node > 0 && ((num_node == 1 && info[cur_cone[0]->id].first == i) || exor_num[j] == num_node))
             {
                 cout << ">>> The cone " << (smt_id++) << " is evaluated." << endl;
-                if (!evaluate_opensmt(cones[j]))
+                for (auto it = cur_cone.begin(), it_end = cur_cone.end(); it != it_end; ++it)
                 {
-                    JWARN("The miter '" + miter->name + "' is not equivalent.");
-                    this->fout << "NEQ" << endl;
-                    miter->setProperty(PROPERTIES::EQ, false);
-                    return;
+                    auto &expr = exprs[(*it)->id];
+                    mainSolver.push(logic.mkEq(logic.getTerm_true(), expr));
+                    reslut = mainSolver.check();
+                    if (reslut == s_True)
+                    {
+                        if ((*it)->type == _EXOR)
+                        {
+                            this->print_result_of_opensmt(miter, exprs, osmt, reslut);
+                            return;
+                        }
+                        mainSolver.pop();
+                        mainSolver.push(logic.mkEq(logic.getTerm_false(), expr));
+                        reslut = mainSolver.check();
+                        // mainSolver.printFramesAsQuery();
+                        if (reslut == s_True)
+                        {
+                            (*it)->type = _PI;
+                        }
+                        else if (reslut == s_False)
+                        {
+                            (*it)->type = _CONSTANT;
+                            (*it)->val = H;
+                        }
+                        else
+                        {
+                            JWARN("The result2 is", reslut == s_Undef ? "unknown" : "error", "in jec.evaluate_min_cone!");
+                            this->print_result_of_opensmt(miter, exprs, osmt, reslut);
+                            return;
+                        }
+                    }
+                    else if (reslut == s_False)
+                    {
+                        (*it)->type = _CONSTANT;
+                        (*it)->val = L;
+                    }
+                    else
+                    {
+                        JWARN("The result is", reslut == s_Undef ? "unknown" : "error", "in jec.evaluate_min_cone!");
+                        this->print_result_of_opensmt(miter, exprs, osmt, reslut);
+                        return;
+                    }
                 }
             }
         }
     }
+    this->print_result_of_opensmt(miter, exprs, osmt, reslut);
     vector<pair<size_t, int>>().swap(info);
     vector<deque<Node *>>().swap(cones);
     vector<size_t>().swap(exor_num);
-    JWARN("The miter '" + miter->name + "' is equivalent.");
-    this->fout << "EQ" << endl;
-    miter->setProperty(PROPERTIES::EQ, true);
 }
 
 void jec::evaluate_cvc4(Netlist *miter, bool incremental)

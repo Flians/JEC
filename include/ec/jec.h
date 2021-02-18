@@ -17,8 +17,8 @@ private:
     bool evaluate(vector<vector<Node *>> &layers);
     bool evaluate(const vector<Node *> &nodes);
 #ifndef WIN
-    void build_equation_dfs(Node *cur, Logic &logic, unordered_map<Node *, PTRef> &record);
-    bool evaluate_opensmt(deque<Node *> &cone);
+    void create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &exprs);
+    bool print_result_of_opensmt(Netlist *miter, vector<PTRef> &exprs, Opensmt &osmt, sstat &reslut);
 #endif
 
 public:

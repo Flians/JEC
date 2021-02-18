@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
         case 'n':
         {
             int tmp = atoi(optarg);
-            if (tmp <= 0)
+            if (tmp > 0)
             {
                 batch = tmp;
             }
