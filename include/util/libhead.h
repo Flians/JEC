@@ -137,6 +137,13 @@ inline Value EXOR(const Value &A, const Value &B)
     }
 }
 
+// ANDF
+inline Value ANDF(const Value &A, const Value &B, const Value &O)
+{
+    O = A + B | O;
+    return O;
+}
+
 template <typename T, typename... Ts>
 std::unique_ptr<T> make_unique(Ts &&... params)
 {
