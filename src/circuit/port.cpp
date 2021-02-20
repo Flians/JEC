@@ -15,17 +15,25 @@ const std::unordered_map<PType, string, EnumClassHash> PType_Str = {
 Port::~Port()
 {
     std::size_t in_size = this->in_edges.size();
-    while ((in_size--) > 0)
+    for (std::size_t i = 0; i < in_size; ++i)
     {
-        delete *this->in_edges.begin();
+        auto &in_e = this->in_edges[i];
+        in_e->set_source(nullptr);
+        in_e->tar = nullptr;
+        delete in_e;
     }
-    this->in_edges.clear();
+    std::vector<Edge *>().swap(this->in_edges);
+
     std::size_t out_size = this->out_edges.size();
-    while ((out_size--) > 0)
+    for (std::size_t i = 0; i < out_size; ++i)
     {
-        delete *this->out_edges.begin();
+        auto &out_e = this->out_edges[i];
+        out_e->src = nullptr;
+        out_e->set_target(nullptr);
+        delete out_e;
     }
-    this->out_edges.clear();
+    std::vector<Edge *>().swap(this->out_edges);
+
     if (this->own)
     {
         if (this->type == PType::_IN)
@@ -48,20 +56,20 @@ Port::~Port()
 void Port::add_output(Port *tar)
 {
     Edge *e = new Edge(this, tar);
-    this->out_edges.emplace(e);
+    this->out_edges.emplace_back(e);
     if (tar)
     {
-        tar->in_edges.emplace(e);
+        tar->in_edges.emplace_back(e);
     }
 }
 
 void Port::add_input(Port *src)
 {
     Edge *e = new Edge(src, this);
-    this->in_edges.emplace(e);
+    this->in_edges.emplace_back(e);
     if (src)
     {
-        src->out_edges.emplace(e);
+        src->out_edges.emplace_back(e);
     }
 }
 

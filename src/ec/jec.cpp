@@ -164,7 +164,6 @@ void jec::create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &ex
                 // O=A+B*O_
                 res = logic.mkOr(inputs[0], logic.mkAnd(inputs[1], exprs[node->id]));
                 break;
-            case WIRE:
             case SPL:
             case SPL3:
                 // cout << node->name << endl;

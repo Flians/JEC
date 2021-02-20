@@ -43,8 +43,42 @@ Netlist::Netlist(ifstream &golden, ifstream &revised)
 
 Netlist::~Netlist()
 {
-    Util::cleanVP(this->gates);
+    for (std::size_t i = 0; i < this->num_port; ++i)
+    {
+        auto &cur = this->ports[i];
+        if (!cur)
+        {
+            continue;
+        }
+        cur->own = nullptr;
+        std::vector<Edge *>().swap(cur->in_edges);
+
+        std::size_t out_size = cur->out_edges.size();
+        for (std::size_t i = 0; i < out_size; ++i)
+        {
+            auto &out_e = cur->out_edges[i];
+            out_e->src = nullptr;
+            out_e->tar = nullptr;
+            delete out_e;
+        }
+        std::vector<Edge *>().swap(cur->out_edges);
+        delete cur;
+    }
     vector<Port *>().swap(this->ports);
+
+    for (std::size_t i = 0; i < this->num_gate; ++i)
+    {
+        auto &cur = this->gates[i];
+        if (!cur)
+        {
+            continue;
+        }
+        std::unordered_map<std::string, Port *>().swap(cur->ins);
+        std::unordered_map<std::string, Port *>().swap(cur->outs);
+        delete cur;
+    }
+    vector<Port *>().swap(this->ports);
+
     this->map_PIs.clear();
     this->map_POs.clear();
     JINFO("The netlist is destroyed!");
@@ -294,7 +328,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                     }
                     break;
                 }
-                case WIRE:
+                case _WIRE:
                 {
                     bool has_bits = false, flag_first = true;
                     while (regex_search(iterStart, iterEnd, match, pattern))
@@ -401,20 +435,30 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
     for (auto &item : wires)
     {
         size_t in_size = item.second->in_edges.size();
-        if (in_size > 1)
-        {
-            JWARN("The wire '", item.second->name, "' in netlist '", this->name, "' has multi fan-outs!");
-        }
-        Port *parent = in_size == 0 ? nullptr : (*item.second->in_edges.begin())->src;
         size_t out_size = item.second->out_edges.size();
-        if (out_size > 1 && (!parent || parent->own->type != _CLK))
+        if (in_size > 1 || in_size * out_size == 0)
         {
-            JWARN("The wire '", this->name, "' has multi fan-ins in netlist '", this->name, "'.");
+            if (in_size + out_size == 0)
+            {
+                JWARN("The wire '", item.second->name, "' in netlist '", this->name, " is useless.");
+            }
+            else
+            {
+                JERROR("The wire '", item.second->name, "' in netlist '", this->name, " is wrong!");
+            }
         }
-        while ((out_size--) > 0)
+        Port *parent = item.second->in_edges[0]->src;
+        if (out_size > 1 && parent->own->type != _CLK)
         {
-            (*item.second->out_edges.begin())->set_source(parent);
+            JWARN("The wire '", this->name, "' in netlist '", this->name, "' has multi fan-outs.");
         }
+        for (size_t i = 0; i < out_size; ++i)
+        {
+            auto &out_e = item.second->out_edges[i];
+            out_e->src = parent;
+            parent->out_edges.emplace_back(out_e);
+        }
+        vector<Edge *>().swap(item.second->out_edges);
         delete item.second;
     }
     wires.clear();
@@ -456,7 +500,7 @@ Node *Netlist::delete_node(Node *cur)
 {
     if (!cur)
         return nullptr;
-    if (cur->ins.empty() && cur->outs.empty() && cur->type == WIRE)
+    if (cur->ins.empty() && cur->outs.empty() && cur->type == _WIRE)
     {
         JWARN("The wire '", cur->name, "' is useless in netlist.delete_node!");
         delete cur;
@@ -470,19 +514,25 @@ Node *Netlist::delete_node(Node *cur)
         JWARN("The node '", cur->name, "' have none or more one inputs in netlist.delete_node!");
         return nullptr;
     }
-    Port *tin = *predecessors.begin();
+    Port *tin = predecessors[0];
     if (!cur->outs.empty())
     {
         for (auto &out : cur->outs)
         {
-            if (out.second)
+            auto &o_port = out.second;
+            if (o_port)
             {
-                std::size_t in_size = out.second->out_edges.size();
-                while ((in_size--) > 0)
+                std::size_t out_size = o_port->out_edges.size();
+                for (size_t i = 0; i < out_size; ++i)
                 {
-                    (*out.second->out_edges.begin())->set_source(tin);
+                    auto &out_e = o_port->out_edges[i];
+                    out_e->src = tin;
+                    tin->out_edges.emplace_back(out_e);
                 }
+                vector<Edge *>().swap(o_port->out_edges);
             }
+            o_port->own = nullptr;
+            delete o_port;
         }
         std::unordered_map<std::string, Port *>().swap(cur->outs);
     }
@@ -508,33 +558,30 @@ bool Netlist::merge_node(Node *node, Node *repeat)
         JWARN("The two nodes do not have the same inputs, so they cannot be merged in netlist.merge_node!");
         return 0;
     }
-    std::vector<Port *> successors_port = repeat->get_successors_port();
 
-    for (auto &o_port : repeat->outs)
+    for (auto &out : repeat->outs)
     {
-        if (o_port.second)
+        auto &o_port = out.second;
+        if (o_port)
         {
-            size_t out_size = o_port.second->out_edges.size();
-            while ((out_size--) > 0)
+            std::size_t out_size = o_port->out_edges.size();
+            if (out_size == 0)
+                continue;
+            auto _find = node->outs.find(out.first);
+            if (_find == node->outs.end())
             {
-                auto &o_edge = *o_port.second->out_edges.begin();
-                if (o_edge)
-                {
-                    if (node->outs.find(o_port.first) != node->outs.end())
-                    {
-                        o_edge->set_source(node->outs[o_port.first]);
-                    }
-                    else
-                    {
-                        JERROR("The output port '", o_port.first, "' of repeated node '", repeat->name, "' can't be found in the node '", node->name, "' in netlist.merge_node!");
-                    }
-                }
-                else
-                {
-                    o_port.second->out_edges.erase(nullptr);
-                }
+                JERROR("The output port '", out.first, "' of repeated node '", repeat->name, "' can't be found in the node '", node->name, "' in netlist.merge_node!");
             }
+            for (size_t i = 0; i < out_size; ++i)
+            {
+                auto &out_e = o_port->out_edges[i];
+                out_e->src = _find->second;
+                _find->second->out_edges.emplace_back(out_e);
+            }
+            vector<Edge *>().swap(o_port->out_edges);
         }
+        o_port->own = nullptr;
+        delete o_port;
     }
     std::unordered_map<std::string, Port *>().swap(repeat->outs);
     delete repeat;
@@ -607,10 +654,9 @@ void Netlist::id_reassign()
             this->gates[this->num_gate] = nullptr;
         }
     }
-    // this->gates.erase(this->gates.begin() + this->num_gate, this->gates.end());
-    this->gates.resize(this->num_gate);
+    this->gates.erase(this->gates.begin() + this->num_gate, this->gates.end());
     vector<Node *>(this->gates).swap(this->gates);
-    this->ports.resize(this->num_port);
+    this->ports.erase(this->ports.begin() + this->num_port, this->ports.end());
     vector<Port *>(this->ports).swap(this->ports);
 }
 
@@ -821,10 +867,6 @@ ostream &operator<<(ostream &output, const Netlist &n)
             if (!n.ports[i]->own || (n.ports[i]->own && vis[n.ports[i]->own->id]) || n.ports[i]->hasProperty(PROPERTIES::NET_NAME))
             {
                 continue;
-            }
-            if (n.ports[i]->id == 1289)
-            {
-                cout << endl;
             }
             output << "    wire n" << n.ports[i]->id << ";" << endl;
         }

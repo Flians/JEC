@@ -281,8 +281,7 @@ void Util::cycle_break(Netlist *netlist)
                 {
                     if (cur->ins.size() == 1)
                     {
-                        last = *node->ins.begin()->second->in_edges.begin();
-                        node = last->get_source();
+                        node = node->ins.begin()->second->in_edges[0]->get_source();
                     }
                     else
                     {

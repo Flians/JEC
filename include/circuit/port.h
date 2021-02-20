@@ -32,8 +32,8 @@ public:
     PType type;
     Node *own;
     std::size_t id;
-    std::unordered_set<Edge *> in_edges;
-    std::unordered_set<Edge *> out_edges;
+    std::vector<Edge *> in_edges;
+    std::vector<Edge *> out_edges;
     Point<> position;
 
 public:

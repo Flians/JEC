@@ -83,6 +83,7 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
                       << miter << "\n"
                       << endl;
         }
+        golden.close();
     }
     if (smt == _NONE)
         return times;

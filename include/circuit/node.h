@@ -15,7 +15,7 @@ enum GType
     _PI = 2,
     _EXOR = 3, // connected to outputs
     _PO = 4,
-    WIRE = 5,
+    _WIRE = 5,
     AND = 6,
     NAND = 7,
     OR = 8,
@@ -61,7 +61,7 @@ public:
 
 public:
     Node() : name(nullptr), type(_UNDEFINED_G), id(init_id++), val(X) {}
-    Node(const std::string &_name, const GType &_cell = WIRE, int _id = (init_id++), const Value &_val = X) : name(_name), type(_cell), id(_id), val(_val) {}
+    Node(const std::string &_name, const GType &_cell = _UNDEFINED_G, int _id = (init_id++), const Value &_val = X) : name(_name), type(_cell), id(_id), val(_val) {}
     ~Node();
 
     std::size_t get_outdegree(bool has_self = true) const;

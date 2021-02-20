@@ -4,7 +4,7 @@ const std::unordered_map<string, GType> Str_GType = {
     {"constant", _CONSTANT},
     {"input", _PI},
     {"output", _PO},
-    {"wire", WIRE},
+    {"wire", _WIRE},
 
     {"jand", AND},
     {"jnand", NAND},
@@ -40,7 +40,7 @@ const std::unordered_map<GType, string, EnumClassHash> GType_Str = {
     {_CLK, "input"},
     {_PI, "input"},
     {_PO, "output"},
-    {WIRE, "wire"},
+    {_WIRE, "wire"},
     {AND, "and"},
     {NAND, "nand"},
     {OR, "or"},
@@ -64,19 +64,19 @@ const std::unordered_map<GType, string, EnumClassHash> GType_Str = {
 Node::~Node()
 {
     // cout << "~delete Node: " << this->name << endl;
-    std::size_t in_size = this->ins.size();
-    while ((in_size--) > 0)
+    for (auto it = this->ins.begin(), it_end = this->ins.end(); it != it_end; ++it)
     {
-        delete this->ins.begin()->second;
+        it->second->own = nullptr;
+        delete it->second;
     }
-    this->ins.clear();
+    std::unordered_map<std::string, Port *>().swap(this->ins);
 
-    std::size_t out_size = this->outs.size();
-    while ((out_size--) > 0)
+    for (auto it = this->outs.begin(), it_end = this->outs.end(); it != it_end; ++it)
     {
-        delete this->outs.begin()->second;
+        it->second->own = nullptr;
+        delete it->second;
     }
-    this->outs.clear();
+    std::unordered_map<std::string, Port *>().swap(this->outs);
 }
 
 std::size_t Node::get_outdegree(bool has_self) const
@@ -294,13 +294,13 @@ Value Node::calculate()
     case BUF:
         break;
     case _HMUX:
-        res = HMUX((*(this->ins["I0"]->in_edges.begin()))->get_source()->val,
-                   (*(this->ins["I1"]->in_edges.begin()))->get_source()->val,
-                   (*(this->ins["S"]->in_edges.begin()))->get_source()->val);
+        res = HMUX(this->ins["I0"]->in_edges[0]->get_source()->val,
+                   this->ins["I1"]->in_edges[0]->get_source()->val,
+                   this->ins["S"]->in_edges[0]->get_source()->val);
         break;
     case _DC:
-        res = DC((*(this->ins["C"]->in_edges.begin()))->get_source()->val,
-                 (*(this->ins["D"]->in_edges.begin()))->get_source()->val);
+        res = DC(this->ins["C"]->in_edges[0]->get_source()->val,
+                 this->ins["D"]->in_edges[0]->get_source()->val);
         break;
     case _EXOR:
         res = EXOR(res, (*(++it_))->val);

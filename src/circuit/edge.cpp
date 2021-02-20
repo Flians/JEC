@@ -41,14 +41,14 @@ void Edge::set_source(Port *new_src)
 {
     if (this->src)
     {
-        this->src->out_edges.erase(this);
+        this->src->out_edges.erase(remove(this->src->out_edges.begin(), this->src->out_edges.end(), this), this->src->out_edges.end());
     }
 
     this->src = new_src;
 
     if (this->src)
     {
-        this->src->out_edges.emplace(this);
+        this->src->out_edges.emplace_back(this);
     }
 }
 
@@ -56,14 +56,14 @@ void Edge::set_target(Port *new_tar)
 {
     if (this->tar)
     {
-        this->tar->in_edges.erase(this);
+        this->tar->in_edges.erase(remove(this->tar->in_edges.begin(), this->tar->in_edges.end(), this), this->tar->in_edges.end());
     }
 
     this->tar = new_tar;
 
     if (this->tar)
     {
-        this->tar->in_edges.emplace(this);
+        this->tar->in_edges.emplace_back(this);
     }
 }
 
