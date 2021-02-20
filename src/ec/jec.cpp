@@ -162,7 +162,7 @@ void jec::create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &ex
                 break;
             case _ANDF:
                 // O=A+B*O_
-                res = logic.mkOr(inputs[0], logic.mkAnd(inputs[1], nodes[node->id]));
+                res = logic.mkOr(inputs[0], logic.mkAnd(inputs[1], exprs[node->id]));
                 break;
             case WIRE:
             case SPL:
@@ -256,7 +256,6 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
         });
         for (size_t i = 0; i < num_pos; ++i)
         {
-            cout << exprs[pos[i]->id].x << endl;
             PTRef assert = logic.mkEq(logic.getTerm_true(), exprs[pos[i]->id]);
             mainSolver.push(assert);
             reslut = mainSolver.check();

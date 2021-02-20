@@ -79,7 +79,7 @@ void Netlist::parse_inport(Node *g, const string &name, const string &item, cons
     }
     else
     {
-        JERROR("There is a undefined input port '" + item + "' in netlist.parse_inport for " + line);
+        JERROR("There is a undefined input port '", item, "' in netlist.parse_inport for ", line);
     }
     g->ins.emplace(name, port);
 }
@@ -100,7 +100,7 @@ void Netlist::parse_outport(Node *g, const string &name, const string &item, con
     }
     else
     {
-        JERROR("There is a undefined output port '" + item + "' in netlist.parse_outport for " + line);
+        JERROR("There is a undefined output port '", item, "' in netlist.parse_outport for ", line);
     }
     g->outs.emplace(name, port);
 }
@@ -120,7 +120,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
             string::size_type rp = item.find_last_of(']');
             if (lp == item.npos || rp == item.npos || lp >= rp)
             {
-                JERROR("There are some troubles in netlist.parse_netlist for multiple bits: " + line);
+                JERROR("There are some troubles in netlist.parse_netlist for multiple bits:", line);
             }
             bits_end = atoi(item.substr(lp + 1, mp - lp).c_str());
             bits_begin = atoi(item.substr(mp + 1, rp - mp).c_str());
@@ -133,7 +133,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
             }
             else
             {
-                JERROR("There are some troubles in netlist.parse_netlist for input: " + line);
+                JERROR("There are some troubles in netlist.parse_netlist for input:", line);
             }
             return true;
         }
@@ -155,7 +155,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                 if (in.eof())
                 {
                     flag = true;
-                    JWARN("The comment '/*' is not end with '*/' in netlist.parse_netlist. \nThe line: " + line);
+                    JWARN("The comment '/*' is not end with '*/' in netlist.parse_netlist. \nThe line:", line);
                     break;
                 }
                 getline(in, tl);
@@ -197,7 +197,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                 {
                     if (!regex_search(iterStart, iterEnd, match, pattern))
                     {
-                        JERROR("There are some troubles in netlist.parse_netlist for MODULE: " + line);
+                        JERROR("There are some troubles in netlist.parse_netlist for MODULE: ", line);
                     }
                     item = match[0];
                     iterStart = match[0].second;
@@ -339,7 +339,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                 {
                     if (!regex_search(iterStart, iterEnd, match, pattern))
                     {
-                        JERROR("There are some troubles in netlist.parse_netlist for GATE definition: " + line);
+                        JERROR("There are some troubles in netlist.parse_netlist for GATE definition: ", line);
                     }
                     Node *g = new Node(match[0], nt, this->num_gate++);
                     this->gates.emplace_back(g);
@@ -357,7 +357,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                             bool flag = Libstring::startsWith(port_name, ".dout");
                             if (!regex_search(iterStart, iterEnd, match, pattern))
                             {
-                                JERROR("There are some troubles in netlist.parse_netlist for PORT definition: " + line);
+                                JERROR("There are some troubles in netlist.parse_netlist for PORT definition: ", line);
                             }
                             item = match[0];
                             iterStart = match[0].second;
@@ -393,7 +393,7 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
                 // read single module
                 if (Libstring::startsWith(item, "endmodule"))
                     break;
-                JERROR("There key word '" + item + "' is unknown in netlist.parse_netlist: " + line);
+                JERROR("There key word '", item, "' is unknown in netlist.parse_netlist: ", line);
             }
         }
     }
@@ -403,13 +403,13 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
         size_t in_size = item.second->in_edges.size();
         if (in_size > 1)
         {
-            JWARN("The wire '" + item.second->name + "' in netlist '" + this->name + "' has multi fan-outs!");
+            JWARN("The wire '", item.second->name, "' in netlist '", this->name, "' has multi fan-outs!");
         }
         Port *parent = in_size == 0 ? nullptr : (*item.second->in_edges.begin())->src;
         size_t out_size = item.second->out_edges.size();
         if (out_size > 1 && (!parent || parent->own->type != _CLK))
         {
-            JWARN("The wire '" + this->name + "' has multi fan-ins in netlist '" + this->name + "'.");
+            JWARN("The wire '", this->name, "' has multi fan-ins in netlist '", this->name, "'.");
         }
         while ((out_size--) > 0)
         {
@@ -458,7 +458,7 @@ Node *Netlist::delete_node(Node *cur)
         return nullptr;
     if (cur->ins.empty() && cur->outs.empty() && cur->type == WIRE)
     {
-        JWARN("The wire '" + cur->name + "' is useless in netlist.delete_node!");
+        JWARN("The wire '", cur->name, "' is useless in netlist.delete_node!");
         delete cur;
         cur = nullptr;
         return nullptr;
@@ -467,7 +467,7 @@ Node *Netlist::delete_node(Node *cur)
     size_t num_ins = predecessors.size();
     if (num_ins != 1)
     {
-        JWARN("The node '" + cur->name + "' have none or more one inputs in netlist.delete_node!");
+        JWARN("The node '", cur->name, "' have none or more one inputs in netlist.delete_node!");
         return nullptr;
     }
     Port *tin = *predecessors.begin();
@@ -503,7 +503,7 @@ bool Netlist::merge_node(Node *node, Node *repeat)
         JWARN("The two nodes are the same in netlist.merge_node!");
         return 0;
     }
-    if (node->ins.size() != repeat->ins.size() || Util::contained(node->ins, repeat->ins))
+    if (node->get_indegree() != repeat->get_indegree() || !Util::contained(node->ins, repeat->ins))
     {
         JWARN("The two nodes do not have the same inputs, so they cannot be merged in netlist.merge_node!");
         return 0;
@@ -672,11 +672,11 @@ int Netlist::merge_nodes_between_networks()
         JINFO("The layers is empty in util.merge_nodes_between_networks, and now build the layers.");
         if (!Util::path_balance(this))
         {
-            JWARN("The netlist '" + this->name + "' is path-balanced in util.merge_nodes_between_networks!");
+            JWARN("The netlist '", this->name, "' is path-balanced in util.merge_nodes_between_networks!");
         }
         else
         {
-            JWARN("The netlist '" + this->name + "' is path_balanced in util.merge_nodes_between_networks!");
+            JWARN("The netlist '", this->name, "' is path_balanced in util.merge_nodes_between_networks!");
         }
     }
     vector<vector<Node *>> &layers = this->getProperty(PROPERTIES::LAYERS);
@@ -705,7 +705,7 @@ int Netlist::merge_nodes_between_networks()
             Roaring same_id;
             bool flag = false;
             std::vector<Node *> predecessors = cur->get_predecessors(false);
-            size_t num_npi = cur->ins.size();
+            size_t num_npi = predecessors.size();
             for (auto &parent : predecessors)
             {
                 Roaring tmp;
@@ -714,9 +714,9 @@ int Netlist::merge_nodes_between_networks()
                 {
                     if (brother && brother->type == cur->type && brother != cur)
                     {
-                        if (brother->ins.size() != num_npi)
+                        if (brother->get_indegree(false) != num_npi)
                         {
-                            JWARN("'", cur->name, "' and '", brother->name + "' Nodes of the same type have different numbers of inputs in netlist.merge_nodes_between_networks");
+                            JWARN("'", cur->name, "' and '", brother->name, "' Nodes of the same type have different numbers of inputs in netlist.merge_nodes_between_networks");
                             continue;
                         }
                         tmp.add(brother->id);
@@ -752,7 +752,7 @@ int Netlist::merge_nodes_between_networks()
                     }
                     else
                     {
-                        JWARN("The node '" + this->gates[eq_id]->name + "' can be replaced by the node '" + cur->name + "'!");
+                        JWARN("The node '", this->gates[eq_id]->name, "' can be replaced by the node '", cur->name, "'!");
                     }
                 }
                 ++it;
@@ -762,7 +762,7 @@ int Netlist::merge_nodes_between_networks()
     vector<pair<size_t, size_t>>().swap(position);
     // reassign the id for all nodes
     this->id_reassign();
-    JINFO("The number of INV, BUF, and others reduction is " + std::to_string(reduce));
+    JINFO("The number of INV, BUF, and others reduction is ", std::to_string(reduce));
     return reduce;
 }
 

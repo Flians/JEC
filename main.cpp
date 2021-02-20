@@ -30,10 +30,10 @@ void print_netlist(const string &output_path, const string &input_path, bool _pr
     golden.close();
 }
 
-vector<double> workflow(const char *golden, const char *revise, const char *output, bool clean_dff, bool clean_spl, bool merge, SMT smt, bool incremental)
+vector<double> workflow(const char *golden, const char *revise, const char *output, bool clean_dff, bool clean_spl, bool merge, SMT smt, bool incremental, bool is_print, const char *print_path)
 {
     vector<double> times(6, 0.0);
-    clock_t startTime, endTime, tmp;
+    clock_t startTime, endTime;
     startTime = clock();
     /* parse Verilog files */
     Netlist miter(golden, revise);
@@ -43,33 +43,49 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
 
     /* simplify the graph */
     startTime = clock();
-    miter.clean_spl(clean_spl, clean_dff);
-    // cout << miter << endl;
-    tmp = clock();
-    cout << "The cleaning time is: " << (double)(tmp - startTime) / CLOCKS_PER_SEC << " S" << endl;
+    if (clean_spl || clean_dff)
+    {
+        miter.clean_spl(clean_spl, clean_dff);
+        JINFO("The cleaning time is:", (double)(clock() - startTime) / CLOCKS_PER_SEC, "S");
+    }
     if (!Util::path_balance(&miter))
     {
         times[4] = 0;
-        JWARN("The netlist '" + miter.name + "' is not path_balanced!");
+        JWARN("The netlist '", miter.name, "' is not path_balanced!");
     }
     else
     {
         times[4] = 1;
-        JWARN("The netlist '" + miter.name + "' is path_balanced!");
+        JINFO("The netlist '", miter.name, "' is path_balanced!");
     }
-    cout << "The path balancing time is: " << (double)(clock() - tmp) / CLOCKS_PER_SEC << " S" << endl;
-    if (smt == _NONE)
-        return times;
-    tmp = clock();
+    // cout << "The path balancing time is: " << (double)(clock() - tmp) / CLOCKS_PER_SEC << " S" << endl;
     if (merge)
     {
+        clock_t tmp = clock();
         times[3] = miter.merge_nodes_between_networks();
-        cout << "The merging time is: " << (double)(clock() - tmp) / CLOCKS_PER_SEC << " S" << endl;
+        JINFO("The merging time is:", (double)(clock() - tmp) / CLOCKS_PER_SEC, "S");
     }
     endTime = clock();
     times[1] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
-    JINFO("The simplify time is: " + std::to_string(times[1]) + " S");
+    // JINFO("The simplify time is: " + std::to_string(times[1]) + " S");
 
+    if (is_print)
+    {
+        print_rsfq = true;
+        ofstream golden(print_path);
+        if (golden.is_open())
+        {
+            golden << miter << endl;
+        }
+        else
+        {
+            std::cout << "\n"
+                      << miter << "\n"
+                      << endl;
+        }
+    }
+    if (smt == _NONE)
+        return times;
     /* verify the miter */
     jec jec_(output);
     startTime = clock();
@@ -92,11 +108,11 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
     endTime = clock();
     times[5] = static_cast<double>(miter.getProperty(PROPERTIES::EQ));
     times[2] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
-    JINFO("The simulating time is: " + std::to_string(times[2]) + " S");
+    JINFO("The checking time is:", std::to_string(times[2]), "S");
     return times;
 }
 
-void evaluate(string root_path, int batch, bool clean_dff, bool clean_spl, bool merge, SMT smt, bool incremental)
+void evaluate(string root_path, int batch, bool clean_dff, bool clean_spl, bool merge, SMT smt, bool incremental, bool is_print, const char *print_path)
 {
     vector<string> cases = {
         "c1355",
@@ -125,7 +141,8 @@ void evaluate(string root_path, int batch, bool clean_dff, bool clean_spl, bool 
         for (size_t j = 0; j < num_case; ++j)
         {
             cout << "    >>> case " << cases[j] << endl;
-            auto runtimes = workflow((root_path + "/golden/gf_" + cases[j] + ".v").c_str(), (root_path + "/revise/rf_" + cases[j] + ".v").c_str(), (root_path + "/output/output_" + cases[j] + ".txt").c_str(), clean_dff, clean_spl, merge, smt, incremental);
+            auto runtimes = workflow((root_path + "/golden/gf_" + cases[j] + ".v").c_str(), (root_path + "/revise/rf_" + cases[j] + ".v").c_str(), (root_path + "/output/output_" + cases[j] + ".txt").c_str(),
+                                     clean_dff, clean_spl, merge, smt, incremental, is_print, print_path);
             avg[j][0] += runtimes[0];
             avg[j][1] += runtimes[1];
             avg[j][2] += runtimes[2];
@@ -151,16 +168,16 @@ void evaluate(string root_path, int batch, bool clean_dff, bool clean_spl, bool 
 int main(int argc, char *argv[])
 {
     int opt = 0;
-    char golden[100], revise[100], output[100], root_path[100];
+    char golden[100], revise[100], output[100], root_path[100], print_path[100];
     SMT smt = _NONE;
-    bool clean_dff = false, clean_spl = false, incremental = false, merge = false, help = false, is_batch = false;
-    int batch = 100;
+    bool clean_dff = false, clean_spl = false, incremental = false, merge = false, help = false, is_print = false;
+    int batch = -1;
     std::string str_help;
     str_help.append("Please input parameters:\n")
         .append("\t-h: help;\n")
         .append("\t-b: the root directory which includes the godlen directory and the revise directory;\n")
         .append("\t-n: the batch, the default is 100;\n")
-        .append("\t-p: the batch task;\n")
+        .append("\t-p: print the netlist;\n")
         .append("\t-g: the path of golden file;\n")
         .append("\t-r: the path of revised file;\n")
         .append("\t-o: the path of output file;\n")
@@ -170,7 +187,7 @@ int main(int argc, char *argv[])
         .append("\t-i: whether to solve iteratively;\n")
         .append("\t-e: the type fo SMT solver, including FSM, OPENSMT, CONE and CVC4;\n")
         .append("For example, \"./JEC -g <golden.v> -r <revised.v> -o <output> -e <FSM|OPENSMT|CONE|CVC4> <-i> <-m> <-s> <-d>\".");
-    while ((opt = getopt(argc, argv, "dhimpsb:g:r:o:e:n:")) != -1)
+    while ((opt = getopt(argc, argv, "dhimsb:g:r:o:e:n:p:")) != -1)
     {
         switch (opt)
         {
@@ -184,8 +201,11 @@ int main(int argc, char *argv[])
             merge = 1;
             break;
         case 'p':
-            is_batch = 1;
+        {
+            is_print = 1;
+            strcpy(print_path, optarg);
             break;
+        }
         case 's':
             clean_spl = 1;
             break;
@@ -222,14 +242,13 @@ int main(int argc, char *argv[])
     {
         printf("%s\n", str_help.c_str());
     }
-    else if (is_batch)
+    else if (batch > 0)
     {
-        evaluate(root_path, batch, clean_dff, clean_spl, merge, smt, incremental);
+        evaluate(root_path, batch, clean_dff, clean_spl, merge, smt, incremental, is_print, print_path);
     }
     else
     {
-        workflow(golden, revise, output, clean_dff, clean_spl, merge, smt, incremental);
+        workflow(golden, revise, output, clean_dff, clean_spl, merge, smt, incremental, is_print, print_path);
     }
-
     return 0;
 }

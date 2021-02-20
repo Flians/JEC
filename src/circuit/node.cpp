@@ -79,6 +79,30 @@ Node::~Node()
     this->outs.clear();
 }
 
+std::size_t Node::get_outdegree(bool has_self) const
+{
+    std::size_t outdeg = 0;
+    for (auto &out : this->outs)
+    {
+        if (out.second)
+        {
+            for (auto &o_edge : out.second->out_edges)
+            {
+                auto tar = o_edge->get_target();
+                if (tar)
+                {
+                    if (!has_self && tar == this)
+                    {
+                        continue;
+                    }
+                    ++outdeg;
+                }
+            }
+        }
+    }
+    return outdeg;
+}
+
 std::vector<Node *> Node::get_successors() const
 {
     std::vector<Node *> successors;
@@ -109,6 +133,34 @@ std::vector<Port *> Node::get_successors_port() const
         }
     }
     return successors;
+}
+
+std::size_t Node::get_indegree(bool has_clk, bool has_self) const
+{
+    std::size_t indeg = 0;
+    for (auto &in : this->ins)
+    {
+        if (in.second)
+        {
+            for (auto &i_edge : in.second->in_edges)
+            {
+                Node *src = i_edge->get_source();
+                if (src)
+                {
+                    if (!has_clk && src->type == _CLK)
+                    {
+                        continue;
+                    }
+                    if (!has_self && src == this)
+                    {
+                        continue;
+                    }
+                    ++indeg;
+                }
+            }
+        }
+    }
+    return indeg;
 }
 
 std::vector<Node *> Node::get_predecessors(bool has_clk) const

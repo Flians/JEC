@@ -71,7 +71,7 @@ Please input parameters:
     -h: help;
     -b: the root directory which includes the godlen directory and the revise directory;
     -n: the batch, the default is 100;
-    -p: the batch task;
+    -p: print the netlist;
     -g: the path of golden file;
     -r: the path of revised file;
     -o: the path of output file;
@@ -86,8 +86,8 @@ For example, "./JEC -g <golden.v> -r <revised.v> -o <output> -e <FSM|OPENSMT|CON
 ./JEC -g ../test/rsfq/alu_1.v
 ./JEC -g ../test/golden/gf_c880.v -r ../test/revise/rf_c880.v -o ../test/output/output_c880.txt -e CONE -i -m -s
 # for batch
-./JEC -p -b ../test/rsfq
-./JEC -p -b ../test/ -e OPENSMT -i -m -s
+./JEC -b ../test/rsfq
+./JEC -b ../test/ -e OPENSMT -i -m -s
 ```
 
 ## result

@@ -71,7 +71,7 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
         auto pi = revised->map_PIs.find(iter->first);
         if (pi == revised->map_PIs.end())
         {
-            JERROR("The input '" + iter->first + "' in the golden Verilog does not exist in the revised Verilog!");
+            JERROR("The input '", iter->first, "' in the golden Verilog does not exist in the revised Verilog!");
         }
         for (auto &out : pi->second->outs)
         {
@@ -95,7 +95,7 @@ Netlist *Util::make_miter(Netlist *&golden, Netlist *&revised)
         auto po = revised->map_POs.find(iter->first);
         if (po == revised->map_POs.end())
         {
-            JERROR("The output '" + po->first + "' in the golden Verilog does not exist in the revised Verilog!");
+            JERROR("The output '", po->first, "' in the golden Verilog does not exist in the revised Verilog!");
         }
         iter->second->type = _EXOR;
         for (auto &in : po->second->outs)
@@ -181,8 +181,8 @@ void Util::cycle_break(Netlist *netlist)
     for (size_t i = 0; i < num_gate; ++i)
     {
         auto &node = netlist->gates[i];
-        indeg[node->id] = count_if(node->ins.begin(), node->ins.end(), [&node](const Node *src) { return src != node; });
-        outdeg[node->id] = count_if(node->outs.begin(), node->outs.end(), [&node](const Node *tar) { return tar != node; });
+        indeg[node->id] = node->get_indegree(true, false);
+        outdeg[node->id] = node->get_outdegree(false);
         // collect sources and sinks
         if (outdeg[node->id] == 0)
         {
@@ -286,7 +286,7 @@ void Util::cycle_break(Netlist *netlist)
                     }
                     else
                     {
-                        JWARN("The input number of splitter '" + node->name + "' in the cycle is not 1!");
+                        JWARN("The input number of splitter '", node->name, "' in the cycle is not 1!");
                         last = nullptr;
                         break;
                     }
@@ -344,8 +344,9 @@ bool Util::path_balance(Netlist *netlist)
         bfs.pop();
         maxLL = max(level[cur->id], maxLL);
         auto successors = cur->get_successors();
-        for (auto &tar : successors)
+        for (std::size_t i = 0, num_cur_suc = successors.size(); i < num_cur_suc; ++i)
         {
+            auto &tar = successors[i];
             if (level[tar->id] == -1 || level[cur->id] >= level[tar->id])
             {
                 if (tar->containCLK())
@@ -356,7 +357,7 @@ bool Util::path_balance(Netlist *netlist)
                 {
                     level[tar->id] = level[cur->id] + INTERVAL;
                 }
-                bfs.push(tar);
+                bfs.emplace(tar);
             }
         }
     }
@@ -377,7 +378,7 @@ bool Util::path_balance(Netlist *netlist)
             if (cur->type == SPL || cur->type == SPL3)
             {
                 double minChildLL = DBL_MAX;
-                for (auto tar : cur->outs)
+                for (auto &tar : cur->outs)
                 {
                     minChildLL = min(minChildLL, level[tar.second->id]);
                 }
@@ -400,7 +401,6 @@ bool Util::path_balance(Netlist *netlist)
                 }
                 else if (!vis[src->id])
                 {
-                    vis[src->id] = 1;
                     bfs.emplace(src);
                 }
             }
@@ -412,11 +412,12 @@ bool Util::path_balance(Netlist *netlist)
     {
         auto &cur = netlist->gates[i];
         auto predecessors = cur->get_predecessors();
-        for (auto src : predecessors)
+        for (std::size_t i = 0, num_cur_pre = predecessors.size(); i < num_cur_pre; ++i)
         {
+            auto src = predecessors[i];
             if (level[i] - level[src->id] > 1 && src->type != _CLK && (cur->type != _EXOR || cur->type != _PO))
             {
-                JWARN("The path balance condition is not satisfied between node '" + src->name + "' and node '" + cur->name + "'!");
+                JWARN("The path balance condition is not satisfied between node '", src->name, "' and node '", cur->name, "'!");
                 path_balanced = false;
             }
         }
