@@ -361,49 +361,51 @@ bool Util::path_balance(Netlist *netlist)
             }
         }
     }
+    bool vis[num_gate] = {0};
     for (auto &po : netlist->map_POs)
     {
+        vis[po.second->id] = 1;
         level[po.second->id] = maxLL;
         bfs.emplace(po.second);
     }
     bool has_cycle = netlist->hasProperty(PROPERTIES::CYCLE);
-    if (has_cycle)
+    while (!bfs.empty())
     {
-        bool vis[num_gate] = {0};
-        while (!bfs.empty())
+        Node *cur = bfs.front();
+        bfs.pop();
+        if (cur->type == SPL || cur->type == SPL3)
         {
-            Node *cur = bfs.front();
-            bfs.pop();
-            vis[cur->id] = 1;
-            if (cur->type == SPL || cur->type == SPL3)
+            double minChildLL = DBL_MAX;
+            for (auto &tar : cur->outs)
             {
-                double minChildLL = DBL_MAX;
-                for (auto &tar : cur->outs)
-                {
-                    minChildLL = min(minChildLL, level[tar.second->id]);
-                }
-                level[cur->id] = minChildLL - INTERVAL;
+                minChildLL = min(minChildLL, level[tar.second->id]);
             }
-            auto predecessors = cur->get_predecessors();
-            for (auto &src : predecessors)
+            level[cur->id] = minChildLL - INTERVAL;
+        }
+        auto predecessors = cur->get_predecessors();
+        for (auto &src : predecessors)
+        {
+            if (level[src->id] == -1 || level[cur->id] <= level[src->id])
             {
-                if (level[src->id] == -1 || level[cur->id] <= level[src->id])
+                if (!has_cycle)
                 {
-                    if (src->containCLK())
-                    {
-                        level[src->id] = floor(level[cur->id]) - (cur->containCLK() ? 1 : 0);
-                    }
-                    else
-                    {
-                        level[src->id] = level[cur->id] - INTERVAL;
-                    }
-                    bfs.emplace(src);
+                    JWARN("There are some troubles in util.path_balance.");
                 }
-                else if (!vis[src->id])
+                if (src->containCLK())
                 {
-                    bfs.emplace(src);
+                    level[src->id] = floor(level[cur->id]) - (cur->containCLK() ? 1 : 0);
                 }
+                else
+                {
+                    level[src->id] = level[cur->id] - INTERVAL;
+                }
+                bfs.emplace(src);
             }
+            else if (!vis[src->id])
+            {
+                bfs.emplace(src);
+            }
+            vis[src->id] = 1;
         }
     }
     std::map<double, vector<Node *>> groups;
