@@ -341,8 +341,8 @@ void Util::cycle_restore(Netlist *netlist)
     {
         auto &item = reversed[i];
         // restore the edge
-        item.first->ins.erase(find(item.first->ins.begin(), item.first->ins.end(), item.second));
-        item.second->outs.erase(find(item.second->outs.begin(), item.second->outs.end(), item.first));
+        item.first->ins.erase(remove(item.first->ins.begin(), item.first->ins.end(), item.second), item.first->ins.end());
+        item.second->outs.erase(remove(item.second->outs.begin(), item.second->outs.end(), item.first), item.second->outs.end());
         item.first->outs.emplace_back(item.second);
         item.second->ins.emplace_back(item.first);
         JINFO("The edge betweeen '" + item.first->name + "' and '" + item.second->name + "' is restored.");
