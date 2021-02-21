@@ -100,6 +100,28 @@ std::size_t Node::get_outdegree(bool has_self) const
             }
         }
     }
+    for (auto &in : this->ins)
+    {
+        if (in.second)
+        {
+            for (auto &o_edge : in.second->out_edges)
+            {
+                if (!o_edge->hasProperty(PROPERTIES::REVERSED))
+                {
+                    JWARN("The input port of node '", this->name, "' has output edges in node.get_outdegree.");
+                }
+                auto tar = o_edge->get_target();
+                if (tar)
+                {
+                    if (!has_self && tar == this)
+                    {
+                        continue;
+                    }
+                    ++outdeg;
+                }
+            }
+        }
+    }
     return outdeg;
 }
 
@@ -112,6 +134,20 @@ std::vector<Node *> Node::get_successors() const
         {
             for (auto &o_edge : out.second->out_edges)
             {
+                successors.emplace_back(o_edge->get_target());
+            }
+        }
+    }
+    for (auto &in : this->ins)
+    {
+        if (in.second)
+        {
+            for (auto &o_edge : in.second->out_edges)
+            {
+                if (!o_edge->hasProperty(PROPERTIES::REVERSED))
+                {
+                    JWARN("The input port of node '", this->name, "' has output edges in node.get_successors.");
+                }
                 successors.emplace_back(o_edge->get_target());
             }
         }
@@ -132,6 +168,20 @@ std::vector<Port *> Node::get_successors_port() const
             }
         }
     }
+    for (auto &in : this->ins)
+    {
+        if (in.second)
+        {
+            for (auto &o_edge : in.second->out_edges)
+            {
+                if (!o_edge->hasProperty(PROPERTIES::REVERSED))
+                {
+                    JWARN("The input port of node '", this->name, "' has output edges in node.get_successors_port.");
+                }
+                successors.emplace_back(o_edge->tar);
+            }
+        }
+    }
     return successors;
 }
 
@@ -144,6 +194,32 @@ std::size_t Node::get_indegree(bool has_clk, bool has_self) const
         {
             for (auto &i_edge : in.second->in_edges)
             {
+                Node *src = i_edge->get_source();
+                if (src)
+                {
+                    if (!has_clk && src->type == _CLK)
+                    {
+                        continue;
+                    }
+                    if (!has_self && src == this)
+                    {
+                        continue;
+                    }
+                    ++indeg;
+                }
+            }
+        }
+    }
+    for (auto &out : this->outs)
+    {
+        if (out.second)
+        {
+            for (auto &i_edge : out.second->in_edges)
+            {
+                if (!i_edge->hasProperty(PROPERTIES::REVERSED))
+                {
+                    JWARN("The output port of node '", this->name, "' has input edges in node.get_indegree.");
+                }
                 Node *src = i_edge->get_source();
                 if (src)
                 {
@@ -184,6 +260,28 @@ std::vector<Node *> Node::get_predecessors(bool has_clk) const
             }
         }
     }
+    for (auto &out : this->outs)
+    {
+        if (out.second)
+        {
+            for (auto &i_edge : out.second->in_edges)
+            {
+                if (!i_edge->hasProperty(PROPERTIES::REVERSED))
+                {
+                    JWARN("The output port of node '", this->name, "' has input edges in node.get_predecessors.");
+                }
+                Node *src = i_edge->get_source();
+                if (src)
+                {
+                    if (!has_clk && src->type == _CLK)
+                    {
+                        continue;
+                    }
+                    predecessors.emplace_back(i_edge->get_source());
+                }
+            }
+        }
+    }
     return predecessors;
 }
 
@@ -196,6 +294,28 @@ std::vector<Port *> Node::get_predecessors_port(bool has_clk) const
         {
             for (auto &i_edge : in.second->in_edges)
             {
+                Node *src = i_edge->get_source();
+                if (src)
+                {
+                    if (!has_clk && src->type == _CLK)
+                    {
+                        continue;
+                    }
+                    predecessors.emplace_back(i_edge->src);
+                }
+            }
+        }
+    }
+    for (auto &out : this->outs)
+    {
+        if (out.second)
+        {
+            for (auto &i_edge : out.second->in_edges)
+            {
+                if (!i_edge->hasProperty(PROPERTIES::REVERSED))
+                {
+                    JWARN("The output port of node '", this->name, "' has input edges in node.get_predecessors_port.");
+                }
                 Node *src = i_edge->get_source();
                 if (src)
                 {
