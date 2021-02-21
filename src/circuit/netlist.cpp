@@ -77,7 +77,7 @@ Netlist::~Netlist()
         std::unordered_map<std::string, Port *>().swap(cur->outs);
         delete cur;
     }
-    vector<Port *>().swap(this->ports);
+    vector<Node *>().swap(this->gates);
 
     this->map_PIs.clear();
     this->map_POs.clear();
@@ -494,6 +494,8 @@ void Netlist::make_miter(ifstream &golden, ifstream &revised)
     }
     vector<Node *>(this->gates).swap(this->gates);
     this->update_num_gates();
+    vector<Port *>(this->ports).swap(this->ports);
+    this->update_num_ports();
 }
 
 Node *Netlist::delete_node(Node *cur)
@@ -515,27 +517,48 @@ Node *Netlist::delete_node(Node *cur)
         return nullptr;
     }
     Port *tin = predecessors[0];
-    if (!cur->outs.empty())
+    for (auto &out : cur->outs)
     {
-        for (auto &out : cur->outs)
+        auto &o_port = out.second;
+        if (o_port)
         {
-            auto &o_port = out.second;
-            if (o_port)
+            auto &last_port = this->ports[--this->num_port];
+            last_port->id = o_port->id;
+            this->ports[o_port->id] = last_port;
+            std::size_t out_size = o_port->out_edges.size();
+            for (size_t i = 0; i < out_size; ++i)
             {
-                std::size_t out_size = o_port->out_edges.size();
-                for (size_t i = 0; i < out_size; ++i)
-                {
-                    auto &out_e = o_port->out_edges[i];
-                    out_e->src = tin;
-                    tin->out_edges.emplace_back(out_e);
-                }
-                vector<Edge *>().swap(o_port->out_edges);
+                auto &out_e = o_port->out_edges[i];
+                out_e->src = tin;
+                tin->out_edges.emplace_back(out_e);
             }
-            o_port->own = nullptr;
-            delete o_port;
+            vector<Edge *>().swap(o_port->out_edges);
         }
-        std::unordered_map<std::string, Port *>().swap(cur->outs);
+        o_port->own = nullptr;
+        delete o_port;
     }
+    std::unordered_map<std::string, Port *>().swap(cur->outs);
+    for (auto &in : cur->ins)
+    {
+        auto &i_port = in.second;
+        if (i_port)
+        {
+            auto &last_port = this->ports[--this->num_port];
+            last_port->id = i_port->id;
+            this->ports[i_port->id] = last_port;
+            std::size_t in_size = i_port->in_edges.size();
+            for (size_t i = 0; i < in_size; ++i)
+            {
+                auto &in_e = i_port->in_edges[i];
+                in_e->set_source(nullptr);
+            }
+            vector<Edge *>().swap(i_port->in_edges);
+        }
+        i_port = nullptr;
+        delete i_port;
+    }
+    std::unordered_map<std::string, Port *>().swap(cur->ins);
+    this->ports.erase(this->ports.begin() + this->num_port, this->ports.end());
     delete cur;
     cur = nullptr;
     return tin ? tin->own : nullptr;
@@ -564,6 +587,9 @@ bool Netlist::merge_node(Node *node, Node *repeat)
         auto &o_port = out.second;
         if (o_port)
         {
+            auto &last_port = this->ports[--this->num_port];
+            last_port->id = o_port->id;
+            this->ports[o_port->id] = last_port;
             std::size_t out_size = o_port->out_edges.size();
             if (out_size == 0)
                 continue;
@@ -584,6 +610,29 @@ bool Netlist::merge_node(Node *node, Node *repeat)
         delete o_port;
     }
     std::unordered_map<std::string, Port *>().swap(repeat->outs);
+
+    for (auto &in : repeat->ins)
+    {
+        auto &i_port = in.second;
+        if (i_port)
+        {
+            auto &last_port = this->ports[--this->num_port];
+            last_port->id = i_port->id;
+            this->ports[i_port->id] = last_port;
+            std::size_t in_size = i_port->in_edges.size();
+            for (size_t i = 0; i < in_size; ++i)
+            {
+                auto &in_e = i_port->in_edges[i];
+                in_e->set_source(nullptr);
+            }
+            vector<Edge *>().swap(i_port->in_edges);
+        }
+        i_port = nullptr;
+        delete i_port;
+    }
+    std::unordered_map<std::string, Port *>().swap(repeat->ins);
+
+    this->ports.erase(this->ports.begin() + this->num_port, this->ports.end());
     delete repeat;
     repeat = nullptr;
     return 1;
@@ -632,8 +681,6 @@ void Netlist::id_reassign()
         return;
     }
     size_t i = 0;
-    this->ports.resize(this->num_port, nullptr);
-    this->num_port = 0;
     while (i < this->num_gate)
     {
         if (this->gates[i])
@@ -656,8 +703,6 @@ void Netlist::id_reassign()
     }
     this->gates.erase(this->gates.begin() + this->num_gate, this->gates.end());
     vector<Node *>(this->gates).swap(this->gates);
-    this->ports.erase(this->ports.begin() + this->num_port, this->ports.end());
-    vector<Port *>(this->ports).swap(this->ports);
 }
 
 void Netlist::clean_useless_nodes()
