@@ -250,7 +250,6 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
         });
         for (size_t i = 0; i < num_pos; ++i)
         {
-            cout << exprs[pos[i]->id].x << endl;
             PTRef assert = logic.mkEq(logic.getTerm_true(), exprs[pos[i]->id]);
             mainSolver.push(assert);
             reslut = mainSolver.check();
@@ -302,7 +301,6 @@ void jec::evaluate_min_cone(Netlist *miter)
     }
     int smt_id = 0;
     sstat reslut = s_False;
-    vector<size_t> exor_num(num_pis, 0);
     for (size_t i = 1; i < num_level; ++i)
     {
         for (size_t j = 0; j < num_pis; ++j)
@@ -313,11 +311,10 @@ void jec::evaluate_min_cone(Netlist *miter)
             {
                 Node *cur = cur_cone.front();
                 cur_cone.pop_front();
+                info[cur->id].second = j;
                 if (info[cur->id].first >= i || cur->type == _EXOR)
                 {
                     cur_cone.emplace_back(cur);
-                    if (cur->type == _EXOR)
-                        ++exor_num[j];
                     continue;
                 }
                 for (size_t k = 0, num_cur_outs = cur->outs.size(); k < num_cur_outs; ++k)
@@ -327,8 +324,6 @@ void jec::evaluate_min_cone(Netlist *miter)
                     {
                         info[tout->id].second = j;
                         cur_cone.emplace_back(tout);
-                        if (tout->type == _EXOR)
-                            ++exor_num[j];
                     }
                     else
                     {
@@ -338,7 +333,6 @@ void jec::evaluate_min_cone(Netlist *miter)
                             continue;
                         }
                         auto &other_cone = cones[old_color];
-                        exor_num[old_color] = 0;
                         cur_len += other_cone.size();
                         cur_cone.insert(cur_cone.begin(), other_cone.begin(), other_cone.end());
                         std::deque<Node *>().swap(other_cone);
@@ -351,7 +345,7 @@ void jec::evaluate_min_cone(Netlist *miter)
             auto &cur_cone = cones[j];
             size_t num_node = cur_cone.size();
             // evaluate cur_cone
-            if (num_node > 0 && ((num_node == 1 && info[cur_cone[0]->id].first == i) || exor_num[j] == num_node))
+            if (num_node > 0 && ((num_node == 1 && info[cur_cone[0]->id].first == i) || i == num_level - 1))
             {
                 cout << ">>> The cone " << (smt_id++) << " is evaluated." << endl;
                 for (auto it = cur_cone.begin(), it_end = cur_cone.end(); it != it_end; ++it)
@@ -404,7 +398,6 @@ void jec::evaluate_min_cone(Netlist *miter)
     this->print_result_of_opensmt(miter, exprs, osmt, reslut);
     vector<pair<size_t, int>>().swap(info);
     vector<deque<Node *>>().swap(cones);
-    vector<size_t>().swap(exor_num);
 }
 
 void jec::evaluate_cvc4(Netlist *miter, bool incremental)

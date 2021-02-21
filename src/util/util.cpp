@@ -209,7 +209,7 @@ void Util::cycle_break(Netlist *netlist)
     vector<Node *> maxNodes;
     srand(time(0));
     int unprocessedNodeCount = num_gate;
-
+    size_t shiftBase = num_gate + 1;
     while (unprocessedNodeCount > 0)
     {
         // sinks are put to the right --> assign negative rank, which is later shifted to positive
@@ -217,7 +217,7 @@ void Util::cycle_break(Netlist *netlist)
         {
             Node *sink = sinks.front();
             sinks.pop();
-            mark[sink->id] = nextRight--;
+            mark[sink->id] = shiftBase + (nextRight--);
             updateNeighbors(sink);
             unprocessedNodeCount--;
         }
@@ -261,16 +261,6 @@ void Util::cycle_break(Netlist *netlist)
             mark[maxNode->id] = nextLeft++;
             updateNeighbors(maxNode);
             unprocessedNodeCount--;
-        }
-    }
-
-    // shift negative ranks to positive; this applies to sinks of the graph
-    size_t shiftBase = num_gate + 1;
-    for (size_t index = 0; index < num_gate; index++)
-    {
-        if (mark[index] < 0)
-        {
-            mark[index] += shiftBase;
         }
     }
 
