@@ -133,8 +133,10 @@ void Util::cycle_break(Netlist *netlist)
 {
     vector<Edge *> reversed;
     size_t num_gate = netlist->get_num_gates();
-    /** indegree values and outdegree values for the nodes; mark for the nodes, inducing an ordering of the nodes. */
-    int indeg[num_gate] = {0}, outdeg[num_gate] = {0}, mark[num_gate] = {0};
+    /** indegree values and outdegree values for the nodes */
+    int indeg[num_gate] = {0}, outdeg[num_gate] = {0};
+    /** mark for the nodes whether */
+    bool mark[num_gate] = {0};
     /** list of source nodes and sink nodes. */
     queue<Node *> sources, sinks;
     /**
@@ -149,7 +151,7 @@ void Util::cycle_break(Netlist *netlist)
         for (auto &src : predecessors)
         {
             // exclude self-loops
-            if (node == src || mark[src->id] != 0)
+            if (node == src || mark[src->id])
             {
                 continue;
             }
@@ -164,7 +166,7 @@ void Util::cycle_break(Netlist *netlist)
         for (auto &tar : successors)
         {
             // exclude self-loops
-            if (node == tar || mark[tar->id] != 0)
+            if (node == tar || mark[tar->id])
             {
                 continue;
             }
@@ -193,14 +195,9 @@ void Util::cycle_break(Netlist *netlist)
             sources.emplace(node);
         }
     }
-    // next rank values used for sinks and sources (from right and from left)
-    int nextRight = -1, nextLeft = 1;
 
     // assign marks to all nodes
-    vector<Node *> maxNodes;
-    srand(time(0));
     int unprocessedNodeCount = num_gate;
-    size_t shiftBase = num_gate + 1;
     while (unprocessedNodeCount > 0)
     {
         // sinks are put to the right --> assign negative rank, which is later shifted to positive
@@ -208,7 +205,7 @@ void Util::cycle_break(Netlist *netlist)
         {
             Node *sink = sinks.front();
             sinks.pop();
-            mark[sink->id] = shiftBase + (nextRight--);
+            mark[sink->id] = 1;
             updateNeighbors(sink);
             unprocessedNodeCount--;
         }
@@ -218,7 +215,7 @@ void Util::cycle_break(Netlist *netlist)
         {
             Node *source = sources.front();
             sources.pop();
-            mark[source->id] = nextLeft++;
+            mark[source->id] = 1;
             updateNeighbors(source);
             unprocessedNodeCount--;
         }
@@ -226,71 +223,27 @@ void Util::cycle_break(Netlist *netlist)
         // while there are unprocessed nodes left that are neither sinks nor sources...
         if (unprocessedNodeCount > 0)
         {
-            int maxOutflow = INT_MIN;
-
             // find the set of unprocessed node (=> mark == 0), with the largest out flow
             for (size_t i = 0; i < num_gate; ++i)
             {
                 auto &node = netlist->gates[i];
-                if (mark[node->id] == 0)
+                if (mark[node->id] == 0 && (node->type == CB || node->type == CB3))
                 {
-                    int outflow = outdeg[node->id] - indeg[node->id];
-                    if (outflow >= maxOutflow)
-                    {
-                        if (outflow > maxOutflow)
-                        {
-                            maxNodes.clear();
-                            maxOutflow = outflow;
-                        }
-                        maxNodes.emplace_back(node);
-                    }
+                    // reverse the edge
+                    auto &edge = node->outs.begin()->second->out_edges[0];
+                    reversed.emplace_back(edge);
+                    JINFO("The edge <", edge->get_source()->name, ",", edge->get_target()->name, "> is reversed.");
+                    edge->reverse();
+                    // update neighbors
+                    mark[node->id] = 1;
+                    updateNeighbors(node);
+                    unprocessedNodeCount--;
+                    break;
                 }
             }
-
-            // randomly select a node from the ones with maximal outflow and put it left
-            Node *maxNode = maxNodes[rand() % maxNodes.size()];
-            mark[maxNode->id] = nextLeft++;
-            updateNeighbors(maxNode);
-            unprocessedNodeCount--;
         }
     }
 
-    // reverse edges that point left
-    for (size_t i = 0; i < num_gate; ++i)
-    {
-        auto &node = netlist->gates[i];
-        auto successors = node->get_successors();
-        // look at the node's outgoing edges
-        for (auto &tar : successors)
-        {
-            if (mark[node->id] > mark[tar->id])
-            {
-                Edge *last = tar->ins.begin()->second->in_edges[0];
-                Node *cur = node;
-                // no considering the splitters in the cycle
-                while (cur->type == SPL || cur->type == SPL3)
-                {
-                    if (cur->ins.size() == 1)
-                    {
-                        last = cur->ins.begin()->second->in_edges[0];
-                        cur = last->get_source();
-                    }
-                    else
-                    {
-                        JWARN("The input number of splitter '", cur->name, "' in the cycle is not 1!");
-                        last = nullptr;
-                        break;
-                    }
-                }
-                if (last == nullptr)
-                    continue;
-                reversed.emplace_back(last);
-                JINFO("The edge <", last->get_source()->name, ",", last->get_target()->name, "> is reversed.");
-                // reverse the edge
-                last->reverse();
-            }
-        }
-    }
     if (!reversed.empty())
     {
         vector<Edge *> &reversed_edges = netlist->getProperty(PROPERTIES::REVERSED);
@@ -361,7 +314,7 @@ bool Util::path_balance(Netlist *netlist)
         level[po.second->id] = maxLL;
         bfs.emplace(po.second);
     }
-    bool has_cycle = netlist->hasProperty(PROPERTIES::CYCLE);
+    bool has_cycle = netlist->hasProperty(PROPERTIES::REVERSED);
     while (!bfs.empty())
     {
         Node *cur = bfs.front();
@@ -369,9 +322,12 @@ bool Util::path_balance(Netlist *netlist)
         if (cur->type == SPL || cur->type == SPL3)
         {
             double minChildLL = DBL_MAX;
-            for (auto &tar : cur->outs)
+            for (auto &out : cur->outs)
             {
-                minChildLL = min(minChildLL, level[tar.second->id]);
+                for (auto &o_edge : out.second->out_edges)
+                {
+                    minChildLL = min(minChildLL, level[o_edge->get_target()->id]);
+                }
             }
             level[cur->id] = minChildLL - INTERVAL;
         }

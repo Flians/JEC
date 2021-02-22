@@ -106,7 +106,7 @@ std::size_t Node::get_outdegree(bool has_self) const
         {
             for (auto &o_edge : in.second->out_edges)
             {
-                if (!o_edge->hasProperty(PROPERTIES::REVERSED))
+                if (!o_edge->hasProperty(PROPERTIES::CYCLE))
                 {
                     JWARN("The input port of node '", this->name, "' has output edges in node.get_outdegree.");
                 }
@@ -144,7 +144,7 @@ std::vector<Node *> Node::get_successors() const
         {
             for (auto &o_edge : in.second->out_edges)
             {
-                if (!o_edge->hasProperty(PROPERTIES::REVERSED))
+                if (!o_edge->hasProperty(PROPERTIES::CYCLE))
                 {
                     JWARN("The input port of node '", this->name, "' has output edges in node.get_successors.");
                 }
@@ -174,7 +174,7 @@ std::vector<Port *> Node::get_successors_port() const
         {
             for (auto &o_edge : in.second->out_edges)
             {
-                if (!o_edge->hasProperty(PROPERTIES::REVERSED))
+                if (!o_edge->hasProperty(PROPERTIES::CYCLE))
                 {
                     JWARN("The input port of node '", this->name, "' has output edges in node.get_successors_port.");
                 }
@@ -216,7 +216,7 @@ std::size_t Node::get_indegree(bool has_clk, bool has_self) const
         {
             for (auto &i_edge : out.second->in_edges)
             {
-                if (!i_edge->hasProperty(PROPERTIES::REVERSED))
+                if (!i_edge->hasProperty(PROPERTIES::CYCLE))
                 {
                     JWARN("The output port of node '", this->name, "' has input edges in node.get_indegree.");
                 }
@@ -266,7 +266,7 @@ std::vector<Node *> Node::get_predecessors(bool has_clk) const
         {
             for (auto &i_edge : out.second->in_edges)
             {
-                if (!i_edge->hasProperty(PROPERTIES::REVERSED))
+                if (!i_edge->hasProperty(PROPERTIES::CYCLE))
                 {
                     JWARN("The output port of node '", this->name, "' has input edges in node.get_predecessors.");
                 }
@@ -312,7 +312,7 @@ std::vector<Port *> Node::get_predecessors_port(bool has_clk) const
         {
             for (auto &i_edge : out.second->in_edges)
             {
-                if (!i_edge->hasProperty(PROPERTIES::REVERSED))
+                if (!i_edge->hasProperty(PROPERTIES::CYCLE))
                 {
                     JWARN("The output port of node '", this->name, "' has input edges in node.get_predecessors_port.");
                 }
