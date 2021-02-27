@@ -34,25 +34,27 @@ elseif(CMAKE_HOST_UNIX)
     message("The enviriment is in linux.")
 endif()
 
+# add the path of cmake for FindXXX.cmake
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/")
+
 # add croaring
 add_library(croaring STATIC ${PROJECT_SOURCE_DIR}/dependencies/CRoaring/roaring.c)
 target_include_directories(croaring PUBLIC ${PROJECT_SOURCE_DIR}/dependencies/CRoaring/)
 
 if (LINUX)
     #find Opensmt library
-    get_filename_component(CMAKE_MODULE_PATH
-        "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
     find_package(Opensmt REQUIRED)
 
     #find GMP
-    get_filename_component(CMAKE_MODULE_PATH
-        "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
     find_package(GMP REQUIRED)
 
     #find CVC4 library
-    get_filename_component(CMAKE_MODULE_PATH
-        "${CMAKE_CURRENT_LIST_DIR}/cmake/" ABSOLUTE)
     find_package(CVC4 REQUIRED)
+    
+    #find Boolector library
+    # add the path for XXXConfig.cmake
+    set(Boolector_DIR "${CMAKE_CURRENT_LIST_DIR}/cmake/Boolector") 
+    find_package(Boolector REQUIRED)
 
 endif()
 
@@ -87,7 +89,7 @@ add_executable(${PROJECT_NAME} ${JEC_ALL_SRCS})
 
 if (LINUX)
     target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSMT_INCLUDE_DIR} ${CVC4_INCLUDE_DIR} ${GMP_INCLUDE_DIR})
-    target_link_libraries(${PROJECT_NAME} ${OPENSMT_LIBRARY} ${CVC4_PARSER_LIBRARIES} ${CVC4_LIBRARIES} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES} ${CADICAL_LIBRARY})
+    target_link_libraries(${PROJECT_NAME} ${OPENSMT_LIBRARY} ${CVC4_PARSER_LIBRARIES} ${CVC4_LIBRARIES} ${GMP_LIBRARIES} ${GMPXX_LIBRARIES} ${CADICAL_LIBRARY} Boolector::boolector)
 endif()
 
 target_link_libraries(${PROJECT_NAME} croaring)
