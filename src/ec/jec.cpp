@@ -255,6 +255,7 @@ void jec::evaluate_opensmt(Netlist *miter, bool incremental)
             reslut = mainSolver.check();
             if (reslut == s_True)
                 break;
+            mainSolver.pop();
         }
     }
     JINFO("The prover is opensmt.");
@@ -391,6 +392,7 @@ void jec::evaluate_min_cone(Netlist *miter)
                         this->print_result_of_opensmt(miter, exprs, osmt, reslut);
                         return;
                     }
+                    mainSolver.pop();
                 }
             }
         }
