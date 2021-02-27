@@ -493,7 +493,8 @@ bool Netlist::merge_node(Node *node, Node *repeat)
         JWARN("The two nodes are the same in netlist.merge_node!");
         return 0;
     }
-    if (node->ins.size() != repeat->ins.size() || Util::vectors_intersection(node->ins, repeat->ins).size() != node->ins.size())
+    size_t nin = node->ins.size(), rin = repeat->ins.size();
+    if (nin != rin) // || Util::vectors_intersection(node->ins, repeat->ins).size() != nin)
     {
         JWARN("The two nodes do not have the same inputs, so they cannot be merged in netlist.merge_node!");
         return 0;
@@ -520,8 +521,14 @@ bool Netlist::merge_node(Node *node, Node *repeat)
         }
     }
     vector<Node *>().swap(repeat->outs);
-    delete repeat;
-    repeat = nullptr;
+    for (size_t i = 0, len = rin; i < len; ++i)
+    {
+        auto &in = repeat->ins[i];
+        in->outs.erase(remove(in->outs.begin(), in->outs.end(), repeat), in->outs.end());
+    }
+    vector<Node *>().swap(repeat->ins);
+    // delete repeat;
+    // repeat = nullptr;
     return 1;
 }
 
@@ -733,7 +740,7 @@ int Netlist::merge_nodes_between_networks()
     }
     vector<pair<size_t, size_t>>().swap(position);
     // reassign the id for all nodes
-    this->id_reassign();
+    // this->id_reassign();
     JINFO("The number of INV, BUF, and others reduction is " + std::to_string(reduce));
     return reduce;
 }
