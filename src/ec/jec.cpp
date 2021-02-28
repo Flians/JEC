@@ -402,6 +402,175 @@ void jec::evaluate_min_cone(Netlist *miter, bool incremental)
     vector<deque<Node *>>().swap(cones);
 }
 
+BoolectorNode *jec::calculate_expr(Node *node, Btor *btor, BoolectorSort &logic, vector<BoolectorNode *> &exprs)
+{
+    BoolectorNode *res = nullptr;
+    switch (node->type)
+    {
+    case _CONSTANT:
+        res = node->val == L ? boolector_false(btor) : boolector_true(btor);
+        break;
+    case _CLK:
+    case _PI:
+        res = boolector_var(btor, logic, node->name.c_str());
+        break;
+    case AND:
+    {
+        size_t num_node_ins = 0;
+        for (size_t k = 0, len = node->ins.size(); k < len; ++k)
+        {
+            auto &npi = node->ins[k];
+            if (npi->type != _CLK)
+            {
+                if (!exprs[npi->id])
+                    JINFO(npi->name);
+                ++num_node_ins;
+                if (res)
+                {
+                    BoolectorNode *tmp = boolector_and(btor, res, exprs[npi->id]);
+                    if (num_node_ins > 2)
+                    {
+                        boolector_release(btor, res);
+                    }
+                    res = tmp;
+                }
+                else
+                {
+                    res = exprs[npi->id];
+                }
+            }
+        }
+        if (num_node_ins < 2)
+        {
+            JERROR("The inputs of ", node->name, " (", GType_Str.at(node->type), ") is ", num_node_ins, "! in jec.calculate_expr!");
+        }
+        break;
+    }
+    case OR:
+    case CB:
+    case CB3:
+    {
+        size_t num_node_ins = 0;
+        for (size_t k = 0, len = node->ins.size(); k < len; ++k)
+        {
+            auto &npi = node->ins[k];
+            if (npi->type != _CLK)
+            {
+                ++num_node_ins;
+                if (res)
+                {
+                    BoolectorNode *tmp = boolector_or(btor, res, exprs[npi->id]);
+                    if (num_node_ins > 2)
+                    {
+                        boolector_release(btor, res);
+                    }
+                    res = tmp;
+                }
+                else
+                {
+                    res = exprs[npi->id];
+                }
+            }
+        }
+        if (num_node_ins < 2)
+        {
+            JERROR("The inputs of ", node->name, " (", GType_Str.at(node->type), ") is ", num_node_ins, "! in jec.calculate_expr!");
+        }
+        break;
+    }
+    case _EXOR:
+    case XOR:
+    {
+        size_t num_node_ins = 0;
+        for (size_t k = 0, len = node->ins.size(); k < len; ++k)
+        {
+            auto &npi = node->ins[k];
+            if (npi->type != _CLK)
+            {
+                ++num_node_ins;
+                if (res)
+                {
+                    BoolectorNode *tmp = boolector_xor(btor, res, exprs[npi->id]);
+                    if (num_node_ins > 2)
+                    {
+                        boolector_release(btor, res);
+                    }
+                    res = tmp;
+                }
+                else
+                {
+                    res = exprs[npi->id];
+                }
+            }
+        }
+        if (num_node_ins < 2)
+        {
+            JERROR("The inputs of ", node->name, " (", GType_Str.at(node->type), ") is ", num_node_ins, "! in jec.calculate_expr!");
+        }
+        break;
+    }
+    case INV:
+    {
+        size_t num_node_ins = 0;
+        for (size_t k = 0, num = node->ins.size(); k < num; ++k)
+        {
+            auto &npi = node->ins[k];
+            if (npi->type != _CLK)
+            {
+                ++num_node_ins;
+                BoolectorNode *tmp = boolector_not(btor, exprs[npi->id]);
+                if (res)
+                {
+                    boolector_release(btor, res);
+                }
+                res = tmp;
+            }
+        }
+        if (num_node_ins != 1)
+        {
+            JERROR("The inputs of ", node->name, " (", GType_Str.at(node->type), ") is ", num_node_ins, "! in jec.calculate_expr!");
+        }
+        break;
+    }
+    case _ANDF:
+    {
+        if (node->ins[0]->type != _CLK)
+        {
+            JERROR("The first input of ", node->name, " (", GType_Str.at(node->type), ") is not clk.");
+        }
+        auto tmp = boolector_and(btor, exprs[node->ins[2]->id], exprs[node->id]);
+        res = boolector_or(btor, exprs[node->ins[1]->id], tmp);
+        boolector_release(btor, tmp);
+        break;
+    }
+    case DFF:
+    case BUF:
+    case SPL:
+    case SPL3:
+    default:
+    {
+        size_t num_node_ins = 0;
+        for (size_t k = 0, num = node->ins.size(); k < num; ++k)
+        {
+            auto &npi = node->ins[k];
+            if (npi->type != _CLK)
+            {
+                ++num_node_ins;
+                res = exprs[npi->id];
+            }
+        }
+        if (num_node_ins != 1)
+        {
+            JERROR("The inputs of ", node->name, " (", GType_Str.at(node->type), ") is ", num_node_ins, "! in jec.calculate_expr!");
+        }
+        break;
+    }
+    }
+    if (!res)
+        JWARN(node->name);
+    return res;
+}
+
 void jec::create_expr_of_boolector(Netlist *miter, Btor *btor, BoolectorSort &logic, vector<BoolectorNode *> &exprs)
 {
     vector<vector<Node *>> &layers = miter->getProperty(PROPERTIES::LAYERS);
@@ -416,169 +585,7 @@ void jec::create_expr_of_boolector(Netlist *miter, Btor *btor, BoolectorSort &lo
             if (node->type == _CLK)
                 continue;
             // layers[i][j]->ins->at(0) is clk
-            BoolectorNode *res = nullptr;
-            switch (node->type)
-            {
-            case _CONSTANT:
-                res = node->val == L ? boolector_false(btor) : boolector_true(btor);
-                break;
-            case _CLK:
-                break;
-            case _PI:
-                res = boolector_var(btor, logic, node->name.c_str());
-                break;
-            case AND:
-            {
-                size_t num_node_ins = 0;
-                for (size_t k = 0, len = node->ins.size(); k < len; ++k)
-                {
-                    auto &npi = node->ins[k];
-                    if (npi->type != _CLK)
-                    {
-                        ++num_node_ins;
-                        if (res)
-                        {
-                            BoolectorNode *tmp = boolector_and(btor, res, exprs[npi->id]);
-                            if (num_node_ins > 2)
-                            {
-                                boolector_release(btor, res);
-                            }
-                            res = tmp;
-                        }
-                        else
-                        {
-                            res = exprs[npi->id];
-                        }
-                    }
-                }
-                if (num_node_ins < 2)
-                {
-                    JERROR("The inputs of ", node->name, " (", GType_Str.at(node->type), ") is ", num_node_ins, "! in jec.create_expr_of_boolector!");
-                }
-                break;
-            }
-            case OR:
-            case CB:
-            case CB3:
-            {
-                size_t num_node_ins = 0;
-                for (size_t k = 0, len = node->ins.size(); k < len; ++k)
-                {
-                    auto &npi = node->ins[k];
-                    if (npi->type != _CLK)
-                    {
-                        ++num_node_ins;
-                        if (res)
-                        {
-                            BoolectorNode *tmp = boolector_or(btor, res, exprs[npi->id]);
-                            if (num_node_ins > 2)
-                            {
-                                boolector_release(btor, res);
-                            }
-                            res = tmp;
-                        }
-                        else
-                        {
-                            res = exprs[npi->id];
-                        }
-                    }
-                }
-                if (num_node_ins < 2)
-                {
-                    JERROR("The inputs of ", node->name, " (", GType_Str.at(node->type), ") is ", num_node_ins, "! in jec.create_expr_of_boolector!");
-                }
-                break;
-            }
-            case _EXOR:
-            case XOR:
-            {
-                size_t num_node_ins = 0;
-                for (size_t k = 0, len = node->ins.size(); k < len; ++k)
-                {
-                    auto &npi = node->ins[k];
-                    if (npi->type != _CLK)
-                    {
-                        ++num_node_ins;
-                        if (res)
-                        {
-                            BoolectorNode *tmp = boolector_xor(btor, res, exprs[npi->id]);
-                            if (num_node_ins > 2)
-                            {
-                                boolector_release(btor, res);
-                            }
-                            res = tmp;
-                        }
-                        else
-                        {
-                            res = exprs[npi->id];
-                        }
-                    }
-                }
-                if (num_node_ins < 2)
-                {
-                    JERROR("The inputs of ", node->name, " (", GType_Str.at(node->type), ") is ", num_node_ins, "! in jec.create_expr_of_boolector!");
-                }
-                break;
-            }
-            case INV:
-            {
-                size_t num_node_ins = 0;
-                for (size_t k = 0, num = node->ins.size(); k < num; ++k)
-                {
-                    auto &npi = node->ins[k];
-                    if (npi->type != _CLK)
-                    {
-                        ++num_node_ins;
-                        BoolectorNode *tmp = boolector_not(btor, exprs[npi->id]);
-                        if (res)
-                        {
-                            boolector_release(btor, res);
-                        }
-                        res = tmp;
-                    }
-                }
-                if (num_node_ins != 1)
-                {
-                    JERROR("The inputs of ", node->name, " (", GType_Str.at(node->type), ") is ", num_node_ins, "! in jec.create_expr_of_boolector!");
-                }
-                break;
-            }
-            case _ANDF:
-            {
-                if (node->ins[0]->type != _CLK)
-                {
-                    JERROR("The first input of ", node->name, " (", GType_Str.at(node->type), ") is not clk.");
-                }
-                auto tmp = boolector_and(btor, exprs[node->ins[2]->id], exprs[node->id]);
-                res = boolector_or(btor, exprs[node->ins[1]->id], tmp);
-                boolector_release(btor, tmp);
-                break;
-            }
-            case DFF:
-            case BUF:
-            case SPL:
-            case SPL3:
-                // cout << node->name << endl;
-            default:
-            {
-                size_t num_node_ins = 0;
-                for (size_t k = 0, num = node->ins.size(); k < num; ++k)
-                {
-                    auto &npi = node->ins[k];
-                    if (npi->type != _CLK)
-                    {
-                        ++num_node_ins;
-                        res = exprs[npi->id];
-                    }
-                }
-                if (num_node_ins != 1)
-                {
-                    JERROR("The inputs of ", node->name, " (", GType_Str.at(node->type), ") is ", num_node_ins, "! in jec.create_expr_of_boolector!");
-                }
-                break;
-            }
-            }
-            exprs[node->id] = res;
+            exprs[node->id] = calculate_expr(node, btor, logic, exprs);
         }
     }
 }
@@ -709,12 +716,10 @@ void jec::evaluate_min_cone_boolector(Netlist *miter, bool incremental)
     boolector_set_opt(d_btor, BTOR_OPT_OUTPUT_NUMBER_FORMAT, 2);
     boolector_set_opt(d_btor, BTOR_OPT_AUTO_CLEANUP, 1);
     BoolectorSort bool_sort = boolector_bool_sort(d_btor);
-
-    vector<BoolectorNode *> exprs;
-    this->create_expr_of_boolector(miter, d_btor, bool_sort, exprs);
     BoolectorNode *prover_true = boolector_true(d_btor);
     BoolectorNode *prover_false = boolector_false(d_btor);
 
+    vector<BoolectorNode *> exprs(miter->get_num_gates(), nullptr);
     // <level, color>
     vector<pair<size_t, int>> info(miter->get_num_gates(), {0, 0});
     vector<vector<Node *>> &layers = miter->getProperty(PROPERTIES::LAYERS);
@@ -732,6 +737,7 @@ void jec::evaluate_min_cone_boolector(Netlist *miter, bool incremental)
             if (i == 0 && node_->type != _CLK)
             {
                 cones[j].emplace_back(node_);
+                exprs[node_->id] = this->calculate_expr(node_, d_btor, bool_sort, exprs);
             }
         }
     }
@@ -748,6 +754,10 @@ void jec::evaluate_min_cone_boolector(Netlist *miter, bool incremental)
                 Node *cur = cur_cone.front();
                 cur_cone.pop_front();
                 info[cur->id].second = j;
+                if (info[cur->id].first < i && !exprs[cur->id])
+                {
+                    exprs[cur->id] = this->calculate_expr(cur, d_btor, bool_sort, exprs);
+                }
                 if (info[cur->id].first >= i || cur->type == _EXOR)
                 {
                     cur_cone.emplace_back(cur);
@@ -786,11 +796,11 @@ void jec::evaluate_min_cone_boolector(Netlist *miter, bool incremental)
                 cout << ">>> The cone " << (smt_id++) << " is evaluated." << endl;
                 for (auto it = cur_cone.begin(), it_end = cur_cone.end(); it != it_end; ++it)
                 {
-                    auto &expr = exprs[(*it)->id];
+                    auto expr = this->calculate_expr(*it, d_btor, bool_sort, exprs);
                     BoolectorNode *famula = boolector_eq(d_btor, expr, prover_true);
-                    boolector_assert(d_btor, famula);
+                    boolector_assume(d_btor, famula);
                     result = boolector_sat(d_btor);
-                    // boolector_release(d_btor, famula);
+                    boolector_release(d_btor, famula);
                     if (result == BOOLECTOR_SAT)
                     {
                         if ((*it)->type == _EXOR)
@@ -799,8 +809,9 @@ void jec::evaluate_min_cone_boolector(Netlist *miter, bool incremental)
                             return;
                         }
                         famula = boolector_eq(d_btor, expr, prover_false);
+                        boolector_assume(d_btor, famula);
                         result = boolector_sat(d_btor);
-                        // boolector_release(d_btor, famula);
+                        boolector_release(d_btor, famula);
                         if (result == BOOLECTOR_SAT)
                         {
                             (*it)->type = _PI;
@@ -808,9 +819,9 @@ void jec::evaluate_min_cone_boolector(Netlist *miter, bool incremental)
                         }
                         else if (result == BOOLECTOR_UNSAT)
                         {
-                            exprs[(*it)->id] = boolector_true(d_btor);
                             (*it)->type = _CONSTANT;
                             (*it)->val = H;
+                            exprs[(*it)->id] = boolector_true(d_btor);
                         }
                         else
                         {
@@ -823,9 +834,9 @@ void jec::evaluate_min_cone_boolector(Netlist *miter, bool incremental)
                     {
                         if ((*it)->type != _EXOR)
                         {
-                            exprs[(*it)->id] = boolector_false(d_btor);
                             (*it)->type = _CONSTANT;
                             (*it)->val = L;
+                            exprs[(*it)->id] = boolector_false(d_btor);
                         }
                     }
                     else

@@ -20,6 +20,7 @@ private:
 #ifndef WIN
     void create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &exprs);
     bool print_result_of_opensmt(Netlist *miter, vector<PTRef> &exprs, Opensmt &osmt, sstat &reslut);
+    BoolectorNode *calculate_expr(Node *node, Btor *btor, BoolectorSort &logic, vector<BoolectorNode *> &exprs);
     void create_expr_of_boolector(Netlist *miter, Btor *btor, BoolectorSort &logic, vector<BoolectorNode *> &exprs);
     bool print_result_of_boolector(Netlist *miter, Btor *btor, vector<BoolectorNode *> &exprs, int reslut);
 
