@@ -9,16 +9,20 @@ enum SMT
 {
     _FSM,
     _OPENSMT,
-    _CONE,
+    _CONE_OPENSMT,
     _CVC4,
+    _BOOLECTOR,
+    _CONE_BOOLECTOR,
     _NONE
 };
 
 const std::unordered_map<string, SMT> Str_SMT = {
     {"FSM", _FSM},
     {"OPENSMT", _OPENSMT},
-    {"CONE", _CONE},
-    {"CVC4", _CVC4}};
+    {"CONE_OPENSMT", _CONE_OPENSMT},
+    {"CVC4", _CVC4},
+    {"BOOLECTOR", _BOOLECTOR},
+    {"CONE_BOOLECTOR", _CONE_BOOLECTOR}};
 
 void print_netlist(const string &output_path, const string &input_path)
 {
@@ -91,11 +95,17 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
     switch (smt)
     {
 #ifndef WIN
+    case _CONE_BOOLECTOR:
+        jec_.evaluate_min_cone_boolector(&miter, incremental);
+        break;
+    case _BOOLECTOR:
+        jec_.evaluate_boolector(&miter, incremental);
+        break;
     case _OPENSMT:
         jec_.evaluate_opensmt(&miter, incremental);
         break;
-    case _CONE:
-        jec_.evaluate_min_cone(&miter);
+    case _CONE_OPENSMT:
+        jec_.evaluate_min_cone(&miter, incremental);
         break;
     case _CVC4:
         jec_.evaluate_cvc4(&miter, incremental);

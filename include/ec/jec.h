@@ -4,6 +4,7 @@
 #include "ec.h"
 
 #ifndef WIN
+#include <boolector/boolector.h>
 #include <opensmt/opensmt2.h>
 #include <cvc4/cvc4.h>
 #endif
@@ -19,6 +20,9 @@ private:
 #ifndef WIN
     void create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &exprs);
     bool print_result_of_opensmt(Netlist *miter, vector<PTRef> &exprs, Opensmt &osmt, sstat &reslut);
+    void create_expr_of_boolector(Netlist *miter, Btor *btor, BoolectorSort &logic, vector<BoolectorNode *> &exprs);
+    bool print_result_of_boolector(Netlist *miter, Btor *btor, vector<BoolectorNode *> &exprs, int reslut);
+
 #endif
 
 public:
@@ -31,7 +35,10 @@ public:
 #ifndef WIN
     // evaluate by using opensmt
     void evaluate_opensmt(Netlist *miter, bool incremental = false);
-    void evaluate_min_cone(Netlist *miter);
+    void evaluate_min_cone(Netlist *miter, bool incremental = false);
+    // evaluate by using boolector
+    void evaluate_boolector(Netlist *miter, bool incremental = false);
+    void evaluate_min_cone_boolector(Netlist *miter, bool incremental = false);
     // evaluate by using cvc4
     void evaluate_cvc4(Netlist *miter, bool incremental = false);
 #endif
