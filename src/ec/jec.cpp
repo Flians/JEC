@@ -804,9 +804,11 @@ void jec::evaluate_min_cone_boolector(Netlist *miter, bool incremental)
                         if (result == BOOLECTOR_SAT)
                         {
                             (*it)->type = _PI;
+                            exprs[(*it)->id] = boolector_var(d_btor, bool_sort, (*it)->name.c_str());
                         }
                         else if (result == BOOLECTOR_UNSAT)
                         {
+                            exprs[(*it)->id] = boolector_true(d_btor);
                             (*it)->type = _CONSTANT;
                             (*it)->val = H;
                         }
@@ -821,6 +823,7 @@ void jec::evaluate_min_cone_boolector(Netlist *miter, bool incremental)
                     {
                         if ((*it)->type != _EXOR)
                         {
+                            exprs[(*it)->id] = boolector_false(d_btor);
                             (*it)->type = _CONSTANT;
                             (*it)->val = L;
                         }

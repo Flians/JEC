@@ -51,6 +51,7 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
         miter.clean_spl(clean_spl, clean_dff);
         JINFO("The cleaning time is:", (double)(clock() - startTime) / CLOCKS_PER_SEC, "S");
     }
+    startTime = clock();
     if (!Util::path_balance(&miter))
     {
         times[4] = 0;
@@ -61,16 +62,15 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
         times[4] = 1;
         JINFO("The netlist '", miter.name, "' is path_balanced!");
     }
+    endTime = clock();
+    times[1] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
     // cout << "The path balancing time is: " << (double)(clock() - tmp) / CLOCKS_PER_SEC << " S" << endl;
-    startTime = clock();
     if (merge)
     {
         clock_t tmp = clock();
         times[3] = miter.merge_nodes_between_networks();
         JINFO("The merging time is:", (double)(clock() - tmp) / CLOCKS_PER_SEC, "S");
     }
-    endTime = clock();
-    times[1] = (double)(endTime - startTime) / CLOCKS_PER_SEC;
     // JINFO("The simplify time is: " + std::to_string(times[1]) + " S");
 
     if (is_print)
@@ -142,12 +142,19 @@ void evaluate(string root_path, int batch, bool clean_dff, bool clean_spl, bool 
         // "multiplier",
         // "sin"
     };
+    vector<string> cases_alu = {
+        "alu_1",
+        "alu_2",
+        "alu_4"};
+    bool flag = smt == _NONE;
     size_t num_case = cases.size();
-    vector<vector<double>> avg(num_case, vector<double>(6, 0.0));
+    size_t num_case_all = (flag ? cases_alu.size() : 0) + num_case;
+    vector<vector<double>> avg(num_case_all, vector<double>(6, 0.0));
     for (int i = 0; i < batch; ++i)
     {
         cout << ">>> Iterator #" << i + 1 << endl;
-        for (size_t j = 0; j < num_case; ++j)
+        size_t j = 0;
+        for (; j < num_case; ++j)
         {
             cout << "    >>> case " << cases[j] << endl;
             auto runtimes = workflow((root_path + "/golden/gf_" + cases[j] + ".v").c_str(), (root_path + "/revise/rf_" + cases[j] + ".v").c_str(), (root_path + "/output/output_" + cases[j] + ".txt").c_str(),
@@ -159,12 +166,32 @@ void evaluate(string root_path, int batch, bool clean_dff, bool clean_spl, bool 
             avg[j][4] += runtimes[4];
             avg[j][5] += runtimes[5];
         }
+        for (; j < num_case_all; ++j)
+        {
+            auto &cur = cases_alu[j - num_case];
+            cout << "    >>> case " << cur << endl;
+            auto runtimes = workflow((root_path + "/rsfq/" + cur + ".v").c_str(), (root_path + "/revise/rf_" + cur + ".v").c_str(), (root_path + "/output/output_" + cur + ".txt").c_str(),
+                                     clean_dff, clean_spl, merge, smt, incremental, is_print, print_path);
+            avg[j][0] += runtimes[0];
+            avg[j][1] += runtimes[1];
+            avg[j][2] += runtimes[2];
+            avg[j][3] += runtimes[3];
+            avg[j][4] += runtimes[4];
+            avg[j][5] += runtimes[5];
+        }
     }
     cout << ">>> Iterator over!\n"
          << (incremental ? "Incremental" : "Unincremental") << endl;
-    for (size_t j = 0; j < num_case; ++j)
+    for (size_t j = 0; j < num_case_all; ++j)
     {
-        cout << fixed << setprecision(6) << cases[j];
+        if (j < num_case)
+        {
+            cout << fixed << setprecision(6) << cases[j];
+        }
+        else
+        {
+            cout << fixed << setprecision(6) << cases_alu[j - num_case];
+        }
         for (auto &item : avg[j])
         {
             cout << "\t" << item / batch;

@@ -388,6 +388,7 @@ bool Util::path_balance(Netlist *netlist)
             {
                 JWARN("The path balance condition is not satisfied between node '" + src->name + "' and node '" + cur->name + "'!");
                 path_balanced = false;
+                // return path_balanced;
             }
         }
         auto _find = groups.find(level[i]);
