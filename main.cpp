@@ -91,7 +91,7 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
         return times;
     /* verify the miter */
     jec jec_(output);
-    // startTime = clock();
+    startTime = clock();
     switch (smt)
     {
 #ifndef WIN
