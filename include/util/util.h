@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <algorithm>
-#include <roaring.hh>
 #include "circuit/node.h"
 #include "circuit/netlist.h"
 

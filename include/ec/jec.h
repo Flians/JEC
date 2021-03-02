@@ -18,6 +18,7 @@ private:
     bool evaluate(vector<vector<Node *>> &layers);
     bool evaluate(const vector<Node *> &nodes);
 #ifndef WIN
+    PTRef calculate_expr(Node *node, Logic &logic, vector<PTRef> &exprs);
     void create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &exprs);
     bool print_result_of_opensmt(Netlist *miter, vector<PTRef> &exprs, Opensmt &osmt, sstat &reslut);
     BoolectorNode *calculate_expr(Node *node, Btor *btor, BoolectorSort &logic, vector<BoolectorNode *> &exprs);

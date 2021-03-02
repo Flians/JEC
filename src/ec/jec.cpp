@@ -104,6 +104,60 @@ void jec::evaluate_from_POs_to_PIs(Netlist *miter)
 
 #ifndef WIN
 
+PTRef jec::calculate_expr(Node *node, Logic &logic, vector<PTRef> &exprs)
+{
+    vec<PTRef> inputs;
+    for (size_t k = 0, num_node_ins = node->ins.size(); k < num_node_ins; ++k)
+    {
+        auto &npi = node->ins[k];
+        if (npi->type != _CLK)
+            inputs.push(exprs[npi->id]);
+    }
+    if (inputs.size() == 0 && node->type > _PI)
+    {
+        JERROR("The inputs is empty! in jec.calculate_expr!");
+    }
+    PTRef res;
+    switch (node->type)
+    {
+    case _CONSTANT:
+        res = node->val == L ? logic.getTerm_false() : logic.getTerm_true();
+        break;
+    case _CLK:
+    case _PI:
+        res = logic.mkBoolVar(node->name.c_str());
+        break;
+    case AND:
+        res = logic.mkAnd(inputs);
+        break;
+    case OR:
+    case CB:
+    case CB3:
+        res = logic.mkOr(inputs);
+        break;
+    case XOR:
+        res = logic.mkXor(inputs);
+        break;
+    case INV:
+        res = logic.mkNot(inputs);
+        break;
+    case _EXOR:
+        res = logic.mkXor(inputs);
+        break;
+    case _ANDF:
+        res = logic.mkOr(inputs[0], logic.mkAnd(inputs[1], exprs[node->id]));
+        break;
+    case DFF:
+    case BUF:
+    case SPL:
+    case SPL3:
+    default:
+        res = inputs[0];
+        break;
+    }
+    return res;
+}
+
 void jec::create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &exprs)
 {
     vector<vector<Node *>> &layers = miter->getProperty(PROPERTIES::LAYERS);
@@ -115,58 +169,7 @@ void jec::create_expr_of_opensmt(Netlist *miter, Logic &logic, vector<PTRef> &ex
         for (size_t j = 0, num_layer_i = layer.size(); j < num_layer_i; ++j)
         {
             auto &node = layer[j];
-            vec<PTRef> inputs;
-            // layers[i][j]->ins->at(0) is clk
-            for (size_t k = 0, num_node_ins = node->ins.size(); k < num_node_ins; ++k)
-            {
-                auto &npi = node->ins[k];
-                if (npi->type != _CLK)
-                    inputs.push(exprs[npi->id]);
-            }
-            if (inputs.size() == 0 && node->type > _PI)
-            {
-                JERROR("The inputs is empty! in jec.evaluate_opensmt!");
-            }
-            PTRef res;
-            switch (node->type)
-            {
-            case _CONSTANT:
-                res = node->val == L ? logic.getTerm_false() : logic.getTerm_true();
-                break;
-            case _CLK:
-                break;
-            case _PI:
-                res = logic.mkBoolVar(node->name.c_str());
-                break;
-            case AND:
-                res = logic.mkAnd(inputs);
-                break;
-            case OR:
-            case CB:
-            case CB3:
-                res = logic.mkOr(inputs);
-                break;
-            case XOR:
-                res = logic.mkXor(inputs);
-                break;
-            case INV:
-                res = logic.mkNot(inputs);
-                break;
-            case _EXOR:
-                res = logic.mkXor(inputs);
-                break;
-            case _ANDF:
-                res = logic.mkOr(inputs[0], logic.mkAnd(inputs[1], exprs[node->id]));
-                break;
-            case WIRE:
-            case SPL:
-            case SPL3:
-                // cout << node->name << endl;
-            default:
-                res = inputs[0];
-                break;
-            }
-            exprs[node->id] = res;
+            exprs[node->id] = std::move(this->calculate_expr(node, logic, exprs));
         }
     }
 }
@@ -566,8 +569,6 @@ BoolectorNode *jec::calculate_expr(Node *node, Btor *btor, BoolectorSort &logic,
         break;
     }
     }
-    if (!res)
-        JWARN(node->name);
     return res;
 }
 
@@ -598,17 +599,19 @@ bool jec::print_result_of_boolector(Netlist *miter, Btor *d_btor, vector<Boolect
     case BOOLECTOR_UNSAT:
     {
         eq = true;
+        this->fout << "EQ" << endl;
         break;
     }
     case BOOLECTOR_SAT:
     {
+        this->fout << "NEQ" << endl;
         for (auto &pi : miter->map_PIs)
         {
             if (pi.second->type == _CLK)
                 continue;
-            const char *assign = boolector_bv_assignment(d_btor, (BoolectorNode *)exprs[pi.second->id]);
-            // const char *symbol = boolector_get_symbol(d_btor, (BoolectorNode *)exprs[pi.second->id]);
-            this->fout << pi.first << " " << assign;
+            const char *assign = boolector_bv_assignment(d_btor, exprs[pi.second->id]);
+            // const char *symbol = boolector_get_symbol(d_btor, exprs[pi.second->id]);
+            this->fout << pi.first << " " << assign << std::endl;
             boolector_free_bv_assignment(d_btor, assign);
             // boolector_free_bv_assignment(d_btor, symbol);
         }
@@ -618,7 +621,6 @@ bool jec::print_result_of_boolector(Netlist *miter, Btor *d_btor, vector<Boolect
         JWARN("Could not answer query in print_result_of_opensmt");
     }
     JWARN("The miter '", miter->name, "' is", (eq ? "" : "not"), "equivalent.");
-    this->fout << (eq ? "EQ" : "NEQ") << endl;
     miter->setProperty(PROPERTIES::EQ, eq);
     return eq;
 }
