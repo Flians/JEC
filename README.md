@@ -259,7 +259,7 @@ cec golden.v revise.v
 ### run using abc
 
 ``` shell
-./cec_abc ./original/abc.rc ./original/cmos.genlib ./
+./cec_abc ./original/abc.rc ./original/rsfq.genlib ./
 ```
 
 The result <parse, cec>:

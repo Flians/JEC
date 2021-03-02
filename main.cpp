@@ -71,7 +71,7 @@ vector<double> workflow(const char *golden, const char *revise, const char *outp
 
     if (is_print)
     {
-        print_rsfq = true;
+        print_rsfq = false;
         ofstream golden(print_path);
         if (golden.is_open())
         {
