@@ -1650,12 +1650,12 @@ module rf_c1908(gclk, G101, G104, G107, G110, G113, G116, G119, G122, G125, G128
 	jnot g000(.din(w_G146_0[2]),.dout(n58),.clk(gclk));
 	jxor g001(.dina(w_G140_0[2]),.dinb(w_G125_0[2]),.dout(n59),.clk(gclk));
 	jxor g002(.dina(w_n59_0[1]),.dinb(n58),.dout(n60),.clk(gclk));
-	jnot g003(.din(w_G953_1[2]),.dout(n61),.clk(gclk));
+	jdff g003(.din(w_G953_1[2]),.dout(n61),.clk(gclk));
 	jand g004(.dina(w_n61_3[2]),.dinb(w_G234_0[2]),.dout(n62),.clk(gclk));
 	jand g005(.dina(w_n62_0[1]),.dinb(w_G221_0[1]),.dout(n63),.clk(gclk));
 	jxor g006(.dina(n63),.dinb(w_G137_0[2]),.dout(n64),.clk(gclk));
 	jxor g007(.dina(w_G128_1[1]),.dinb(w_G119_0[2]),.dout(n65),.clk(gclk));
-	jxor g008(.dina(w_dff_B_HZXyvK1o2_0),.dinb(n64),.dout(n66),.clk(gclk));
+	jor g008(.dina(w_dff_B_HZXyvK1o2_0),.dinb(n64),.dout(n66),.clk(gclk));
 	jxor g009(.dina(n66),.dinb(w_G110_1[1]),.dout(n67),.clk(gclk));
 	jxor g010(.dina(w_n67_0[1]),.dinb(w_n60_0[2]),.dout(n68),.clk(gclk));
 	jor g011(.dina(w_n68_0[1]),.dinb(w_G902_3[2]),.dout(n69),.clk(gclk));

@@ -1369,12 +1369,12 @@ module rf_c1908(G902, G900, G116, G143, G125, G227, G134, G952, G122, G221, G119
     jnot g000(.din(G146), .dout(n60));
     jxor g001(.dinb(G125), .dina(G140), .dout(n64));
     jxor g002(.dinb(n60), .dina(n64), .dout(n68));
-    jnot g003(.din(G953), .dout(n71));
+    jdff g003(.din(G953), .dout(n71));
     jand g004(.dinb(n3938), .dina(n71), .dout(n75));
     jand g005(.dinb(n3941), .dina(n75), .dout(n79));
     jxor g006(.dinb(n4838), .dina(n79), .dout(n83));
     jxor g007(.dinb(G119), .dina(G128), .dout(n87));
-    jxor g008(.dinb(n83), .dina(n3726), .dout(n91));
+    jor g008(.dinb(n83), .dina(n3726), .dout(n91));
     jxor g009(.dinb(n4205), .dina(n91), .dout(n95));
     jxor g010(.dinb(n3728), .dina(n95), .dout(n99));
     jor g011(.dinb(n4310), .dina(n99), .dout(n103));

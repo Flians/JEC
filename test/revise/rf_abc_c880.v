@@ -1462,9 +1462,9 @@ module rf_c880(G268gat, G267gat, G111gat, G87gat, G130gat, G159gat, G261gat, G10
     jand g016(.dinb(G59gat), .dina(G75gat), .dout(n149));
     jnot g017(.din(n149), .dout(n152));
     jor g018(.dinb(n2021), .dina(n152), .dout(n156));
-    jnot g019(.din(G36gat), .dout(n159));
+    jdff g019(.din(G36gat), .dout(n159));
     jnot g020(.din(G59gat), .dout(n162));
-    jor g021(.dinb(n159), .dina(n162), .dout(n166));
+    jand g021(.dinb(n159), .dina(n162), .dout(n166));
     jor g022(.dinb(n2021), .dina(n166), .dout(n170));
     jnot g023(.din(G42gat), .dout(n173));
     jor g024(.dinb(n2024), .dina(n166), .dout(n177));
@@ -1473,7 +1473,7 @@ module rf_c880(G268gat, G267gat, G111gat, G87gat, G130gat, G159gat, G261gat, G10
     jnot g027(.din(n105), .dout(n188));
     jor g028(.dinb(n188), .dina(n138), .dout(n192));
     jand g029(.dinb(G1gat), .dina(G26gat), .dout(n196));
-    jand g030(.dinb(n4297), .dina(n196), .dout(n200));
+    jxor g030(.dinb(n4297), .dina(n196), .dout(n200));
     jand g031(.dinb(G13gat), .dina(G55gat), .dout(n204));
     jand g032(.dinb(n113), .dina(n204), .dout(n208));
     jand g033(.dinb(G29gat), .dina(G68gat), .dout(n212));

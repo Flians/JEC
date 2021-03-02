@@ -10208,7 +10208,7 @@ module rf_c6288(G511gat, G154gat, G222gat, G256gat, G375gat, G137gat, G52gat, G3
     wire n36087;
     wire n36090;
     jand g0000(.dinb(G1gat), .dina(G273gat), .dout(n67));
-    jand g0001(.dinb(G18gat), .dina(G273gat), .dout(n71));
+    jxor g0001(.dinb(G18gat), .dina(G273gat), .dout(n71));
     jand g0002(.dinb(G1gat), .dina(G290gat), .dout(n75));
     jor g0003(.dinb(n71), .dina(n75), .dout(n79));
     jand g0004(.dinb(G18gat), .dina(G290gat), .dout(n83));
@@ -10217,7 +10217,7 @@ module rf_c6288(G511gat, G154gat, G222gat, G256gat, G375gat, G137gat, G52gat, G3
     jand g0007(.dinb(n10756), .dina(n90), .dout(n94));
     jand g0008(.dinb(G1gat), .dina(G307gat), .dout(n98));
     jnot g0009(.din(n98), .dout(n101));
-    jnot g0010(.din(G18gat), .dout(n104));
+    jdff g0010(.din(G18gat), .dout(n104));
     jnot g0011(.din(G290gat), .dout(n107));
     jor g0012(.dinb(n104), .dina(n107), .dout(n111));
     jnot g0013(.din(G35gat), .dout(n114));

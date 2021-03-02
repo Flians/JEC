@@ -3706,10 +3706,10 @@ module rf_c3540(gclk, G1, G13, G20, G33, G41, G45, G50, G58, G68, G77, G87, G97,
 	jnot g0002(.din(w_G58_5[1]),.dout(n74),.clk(gclk));
 	jnot g0003(.din(w_G68_5[1]),.dout(n75),.clk(gclk));
 	jand g0004(.dina(w_n75_1[1]),.dinb(w_n74_1[1]),.dout(n76),.clk(gclk));
-	jand g0005(.dina(w_n76_0[1]),.dinb(w_n73_2[2]),.dout(n77),.clk(gclk));
+	jor g0005(.dina(w_n76_0[1]),.dinb(w_n73_2[2]),.dout(n77),.clk(gclk));
 	jand g0006(.dina(w_n77_0[1]),.dinb(w_n72_1[1]),.dout(w_dff_A_jDDyjmOM9_2),.clk(gclk));
 	jnot g0007(.din(w_G97_5[1]),.dout(n79),.clk(gclk));
-	jnot g0008(.din(w_G107_5[1]),.dout(n80),.clk(gclk));
+	jdff g0008(.din(w_G107_5[1]),.dout(n80),.clk(gclk));
 	jand g0009(.dina(w_n80_1[1]),.dinb(w_n79_0[2]),.dout(n81),.clk(gclk));
 	jnot g0010(.din(w_n81_0[2]),.dout(n82),.clk(gclk));
 	jand g0011(.dina(n82),.dinb(w_G87_3[2]),.dout(n83),.clk(gclk));

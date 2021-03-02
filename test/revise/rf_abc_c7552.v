@@ -5503,7 +5503,7 @@ module rf_c7552(G4528, G4526, G4432, G4427, G4420, G4410, G4405, G4400, G3743, G
     jnot g0030(.din(G1197), .dout(n419));
     jor g0031(.dinb(n8220), .dina(n419), .dout(n423));
     jnot g0032(.din(G133), .dout(n426));
-    jnot g0033(.din(G134), .dout(n429));
+    jdff g0033(.din(G134), .dout(n429));
     jor g0034(.dinb(n426), .dina(n429), .dout(n433));
     jor g0035(.dinb(n8214), .dina(n433), .dout(n437));
     jand g0036(.dinb(G1), .dina(G163), .dout(n441));
@@ -5512,7 +5512,7 @@ module rf_c7552(G4528, G4526, G4432, G4427, G4420, G4410, G4405, G4400, G3743, G
     jor g0039(.dinb(n14316), .dina(n448), .dout(n452));
     jnot g0040(.din(G18), .dout(n455));
     jand g0041(.dinb(n455), .dina(n14349), .dout(n459));
-    jand g0042(.dinb(G18), .dina(G229), .dout(n463));
+    jor g0042(.dinb(G18), .dina(G229), .dout(n463));
     jor g0043(.dinb(n459), .dina(n14062), .dout(n467));
     jand g0044(.dinb(n455), .dina(n14355), .dout(n471));
     jnot g0045(.din(n471), .dout(n474));

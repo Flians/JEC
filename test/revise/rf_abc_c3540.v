@@ -3046,10 +3046,10 @@ module rf_c3540(G1698, G330, G326, G343, G317, G311, G303, G294, G2897, G274, G2
     jnot g0002(.din(G58), .dout(n80));
     jnot g0003(.din(G68), .dout(n83));
     jand g0004(.dinb(n80), .dina(n83), .dout(n87));
-    jand g0005(.dinb(n8635), .dina(n87), .dout(n91));
+    jor g0005(.dinb(n8635), .dina(n87), .dout(n91));
     jand g0006(.dinb(n6427), .dina(n91), .dout(n95));
     jnot g0007(.din(G97), .dout(n98));
-    jnot g0008(.din(G107), .dout(n101));
+    jdff g0008(.din(G107), .dout(n101));
     jand g0009(.dinb(n98), .dina(n101), .dout(n105));
     jnot g0010(.din(n105), .dout(n108));
     jand g0011(.dinb(n11095), .dina(n108), .dout(n112));

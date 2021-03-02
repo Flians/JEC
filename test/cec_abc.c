@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 #include <malloc.h>
 
@@ -92,7 +93,7 @@ clkMiter = clock() - clk;
     runtimes[1] = (double)(clkCec) / CLOCKS_PER_SEC;
 }
 
-void evaluate(char *abcrc, char *genlib, char *root_path)
+void evaluate(char *abcrc, char *genlib, char *root_path, int batch)
 {
     char *cases[] = {
         "c1355",
@@ -113,13 +114,12 @@ void evaluate(char *abcrc, char *genlib, char *root_path)
         // "multiplier",
         // "sin"
     };
-    int patch = 100;
     const int cases_size = sizeof(cases) / sizeof(cases[0]);
     double avg[cases_size][2];
     char golden[1000], revise[1000];
     double *runtimes = (double *)malloc(sizeof(double) * 2);
 
-    for (int i = 0; i < patch; ++i)
+    for (int i = 0; i < batch; ++i)
     {
         printf(">>> Iterator #%d\n", i + 1);
         for (size_t j = 0; j < cases_size; ++j)
@@ -146,19 +146,19 @@ void evaluate(char *abcrc, char *genlib, char *root_path)
     printf(">>> Iterator over!\n");
     for (size_t j = 0; j < cases_size; ++j)
     {
-        printf("%s\t%0.6f\t%0.6f\n", cases[j], avg[j][0] / patch, avg[j][1] / patch);
+        printf("%s\t%0.6f\t%0.6f\n", cases[j], avg[j][0] / batch, avg[j][1] / batch);
     }
 }
 
 int main(int argc, char *argv[])
 {
-    if (argc == 4)
+    if (argc == 5)
     {
-        evaluate(argv[1], argv[2], argv[3]);
+        evaluate(argv[1], argv[2], argv[3], atoi(argv[4]));
     }
     else
     {
-        printf("Please input three parameters, like \"./cec_abc <abc.rc> <library.genlib> <the root of the golden and revised files>\".\n");
+        printf("Please input three parameters, like \"./cec_abc <abc.rc> <library.genlib> <the root of the golden and revised files> <batch>\".\n");
     }
     return 0;
 }

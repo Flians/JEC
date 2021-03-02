@@ -5934,14 +5934,14 @@ module rf_c5315(G4115, G4092, G4089, G4087, G3724, G3550, G3548, G3546, G2824, G
     jnot g0002(.din(G366), .dout(n309));
     jand g0003(.dinb(G552), .dina(G562), .dout(n313));
     jnot g0004(.din(G549), .dout(n316));
-    jnot g0005(.din(G338), .dout(n319));
+    jdff g0005(.din(G338), .dout(n319));
     jnot g0006(.din(G358), .dout(n322));
     jand g0007(.dinb(G141), .dina(G145), .dout(n326));
     jnot g0008(.din(G245), .dout(n329));
     jnot g0009(.din(G552), .dout(n332));
     jnot g0010(.din(G562), .dout(n335));
     jnot g0011(.din(G559), .dout(n338));
-    jand g0012(.dinb(G1), .dina(G373), .dout(n342));
+    jor g0012(.dinb(G1), .dina(G373), .dout(n342));
     jnot g0013(.din(G3173), .dout(n345));
     jand g0014(.dinb(n8016), .dina(n345), .dout(n349));
     jnot g0015(.din(G27), .dout(n352));

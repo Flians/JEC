@@ -590,9 +590,9 @@ module rf_c1355(G233gat, G228gat, G229gat, G227gat, G218gat, G211gat, G197gat, G
     jxor g003(.dinb(n80), .dina(n84), .dout(n88));
     jxor g004(.dinb(n1473), .dina(n88), .dout(n92));
     jxor g005(.dinb(G57gat), .dina(G85gat), .dout(n96));
-    jxor g006(.dinb(G1gat), .dina(G29gat), .dout(n100));
+    jor g006(.dinb(G1gat), .dina(G29gat), .dout(n100));
     jxor g007(.dinb(n96), .dina(n100), .dout(n104));
-    jxor g008(.dinb(G155gat), .dina(G162gat), .dout(n108));
+    jand g008(.dinb(G155gat), .dina(G162gat), .dout(n108));
     jxor g009(.dinb(G141gat), .dina(G148gat), .dout(n112));
     jxor g010(.dinb(n108), .dina(n112), .dout(n116));
     jxor g011(.dinb(n104), .dina(n116), .dout(n120));

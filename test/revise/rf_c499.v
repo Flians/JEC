@@ -835,10 +835,10 @@ module rf_c499(gclk, Gid0, Gid1, Gid2, Gid3, Gid4, Gid5, Gid6, Gid7, Gid8, Gid9,
 	jxor g035(.dina(w_n107_0[1]),.dinb(n104),.dout(n108),.clk(gclk));
 	jxor g036(.dina(w_Gid9_0[2]),.dinb(w_Gid8_0[1]),.dout(n109),.clk(gclk));
 	jxor g037(.dina(w_Gid11_0[2]),.dinb(w_Gid10_0[2]),.dout(n110),.clk(gclk));
-	jxor g038(.dina(n110),.dinb(n109),.dout(n111),.clk(gclk));
+	jor g038(.dina(n110),.dinb(n109),.dout(n111),.clk(gclk));
 	jxor g039(.dina(w_Gid22_0[1]),.dinb(w_Gid18_0[1]),.dout(n112),.clk(gclk));
 	jxor g040(.dina(w_Gid30_0[2]),.dinb(w_Gid26_0[2]),.dout(n113),.clk(gclk));
-	jxor g041(.dina(n113),.dinb(n112),.dout(n114),.clk(gclk));
+	jand g041(.dina(n113),.dinb(n112),.dout(n114),.clk(gclk));
 	jxor g042(.dina(n114),.dinb(w_n111_0[1]),.dout(n115),.clk(gclk));
 	jxor g043(.dina(n115),.dinb(n108),.dout(n116),.clk(gclk));
 	jnot g044(.din(w_n116_1[1]),.dout(n117),.clk(gclk));

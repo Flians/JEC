@@ -1422,14 +1422,14 @@ module rf_c432(G115gat, G108gat, G102gat, G99gat, G112gat, G95gat, G92gat, G105g
     wire n5020;
     wire n5026;
     jnot g000(.din(G76gat), .dout(n45));
-    jand g001(.dinb(n45), .dina(n4786), .dout(n49));
+    jor g001(.dinb(n45), .dina(n4786), .dout(n49));
     jnot g002(.din(G24gat), .dout(n52));
     jand g003(.dinb(n52), .dina(n4756), .dout(n56));
     jnot g004(.din(G11gat), .dout(n59));
     jand g005(.dinb(n59), .dina(n4717), .dout(n63));
     jor g006(.dinb(n56), .dina(n63), .dout(n67));
     jor g007(.dinb(n4762), .dina(n67), .dout(n71));
-    jnot g008(.din(G37gat), .dout(n74));
+    jdff g008(.din(G37gat), .dout(n74));
     jand g009(.dinb(n74), .dina(n4666), .dout(n78));
     jnot g010(.din(G63gat), .dout(n81));
     jand g011(.dinb(n81), .dina(n4615), .dout(n85));

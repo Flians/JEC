@@ -638,10 +638,10 @@ module rf_c499(Gic4, Gic2, Gid31, Gid30, Gid28, Gid10, Gic0, Gid8, Gid4, Gid2, G
     jxor g035(.dinb(n195), .dina(n207), .dout(n211));
     jxor g036(.dinb(Gid8), .dina(Gid9), .dout(n215));
     jxor g037(.dinb(Gid10), .dina(Gid11), .dout(n219));
-    jxor g038(.dinb(n215), .dina(n219), .dout(n223));
+    jor g038(.dinb(n215), .dina(n219), .dout(n223));
     jxor g039(.dinb(Gid18), .dina(Gid22), .dout(n227));
     jxor g040(.dinb(Gid26), .dina(Gid30), .dout(n231));
-    jxor g041(.dinb(n227), .dina(n231), .dout(n235));
+    jand g041(.dinb(n227), .dina(n231), .dout(n235));
     jxor g042(.dinb(n223), .dina(n235), .dout(n239));
     jxor g043(.dinb(n211), .dina(n239), .dout(n243));
     jnot g044(.din(n243), .dout(n246));

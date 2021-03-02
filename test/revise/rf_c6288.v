@@ -11495,7 +11495,7 @@ module rf_c6288(gclk, G1gat, G18gat, G35gat, G52gat, G69gat, G86gat, G103gat, G1
 	wire w_dff_A_Axb5Z3Rn6_0;
 	wire w_dff_A_Sal8trTP1_2;
 	jand g0000(.dina(w_G273gat_7[2]),.dinb(w_G1gat_7[1]),.dout(G545gat_fa_),.clk(gclk));
-	jand g0001(.dina(w_G273gat_7[1]),.dinb(w_G18gat_7[2]),.dout(n65),.clk(gclk));
+	jxor g0001(.dina(w_G273gat_7[1]),.dinb(w_G18gat_7[2]),.dout(n65),.clk(gclk));
 	jand g0002(.dina(w_G290gat_7[2]),.dinb(w_G1gat_7[0]),.dout(n66),.clk(gclk));
 	jor g0003(.dina(n66),.dinb(w_n65_0[1]),.dout(n67),.clk(gclk));
 	jand g0004(.dina(w_G290gat_7[1]),.dinb(w_G18gat_7[1]),.dout(n68),.clk(gclk));
@@ -11504,7 +11504,7 @@ module rf_c6288(gclk, G1gat, G18gat, G35gat, G52gat, G69gat, G86gat, G103gat, G1
 	jand g0007(.dina(w_n70_0[1]),.dinb(w_dff_B_ORLY9DPs0_1),.dout(w_dff_A_YXiv6Yx23_2),.clk(gclk));
 	jand g0008(.dina(w_G307gat_7[2]),.dinb(w_G1gat_6[2]),.dout(n72),.clk(gclk));
 	jnot g0009(.din(w_n72_0[1]),.dout(n73),.clk(gclk));
-	jnot g0010(.din(w_G18gat_7[0]),.dout(n74),.clk(gclk));
+	jdff g0010(.din(w_G18gat_7[0]),.dout(n74),.clk(gclk));
 	jnot g0011(.din(w_G290gat_7[0]),.dout(n75),.clk(gclk));
 	jor g0012(.dina(w_n75_0[1]),.dinb(n74),.dout(n76),.clk(gclk));
 	jnot g0013(.din(w_G35gat_7[2]),.dout(n77),.clk(gclk));

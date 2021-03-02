@@ -803,9 +803,9 @@ module rf_c1355(gclk, G1gat, G8gat, G15gat, G22gat, G29gat, G36gat, G43gat, G50g
 	jxor g003(.dina(n75),.dinb(n74),.dout(n76),.clk(gclk));
 	jxor g004(.dina(w_n76_1[1]),.dinb(w_dff_B_IF8XNhLk2_1),.dout(n77),.clk(gclk));
 	jxor g005(.dina(w_G85gat_0[2]),.dinb(w_G57gat_0[2]),.dout(n78),.clk(gclk));
-	jxor g006(.dina(w_G29gat_0[2]),.dinb(w_G1gat_0[2]),.dout(n79),.clk(gclk));
+	jor g006(.dina(w_G29gat_0[2]),.dinb(w_G1gat_0[2]),.dout(n79),.clk(gclk));
 	jxor g007(.dina(n79),.dinb(n78),.dout(n80),.clk(gclk));
-	jxor g008(.dina(w_G162gat_0[2]),.dinb(w_G155gat_0[2]),.dout(n81),.clk(gclk));
+	jand g008(.dina(w_G162gat_0[2]),.dinb(w_G155gat_0[2]),.dout(n81),.clk(gclk));
 	jxor g009(.dina(w_G148gat_0[2]),.dinb(w_G141gat_0[2]),.dout(n82),.clk(gclk));
 	jxor g010(.dina(n82),.dinb(n81),.dout(n83),.clk(gclk));
 	jxor g011(.dina(w_n83_0[2]),.dinb(n80),.dout(n84),.clk(gclk));

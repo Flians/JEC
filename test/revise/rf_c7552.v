@@ -6537,7 +6537,7 @@ module rf_c7552(gclk, G1, G5, G9, G12, G15, G18, G23, G26, G29, G32, G35, G38, G
 	jnot g0030(.din(G1197),.dout(n345),.clk(gclk));
 	jor g0031(.dina(w_n345_0[1]),.dinb(w_G5_1[1]),.dout(w_dff_A_g7IbVewx2_2),.clk(gclk));
 	jnot g0032(.din(G133),.dout(n347),.clk(gclk));
-	jnot g0033(.din(G134),.dout(n348),.clk(gclk));
+	jdff g0033(.din(G134),.dout(n348),.clk(gclk));
 	jor g0034(.dina(n348),.dinb(n347),.dout(n349),.clk(gclk));
 	jor g0035(.dina(w_n349_0[1]),.dinb(w_G5_1[0]),.dout(w_dff_A_Ti7Z5XKL2_2),.clk(gclk));
 	jand g0036(.dina(G163),.dinb(w_G1_1[2]),.dout(w_dff_A_NHAxy8Qq4_2),.clk(gclk));
@@ -6546,7 +6546,7 @@ module rf_c7552(gclk, G1, G5, G9, G12, G15, G18, G23, G26, G29, G32, G35, G38, G
 	jor g0039(.dina(w_n353_0[2]),.dinb(w_G3701_1[1]),.dout(n354),.clk(gclk));
 	jnot g0040(.din(w_G18_58[1]),.dout(n355),.clk(gclk));
 	jand g0041(.dina(w_G41_0[1]),.dinb(w_n355_26[1]),.dout(n356),.clk(gclk));
-	jand g0042(.dina(w_G229_0[1]),.dinb(w_G18_58[0]),.dout(n357),.clk(gclk));
+	jor g0042(.dina(w_G229_0[1]),.dinb(w_G18_58[0]),.dout(n357),.clk(gclk));
 	jor g0043(.dina(w_dff_B_qH8YMZAq3_0),.dinb(w_n356_0[2]),.dout(n358),.clk(gclk));
 	jand g0044(.dina(w_G3701_1[0]),.dinb(w_n355_26[0]),.dout(n359),.clk(gclk));
 	jnot g0045(.din(w_n359_0[1]),.dout(n360),.clk(gclk));
