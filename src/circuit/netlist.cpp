@@ -865,9 +865,20 @@ ostream &operator<<(ostream &output, const Netlist &n)
     bool flag = true;
     for (auto &pi : n.map_PIs)
     {
-        if (pi.second->type != _CONSTANT)
+        vis[pi.second->id] = 1;
+        if (pi.second->type != _CONSTANT && (print_rsfq || (!print_rsfq && pi.second->type != _CLK)))
         {
-            output << "input wire " << pi.first << ", ";
+            str_module.append(pi.first).append(", ");
+            str_pis.append(pi.first).append(", ");
+        }
+        auto pi_succ = pi.second->get_successors_port();
+        for (auto *tar : pi_succ)
+        {
+            tar->setProperty(PROPERTIES::NET_NAME, pi.first);
+            for (auto &tar_src : tar->in_edges)
+            {
+                tar_src->src->setProperty(PROPERTIES::NET_NAME, pi.first);
+            }
         }
     }
     flag = true;
@@ -885,8 +896,8 @@ ostream &operator<<(ostream &output, const Netlist &n)
         }
         str_pos.append(po.first);
         str_module.append(po.first);
-        auto po_succ = po.second->get_predecessors_port();
-        for (auto *src : po_succ)
+        auto po_pre = po.second->get_predecessors_port(print_rsfq);
+        for (auto *src : po_pre)
         {
             src->setProperty(PROPERTIES::NET_NAME, po.first);
             for (auto &src_tar : src->out_edges)
@@ -899,6 +910,9 @@ ostream &operator<<(ostream &output, const Netlist &n)
     output << str_module << endl;
     if (!str_pis.empty())
     {
+        // drop ', '
+        str_pis.pop_back();
+        str_pis.pop_back();
         output << "    input " << str_pis << ";" << endl;
     }
     if (!str_pos.empty())
@@ -909,7 +923,7 @@ ostream &operator<<(ostream &output, const Netlist &n)
     {
         if (n.ports[i] && n.ports[i]->type == _OUT && !n.ports[i]->out_edges.empty())
         {
-            if (!n.ports[i]->own || (n.ports[i]->own && vis[n.ports[i]->own->id]) || n.ports[i]->hasProperty(PROPERTIES::NET_NAME))
+            if (!n.ports[i]->own || (n.ports[i]->own && (vis[n.ports[i]->own->id] || n.ports[i]->own->type == _CLK)) || n.ports[i]->hasProperty(PROPERTIES::NET_NAME))
             {
                 continue;
             }
