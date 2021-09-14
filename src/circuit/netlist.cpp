@@ -146,7 +146,8 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
     smatch match;
     regex pattern("[^\\s,\\();]+");
     string::const_iterator iterStart, iterEnd;
-    auto parse_bits = [&line, &match, &pattern, &iterStart, &iterEnd](std::string &item, int &bits_begin, int &bits_end) {
+    auto parse_bits = [&line, &match, &pattern, &iterStart, &iterEnd](std::string &item, int &bits_begin, int &bits_end)
+    {
         string::size_type mp = item.find_last_of(':');
         if (mp != item.npos)
         {
@@ -441,6 +442,8 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
             if (in_size + out_size == 0)
             {
                 JWARN("The wire '", item.second->name, "' in netlist '", this->name, " is useless.");
+                delete item.second;
+                continue;
             }
             else
             {
