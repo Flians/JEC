@@ -1,4 +1,5 @@
 import os
+import re
 
 def rename(root, prefix):
     files = os.listdir(root)
@@ -38,8 +39,32 @@ def upCell(root):
             os.remove(OldName)
             os.rename(NewName, OldName)
 
-rename('./revise', 'rf_')
-rename('./golden', 'gf_')
+def abc_result_anlysis(file_path):
+    result = {}
+    iter = 0
+    with open(file_path, 'r', encoding='utf8') as log:    
+        item = ''
+        line = log.readline().strip()
+        while line:
+            if line.startswith('>>> Iterator'):
+                iter += 1
+            elif line.startswith('>>> case'):
+                item = line.split(' ')[2]
+                if result.get(item, -1) == -1:
+                    # <runtime, the number of eq>
+                    result[item] = [0,0]
+            else:
+                if line.find('Time') != -1:
+                    result[item][0] += float(re.findall(r'[-+]?\d*\.?\d+', line)[0])
+                if line.upper().find('EQUIVALENT') != -1 and line.find('NOT EQUIVALENT') == -1:
+                    result[item][1] += 1
+            line = log.readline().strip()
+    for case in result:
+        print(case + '\t' + str(result[case][0]/iter) + '\t' + str(result[case][1]))
+
+abc_result_anlysis('./abc_neq.txt')
+#rename('./revise', 'rf_')
+#rename('./golden', 'gf_')
 #createBW('original', '../golden', 'dc2')
 #createBW('original', '../revise', 'resyn2')
 #upCell('original')

@@ -505,11 +505,11 @@ ostream &operator<<(ostream &output, const Node &n)
     output << "j";
     if (n.type == BUF)
     {
-        output << GType_Str.at(DFF) << " " << n.name << "(";
+        output << GType_Str.at(DFF) << " g" << n.id << "(";
     }
     else
     {
-        output << GType_Str.at(n.type) << " " << n.name << "(";
+        output << GType_Str.at(n.type) << " g" << n.id << "(";
     }
     for (auto &in : n.ins)
     {

@@ -441,6 +441,8 @@ void Netlist::parse_netlist(stringstream &in, bool is_golden)
             if (in_size + out_size == 0)
             {
                 JWARN("The wire '", item.second->name, "' in netlist '", this->name, " is useless.");
+                delete item.second;
+                continue;
             }
             else
             {
@@ -910,6 +912,9 @@ ostream &operator<<(ostream &output, const Netlist &n)
     output << str_module << endl;
     if (!str_pis.empty())
     {
+        // drop ', '
+        str_pis.pop_back();
+        str_pis.pop_back();
         output << "    input " << str_pis << ";" << endl;
     }
     if (!str_pos.empty())
